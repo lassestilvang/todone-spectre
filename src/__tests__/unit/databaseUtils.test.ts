@@ -4,13 +4,13 @@ import { DatabaseError } from '../../types/database';
 // Mock TodoneDatabase
 const mockDb = {
   users: {
-    filter: jest.fn().mockReturnThis(),
-    sortBy: jest.fn().mockReturnThis(),
-    offset: jest.fn().mockReturnThis(),
-    limit: jest.fn().mockReturnThis(),
-    count: jest.fn().mockResolvedValue(10),
-    toArray: jest.fn().mockResolvedValue([{ id: 'user-1', name: 'Test User' }]),
-    clear: jest.fn().mockResolvedValue(undefined)
+    filter: vi.fn().mockReturnThis(),
+    sortBy: vi.fn().mockReturnThis(),
+    offset: vi.fn().mockReturnThis(),
+    limit: vi.fn().mockReturnThis(),
+    count: vi.fn().mockResolvedValue(10),
+    toArray: vi.fn().mockResolvedValue([{ id: 'user-1', name: 'Test User' }]),
+    clear: vi.fn().mockResolvedValue(undefined)
   },
   projects: {
     filter: jest.fn().mockReturnThis(),
@@ -89,7 +89,7 @@ describe('DatabaseUtils', () => {
 
   beforeEach(() => {
     dbUtils = new DatabaseUtils(mockDb as any);
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('handleDatabaseError', () => {
@@ -113,7 +113,7 @@ describe('DatabaseUtils', () => {
   describe('withTransaction', () => {
     it('should execute transaction successfully', async () => {
       const testResult = { success: true };
-      const callback = jest.fn().mockResolvedValue(testResult);
+      const callback = vi.fn().mockResolvedValue(testResult);
 
       const result = await dbUtils.withTransaction(
         { mode: 'readwrite', tables: ['users'] },
@@ -126,7 +126,7 @@ describe('DatabaseUtils', () => {
 
     it('should handle transaction errors', async () => {
       const error = new Error('Transaction failed');
-      const callback = jest.fn().mockRejectedValue(error);
+      const callback = vi.fn().mockRejectedValue(error);
 
       await expect(dbUtils.withTransaction(
         { mode: 'readwrite', tables: ['users'] },
@@ -227,7 +227,7 @@ describe('DatabaseUtils', () => {
 
   describe('createIndex', () => {
     it('should warn about dynamic index creation', async () => {
-      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
       await dbUtils.createIndex('users', { name: 'test-index', keyPath: 'test' });
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Dexie does not support dynamic index creation. Indexes must be defined in the schema.'

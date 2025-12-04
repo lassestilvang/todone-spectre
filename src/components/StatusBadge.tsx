@@ -23,6 +23,7 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ status, className = '' }) => 
   };
 
   const getStatusLabel = (status: TaskStatus) => {
+    if (!status) return 'Unknown';
     return status.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
   };
 

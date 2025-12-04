@@ -23,6 +23,7 @@ const PriorityBadge: React.FC<PriorityBadgeProps> = ({ priority, className = '' 
   };
 
   const getPriorityLabel = (priority: PriorityLevel) => {
+    if (!priority) return 'Unknown';
     return priority.charAt(0).toUpperCase() + priority.slice(1);
   };
 

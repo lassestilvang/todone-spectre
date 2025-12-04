@@ -3,55 +3,55 @@ import { DatabaseTestUtils } from '../../database/test-utils';
 // Mock TodoneDatabase
 const mockDb = {
   users: {
-    add: jest.fn().mockResolvedValue('user-1'),
-    bulkAdd: jest.fn().mockResolvedValue(['user-1', 'user-2']),
-    clear: jest.fn().mockResolvedValue(undefined),
-    count: jest.fn().mockResolvedValue(0),
-    toArray: jest.fn().mockResolvedValue([])
+    add: vi.fn().mockResolvedValue('user-1'),
+    bulkAdd: vi.fn().mockResolvedValue(['user-1', 'user-2']),
+    clear: vi.fn().mockResolvedValue(undefined),
+    count: vi.fn().mockResolvedValue(0),
+    toArray: vi.fn().mockResolvedValue([])
   },
   projects: {
-    bulkAdd: jest.fn().mockResolvedValue(['project-1', 'project-2']),
-    clear: jest.fn().mockResolvedValue(undefined),
-    count: jest.fn().mockResolvedValue(0),
-    toArray: jest.fn().mockResolvedValue([])
+    bulkAdd: vi.fn().mockResolvedValue(['project-1', 'project-2']),
+    clear: vi.fn().mockResolvedValue(undefined),
+    count: vi.fn().mockResolvedValue(0),
+    toArray: vi.fn().mockResolvedValue([])
   },
   sections: {
-    bulkAdd: jest.fn().mockResolvedValue(['section-1', 'section-2']),
-    clear: jest.fn().mockResolvedValue(undefined),
-    count: jest.fn().mockResolvedValue(0),
-    toArray: jest.fn().mockResolvedValue([])
+    bulkAdd: vi.fn().mockResolvedValue(['section-1', 'section-2']),
+    clear: vi.fn().mockResolvedValue(undefined),
+    count: vi.fn().mockResolvedValue(0),
+    toArray: vi.fn().mockResolvedValue([])
   },
   tasks: {
-    bulkAdd: jest.fn().mockResolvedValue(['task-1', 'task-2']),
-    clear: jest.fn().mockResolvedValue(undefined),
-    count: jest.fn().mockResolvedValue(0),
-    toArray: jest.fn().mockResolvedValue([])
+    bulkAdd: vi.fn().mockResolvedValue(['task-1', 'task-2']),
+    clear: vi.fn().mockResolvedValue(undefined),
+    count: vi.fn().mockResolvedValue(0),
+    toArray: vi.fn().mockResolvedValue([])
   },
   labels: {
-    bulkAdd: jest.fn().mockResolvedValue(['label-1', 'label-2']),
-    clear: jest.fn().mockResolvedValue(undefined),
-    count: jest.fn().mockResolvedValue(0),
-    toArray: jest.fn().mockResolvedValue([])
+    bulkAdd: vi.fn().mockResolvedValue(['label-1', 'label-2']),
+    clear: vi.fn().mockResolvedValue(undefined),
+    count: vi.fn().mockResolvedValue(0),
+    toArray: vi.fn().mockResolvedValue([])
   },
   filters: {
-    clear: jest.fn().mockResolvedValue(undefined),
-    count: jest.fn().mockResolvedValue(0),
-    toArray: jest.fn().mockResolvedValue([])
+    clear: vi.fn().mockResolvedValue(undefined),
+    count: vi.fn().mockResolvedValue(0),
+    toArray: vi.fn().mockResolvedValue([])
   },
   comments: {
-    clear: jest.fn().mockResolvedValue(undefined),
-    count: jest.fn().mockResolvedValue(0),
-    toArray: jest.fn().mockResolvedValue([])
+    clear: vi.fn().mockResolvedValue(undefined),
+    count: vi.fn().mockResolvedValue(0),
+    toArray: vi.fn().mockResolvedValue([])
   },
   attachments: {
-    clear: jest.fn().mockResolvedValue(undefined),
-    count: jest.fn().mockResolvedValue(0),
-    toArray: jest.fn().mockResolvedValue([])
+    clear: vi.fn().mockResolvedValue(undefined),
+    count: vi.fn().mockResolvedValue(0),
+    toArray: vi.fn().mockResolvedValue([])
   },
-  isOpen: jest.fn().mockReturnValue(true),
-  close: jest.fn().mockResolvedValue(undefined),
-  delete: jest.fn().mockResolvedValue(undefined),
-  initialize: jest.fn().mockResolvedValue(undefined)
+  isOpen: vi.fn().mockReturnValue(true),
+  close: vi.fn().mockResolvedValue(undefined),
+  delete: vi.fn().mockResolvedValue(undefined),
+  initialize: vi.fn().mockResolvedValue(undefined)
 };
 
 describe('DatabaseTestUtils', () => {
@@ -133,14 +133,14 @@ describe('DatabaseTestUtils', () => {
   describe('createTestSnapshot', () => {
     it('should create database snapshot', async () => {
       // Mock toArray to return test data
-      mockDb.users.toArray.mockResolvedValueOnce([{ id: 'user-1', name: 'Test User' }]);
-      mockDb.projects.toArray.mockResolvedValueOnce([{ id: 'project-1', name: 'Test Project' }]);
-      mockDb.sections.toArray.mockResolvedValueOnce([{ id: 'section-1', name: 'Test Section' }]);
-      mockDb.tasks.toArray.mockResolvedValueOnce([{ id: 'task-1', content: 'Test Task' }]);
-      mockDb.labels.toArray.mockResolvedValueOnce([{ id: 'label-1', name: 'Test Label' }]);
-      mockDb.filters.toArray.mockResolvedValueOnce([{ id: 'filter-1', name: 'Test Filter' }]);
-      mockDb.comments.toArray.mockResolvedValueOnce([{ id: 'comment-1', text: 'Test Comment' }]);
-      mockDb.attachments.toArray.mockResolvedValueOnce([{ id: 'attachment-1', name: 'Test Attachment' }]);
+      mockDb.users.toArray.mockResolvedValue([{ id: 'user-1', name: 'Test User' }]);
+      mockDb.projects.toArray.mockResolvedValue([{ id: 'project-1', name: 'Test Project' }]);
+      mockDb.sections.toArray.mockResolvedValue([{ id: 'section-1', name: 'Test Section' }]);
+      mockDb.tasks.toArray.mockResolvedValue([{ id: 'task-1', content: 'Test Task' }]);
+      mockDb.labels.toArray.mockResolvedValue([{ id: 'label-1', name: 'Test Label' }]);
+      mockDb.filters.toArray.mockResolvedValue([{ id: 'filter-1', name: 'Test Filter' }]);
+      mockDb.comments.toArray.mockResolvedValue([{ id: 'comment-1', text: 'Test Comment' }]);
+      mockDb.attachments.toArray.mockResolvedValue([{ id: 'attachment-1', name: 'Test Attachment' }]);
 
       const snapshot = await testUtils.createTestSnapshot();
       expect(snapshot.users).toEqual([{ id: 'user-1', name: 'Test User' }]);
