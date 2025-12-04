@@ -1,0 +1,33 @@
+# Todone Component Documentation
+
+## Overview
+This document provides comprehensive documentation for all UI components in the Todone application.
+
+## Components
+
+### PriorityBadge
+- Props: `priority: 'high' | 'medium' | 'low'`
+- Usage: Displays priority level of tasks
+
+### StatusBadge
+- Props: `status: 'todo' | 'in-progress' | 'done'`
+- Usage: Displays current status of tasks
+
+### TaskList
+- Props: `tasks: Task[]`, `onTaskClick: (taskId: string) => void`
+- Usage: Displays list of tasks with click handlers
+
+## Usage Examples
+
+```typescript
+// PriorityBadge example
+<PriorityBadge priority="high" />
+
+// StatusBadge example
+<StatusBadge status="in-progress" />
+
+// TaskList example
+<TaskList
+  tasks={tasks}
+  onTaskClick={(taskId) => navigate(`/tasks/${taskId}`)}
+/>

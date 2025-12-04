@@ -1,0 +1,22 @@
+import { describe, expect, test } from 'vitest';
+import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
+import { App } from '../../App';
+
+describe('End-to-End Tests', () => {
+  describe('User Flows', () => {
+    test('should navigate through main application flow', () => {
+      render(
+        <MemoryRouter>
+          <App />
+        </MemoryRouter>
+      );
+
+      // Test main navigation
+      expect(screen.getByText('Todone')).toBeInTheDocument();
+      expect(screen.getByRole('navigation')).toBeInTheDocument();
+
+      // Add more assertions for user flows
+    });
+  });
+});

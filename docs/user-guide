@@ -1,0 +1,43 @@
+# Todone User Guide
+
+## Setup Instructions
+
+### Prerequisites
+- Node.js 18+
+- npm or yarn
+- Git
+
+### Installation
+1. Clone the repository: `git clone https://github.com/your-repo/todone.git`
+2. Install dependencies: `npm install`
+3. Start development server: `npm run dev`
+
+### Configuration
+- Create `.env` file in root directory
+- Add required environment variables:
+  ```
+  VITE_API_URL=http://localhost:3000
+  VITE_AUTH_SECRET=your-secret-key
+  ```
+
+### Running the Application
+- Development: `npm run dev`
+- Production build: `npm run build`
+- Preview production: `npm run preview`
+
+## Features
+
+### Task Management
+- Create, edit, and delete tasks
+- Set priorities and due dates
+- Organize tasks into projects
+
+### Collaboration
+- Share projects with team members
+- Real-time updates
+- Comment on tasks
+
+### Offline Support
+- Work offline with automatic sync when online
+- Queue management for offline actions
+- Conflict resolution

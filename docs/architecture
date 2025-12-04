@@ -1,0 +1,42 @@
+# Todone Architecture Documentation
+
+## Overview
+This document provides comprehensive architecture documentation for the Todone application system design.
+
+## System Architecture
+
+### Frontend
+- React with TypeScript
+- Vite build system
+- Tailwind CSS for styling
+- React Router for navigation
+
+### Backend
+- Node.js with Express
+- RESTful API design
+- JWT authentication
+- MongoDB database
+
+### State Management
+- Zustand for client-side state
+- Context API for component communication
+- Custom hooks for business logic
+
+## Data Flow
+
+1. User interacts with UI components
+2. Components dispatch actions to services
+3. Services make API calls to backend
+4. Backend processes requests and returns data
+5. Data is stored in state management
+6. UI components react to state changes
+
+## Component Hierarchy
+
+```
+App
+├── AuthProvider
+├── TaskProvider
+├── ProjectProvider
+├── UI Components
+└── Pages
