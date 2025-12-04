@@ -138,6 +138,11 @@ export const ViewAnimation: React.FC<ViewAnimationProps> = ({
             width: '100%',
             height: '100%'
           }}
+          role="region"
+          aria-live="polite"
+          aria-label={`${viewName} view`}
+          data-view-name={viewName}
+          data-transition-type={transitionType}
         >
           {children}
         </motion.div>

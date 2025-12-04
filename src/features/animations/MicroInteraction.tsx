@@ -228,6 +228,30 @@ export const MicroInteraction: React.FC<MicroInteractionProps> = ({
       drag={type === 'drag' ? true : undefined}
       dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
       dragElastic={type === 'drag' ? 0.2 : undefined}
+      role="button"
+      tabIndex={disabled ? undefined : 0}
+      aria-disabled={disabled}
+      aria-label={getAriaLabelForType(type)}
+      onKeyDown={(e) => {
+        if (!disabled && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          if (type === 'click' || type === 'tap' || type === 'press') {
+            setIsActive(true);
+            triggerMicroInteraction(type);
+            triggerMicro(type);
+            if (onInteraction) onInteraction();
+            setTimeout(() => setIsActive(false), duration / animationSpeed);
+          }
+        }
+      }}
+      onKeyUp={(e) => {
+        if (!disabled && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          if (type === 'press') {
+            setIsActive(false);
+          }
+        }
+      }}
     >
       {children}
     </motion.div>
@@ -244,5 +268,20 @@ const getCursorForType = (type: string) => {
     case 'drag': return 'grab';
     case 'loading': return 'wait';
     default: return 'default';
+  }
+};
+
+const getAriaLabelForType = (type: string) => {
+  switch (type) {
+    case 'click': return 'Clickable element';
+    case 'press': return 'Pressable element';
+    case 'tap': return 'Tappable element';
+    case 'hover': return 'Hoverable element';
+    case 'focus': return 'Focusable element';
+    case 'drag': return 'Draggable element';
+    case 'loading': return 'Loading element';
+    case 'success': return 'Success indicator';
+    case 'error': return 'Error indicator';
+    default: return 'Interactive element';
   }
 };

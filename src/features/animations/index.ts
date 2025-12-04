@@ -12,3 +12,6 @@ export { AnimationToolbar } from "./AnimationToolbar";
 export { TaskAnimationIntegration } from "./TaskAnimationIntegration";
 export { ViewAnimationIntegration } from "./ViewAnimationIntegration";
 export { AnimationFeatureIntegration } from "./AnimationFeatureIntegration";
+export { AnimationSystemIntegration } from "./AnimationSystemIntegration";
+export { AnimationPerformanceOptimizer } from "./AnimationPerformanceOptimizer";
+export { AnimationAccessibility } from "./AnimationAccessibility";

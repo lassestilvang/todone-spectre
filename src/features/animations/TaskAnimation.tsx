@@ -172,6 +172,17 @@ export const TaskAnimation: React.FC<TaskAnimationProps> = ({
     return 'visible';
   };
 
+  const getTaskAriaLabel = () => {
+    switch (currentState) {
+      case 'completed': return 'Task completed';
+      case 'overdue': return 'Task overdue';
+      case 'archived': return 'Task archived';
+      case 'dragging': return 'Task being dragged';
+      case 'highPriority': return 'High priority task';
+      default: return 'Active task';
+    }
+  };
+
   const variants = getAnimationVariants();
 
   return (
@@ -196,6 +207,11 @@ export const TaskAnimation: React.FC<TaskAnimationProps> = ({
           }}
           whileHover={isAnimating ? { scale: 1.01 } : {}}
           whileTap={isAnimating ? { scale: 0.99 } : {}}
+          role="region"
+          aria-live="polite"
+          aria-atomic="true"
+          aria-label={getTaskAriaLabel()}
+          data-task-state={currentState}
         >
           {children}
         </motion.div>

@@ -1,31 +1,29 @@
 import React from 'react';
-import { AnimationProvider } from './AnimationProvider';
-import { AnimationToolbar } from './AnimationToolbar';
-import { AnimationControls } from './AnimationControls';
-import { AnimationStateManager } from './AnimationStateManager';
-import { useState } from 'react';
+import { AnimationSystemIntegration } from './AnimationSystemIntegration';
 
 interface AnimationFeatureIntegrationProps {
   children: React.ReactNode;
+  performanceMode?: 'balanced' | 'performance' | 'quality';
+  accessibilityMode?: 'auto' | 'enhanced' | 'minimal';
+  showControls?: boolean;
+  maxConcurrentAnimations?: number;
 }
 
-export const AnimationFeatureIntegration: React.FC<AnimationFeatureIntegrationProps> = ({ children }) => {
-  const [showControls, setShowControls] = useState(false);
-
+export const AnimationFeatureIntegration: React.FC<AnimationFeatureIntegrationProps> = ({
+  children,
+  performanceMode = 'balanced',
+  accessibilityMode = 'auto',
+  showControls = true,
+  maxConcurrentAnimations = 3
+}) => {
   return (
-    <AnimationProvider>
-      <AnimationStateManager>
-        {children}
-
-        <AnimationToolbar
-          onToggleControls={() => setShowControls(!showControls)}
-          showControls={showControls}
-        />
-
-        {showControls && (
-          <AnimationControls onClose={() => setShowControls(false)} />
-        )}
-      </AnimationStateManager>
-    </AnimationProvider>
+    <AnimationSystemIntegration
+      performanceMode={performanceMode}
+      accessibilityMode={accessibilityMode}
+      showControls={showControls}
+      maxConcurrentAnimations={maxConcurrentAnimations}
+    >
+      {children}
+    </AnimationSystemIntegration>
   );
 };
