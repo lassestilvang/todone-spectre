@@ -228,6 +228,7 @@ __svelte__
 .*
 
 # Except these essential files
+!.github
 !.gitignore
 !.gitattributes
 !.env.example

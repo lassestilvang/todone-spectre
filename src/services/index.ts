@@ -47,6 +47,8 @@ export { TodayService } from "./todayService";
 export { UpcomingService } from "./upcomingService";
 export { AiService } from "./aiService";
 export { AiTaskService } from "./aiTaskService";
+export { AIPrioritizationService } from "./aiPrioritizationService";
+export { AIUserPatternService } from "./aiUserPatternService";
 export { BoardViewService } from "./boardViewService";
 export { CalendarViewService } from "./calendarViewService";
 export { CollaborationActivityService } from "./collaborationActivityService";

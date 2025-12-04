@@ -1,14 +1,21 @@
 export { AIAssistant } from './AIAssistant';
 export { AITaskSuggestions } from './AITaskSuggestions';
+export { AITaskSuggestionsEnhanced } from './AITaskSuggestionsEnhanced';
 export { AITaskBreakdown } from './AITaskBreakdown';
 export { AITaskActionable } from './AITaskActionable';
 export { AIIntegration } from './AIIntegration';
 export { AIFeatureImplementation } from './AIFeatureImplementation';
+export { AINaturalLanguageTaskCreator } from './AINaturalLanguageTaskCreator';
+export { AIContextAwareAssistant } from './AIContextAwareAssistant';
+export { AICompleteIntegration } from './AICompleteIntegration';
 
-// Export types for better TypeScript support
 export type { AIAssistantProps } from './AIAssistant';
 export type { AITaskSuggestionsProps } from './AITaskSuggestions';
+export type { AITaskSuggestionsEnhancedProps } from './AITaskSuggestionsEnhanced';
 export type { AITaskBreakdownProps } from './AITaskBreakdown';
 export type { AITaskActionableProps } from './AITaskActionable';
 export type { AIIntegrationProps } from './AIIntegration';
 export type { AIFeatureImplementationProps } from './AIFeatureImplementation';
+export type { AINaturalLanguageTaskCreatorProps } from './AINaturalLanguageTaskCreator';
+export type { AIContextAwareAssistantProps } from './AIContextAwareAssistant';
+export type { AICompleteIntegrationProps } from './AICompleteIntegration';
