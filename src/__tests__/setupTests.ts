@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
+import { setupAccessibilityTests, cleanupAccessibilityTests } from './accessibility/accessibilitySetup';
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -82,4 +83,5 @@ console.warn = vi.fn((...args) => {
 afterAll(() => {
   console.error = originalConsoleError;
   console.warn = originalConsoleWarn;
+  cleanupAccessibilityTests();
 });
