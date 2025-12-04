@@ -28,11 +28,48 @@ export const animationUtils = {
     };
 
     if (name.includes('task')) {
-      return {
-        ...baseConfig,
-        duration: 200,
-        type: 'slide'
-      };
+      if (name === 'task-complete') {
+        return {
+          ...baseConfig,
+          duration: 300,
+          type: 'scale',
+          easing: [0.4, 0, 0.2, 1]
+        };
+      } else if (name === 'task-overdue') {
+        return {
+          ...baseConfig,
+          duration: 400,
+          type: 'scale',
+          easing: [0.4, 0, 0.2, 1]
+        };
+      } else if (name === 'task-archive') {
+        return {
+          ...baseConfig,
+          duration: 350,
+          type: 'fade',
+          easing: 'easeInOut'
+        };
+      } else if (name === 'task-restore') {
+        return {
+          ...baseConfig,
+          duration: 250,
+          type: 'slide',
+          easing: 'easeOut'
+        };
+      } else if (name === 'task-priority') {
+        return {
+          ...baseConfig,
+          duration: 200,
+          type: 'bounce',
+          easing: [0.4, 0, 0.2, 1]
+        };
+      } else {
+        return {
+          ...baseConfig,
+          duration: 200,
+          type: 'slide'
+        };
+      }
     } else if (name.includes('view')) {
       return {
         ...baseConfig,
@@ -86,7 +123,61 @@ animationUtils.registerAnimation('task-complete', async ({ config }) => {
   });
 });
 
+animationUtils.registerAnimation('task-overdue', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+animationUtils.registerAnimation('task-archive', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+animationUtils.registerAnimation('task-restore', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+animationUtils.registerAnimation('task-priority', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
 animationUtils.registerAnimation('view-transition', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+animationUtils.registerAnimation('view-slide', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+animationUtils.registerAnimation('view-scale', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+animationUtils.registerAnimation('view-flip', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+animationUtils.registerAnimation('view-zoom', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+animationUtils.registerAnimation('view-rotate', async ({ config }) => {
   return new Promise(resolve => {
     setTimeout(() => resolve(), config.duration);
   });

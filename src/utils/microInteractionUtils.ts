@@ -26,38 +26,75 @@ export const microInteractionUtils = {
       feedbackType: 'visual',
       intensity: 1,
       duration: 200,
-      enabled: true
+      enabled: true,
+      hapticPattern: 'light',
+      soundFeedback: false
     };
 
     if (type === 'click') {
       return {
         ...baseConfig,
         duration: 150,
-        intensity: 0.8
+        intensity: 0.8,
+        hapticPattern: 'light'
       };
     } else if (type === 'hover') {
       return {
         ...baseConfig,
         duration: 100,
-        intensity: 0.5
+        intensity: 0.5,
+        hapticPattern: 'light'
       };
     } else if (type === 'press') {
       return {
         ...baseConfig,
         duration: 200,
-        intensity: 1.2
+        intensity: 1.2,
+        hapticPattern: 'medium'
       };
     } else if (type === 'success') {
       return {
         ...baseConfig,
         feedbackType: 'combined',
-        duration: 300
+        duration: 300,
+        hapticPattern: 'medium',
+        soundFeedback: true
       };
     } else if (type === 'error') {
       return {
         ...baseConfig,
         feedbackType: 'combined',
-        duration: 400
+        duration: 400,
+        hapticPattern: 'heavy',
+        soundFeedback: true
+      };
+    } else if (type === 'focus') {
+      return {
+        ...baseConfig,
+        duration: 180,
+        intensity: 0.7,
+        feedbackType: 'visual'
+      };
+    } else if (type === 'drag') {
+      return {
+        ...baseConfig,
+        duration: 250,
+        intensity: 1.1,
+        hapticPattern: 'medium'
+      };
+    } else if (type === 'tap') {
+      return {
+        ...baseConfig,
+        duration: 120,
+        intensity: 0.9,
+        hapticPattern: 'light'
+      };
+    } else if (type === 'loading') {
+      return {
+        ...baseConfig,
+        duration: 500,
+        intensity: 0.8,
+        feedbackType: 'visual'
       };
     }
 
@@ -120,6 +157,24 @@ microInteractionUtils.registerInteraction('error', async ({ config }) => {
 });
 
 microInteractionUtils.registerInteraction('loading', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+microInteractionUtils.registerInteraction('focus', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+microInteractionUtils.registerInteraction('drag', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+microInteractionUtils.registerInteraction('tap', async ({ config }) => {
   return new Promise(resolve => {
     setTimeout(() => resolve(), config.duration);
   });

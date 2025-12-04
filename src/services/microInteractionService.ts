@@ -5,6 +5,8 @@ interface MicroInteractionConfig {
   intensity: number;
   duration: number;
   enabled: boolean;
+  hapticPattern?: 'light' | 'medium' | 'heavy';
+  soundFeedback?: boolean;
 }
 
 interface MicroInteractionState {
