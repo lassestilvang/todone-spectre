@@ -2,7 +2,7 @@ interface AnimationConfig {
   duration: number;
   easing: string;
   delay?: number;
-  type: 'fade' | 'slide' | 'scale' | 'bounce' | 'flip';
+  type: 'fade' | 'slide' | 'scale' | 'bounce' | 'flip' | 'zoom' | 'rotate';
 }
 
 interface AnimationFunctionParams {
@@ -71,11 +71,48 @@ export const animationUtils = {
         };
       }
     } else if (name.includes('view')) {
-      return {
-        ...baseConfig,
-        duration: 300,
-        type: 'fade'
-      };
+      if (name === 'view-slide') {
+        return {
+          ...baseConfig,
+          duration: 350,
+          type: 'slide',
+          easing: 'easeInOut'
+        };
+      } else if (name === 'view-scale') {
+        return {
+          ...baseConfig,
+          duration: 300,
+          type: 'scale',
+          easing: 'easeInOut'
+        };
+      } else if (name === 'view-flip') {
+        return {
+          ...baseConfig,
+          duration: 400,
+          type: 'flip',
+          easing: 'easeInOut'
+        };
+      } else if (name === 'view-zoom') {
+        return {
+          ...baseConfig,
+          duration: 350,
+          type: 'zoom',
+          easing: [0.4, 0, 0.2, 1]
+        };
+      } else if (name === 'view-rotate') {
+        return {
+          ...baseConfig,
+          duration: 400,
+          type: 'rotate',
+          easing: 'easeInOut'
+        };
+      } else {
+        return {
+          ...baseConfig,
+          duration: 300,
+          type: 'fade'
+        };
+      }
     } else if (name === 'init') {
       return {
         ...baseConfig,
@@ -196,6 +233,24 @@ animationUtils.registerAnimation('micro-click', async ({ config }) => {
 });
 
 animationUtils.registerAnimation('micro-hover', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+animationUtils.registerInteraction('focus', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+animationUtils.registerInteraction('drag', async ({ config }) => {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), config.duration);
+  });
+});
+
+animationUtils.registerInteraction('tap', async ({ config }) => {
   return new Promise(resolve => {
     setTimeout(() => resolve(), config.duration);
   });

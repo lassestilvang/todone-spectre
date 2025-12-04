@@ -4,7 +4,7 @@ interface AnimationConfig {
   duration: number;
   easing: string;
   delay?: number;
-  type: 'fade' | 'slide' | 'scale' | 'bounce' | 'flip';
+  type: 'fade' | 'slide' | 'scale' | 'bounce' | 'flip' | 'zoom' | 'rotate';
 }
 
 interface AnimationState {
