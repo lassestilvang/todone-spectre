@@ -2,19 +2,25 @@
  * Offline feature types
  */
 
-export type OfflineStatus = 'online' | 'offline' | 'unknown';
+export type OfflineStatus = "online" | "offline" | "unknown";
 
-export type OfflineSyncStatus = 'idle' | 'syncing' | 'completed' | 'error' | 'paused' | 'queued';
+export type OfflineSyncStatus =
+  | "idle"
+  | "syncing"
+  | "completed"
+  | "error"
+  | "paused"
+  | "queued";
 
-export type OfflineQueuePriority = 'high' | 'medium' | 'low' | 'critical';
+export type OfflineQueuePriority = "high" | "medium" | "low" | "critical";
 
 export interface OfflineQueueItem {
   id: string;
   operation: string;
-  type: 'create' | 'update' | 'delete' | 'sync';
+  type: "create" | "update" | "delete" | "sync";
   data: any;
   timestamp: Date;
-  status: 'pending' | 'processing' | 'completed' | 'failed' | 'retrying';
+  status: "pending" | "processing" | "completed" | "failed" | "retrying";
   attempts: number;
   error?: Error | null;
   priority?: OfflineQueuePriority;
@@ -63,7 +69,7 @@ export interface OfflineSettings {
   autoSyncEnabled: boolean;
   syncInterval: number;
   maxQueueSize: number;
-  conflictResolution: 'local-wins' | 'remote-wins' | 'manual' | 'timestamp';
+  conflictResolution: "local-wins" | "remote-wins" | "manual" | "timestamp";
   offlineDataRetention: number;
   showOfflineIndicator: boolean;
   syncOnReconnect: boolean;
@@ -74,15 +80,15 @@ export interface OfflineSettings {
   enableEncryption: boolean;
   syncPriority: OfflineQueuePriority;
   autoRetryFailedItems: boolean;
-  retryStrategy: 'linear' | 'exponential' | 'immediate';
+  retryStrategy: "linear" | "exponential" | "immediate";
 }
 
 export interface OfflineStatusState {
   isOffline: boolean;
   status: OfflineStatus;
   lastStatusChange: Date | null;
-  connectionQuality: 'excellent' | 'good' | 'fair' | 'poor' | 'unknown';
-  networkType: 'wifi' | 'cellular' | 'ethernet' | 'unknown' | 'none';
+  connectionQuality: "excellent" | "good" | "fair" | "poor" | "unknown";
+  networkType: "wifi" | "cellular" | "ethernet" | "unknown" | "none";
   isFirstConnection: boolean;
   offlineSince: Date | null;
   onlineSince: Date | null;

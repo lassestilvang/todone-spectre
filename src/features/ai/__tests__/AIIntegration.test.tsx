@@ -6,7 +6,6 @@ import {
   AIFeatureImplementation,
   useAIFeatureIntegration,
 } from "../AIFeatureImplementation";
-import { AITestUtils } from "./aiTestUtils";
 import { useAIStore } from "../../../store/useAIStore";
 import { useTaskStore } from "../../../store/useTaskStore";
 
@@ -37,7 +36,16 @@ jest.mock("../AITaskActionable", () => ({
 
 describe("AI Integration Tests", () => {
   const mockTaskId = "test-task-123";
-  const mockTask = AITestUtils.createComplexTask();
+  const mockTask = {
+    id: "test-task-123",
+    title: "Test Task",
+    description: "Test Description",
+    priority: "medium",
+    status: "pending",
+    dueDate: "2025-12-15",
+    createdAt: "2025-12-01",
+    updatedAt: "2025-12-04",
+  };
 
   beforeEach(() => {
     // Reset all mocks

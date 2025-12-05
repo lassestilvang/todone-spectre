@@ -1,7 +1,7 @@
-import React from 'react';
-import { useCommentForm } from '../../hooks/useCommentForm';
-import { Button } from '../../components/ui/button';
-import { Textarea } from '../../components/ui/textarea';
+import React from "react";
+import { useCommentForm } from "../../hooks/useCommentForm";
+import { Button } from "../../components/ui/button";
+import { Textarea } from "../../components/ui/textarea";
 
 interface CommentFormWithValidationProps {
   taskId: string;
@@ -15,8 +15,8 @@ const CommentFormWithValidation: React.FC<CommentFormWithValidationProps> = ({
   taskId,
   onSubmit,
   onCancel,
-  initialContent = '',
-  submitButtonText = 'Post Comment'
+  initialContent = "",
+  submitButtonText = "Post Comment",
 }) => {
   const {
     content,
@@ -25,13 +25,13 @@ const CommentFormWithValidation: React.FC<CommentFormWithValidationProps> = ({
     isSubmitting,
     submitError,
     validateComment,
-    submitComment
+    submitComment,
   } = useCommentForm();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validateComment(content)) {
-      const userId = localStorage.getItem('userId') || 'anonymous';
+      const userId = localStorage.getItem("userId") || "anonymous";
       await submitComment(taskId, userId, onSubmit);
     }
   };
@@ -50,9 +50,7 @@ const CommentFormWithValidation: React.FC<CommentFormWithValidationProps> = ({
         {errors.content && (
           <p className="text-sm text-red-600">{errors.content}</p>
         )}
-        {submitError && (
-          <p className="text-sm text-red-600">{submitError}</p>
-        )}
+        {submitError && <p className="text-sm text-red-600">{submitError}</p>}
       </div>
 
       <div className="flex items-center space-x-2">
@@ -61,7 +59,7 @@ const CommentFormWithValidation: React.FC<CommentFormWithValidationProps> = ({
           variant="primary"
           disabled={isSubmitting || !validateComment(content)}
         >
-          {isSubmitting ? 'Posting...' : submitButtonText}
+          {isSubmitting ? "Posting..." : submitButtonText}
         </Button>
         {onCancel && (
           <Button

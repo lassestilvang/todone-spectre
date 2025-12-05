@@ -1,26 +1,26 @@
-import React, { useEffect } from 'react';
-import { View, StyleSheet, Platform } from 'react-native';
-import { useMobileState } from './MobileStateContext';
-import { useMobile } from '../../../hooks/useMobile';
-import { useMobileConfig } from '../../../hooks/useMobileConfig';
-import { mobileService } from '../../../services/mobileService';
-import { mobileConfigService } from '../../../services/mobileConfigService';
-import { mobileUtils } from '../../../utils/mobileUtils';
-import { MobileStatusIndicators } from './MobileStatusIndicators';
-import { MobileUIControls } from './MobileUIControls';
+import React, { useEffect } from "react";
+import { View, StyleSheet, Platform } from "react-native";
+import { useMobileState } from "./MobileStateContext";
+import { useMobile } from "../../../hooks/useMobile";
+import { useMobileConfig } from "../../../hooks/useMobileConfig";
+import { mobileService } from "../../../services/mobileService";
+import { mobileConfigService } from "../../../services/mobileConfigService";
+import { mobileUtils } from "../../../utils/mobileUtils";
+import { MobileStatusIndicators } from "./MobileStatusIndicators";
+import { MobileUIControls } from "./MobileUIControls";
 
 interface MobileIntegrationProps {
   children: React.ReactNode;
   showStatusIndicators?: boolean;
   showUIControls?: boolean;
-  integrationMode?: 'full' | 'minimal' | 'custom';
+  integrationMode?: "full" | "minimal" | "custom";
 }
 
 export const MobileIntegration: React.FC<MobileIntegrationProps> = ({
   children,
   showStatusIndicators = true,
   showUIControls = false,
-  integrationMode = 'full',
+  integrationMode = "full",
 }) => {
   const { mobileState, mobileConfig, mobilePreferences } = useMobileState();
   const { isMobile, deviceType } = useMobile();
@@ -40,9 +40,9 @@ export const MobileIntegration: React.FC<MobileIntegrationProps> = ({
         // Set up mobile event listeners
         setupMobileEventListeners();
 
-        console.log('Mobile integration initialized successfully');
+        console.log("Mobile integration initialized successfully");
       } catch (error) {
-        console.error('Failed to initialize mobile integration:', error);
+        console.error("Failed to initialize mobile integration:", error);
         // Could show error to user here
       }
     };
@@ -58,14 +58,15 @@ export const MobileIntegration: React.FC<MobileIntegrationProps> = ({
     try {
       // Apply performance optimizations based on device capabilities
       if (mobileState.batteryLevel < 0.3 || mobileState.isLowPowerMode) {
-        await mobileConfigService.setPerformanceMode('battery_saver');
+        await mobileConfigService.setPerformanceMode("battery_saver");
       }
 
       // Apply theme based on system preferences
-      if (Platform.OS !== 'web') {
-        const systemTheme = Platform.OS === 'ios'
-          ? 'light' // iOS default
-          : 'dark'; // Android default
+      if (Platform.OS !== "web") {
+        const systemTheme =
+          Platform.OS === "ios"
+            ? "light" // iOS default
+            : "dark"; // Android default
 
         // Don't override user preference if already set
         if (!mobilePreferences.tutorialCompleted) {
@@ -75,10 +76,10 @@ export const MobileIntegration: React.FC<MobileIntegrationProps> = ({
 
       // Trigger haptic feedback to confirm initialization
       if (mobileConfig.enableHapticFeedback) {
-        await triggerHapticFeedback('notification');
+        await triggerHapticFeedback("notification");
       }
     } catch (error) {
-      console.error('Failed to apply mobile optimizations:', error);
+      console.error("Failed to apply mobile optimizations:", error);
     }
   };
 
@@ -87,7 +88,10 @@ export const MobileIntegration: React.FC<MobileIntegrationProps> = ({
       // Set up battery level monitoring
       const batteryInterval = setInterval(async () => {
         const batteryStatus = await mobileService.checkNetworkStatus();
-        if (batteryStatus === 'offline' && mobileConfig.notificationPreferences.taskReminders) {
+        if (
+          batteryStatus === "offline" &&
+          mobileConfig.notificationPreferences.taskReminders
+        ) {
           // Could show offline notification here
         }
       }, 60000); // Check every minute
@@ -105,7 +109,7 @@ export const MobileIntegration: React.FC<MobileIntegrationProps> = ({
         clearInterval(networkInterval);
       };
     } catch (error) {
-      console.error('Failed to set up mobile event listeners:', error);
+      console.error("Failed to set up mobile event listeners:", error);
     }
   };
 
@@ -116,15 +120,15 @@ export const MobileIntegration: React.FC<MobileIntegrationProps> = ({
       mobileConfigService.cleanup();
       mobileUtils.cleanup();
 
-      console.log('Mobile integration cleaned up');
+      console.log("Mobile integration cleaned up");
     } catch (error) {
-      console.error('Failed to clean up mobile integration:', error);
+      console.error("Failed to clean up mobile integration:", error);
     }
   };
 
   const getIntegrationComponents = () => {
     switch (integrationMode) {
-      case 'minimal':
+      case "minimal":
         return showStatusIndicators ? (
           <MobileStatusIndicators
             showNetwork={true}
@@ -134,7 +138,7 @@ export const MobileIntegration: React.FC<MobileIntegrationProps> = ({
           />
         ) : null;
 
-      case 'custom':
+      case "custom":
         return (
           <>
             {showStatusIndicators && (
@@ -149,7 +153,7 @@ export const MobileIntegration: React.FC<MobileIntegrationProps> = ({
           </>
         );
 
-      case 'full':
+      case "full":
       default:
         return (
           <>
@@ -166,11 +170,14 @@ export const MobileIntegration: React.FC<MobileIntegrationProps> = ({
   };
 
   return (
-    <View style={[styles.container, mobileConfig.darkMode ? styles.darkContainer : styles.lightContainer]}>
+    <View
+      style={[
+        styles.container,
+        mobileConfig.darkMode ? styles.darkContainer : styles.lightContainer,
+      ]}
+    >
       {getIntegrationComponents()}
-      <View style={styles.content}>
-        {children}
-      </View>
+      <View style={styles.content}>{children}</View>
     </View>
   );
 };
@@ -178,13 +185,13 @@ export const MobileIntegration: React.FC<MobileIntegrationProps> = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative',
+    position: "relative",
   },
   darkContainer: {
-    backgroundColor: '#121212',
+    backgroundColor: "#121212",
   },
   lightContainer: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   content: {
     flex: 1,
@@ -199,16 +206,17 @@ export const useMobileIntegration = () => {
   const optimizeForCurrentConditions = async () => {
     try {
       // Check current conditions and apply optimizations
-      const shouldOptimize = mobileState.batteryLevel < 0.25 ||
-                           mobileState.networkStatus === 'offline' ||
-                           mobileState.isLowPowerMode;
+      const shouldOptimize =
+        mobileState.batteryLevel < 0.25 ||
+        mobileState.networkStatus === "offline" ||
+        mobileState.isLowPowerMode;
 
-      if (shouldOptimize && mobileConfig.performanceMode !== 'battery_saver') {
-        await mobileConfigService.setPerformanceMode('battery_saver');
-        await triggerHapticFeedback('notification');
+      if (shouldOptimize && mobileConfig.performanceMode !== "battery_saver") {
+        await mobileConfigService.setPerformanceMode("battery_saver");
+        await triggerHapticFeedback("notification");
       }
     } catch (error) {
-      console.error('Failed to optimize for current conditions:', error);
+      console.error("Failed to optimize for current conditions:", error);
     }
   };
 
@@ -221,7 +229,7 @@ export const useMobileIntegration = () => {
         supportsHapticFeedback: capabilities.supportsHapticFeedback,
       };
     } catch (error) {
-      console.error('Failed to check mobile capabilities:', error);
+      console.error("Failed to check mobile capabilities:", error);
       return {
         supportsTouch: false,
         supportsBiometrics: false,
@@ -243,7 +251,7 @@ export interface MobileIntegrationConfig {
   enableBatteryMonitoring?: boolean;
   enableHapticFeedback?: boolean;
   enableStatusIndicators?: boolean;
-  integrationLevel?: 'basic' | 'standard' | 'advanced';
+  integrationLevel?: "basic" | "standard" | "advanced";
 }
 
 export const defaultMobileIntegrationConfig: MobileIntegrationConfig = {
@@ -252,5 +260,5 @@ export const defaultMobileIntegrationConfig: MobileIntegrationConfig = {
   enableBatteryMonitoring: true,
   enableHapticFeedback: true,
   enableStatusIndicators: true,
-  integrationLevel: 'standard',
+  integrationLevel: "standard",
 };

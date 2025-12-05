@@ -1,19 +1,20 @@
-import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import {
   getSession,
   validateToken,
   refreshToken as refreshAuthToken,
   clearSession,
-} from '../utils/auth';
-import { TokenExpiredError } from '../utils/auth';
+} from "../utils/auth";
+import { TokenExpiredError } from "../utils/auth";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 
 export const createAuthMiddleware = () => {
   const api = axios.create({
     baseURL: API_BASE_URL,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   });
 
@@ -30,17 +31,19 @@ export const createAuthMiddleware = () => {
             if (config.headers) {
               config.headers.Authorization = `Bearer ${token}`;
             }
-          } catch (error) {
+          } catch {
             // Token is expired or invalid, try to refresh
             try {
               const { token: newToken } = await refreshAuthToken();
               if (config.headers) {
                 config.headers.Authorization = `Bearer ${newToken}`;
               }
-            } catch (refreshError) {
+            } catch {
               // Refresh failed, clear session
               clearSession();
-              throw new TokenExpiredError('Session expired, please login again');
+              throw new TokenExpiredError(
+                "Session expired, please login again",
+              );
             }
           }
         }
@@ -52,7 +55,7 @@ export const createAuthMiddleware = () => {
     },
     (error: AxiosError) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   // Response interceptor
@@ -75,14 +78,16 @@ export const createAuthMiddleware = () => {
           }
 
           return api(originalRequest);
-        } catch (refreshError) {
+        } catch {
           clearSession();
-          return Promise.reject(new TokenExpiredError('Session expired, please login again'));
+          return Promise.reject(
+            new TokenExpiredError("Session expired, please login again"),
+          );
         }
       }
 
       return Promise.reject(error);
-    }
+    },
   );
 
   return api;
@@ -93,10 +98,10 @@ export const authApi = createAuthMiddleware();
 
 // Helper function to make authenticated requests
 export const makeAuthRequest = async <T>(
-  method: 'get' | 'post' | 'put' | 'patch' | 'delete',
+  method: "get" | "post" | "put" | "patch" | "delete",
   url: string,
   data?: any,
-  config?: AxiosRequestConfig
+  config?: AxiosRequestConfig,
 ): Promise<T> => {
   try {
     const response = await authApi({
@@ -109,7 +114,7 @@ export const makeAuthRequest = async <T>(
   } catch (error) {
     if (error instanceof TokenExpiredError) {
       clearSession();
-      window.location.href = '/auth/login';
+      window.location.href = "/auth/login";
     }
     throw error;
   }

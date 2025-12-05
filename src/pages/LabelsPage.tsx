@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useLabels } from '../hooks/useLabels';
-import LabelList from '../features/filters/LabelList';
-import LabelForm from '../features/filters/LabelForm';
-import { Label } from '../types/models';
+import React, { useState } from "react";
+import { useLabels } from "../hooks/useLabels";
+import LabelList from "../features/filters/LabelList";
+import LabelForm from "../features/filters/LabelForm";
+import { Label } from "../types/models";
 
 const LabelsPage: React.FC = () => {
   const {
@@ -13,7 +13,7 @@ const LabelsPage: React.FC = () => {
     createLabel,
     updateLabel,
     deleteLabel,
-    selectLabel
+    selectLabel,
   } = useLabels();
 
   const [showForm, setShowForm] = useState(false);
@@ -37,7 +37,7 @@ const LabelsPage: React.FC = () => {
   };
 
   const handleDelete = async (labelId: string) => {
-    if (window.confirm('Are you sure you want to delete this label?')) {
+    if (window.confirm("Are you sure you want to delete this label?")) {
       await deleteLabel(labelId);
     }
   };
@@ -79,7 +79,7 @@ const LabelsPage: React.FC = () => {
           {showForm ? (
             <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
               <h2 className="text-xl font-semibold mb-4">
-                {editingLabel ? 'Edit Label' : 'Create New Label'}
+                {editingLabel ? "Edit Label" : "Create New Label"}
               </h2>
               <LabelForm
                 label={editingLabel || undefined}

@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react';
-import { Task } from '../../types/task';
-import TaskItem from './TaskItem';
-import RecurringTaskList from '../recurring/RecurringTaskList';
-import { useTasks } from '../../hooks/useTasks';
-import { useRecurringTaskIntegration } from '../../hooks/useRecurringTaskIntegration';
+import React, { useMemo } from "react";
+import { Task } from "../../types/task";
+import TaskItem from "./TaskItem";
+import RecurringTaskList from "../recurring/RecurringTaskList";
+import { useTasks } from "../../hooks/useTasks";
+import { useRecurringTaskIntegration } from "../../hooks/useRecurringTaskIntegration";
 
 interface TaskListProps {
   projectId?: string;
@@ -16,21 +16,16 @@ const TaskList: React.FC<TaskListProps> = ({
   projectId,
   showCompleted = true,
   onTaskClick,
-  showRecurringTasks = true
+  showRecurringTasks = true,
 }) => {
-  const {
-    getProcessedTasks,
-    isLoading,
-    error,
-    toggleCompletion,
-    deleteTask
-  } = useTasks(projectId);
+  const { getProcessedTasks, isLoading, error, toggleCompletion, deleteTask } =
+    useTasks(projectId);
 
   const { getRecurringTasks } = useRecurringTaskIntegration();
 
   const processedTasks = useMemo(() => {
     const tasks = getProcessedTasks();
-    return showCompleted ? tasks : tasks.filter(task => !task.completed);
+    return showCompleted ? tasks : tasks.filter((task) => !task.completed);
   }, [getProcessedTasks, showCompleted]);
 
   const recurringTasks = useMemo(() => {
@@ -53,7 +48,10 @@ const TaskList: React.FC<TaskListProps> = ({
     );
   }
 
-  if (processedTasks.length === 0 && (!showRecurringTasks || recurringTasks.length === 0)) {
+  if (
+    processedTasks.length === 0 &&
+    (!showRecurringTasks || recurringTasks.length === 0)
+  ) {
     return (
       <div className="p-4 text-center text-gray-500">
         No tasks found. Create a new task to get started!
@@ -66,7 +64,9 @@ const TaskList: React.FC<TaskListProps> = ({
       {/* Regular Tasks */}
       {processedTasks.length > 0 && (
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">Regular Tasks</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">
+            Regular Tasks
+          </h3>
           <div className="space-y-2">
             {processedTasks.map((task) => (
               <TaskItem
@@ -84,7 +84,9 @@ const TaskList: React.FC<TaskListProps> = ({
       {/* Recurring Tasks */}
       {showRecurringTasks && recurringTasks.length > 0 && (
         <div className="mt-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">Recurring Tasks</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-3">
+            Recurring Tasks
+          </h3>
           <RecurringTaskList
             tasks={recurringTasks}
             onTaskClick={onTaskClick}

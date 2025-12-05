@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Button } from '../../components/ui/button';
-import { Textarea } from '../../components/ui/textarea';
-import { useCommentForm } from '../../hooks/useCommentForm';
+import React, { useState } from "react";
+import { Button } from "../../components/ui/button";
+import { Textarea } from "../../components/ui/textarea";
+import { useCommentForm } from "../../hooks/useCommentForm";
 
 interface CommentFormProps {
   taskId: string;
@@ -16,7 +16,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
   parentCommentId,
   onSubmit,
   onCancel,
-  initialContent = ''
+  initialContent = "",
 }) => {
   const [content, setContent] = useState(initialContent);
   const { validateComment, errors } = useCommentForm();
@@ -25,7 +25,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
     e.preventDefault();
     if (validateComment(content)) {
       await onSubmit(content);
-      setContent('');
+      setContent("");
     }
   };
 
@@ -36,7 +36,9 @@ const CommentForm: React.FC<CommentFormProps> = ({
           id="comment-content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          placeholder={parentCommentId ? "Write a reply..." : "Write a comment..."}
+          placeholder={
+            parentCommentId ? "Write a reply..." : "Write a comment..."
+          }
           className="min-h-[100px] w-full"
           required
         />
@@ -47,7 +49,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
 
       <div className="flex items-center space-x-2">
         <Button type="submit" variant="primary">
-          {parentCommentId ? 'Post Reply' : 'Post Comment'}
+          {parentCommentId ? "Post Reply" : "Post Comment"}
         </Button>
         {onCancel && (
           <Button type="button" variant="secondary" onClick={onCancel}>

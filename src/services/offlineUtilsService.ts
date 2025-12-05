@@ -6,9 +6,9 @@
  * interface for offline functionality.
  */
 
-import { OfflineQueueItem, OfflineSettings } from '../types/offlineTypes';
-import { offlineService } from './offlineService';
-import { offlineSyncService } from './offlineSyncService';
+import { OfflineQueueItem, OfflineSettings } from "../types/offlineTypes";
+import { offlineService } from "./offlineService";
+import { offlineSyncService } from "./offlineSyncService";
 import {
   transformDataForOfflineStorage,
   transformOfflineDataToApplication,
@@ -20,8 +20,8 @@ import {
   mergeOfflineChanges,
   validateDataForOfflineStorage,
   compressDataForStorage,
-  decompressDataFromStorage
-} from '../utils/offlineUtils';
+  decompressDataFromStorage,
+} from "../utils/offlineUtils";
 import {
   isSyncNeeded,
   getSyncPriority,
@@ -51,8 +51,8 @@ import {
   getSettingsImpactAnalysis,
   exportSettingsToPortable,
   importSettingsFromPortable,
-  getSettingsValidationWarnings
-} from '../utils/offlineSyncUtils';
+  getSettingsValidationWarnings,
+} from "../utils/offlineSyncUtils";
 
 /**
  * Offline Utilities Service
@@ -98,9 +98,9 @@ export class OfflineUtilsService {
    */
   prepareQueueItemData(
     operation: string,
-    type: 'create' | 'update' | 'delete' | 'sync',
-    data: any
-  ): Omit<OfflineQueueItem, 'id' | 'timestamp' | 'status' | 'attempts'> {
+    type: "create" | "update" | "delete" | "sync",
+    data: any,
+  ): Omit<OfflineQueueItem, "id" | "timestamp" | "status" | "attempts"> {
     return prepareQueueItemData(operation, type, data);
   }
 
@@ -191,7 +191,7 @@ export class OfflineUtilsService {
   async processSyncInBatches(
     queue: OfflineQueueItem[],
     batchSize?: number,
-    onProgress?: (processed: number, total: number) => void
+    onProgress?: (processed: number, total: number) => void,
   ): Promise<{
     success: boolean;
     processedItems: OfflineQueueItem[];
@@ -207,7 +207,7 @@ export class OfflineUtilsService {
   async handleSyncConflict(
     localItem: OfflineQueueItem,
     remoteData: any,
-    settings: OfflineSettings
+    settings: OfflineSettings,
   ): Promise<{
     resolvedData: any;
     resolutionStrategy: string;
@@ -248,7 +248,7 @@ export class OfflineUtilsService {
     startTime: Date,
     endTime: Date,
     processedItems: number,
-    failedItems: number
+    failedItems: number,
   ): any {
     return createSyncReport(startTime, endTime, processedItems, failedItems);
   }
@@ -269,7 +269,7 @@ export class OfflineUtilsService {
   estimateSyncProgress(
     processedItems: number,
     totalItems: number,
-    startTime: Date
+    startTime: Date,
   ): {
     percentage: number;
     estimatedTimeRemainingMs: number;
@@ -287,9 +287,9 @@ export class OfflineUtilsService {
    */
   validateQueueItem(
     operation: string,
-    type: 'create' | 'update' | 'delete' | 'sync',
+    type: "create" | "update" | "delete" | "sync",
     data: any,
-    settings: OfflineSettings
+    settings: OfflineSettings,
   ): {
     isValid: boolean;
     error?: string;
@@ -325,7 +325,7 @@ export class OfflineUtilsService {
    */
   filterQueueByStatus(
     queue: OfflineQueueItem[],
-    status: 'pending' | 'processing' | 'completed' | 'failed'
+    status: "pending" | "processing" | "completed" | "failed",
   ): OfflineQueueItem[] {
     return filterQueueByStatus(queue, status);
   }
@@ -335,7 +335,7 @@ export class OfflineUtilsService {
    */
   findQueueItemsByOperation(
     queue: OfflineQueueItem[],
-    operationFilter: string
+    operationFilter: string,
   ): OfflineQueueItem[] {
     return findQueueItemsByOperation(queue, operationFilter);
   }
@@ -373,7 +373,7 @@ export class OfflineUtilsService {
    */
   estimateQueueProcessingTime(
     queue: OfflineQueueItem[],
-    itemsPerSecond?: number
+    itemsPerSecond?: number,
   ): number {
     return estimateQueueProcessingTime(queue, itemsPerSecond);
   }
@@ -404,7 +404,7 @@ export class OfflineUtilsService {
    */
   compareSettingsWithDefaults(
     currentSettings: OfflineSettings,
-    defaultSettings: OfflineSettings
+    defaultSettings: OfflineSettings,
   ): Partial<OfflineSettings> {
     return compareSettingsWithDefaults(currentSettings, defaultSettings);
   }
@@ -420,10 +420,10 @@ export class OfflineUtilsService {
    * Get settings impact analysis
    */
   getSettingsImpactAnalysis(settings: OfflineSettings): {
-    performanceImpact: 'low' | 'medium' | 'high';
-    dataUsageImpact: 'low' | 'medium' | 'high';
-    batteryImpact: 'low' | 'medium' | 'high';
-    reliabilityImpact: 'low' | 'medium' | 'high';
+    performanceImpact: "low" | "medium" | "high";
+    dataUsageImpact: "low" | "medium" | "high";
+    batteryImpact: "low" | "medium" | "high";
+    reliabilityImpact: "low" | "medium" | "high";
   } {
     return getSettingsImpactAnalysis(settings);
   }
@@ -458,8 +458,8 @@ export class OfflineUtilsService {
    */
   async addToQueueWithValidation(
     operation: string,
-    type: 'create' | 'update' | 'delete' | 'sync',
-    data: any
+    type: "create" | "update" | "delete" | "sync",
+    data: any,
   ): Promise<{
     success: boolean;
     queueItem?: OfflineQueueItem;
@@ -470,14 +470,19 @@ export class OfflineUtilsService {
       const settings = offlineService.getOfflineState().settings;
 
       // Validate the queue item
-      const validation = this.validateQueueItem(operation, type, data, settings);
+      const validation = this.validateQueueItem(
+        operation,
+        type,
+        data,
+        settings,
+      );
       if (!validation.isValid) {
-        throw new Error(validation.error || 'Queue item validation failed');
+        throw new Error(validation.error || "Queue item validation failed");
       }
 
       // Check queue capacity
       if (!this.hasQueueCapacity(settings)) {
-        throw new Error('Queue is full');
+        throw new Error("Queue is full");
       }
 
       // Transform data for offline storage
@@ -487,17 +492,20 @@ export class OfflineUtilsService {
       const result = offlineService.addToQueue(preparedData);
 
       if (!result.success) {
-        throw result.error || new Error('Failed to add to queue');
+        throw result.error || new Error("Failed to add to queue");
       }
 
       return {
         success: true,
-        queueItem: result.queueItem
+        queueItem: result.queueItem,
       };
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to add item to queue')
+        error:
+          error instanceof Error
+            ? error
+            : new Error("Failed to add item to queue"),
       };
     }
   }
@@ -518,23 +526,32 @@ export class OfflineUtilsService {
       // Check sync readiness
       const readiness = this.validateSyncReadiness();
       if (!readiness.isReady) {
-        throw new Error(`Sync not ready: ${readiness.reasons?.join(', ') || 'Unknown reason'}`);
+        throw new Error(
+          `Sync not ready: ${readiness.reasons?.join(", ") || "Unknown reason"}`,
+        );
       }
 
       // Get optimal batch size based on queue size
-      const batchSize = Math.min(20, Math.max(5, Math.floor(state.queue.length / 2)));
+      const batchSize = Math.min(
+        20,
+        Math.max(5, Math.floor(state.queue.length / 2)),
+      );
 
       const startTime = new Date();
       let processedItems: OfflineQueueItem[] = [];
       let failedItems: OfflineQueueItem[] = [];
 
       // Process in batches
-      const batchResult = await this.processSyncInBatches(state.queue, batchSize, (processed, total) => {
-        console.log(`Processed ${processed} of ${total} items`);
-      });
+      const batchResult = await this.processSyncInBatches(
+        state.queue,
+        batchSize,
+        (processed, total) => {
+          console.log(`Processed ${processed} of ${total} items`);
+        },
+      );
 
       if (!batchResult.success) {
-        throw batchResult.error || new Error('Batch processing failed');
+        throw batchResult.error || new Error("Batch processing failed");
       }
 
       processedItems = batchResult.processedItems;
@@ -547,7 +564,7 @@ export class OfflineUtilsService {
         startTime,
         endTime,
         processedItems.length,
-        failedItems.length
+        failedItems.length,
       );
 
       return {
@@ -555,14 +572,17 @@ export class OfflineUtilsService {
         processedItems,
         failedItems,
         syncReport,
-        error: null
+        error: null,
       };
     } catch (error) {
       return {
         success: false,
         processedItems: [],
         failedItems: [],
-        error: error instanceof Error ? error : new Error('Enhanced queue processing failed')
+        error:
+          error instanceof Error
+            ? error
+            : new Error("Enhanced queue processing failed"),
       };
     }
   }
@@ -588,7 +608,7 @@ export class OfflineUtilsService {
       syncHealth: this.getSyncHealthMetrics(),
       syncReadiness: this.validateSyncReadiness(),
       settingsProfile: this.createSettingsProfile(state.settings),
-      settingsImpact: this.getSettingsImpactAnalysis(state.settings)
+      settingsImpact: this.getSettingsImpactAnalysis(state.settings),
     };
   }
 }

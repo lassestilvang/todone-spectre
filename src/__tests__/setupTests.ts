@@ -1,6 +1,8 @@
-import '@testing-library/jest-dom/vitest';
-import { vi } from 'vitest';
-import { setupAccessibilityTests, cleanupAccessibilityTests } from './accessibility/accessibilitySetup';
+import "@testing-library/jest-dom/vitest";
+import { vi } from "vitest";
+import {
+  cleanupAccessibilityTests,
+} from "./accessibility/accessibilitySetup";
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -16,18 +18,18 @@ const localStorageMock = (() => {
     },
     clear: () => {
       store = {};
-    }
+    },
   };
 })();
 
-Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock
+Object.defineProperty(window, "localStorage", {
+  value: localStorageMock,
 });
 
 // Mock matchMedia for CSS tests
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
-  value: vi.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -35,8 +37,8 @@ Object.defineProperty(window, 'matchMedia', {
     removeListener: vi.fn(),
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
-    dispatchEvent: vi.fn()
-  }))
+    dispatchEvent: vi.fn(),
+  })),
 });
 
 // Mock ResizeObserver
@@ -46,7 +48,7 @@ class ResizeObserver {
   disconnect = vi.fn();
 }
 
-vi.stubGlobal('ResizeObserver', ResizeObserver);
+vi.stubGlobal("ResizeObserver", ResizeObserver);
 
 // Mock IntersectionObserver
 class IntersectionObserver {
@@ -54,12 +56,12 @@ class IntersectionObserver {
   unobserve = vi.fn();
   disconnect = vi.fn();
   root = null;
-  rootMargin = '';
+  rootMargin = "";
   thresholds = [];
   takeRecords = vi.fn();
 }
 
-vi.stubGlobal('IntersectionObserver', IntersectionObserver);
+vi.stubGlobal("IntersectionObserver", IntersectionObserver);
 
 // Mock console methods to reduce noise in tests
 const originalConsoleError = console.error;
@@ -67,14 +69,22 @@ const originalConsoleWarn = console.warn;
 
 console.error = vi.fn((...args) => {
   // Only show errors that aren't from React act warnings
-  if (!args[0]?.includes?.('Warning: An update to %s inside a test was not wrapped in act')) {
+  if (
+    !args[0]?.includes?.(
+      "Warning: An update to %s inside a test was not wrapped in act",
+    )
+  ) {
     originalConsoleError(...args);
   }
 });
 
 console.warn = vi.fn((...args) => {
   // Only show warnings that aren't from React act warnings
-  if (!args[0]?.includes?.('Warning: An update to %s inside a test was not wrapped in act')) {
+  if (
+    !args[0]?.includes?.(
+      "Warning: An update to %s inside a test was not wrapped in act",
+    )
+  ) {
     originalConsoleWarn(...args);
   }
 });

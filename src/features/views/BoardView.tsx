@@ -1,10 +1,10 @@
-import React from 'react';
-import { Task } from '../../types/task';
-import { ViewHeader } from './ViewHeader';
-import { ViewToolbar } from './ViewToolbar';
-import { ViewFilterControls } from './ViewFilterControls';
-import { ViewSortControls } from './ViewSortControls';
-import { TaskItem } from '../../features/tasks/TaskItem';
+import React from "react";
+import { Task } from "../../types/task";
+import { ViewHeader } from "./ViewHeader";
+import { ViewToolbar } from "./ViewToolbar";
+import { ViewFilterControls } from "./ViewFilterControls";
+import { ViewSortControls } from "./ViewSortControls";
+import { TaskItem } from "../../features/tasks/TaskItem";
 
 interface BoardViewProps {
   tasks: Task[];
@@ -16,16 +16,21 @@ interface BoardViewProps {
 
 export const BoardView: React.FC<BoardViewProps> = ({
   tasks,
-  columns = ['To Do', 'In Progress', 'Done'],
+  columns = ["To Do", "In Progress", "Done"],
   onTaskClick,
   onTaskUpdate,
   onTaskDelete,
 }) => {
   // Group tasks by status for board columns
-  const groupedTasks = columns.reduce((acc, column) => {
-    acc[column] = tasks.filter(task => task.status === column.toLowerCase().replace(' ', '_'));
-    return acc;
-  }, {} as Record<string, Task[]>);
+  const groupedTasks = columns.reduce(
+    (acc, column) => {
+      acc[column] = tasks.filter(
+        (task) => task.status === column.toLowerCase().replace(" ", "_"),
+      );
+      return acc;
+    },
+    {} as Record<string, Task[]>,
+  );
 
   return (
     <div className="board-view">

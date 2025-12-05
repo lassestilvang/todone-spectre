@@ -1,16 +1,16 @@
 /**
  * Custom hook for comprehensive offline sync integration
  */
-import { useState, useEffect, useCallback } from 'react';
-import { offlineSyncService } from '../services/offlineSyncService';
-import { useOfflineStore } from '../store/useOfflineStore';
-import { OfflineSyncStatus } from '../types/offlineTypes';
+import { useState, useEffect, useCallback } from "react";
+import { offlineSyncService } from "../services/offlineSyncService";
+import { useOfflineStore } from "../store/useOfflineStore";
+import { OfflineSyncStatus } from "../types/offlineTypes";
 
 export const useOfflineSync = () => {
   const [isSyncing, setIsSyncing] = useState<boolean>(false);
   const [lastSynced, setLastSynced] = useState<Date | null>(null);
   const [pendingOperations, setPendingOperations] = useState<number>(0);
-  const [syncStatus, setSyncStatus] = useState<OfflineSyncStatus>('idle');
+  const [syncStatus, setSyncStatus] = useState<OfflineSyncStatus>("idle");
   const [error, setError] = useState<string | null>(null);
   const [syncStatistics, setSyncStatistics] = useState<{
     totalOperations: number;
@@ -23,7 +23,7 @@ export const useOfflineSync = () => {
     completedOperations: 0,
     failedOperations: 0,
     syncDuration: null,
-    lastSyncSize: 0
+    lastSyncSize: 0,
   });
 
   const offlineStore = useOfflineStore.getState();
@@ -37,7 +37,11 @@ export const useOfflineSync = () => {
       await offlineSyncService.initialize();
       await loadSyncStatus();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to initialize offline sync service');
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to initialize offline sync service",
+      );
       throw err;
     }
   }, []);
@@ -56,7 +60,9 @@ export const useOfflineSync = () => {
       const stats = await offlineSyncService.getSyncStatistics();
       setSyncStatistics(stats);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load sync status');
+      setError(
+        err instanceof Error ? err.message : "Failed to load sync status",
+      );
     }
   }, []);
 
@@ -67,15 +73,17 @@ export const useOfflineSync = () => {
     try {
       setError(null);
       setIsSyncing(true);
-      setSyncStatus('syncing');
+      setSyncStatus("syncing");
 
       await offlineSyncService.syncAll();
 
       // Update status after sync
       await loadSyncStatus();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to sync all offline data');
-      setSyncStatus('error');
+      setError(
+        err instanceof Error ? err.message : "Failed to sync all offline data",
+      );
+      setSyncStatus("error");
       throw err;
     } finally {
       setIsSyncing(false);
@@ -89,15 +97,17 @@ export const useOfflineSync = () => {
     try {
       setError(null);
       setIsSyncing(true);
-      setSyncStatus('syncing');
+      setSyncStatus("syncing");
 
       await offlineSyncService.processSyncQueue();
 
       // Update status after processing
       await loadSyncStatus();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to process sync queue');
-      setSyncStatus('error');
+      setError(
+        err instanceof Error ? err.message : "Failed to process sync queue",
+      );
+      setSyncStatus("error");
       throw err;
     } finally {
       setIsSyncing(false);
@@ -113,7 +123,11 @@ export const useOfflineSync = () => {
       await offlineSyncService.retryFailedOperations();
       await loadSyncStatus();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to retry failed operations');
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to retry failed operations",
+      );
       throw err;
     }
   }, [loadSyncStatus]);
@@ -153,16 +167,19 @@ export const useOfflineSync = () => {
   /**
    * Setup periodic sync
    */
-  const setupPeriodicSync = useCallback((interval: number = 30000): (() => void) => {
-    return offlineSyncService.setupPeriodicSync(interval);
-  }, []);
+  const setupPeriodicSync = useCallback(
+    (interval: number = 30000): (() => void) => {
+      return offlineSyncService.setupPeriodicSync(interval);
+    },
+    [],
+  );
 
   /**
    * Pause sync operations
    */
   const pauseSync = useCallback((): void => {
     offlineSyncService.pauseSync();
-    setSyncStatus('paused');
+    setSyncStatus("paused");
   }, []);
 
   /**
@@ -170,7 +187,7 @@ export const useOfflineSync = () => {
    */
   const resumeSync = useCallback((): void => {
     offlineSyncService.resumeSync();
-    setSyncStatus('syncing');
+    setSyncStatus("syncing");
   }, []);
 
   /**
@@ -182,7 +199,9 @@ export const useOfflineSync = () => {
       await offlineSyncService.clearSyncQueue();
       await loadSyncStatus();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to clear sync queue');
+      setError(
+        err instanceof Error ? err.message : "Failed to clear sync queue",
+      );
       throw err;
     }
   }, [loadSyncStatus]);
@@ -252,6 +271,6 @@ export const useOfflineSync = () => {
 
     // Utility methods
     getComprehensiveOfflineStatus,
-    loadSyncStatus
+    loadSyncStatus,
   };
 };

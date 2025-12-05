@@ -1,13 +1,13 @@
-import React from 'react';
-import { Task } from '../../types/task';
-import { ViewHeader } from '../views/ViewHeader';
-import { ViewToolbar } from '../views/ViewToolbar';
-import { ViewFilterControls } from '../views/ViewFilterControls';
-import { ViewSortControls } from '../views/ViewSortControls';
-import { DraggableTaskItem } from './DraggableTaskItem';
-import { DroppableTaskList } from './DroppableTaskList';
-import { DragAndDropProvider } from './DragAndDropProvider';
-import { DragPreview } from './DragPreview';
+import React from "react";
+import { Task } from "../../types/task";
+import { ViewHeader } from "../views/ViewHeader";
+import { ViewToolbar } from "../views/ViewToolbar";
+import { ViewFilterControls } from "../views/ViewFilterControls";
+import { ViewSortControls } from "../views/ViewSortControls";
+import { DraggableTaskItem } from "./DraggableTaskItem";
+import { DroppableTaskList } from "./DroppableTaskList";
+import { DragAndDropProvider } from "./DragAndDropProvider";
+import { DragPreview } from "./DragPreview";
 
 interface DndListViewProps {
   tasks: Task[];
@@ -35,7 +35,10 @@ export const DndListView: React.FC<DndListViewProps> = ({
           {tasks.length === 0 ? (
             <div className="empty-state">No tasks found</div>
           ) : (
-            <DroppableTaskList id="task-list" className="dnd-task-list space-y-2">
+            <DroppableTaskList
+              id="task-list"
+              className="dnd-task-list space-y-2"
+            >
               {tasks.map((task) => (
                 <DraggableTaskItem
                   key={task.id}

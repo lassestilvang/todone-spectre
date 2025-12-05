@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react';
-import { SearchResult } from '../types/search';
-import { getSearchService } from '../services/searchService';
-import { useTaskStore } from '../store/useTaskStore';
-import { useProjectStore } from '../store/useProjectStore';
-import { useLabelStore } from '../store/useLabelStore';
+import { useState, useEffect } from "react";
+import { SearchResult } from "../types/search";
+import { getSearchService } from "../services/searchService";
+import { useTaskStore } from "../store/useTaskStore";
+import { useProjectStore } from "../store/useProjectStore";
+import { useLabelStore } from "../store/useLabelStore";
 
 export const useSearch = () => {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const tasks = useTaskStore(state => state.tasks);
-  const projects = useProjectStore(state => state.projects);
-  const labels = useLabelStore(state => state.labels);
+  const tasks = useTaskStore((state) => state.tasks);
+  const projects = useProjectStore((state) => state.projects);
+  const labels = useLabelStore((state) => state.labels);
 
   const searchService = getSearchService();
 
@@ -31,7 +31,7 @@ export const useSearch = () => {
       const searchResults = searchService.search(searchQuery);
       setResults(searchResults);
     } catch (err) {
-      setError('Search failed. Please try again.');
+      setError("Search failed. Please try again.");
       setResults([]);
     } finally {
       setIsLoading(false);
@@ -40,10 +40,13 @@ export const useSearch = () => {
 
   const clearResults = () => {
     setResults([]);
-    setQuery('');
+    setQuery("");
   };
 
-  const searchByType = (searchQuery: string, type: 'task' | 'project' | 'label') => {
+  const searchByType = (
+    searchQuery: string,
+    type: "task" | "project" | "label",
+  ) => {
     setQuery(searchQuery);
     setIsLoading(true);
     setError(null);
@@ -52,7 +55,7 @@ export const useSearch = () => {
       const searchResults = searchService.searchByType(searchQuery, type);
       setResults(searchResults);
     } catch (err) {
-      setError('Search failed. Please try again.');
+      setError("Search failed. Please try again.");
       setResults([]);
     } finally {
       setIsLoading(false);
@@ -66,6 +69,6 @@ export const useSearch = () => {
     error,
     search,
     clearResults,
-    searchByType
+    searchByType,
   };
 };

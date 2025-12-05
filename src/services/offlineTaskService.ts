@@ -1,10 +1,10 @@
 /**
  * Offline Task Service - Handles offline task operations and synchronization
  */
-import { Task } from '../types/task';
-import { useOfflineStore } from '../store/useOfflineStore';
-import { taskApi } from '../api/taskApi';
-import { OfflineQueueItem } from '../types/offlineTypes';
+import { Task } from "../types/task";
+import { useOfflineStore } from "../store/useOfflineStore";
+import { taskApi } from "../api/taskApi";
+import { OfflineQueueItem } from "../types/offlineTypes";
 
 export class OfflineTaskService {
   private static instance: OfflineTaskService;
@@ -24,16 +24,19 @@ export class OfflineTaskService {
   /**
    * Create a task with offline support
    */
-  async createTaskOffline(taskData: Omit<Task, 'id'>): Promise<Task> {
+  async createTaskOffline(taskData: Omit<Task, "id">): Promise<Task> {
     const isOffline = this.offlineStore.status.isOffline;
 
     if (isOffline) {
       // Queue the operation for offline processing
-      const queueItem: Omit<OfflineQueueItem, 'id' | 'timestamp' | 'status' | 'attempts'> = {
+      const queueItem: Omit<
+        OfflineQueueItem,
+        "id" | "timestamp" | "status" | "attempts"
+      > = {
         operation: `Create task: ${taskData.title}`,
-        type: 'create',
+        type: "create",
         data: taskData,
-        priority: 'high'
+        priority: "high",
       };
 
       this.offlineStore.addToQueue(queueItem);
@@ -45,8 +48,8 @@ export class OfflineTaskService {
         createdAt: new Date(),
         updatedAt: new Date(),
         completed: false,
-        status: 'todo',
-        priority: taskData.priority || 'medium'
+        status: "todo",
+        priority: taskData.priority || "medium",
       };
 
       return tempTask;
@@ -56,7 +59,7 @@ export class OfflineTaskService {
       if (result.success && result.data) {
         return result.data;
       } else {
-        throw new Error(result.message || 'Failed to create task');
+        throw new Error(result.message || "Failed to create task");
       }
     }
   }
@@ -64,19 +67,25 @@ export class OfflineTaskService {
   /**
    * Update a task with offline support
    */
-  async updateTaskOffline(taskId: string, taskData: Partial<Task>): Promise<Task> {
+  async updateTaskOffline(
+    taskId: string,
+    taskData: Partial<Task>,
+  ): Promise<Task> {
     const isOffline = this.offlineStore.status.isOffline;
 
     if (isOffline) {
       // Queue the operation for offline processing
-      const queueItem: Omit<OfflineQueueItem, 'id' | 'timestamp' | 'status' | 'attempts'> = {
+      const queueItem: Omit<
+        OfflineQueueItem,
+        "id" | "timestamp" | "status" | "attempts"
+      > = {
         operation: `Update task: ${taskId}`,
-        type: 'update',
+        type: "update",
         data: {
           taskId,
-          updates: taskData
+          updates: taskData,
         },
-        priority: 'high'
+        priority: "high",
       };
 
       this.offlineStore.addToQueue(queueItem);
@@ -85,7 +94,7 @@ export class OfflineTaskService {
       const updatedTask: Task = {
         ...taskData,
         id: taskId,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Task;
 
       return updatedTask;
@@ -95,7 +104,7 @@ export class OfflineTaskService {
       if (result.success && result.data) {
         return result.data;
       } else {
-        throw new Error(result.message || 'Failed to update task');
+        throw new Error(result.message || "Failed to update task");
       }
     }
   }
@@ -108,11 +117,14 @@ export class OfflineTaskService {
 
     if (isOffline) {
       // Queue the operation for offline processing
-      const queueItem: Omit<OfflineQueueItem, 'id' | 'timestamp' | 'status' | 'attempts'> = {
+      const queueItem: Omit<
+        OfflineQueueItem,
+        "id" | "timestamp" | "status" | "attempts"
+      > = {
         operation: `Delete task: ${taskId}`,
-        type: 'delete',
+        type: "delete",
         data: { taskId },
-        priority: 'medium'
+        priority: "medium",
       };
 
       this.offlineStore.addToQueue(queueItem);
@@ -120,7 +132,7 @@ export class OfflineTaskService {
       // Online - use regular API
       const result = await taskApi.deleteTask(taskId);
       if (!result.success) {
-        throw new Error(result.message || 'Failed to delete task');
+        throw new Error(result.message || "Failed to delete task");
       }
     }
   }
@@ -133,14 +145,17 @@ export class OfflineTaskService {
 
     if (isOffline) {
       // Queue the operation for offline processing
-      const queueItem: Omit<OfflineQueueItem, 'id' | 'timestamp' | 'status' | 'attempts'> = {
+      const queueItem: Omit<
+        OfflineQueueItem,
+        "id" | "timestamp" | "status" | "attempts"
+      > = {
         operation: `Toggle completion: ${taskId}`,
-        type: 'update',
+        type: "update",
         data: {
           taskId,
-          operation: 'toggleCompletion'
+          operation: "toggleCompletion",
         },
-        priority: 'high'
+        priority: "high",
       };
 
       this.offlineStore.addToQueue(queueItem);
@@ -150,7 +165,7 @@ export class OfflineTaskService {
         id: taskId,
         completed: true,
         completedAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Task;
 
       return updatedTask;
@@ -160,7 +175,7 @@ export class OfflineTaskService {
       if (result.success && result.data) {
         return result.data;
       } else {
-        throw new Error(result.message || 'Failed to toggle task completion');
+        throw new Error(result.message || "Failed to toggle task completion");
       }
     }
   }
@@ -170,15 +185,18 @@ export class OfflineTaskService {
    */
   async processOfflineTaskQueue(): Promise<void> {
     if (this.offlineStore.status.isOffline) {
-      throw new Error('Cannot process queue while offline');
+      throw new Error("Cannot process queue while offline");
     }
 
     const queueItems = this.offlineStore.queue.items.filter(
-      item => item.type === 'create' || item.type === 'update' || item.type === 'delete'
+      (item) =>
+        item.type === "create" ||
+        item.type === "update" ||
+        item.type === "delete",
     );
 
     if (queueItems.length === 0) {
-      console.log('No task operations to process');
+      console.log("No task operations to process");
       return;
     }
 
@@ -187,13 +205,13 @@ export class OfflineTaskService {
     for (const item of queueItems) {
       try {
         switch (item.type) {
-          case 'create':
+          case "create":
             await this.processCreateOperation(item);
             break;
-          case 'update':
+          case "update":
             await this.processUpdateOperation(item);
             break;
-          case 'delete':
+          case "delete":
             await this.processDeleteOperation(item);
             break;
         }
@@ -212,11 +230,11 @@ export class OfflineTaskService {
    * Process create operation
    */
   private async processCreateOperation(item: OfflineQueueItem): Promise<void> {
-    const taskData = item.data as Omit<Task, 'id'>;
+    const taskData = item.data as Omit<Task, "id">;
     const result = await taskApi.createTask(taskData);
 
     if (!result.success) {
-      throw new Error(result.message || 'Failed to create task');
+      throw new Error(result.message || "Failed to create task");
     }
   }
 
@@ -226,15 +244,15 @@ export class OfflineTaskService {
   private async processUpdateOperation(item: OfflineQueueItem): Promise<void> {
     const { taskId, updates } = item.data;
 
-    if (updates.operation === 'toggleCompletion') {
+    if (updates.operation === "toggleCompletion") {
       const result = await taskApi.completeTask(taskId);
       if (!result.success) {
-        throw new Error(result.message || 'Failed to toggle task completion');
+        throw new Error(result.message || "Failed to toggle task completion");
       }
     } else {
       const result = await taskApi.updateTask(taskId, updates);
       if (!result.success) {
-        throw new Error(result.message || 'Failed to update task');
+        throw new Error(result.message || "Failed to update task");
       }
     }
   }
@@ -247,7 +265,7 @@ export class OfflineTaskService {
     const result = await taskApi.deleteTask(taskId);
 
     if (!result.success) {
-      throw new Error(result.message || 'Failed to delete task');
+      throw new Error(result.message || "Failed to delete task");
     }
   }
 
@@ -260,13 +278,17 @@ export class OfflineTaskService {
     totalTasks: number;
   } {
     const queueItems = this.offlineStore.queue.items.filter(
-      item => item.type === 'create' || item.type === 'update' || item.type === 'delete'
+      (item) =>
+        item.type === "create" ||
+        item.type === "update" ||
+        item.type === "delete",
     );
 
     return {
-      pendingTasks: queueItems.filter(item => item.status === 'pending').length,
-      failedTasks: queueItems.filter(item => item.status === 'failed').length,
-      totalTasks: queueItems.length
+      pendingTasks: queueItems.filter((item) => item.status === "pending")
+        .length,
+      failedTasks: queueItems.filter((item) => item.status === "failed").length,
+      totalTasks: queueItems.length,
     };
   }
 
@@ -275,8 +297,11 @@ export class OfflineTaskService {
    */
   hasPendingOfflineTaskOperations(): boolean {
     const queueItems = this.offlineStore.queue.items.filter(
-      item => (item.type === 'create' || item.type === 'update' || item.type === 'delete') &&
-             item.status === 'pending'
+      (item) =>
+        (item.type === "create" ||
+          item.type === "update" ||
+          item.type === "delete") &&
+        item.status === "pending",
     );
 
     return queueItems.length > 0;

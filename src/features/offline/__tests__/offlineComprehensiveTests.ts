@@ -3,16 +3,25 @@
  * End-to-end tests covering all offline functionality
  */
 
-import { renderHook, act } from '@testing-library/react';
-import { useOfflineStore } from '../../../store/useOfflineStore';
-import { useOffline } from '../../../hooks/useOffline';
-import { useOfflineTasks } from '../../../hooks/useOfflineTasks';
-import { useOfflineDataPersistence } from '../../../hooks/useOfflineDataPersistence';
-import { useOfflineSync } from '../../../hooks/useOfflineSync';
-import { MockOfflineTaskService, MockOfflineDataPersistence, MockOfflineSyncService, MockOfflineStore } from './utils/offlineServiceMocks';
-import { generateMockTask, generateOfflineQueueItem, generateOfflineState } from './utils/offlineTestDataGenerators';
+import { renderHook, act } from "@testing-library/react";
+import { useOfflineStore } from "../../../store/useOfflineStore";
+import { useOffline } from "../../../hooks/useOffline";
+import { useOfflineTasks } from "../../../hooks/useOfflineTasks";
+import { useOfflineDataPersistence } from "../../../hooks/useOfflineDataPersistence";
+import { useOfflineSync } from "../../../hooks/useOfflineSync";
+import {
+  MockOfflineTaskService,
+  MockOfflineDataPersistence,
+  MockOfflineSyncService,
+  MockOfflineStore,
+} from "./utils/offlineServiceMocks";
+import {
+  generateMockTask,
+  generateOfflineQueueItem,
+  generateOfflineState,
+} from "./utils/offlineTestDataGenerators";
 
-describe('Comprehensive Offline Integration Tests', () => {
+describe("Comprehensive Offline Integration Tests", () => {
   let mockTaskService: MockOfflineTaskService;
   let mockDataPersistence: MockOfflineDataPersistence;
   let mockSyncService: MockOfflineSyncService;
@@ -23,32 +32,37 @@ describe('Comprehensive Offline Integration Tests', () => {
     mockTaskService = new MockOfflineTaskService(true); // Start offline
     mockDataPersistence = new MockOfflineDataPersistence();
     mockSyncService = new MockOfflineSyncService(true);
-    mockStore = new MockOfflineStore(generateOfflineState({
-      status: {
-        isOffline: true,
-        status: 'offline'
-      }
-    }));
+    mockStore = new MockOfflineStore(
+      generateOfflineState({
+        status: {
+          isOffline: true,
+          status: "offline",
+        },
+      }),
+    );
 
     // Mock the store
     (useOfflineStore as jest.Mock).mockReturnValue(mockStore.getState());
   });
 
-  describe('Complete Offline Workflow Integration', () => {
-    it('should handle full offline workflow from creation to sync', async () => {
+  describe("Complete Offline Workflow Integration", () => {
+    it("should handle full offline workflow from creation to sync", async () => {
       // 1. Test offline task creation
       const mockTask = generateMockTask();
       const createdTask = await mockTaskService.createTaskOffline(mockTask);
 
-      expect(createdTask.id).toContain('temp-');
+      expect(createdTask.id).toContain("temp-");
       expect(mockTaskService.getQueueItems().length).toBe(1);
 
       // 2. Test offline task update
-      const updatedTask = await mockTaskService.updateTaskOffline(createdTask.id, {
-        title: 'Updated Task Title'
-      });
+      const updatedTask = await mockTaskService.updateTaskOffline(
+        createdTask.id,
+        {
+          title: "Updated Task Title",
+        },
+      );
 
-      expect(updatedTask.title).toBe('Updated Task Title');
+      expect(updatedTask.title).toBe("Updated Task Title");
       expect(mockTaskService.getQueueItems().length).toBe(2);
 
       // 3. Test offline task deletion
@@ -56,7 +70,9 @@ describe('Comprehensive Offline Integration Tests', () => {
       expect(mockTaskService.getQueueItems().length).toBe(3);
 
       // 4. Test offline task completion toggle
-      const toggledTask = await mockTaskService.toggleTaskCompletionOffline(createdTask.id);
+      const toggledTask = await mockTaskService.toggleTaskCompletionOffline(
+        createdTask.id,
+      );
       expect(toggledTask.completed).toBe(true);
       expect(mockTaskService.getQueueItems().length).toBe(4);
 
@@ -70,15 +86,15 @@ describe('Comprehensive Offline Integration Tests', () => {
       mockStore.setState({
         status: {
           isOffline: false,
-          status: 'online'
-        }
+          status: "online",
+        },
       });
 
       await mockTaskService.processOfflineTaskQueue();
       expect(mockTaskService.getQueueItems().length).toBe(0);
     });
 
-    it('should handle data persistence workflow', async () => {
+    it("should handle data persistence workflow", async () => {
       // 1. Store tasks offline
       const tasks = [generateMockTask(), generateMockTask()];
       await mockDataPersistence.storeOfflineTasks(tasks);
@@ -88,7 +104,7 @@ describe('Comprehensive Offline Integration Tests', () => {
       expect(retrievedTasks.length).toBe(2);
 
       // 3. Store offline operations
-      const operation = generateOfflineQueueItem('create', 'high');
+      const operation = generateOfflineQueueItem("create", "high");
       await mockDataPersistence.storeOfflineOperation(operation);
 
       // 4. Verify operations are stored
@@ -97,7 +113,8 @@ describe('Comprehensive Offline Integration Tests', () => {
 
       // 5. Process operations
       await mockDataPersistence.processOfflineOperations();
-      const processedOperations = await mockDataPersistence.getOfflineOperations();
+      const processedOperations =
+        await mockDataPersistence.getOfflineOperations();
       expect(processedOperations.length).toBe(0);
 
       // 6. Get storage stats
@@ -106,7 +123,7 @@ describe('Comprehensive Offline Integration Tests', () => {
       expect(stats.queueSize).toBe(0);
     });
 
-    it('should handle comprehensive sync workflow', async () => {
+    it("should handle comprehensive sync workflow", async () => {
       // 1. Start offline
       expect(mockSyncService.needsSync()).toBe(false);
 
@@ -119,8 +136,8 @@ describe('Comprehensive Offline Integration Tests', () => {
       mockStore.setState({
         status: {
           isOffline: false,
-          status: 'online'
-        }
+          status: "online",
+        },
       });
 
       expect(mockSyncService.needsSync()).toBe(true);
@@ -128,7 +145,7 @@ describe('Comprehensive Offline Integration Tests', () => {
       // 4. Auto-sync should trigger
       await mockSyncService.autoSync();
       const syncStatus = mockSyncService.getSyncStatus();
-      expect(syncStatus.status).toBe('completed');
+      expect(syncStatus.status).toBe("completed");
       expect(syncStatus.pendingOperations).toBe(0);
 
       // 5. Get sync statistics
@@ -138,13 +155,13 @@ describe('Comprehensive Offline Integration Tests', () => {
     });
   });
 
-  describe('Hook Integration Tests', () => {
-    it('should test useOffline hook integration', async () => {
+  describe("Hook Integration Tests", () => {
+    it("should test useOffline hook integration", async () => {
       const { result } = renderHook(() => useOffline());
 
       // Initial state should be offline
       expect(result.current.isOffline).toBe(true);
-      expect(result.current.status).toBe('offline');
+      expect(result.current.status).toBe("offline");
 
       // Simulate network change to online
       act(() => {
@@ -152,29 +169,32 @@ describe('Comprehensive Offline Integration Tests', () => {
       });
 
       expect(result.current.isOffline).toBe(false);
-      expect(result.current.status).toBe('online');
+      expect(result.current.status).toBe("online");
     });
 
-    it('should test useOfflineTasks hook integration', async () => {
+    it("should test useOfflineTasks hook integration", async () => {
       const mockTask = generateMockTask();
       const { result } = renderHook(() => useOfflineTasks());
 
       // Create task offline
       const createdTask = await result.current.createTaskOffline(mockTask);
-      expect(createdTask.id).toContain('temp-');
+      expect(createdTask.id).toContain("temp-");
 
       // Update task offline
-      const updatedTask = await result.current.updateTaskOffline(createdTask.id, {
-        title: 'Updated Title'
-      });
-      expect(updatedTask.title).toBe('Updated Title');
+      const updatedTask = await result.current.updateTaskOffline(
+        createdTask.id,
+        {
+          title: "Updated Title",
+        },
+      );
+      expect(updatedTask.title).toBe("Updated Title");
 
       // Check queue status
       const queueStatus = result.current.getOfflineQueueStatus();
       expect(queueStatus.pendingTasks).toBeGreaterThan(0);
     });
 
-    it('should test useOfflineDataPersistence hook integration', async () => {
+    it("should test useOfflineDataPersistence hook integration", async () => {
       const { result } = renderHook(() => useOfflineDataPersistence());
 
       // Initialize
@@ -194,7 +214,7 @@ describe('Comprehensive Offline Integration Tests', () => {
       expect(syncStatus.pendingOperations).toBe(0);
     });
 
-    it('should test useOfflineSync hook integration', async () => {
+    it("should test useOfflineSync hook integration", async () => {
       const { result } = renderHook(() => useOfflineSync());
 
       // Check initial sync status
@@ -209,8 +229,8 @@ describe('Comprehensive Offline Integration Tests', () => {
       mockStore.setState({
         status: {
           isOffline: false,
-          status: 'online'
-        }
+          status: "online",
+        },
       });
 
       // Set pending operations
@@ -219,42 +239,45 @@ describe('Comprehensive Offline Integration Tests', () => {
     });
   });
 
-  describe('Error Handling and Recovery Tests', () => {
-    it('should handle queue processing errors gracefully', async () => {
+  describe("Error Handling and Recovery Tests", () => {
+    it("should handle queue processing errors gracefully", async () => {
       // Set up a scenario where processing might fail
       mockTaskService.setOfflineStatus(true);
 
       // Try to process queue while offline
-      await expect(mockTaskService.processOfflineTaskQueue())
-        .rejects.toThrow('Cannot process queue while offline');
+      await expect(mockTaskService.processOfflineTaskQueue()).rejects.toThrow(
+        "Cannot process queue while offline",
+      );
 
       // Queue should remain unchanged
       const queueItems = mockTaskService.getQueueItems();
       expect(queueItems.length).toBeGreaterThan(0);
     });
 
-    it('should handle sync errors gracefully', async () => {
+    it("should handle sync errors gracefully", async () => {
       mockSyncService.setOfflineStatus(true);
 
       // Try to sync while offline
-      await expect(mockSyncService.syncAll())
-        .rejects.toThrow('Cannot sync while offline');
+      await expect(mockSyncService.syncAll()).rejects.toThrow(
+        "Cannot sync while offline",
+      );
 
       // Sync status should remain in error state
       const syncStatus = mockSyncService.getSyncStatus();
-      expect(syncStatus.status).toBe('error');
+      expect(syncStatus.status).toBe("error");
     });
 
-    it('should handle data persistence errors', async () => {
+    it("should handle data persistence errors", async () => {
       // Force an error by trying to process before initialization
       mockDataPersistence = new MockOfflineDataPersistence();
-      await expect(mockDataPersistence.syncOfflineData())
-        .rejects.toThrow('Not initialized');
+      await expect(mockDataPersistence.syncOfflineData()).rejects.toThrow(
+        "Not initialized",
+      );
     });
   });
 
-  describe('Performance and Stress Tests', () => {
-    it('should handle large queue processing', async () => {
+  describe("Performance and Stress Tests", () => {
+    it("should handle large queue processing", async () => {
       // Add many items to queue
       for (let i = 0; i < 100; i++) {
         const task = generateMockTask({ title: `Bulk Task ${i + 1}` });
@@ -270,13 +293,13 @@ describe('Comprehensive Offline Integration Tests', () => {
       expect(mockTaskService.getQueueItems().length).toBe(0);
     });
 
-    it('should handle concurrent operations', async () => {
+    it("should handle concurrent operations", async () => {
       // This test simulates multiple concurrent offline operations
       const operations = [
         mockTaskService.createTaskOffline(generateMockTask()),
-        mockTaskService.updateTaskOffline('test-id', { title: 'Updated' }),
-        mockTaskService.deleteTaskOffline('delete-id'),
-        mockTaskService.toggleTaskCompletionOffline('toggle-id')
+        mockTaskService.updateTaskOffline("test-id", { title: "Updated" }),
+        mockTaskService.deleteTaskOffline("delete-id"),
+        mockTaskService.toggleTaskCompletionOffline("toggle-id"),
       ];
 
       const results = await Promise.all(operations);
@@ -285,8 +308,8 @@ describe('Comprehensive Offline Integration Tests', () => {
     });
   });
 
-  describe('State Management Integration Tests', () => {
-    it('should test comprehensive state changes', async () => {
+  describe("State Management Integration Tests", () => {
+    it("should test comprehensive state changes", async () => {
       const initialState = mockStore.getState();
 
       // Verify initial offline state
@@ -297,13 +320,13 @@ describe('Comprehensive Offline Integration Tests', () => {
       mockStore.setState({
         queue: {
           items: [
-            generateOfflineQueueItem('create', 'high'),
-            generateOfflineQueueItem('update', 'medium')
+            generateOfflineQueueItem("create", "high"),
+            generateOfflineQueueItem("update", "medium"),
           ],
           totalCount: 2,
-          pendingCount: 2
+          pendingCount: 2,
         },
-        pendingChanges: 2
+        pendingChanges: 2,
       });
 
       const updatedState = mockStore.getState();
@@ -314,26 +337,26 @@ describe('Comprehensive Offline Integration Tests', () => {
       mockStore.setState({
         status: {
           isOffline: false,
-          status: 'online'
-        }
+          status: "online",
+        },
       });
 
       const onlineState = mockStore.getState();
       expect(onlineState.status.isOffline).toBe(false);
     });
 
-    it('should test settings management', () => {
+    it("should test settings management", () => {
       const newSettings = {
         autoSyncEnabled: false,
         syncInterval: 60000,
-        maxQueueSize: 200
+        maxQueueSize: 200,
       };
 
       mockStore.setState({
         settings: {
           ...mockStore.getState().settings,
-          ...newSettings
-        }
+          ...newSettings,
+        },
       });
 
       const state = mockStore.getState();
@@ -343,12 +366,12 @@ describe('Comprehensive Offline Integration Tests', () => {
     });
   });
 
-  describe('Cross-Service Integration Tests', () => {
-    it('should test integration between all offline services', async () => {
+  describe("Cross-Service Integration Tests", () => {
+    it("should test integration between all offline services", async () => {
       // 1. Create task with task service (offline)
       const task = generateMockTask();
       const createdTask = await mockTaskService.createTaskOffline(task);
-      expect(createdTask.id).toContain('temp-');
+      expect(createdTask.id).toContain("temp-");
 
       // 2. Store task with data persistence
       await mockDataPersistence.storeOfflineTasks([createdTask]);
@@ -356,9 +379,9 @@ describe('Comprehensive Offline Integration Tests', () => {
       expect(storedTasks.length).toBe(1);
 
       // 3. Add operation to data persistence
-      const operation = generateOfflineQueueItem('create', 'high', {
+      const operation = generateOfflineQueueItem("create", "high", {
         data: task,
-        operation: `Create task: ${task.title}`
+        operation: `Create task: ${task.title}`,
       });
       await mockDataPersistence.storeOfflineOperation(operation);
 
@@ -372,8 +395,8 @@ describe('Comprehensive Offline Integration Tests', () => {
       mockStore.setState({
         status: {
           isOffline: false,
-          status: 'online'
-        }
+          status: "online",
+        },
       });
 
       // 6. Now sync should be needed
@@ -386,7 +409,7 @@ describe('Comprehensive Offline Integration Tests', () => {
       // 8. Sync with sync service
       await mockSyncService.syncAll();
       const finalSyncStatus = mockSyncService.getSyncStatus();
-      expect(finalSyncStatus.status).toBe('completed');
+      expect(finalSyncStatus.status).toBe("completed");
     });
   });
 });

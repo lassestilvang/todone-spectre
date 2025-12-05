@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Task, TaskStatus, PriorityLevel } from '../types/task';
-import { taskService } from '../services/taskService';
-import { useTaskStore } from '../store/useTaskStore';
+import { useState, useEffect, useCallback } from "react";
+import { Task, TaskStatus, PriorityLevel } from "../types/task";
+import { taskService } from "../services/taskService";
+import { useTaskStore } from "../store/useTaskStore";
 
 /**
  * Custom hook for task management with data fetching, mutations, filtering, and sorting
@@ -9,11 +9,15 @@ import { useTaskStore } from '../store/useTaskStore';
 export const useTasks = (projectId?: string) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [statusFilter, setStatusFilter] = useState<TaskStatus | 'all'>('all');
-  const [priorityFilter, setPriorityFilter] = useState<PriorityLevel | 'all'>('all');
-  const [sortBy, setSortBy] = useState<'priority' | 'dueDate' | 'createdAt'>('priority');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<TaskStatus | "all">("all");
+  const [priorityFilter, setPriorityFilter] = useState<PriorityLevel | "all">(
+    "all",
+  );
+  const [sortBy, setSortBy] = useState<"priority" | "dueDate" | "createdAt">(
+    "priority",
+  );
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   const {
     tasks,
@@ -27,7 +31,7 @@ export const useTasks = (projectId?: string) => {
     addTask,
     updateTask,
     deleteTask,
-    toggleTaskCompletion
+    toggleTaskCompletion,
   } = useTaskStore();
 
   /**
@@ -41,7 +45,7 @@ export const useTasks = (projectId?: string) => {
       const fetchedTasks = await taskService.getTasks(projectId);
       useTaskStore.getState().setTasks(fetchedTasks);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch tasks');
+      setError(err instanceof Error ? err.message : "Failed to fetch tasks");
     } finally {
       setIsLoading(false);
     }
@@ -50,30 +54,38 @@ export const useTasks = (projectId?: string) => {
   /**
    * Create task mutation
    */
-  const createTask = useCallback(async (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'completed'>) => {
-    try {
-      setError(null);
-      const newTask = await taskService.createTask(taskData);
-      return newTask;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create task');
-      throw err;
-    }
-  }, []);
+  const createTask = useCallback(
+    async (
+      taskData: Omit<Task, "id" | "createdAt" | "updatedAt" | "completed">,
+    ) => {
+      try {
+        setError(null);
+        const newTask = await taskService.createTask(taskData);
+        return newTask;
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to create task");
+        throw err;
+      }
+    },
+    [],
+  );
 
   /**
    * Update task mutation
    */
-  const updateTaskMutation = useCallback(async (taskId: string, updates: Partial<Task>) => {
-    try {
-      setError(null);
-      const updatedTask = await taskService.updateTask(taskId, updates);
-      return updatedTask;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update task');
-      throw err;
-    }
-  }, []);
+  const updateTaskMutation = useCallback(
+    async (taskId: string, updates: Partial<Task>) => {
+      try {
+        setError(null);
+        const updatedTask = await taskService.updateTask(taskId, updates);
+        return updatedTask;
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to update task");
+        throw err;
+      }
+    },
+    [],
+  );
 
   /**
    * Delete task mutation
@@ -83,7 +95,7 @@ export const useTasks = (projectId?: string) => {
       setError(null);
       await taskService.deleteTask(taskId);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete task');
+      setError(err instanceof Error ? err.message : "Failed to delete task");
       throw err;
     }
   }, []);
@@ -97,7 +109,9 @@ export const useTasks = (projectId?: string) => {
       const updatedTask = await taskService.toggleTaskCompletion(taskId);
       return updatedTask;
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to toggle task completion');
+      setError(
+        err instanceof Error ? err.message : "Failed to toggle task completion",
+      );
       throw err;
     }
   }, []);
@@ -107,9 +121,9 @@ export const useTasks = (projectId?: string) => {
    */
   const applyCurrentFilters = useCallback(() => {
     const filters = {
-      status: statusFilter === 'all' ? undefined : statusFilter,
-      priority: priorityFilter === 'all' ? undefined : priorityFilter,
-      searchQuery: searchQuery || undefined
+      status: statusFilter === "all" ? undefined : statusFilter,
+      priority: priorityFilter === "all" ? undefined : priorityFilter,
+      searchQuery: searchQuery || undefined,
     };
 
     setFilter(filters);
@@ -119,25 +133,31 @@ export const useTasks = (projectId?: string) => {
   /**
    * Filter tasks by status
    */
-  const filterByStatus = useCallback((status: TaskStatus | 'all') => {
+  const filterByStatus = useCallback((status: TaskStatus | "all") => {
     setStatusFilter(status);
   }, []);
 
   /**
    * Filter tasks by priority
    */
-  const filterByPriority = useCallback((priority: PriorityLevel | 'all') => {
+  const filterByPriority = useCallback((priority: PriorityLevel | "all") => {
     setPriorityFilter(priority);
   }, []);
 
   /**
    * Sort tasks
    */
-  const sortTasks = useCallback((sortField: 'priority' | 'dueDate' | 'createdAt', direction: 'asc' | 'desc' = 'asc') => {
-    setSortBy(sortField);
-    setSortDirection(direction);
-    setSort(sortField, direction);
-  }, [setSort]);
+  const sortTasks = useCallback(
+    (
+      sortField: "priority" | "dueDate" | "createdAt",
+      direction: "asc" | "desc" = "asc",
+    ) => {
+      setSortBy(sortField);
+      setSortDirection(direction);
+      setSort(sortField, direction);
+    },
+    [setSort],
+  );
 
   /**
    * Search tasks
@@ -150,9 +170,9 @@ export const useTasks = (projectId?: string) => {
    * Reset all filters
    */
   const resetFilters = useCallback(() => {
-    setSearchQuery('');
-    setStatusFilter('all');
-    setPriorityFilter('all');
+    setSearchQuery("");
+    setStatusFilter("all");
+    setPriorityFilter("all");
     setFilter({});
     applyFilters();
   }, [setFilter, applyFilters]);
@@ -166,38 +186,48 @@ export const useTasks = (projectId?: string) => {
     // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(task =>
-        task.title.toLowerCase().includes(query) ||
-        (task.description && task.description.toLowerCase().includes(query))
+      result = result.filter(
+        (task) =>
+          task.title.toLowerCase().includes(query) ||
+          (task.description && task.description.toLowerCase().includes(query)),
       );
     }
 
     // Apply status filter
-    if (statusFilter !== 'all') {
-      result = result.filter(task => task.status === statusFilter);
+    if (statusFilter !== "all") {
+      result = result.filter((task) => task.status === statusFilter);
     }
 
     // Apply priority filter
-    if (priorityFilter !== 'all') {
-      result = result.filter(task => task.priority === priorityFilter);
+    if (priorityFilter !== "all") {
+      result = result.filter((task) => task.priority === priorityFilter);
     }
 
     // Apply sorting
     const priorityOrder: Record<PriorityLevel, number> = {
-      'critical': 1,
-      'high': 2,
-      'medium': 3,
-      'low': 4
+      critical: 1,
+      high: 2,
+      medium: 3,
+      low: 4,
     };
 
     result.sort((a, b) => {
       switch (sortBy) {
-        case 'priority':
-          return (priorityOrder[a.priority] - priorityOrder[b.priority]) * (sortDirection === 'asc' ? 1 : -1);
-        case 'dueDate':
-          return ((a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0)) * (sortDirection === 'asc' ? 1 : -1);
-        case 'createdAt':
-          return (a.createdAt.getTime() - b.createdAt.getTime()) * (sortDirection === 'asc' ? 1 : -1);
+        case "priority":
+          return (
+            (priorityOrder[a.priority] - priorityOrder[b.priority]) *
+            (sortDirection === "asc" ? 1 : -1)
+          );
+        case "dueDate":
+          return (
+            ((a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0)) *
+            (sortDirection === "asc" ? 1 : -1)
+          );
+        case "createdAt":
+          return (
+            (a.createdAt.getTime() - b.createdAt.getTime()) *
+            (sortDirection === "asc" ? 1 : -1)
+          );
         default:
           return 0;
       }
@@ -261,7 +291,7 @@ export const useTasks = (projectId?: string) => {
     setSortDirection,
 
     // Utility
-    getProcessedTasks
+    getProcessedTasks,
   };
 };
 
@@ -282,7 +312,7 @@ export const useTask = (taskId?: string) => {
       const fetchedTask = await taskService.getTask(taskId);
       setTask(fetchedTask);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch task');
+      setError(err instanceof Error ? err.message : "Failed to fetch task");
     } finally {
       setIsLoading(false);
     }
@@ -298,6 +328,6 @@ export const useTask = (taskId?: string) => {
     task,
     isLoading,
     error,
-    refetch: fetchTask
+    refetch: fetchTask,
   };
 };

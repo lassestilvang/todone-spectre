@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useOnboarding } from '../../../hooks/useOnboarding';
+import React, { useState } from "react";
+import { useOnboarding } from "../../../hooks/useOnboarding";
 
 interface OnboardingFlowProps {
   steps: React.ReactNode[];
@@ -10,9 +10,10 @@ interface OnboardingFlowProps {
 export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
   steps,
   onComplete,
-  className = ''
+  className = "",
 }) => {
-  const { currentStep, goToNextStep, goToPreviousStep, completeOnboarding } = useOnboarding();
+  const { currentStep, goToNextStep, goToPreviousStep, completeOnboarding } =
+    useOnboarding();
   const [isComplete, setIsComplete] = useState(false);
 
   const handleComplete = () => {
@@ -39,32 +40,21 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({
         </span>
       </div>
 
-      <div className="onboarding-step-container">
-        {steps[currentStep]}
-      </div>
+      <div className="onboarding-step-container">{steps[currentStep]}</div>
 
       <div className="onboarding-navigation">
         {currentStep > 0 && (
-          <button
-            onClick={goToPreviousStep}
-            className="nav-button previous"
-          >
+          <button onClick={goToPreviousStep} className="nav-button previous">
             Back
           </button>
         )}
 
         {currentStep < steps.length - 1 ? (
-          <button
-            onClick={goToNextStep}
-            className="nav-button next"
-          >
+          <button onClick={goToNextStep} className="nav-button next">
             Next
           </button>
         ) : (
-          <button
-            onClick={handleComplete}
-            className="nav-button complete"
-          >
+          <button onClick={handleComplete} className="nav-button complete">
             Finish
           </button>
         )}

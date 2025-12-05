@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import CommentListWithPagination from './CommentListWithPagination';
-import CommentFormWithValidation from './CommentFormWithValidation';
-import { Comment } from '../../types/common';
-import { Button } from '../../components/ui/button';
-import { useComments } from '../../hooks/useComments';
+import React, { useState } from "react";
+import CommentListWithPagination from "./CommentListWithPagination";
+import CommentFormWithValidation from "./CommentFormWithValidation";
+import { Comment } from "../../types/common";
+import { Button } from "../../components/ui/button";
+import { useComments } from "../../hooks/useComments";
 
 interface CommentSectionWithHeaderProps {
   taskId: string;
@@ -13,11 +13,20 @@ interface CommentSectionWithHeaderProps {
 
 const CommentSectionWithHeader: React.FC<CommentSectionWithHeaderProps> = ({
   taskId,
-  title = 'Comments',
-  showCommentFormInitially = false
+  title = "Comments",
+  showCommentFormInitially = false,
 }) => {
-  const { comments, loading, error, createComment, updateComment, deleteComment } = useComments(taskId);
-  const [showCommentForm, setShowCommentForm] = useState(showCommentFormInitially);
+  const {
+    comments,
+    loading,
+    error,
+    createComment,
+    updateComment,
+    deleteComment,
+  } = useComments(taskId);
+  const [showCommentForm, setShowCommentForm] = useState(
+    showCommentFormInitially,
+  );
   const [editingComment, setEditingComment] = useState<Comment | null>(null);
 
   const handleCreateComment = async (content: string) => {
@@ -41,7 +50,11 @@ const CommentSectionWithHeader: React.FC<CommentSectionWithHeaderProps> = ({
   }
 
   if (error) {
-    return <div className="text-center py-4 text-red-600">Error loading comments</div>;
+    return (
+      <div className="text-center py-4 text-red-600">
+        Error loading comments
+      </div>
+    );
   }
 
   return (
@@ -65,15 +78,17 @@ const CommentSectionWithHeader: React.FC<CommentSectionWithHeaderProps> = ({
       {showCommentForm && (
         <CommentFormWithValidation
           taskId={taskId}
-          onSubmit={editingComment
-            ? (content) => handleEditComment(editingComment.id, content)
-            : handleCreateComment}
+          onSubmit={
+            editingComment
+              ? (content) => handleEditComment(editingComment.id, content)
+              : handleCreateComment
+          }
           onCancel={() => {
             setShowCommentForm(false);
             setEditingComment(null);
           }}
-          initialContent={editingComment?.content || ''}
-          submitButtonText={editingComment ? 'Update Comment' : 'Post Comment'}
+          initialContent={editingComment?.content || ""}
+          submitButtonText={editingComment ? "Update Comment" : "Post Comment"}
         />
       )}
 
@@ -81,7 +96,7 @@ const CommentSectionWithHeader: React.FC<CommentSectionWithHeaderProps> = ({
         comments={comments}
         onEdit={handleEditClick}
         onDelete={deleteComment}
-        onReply={(comment) => console.log('Reply to:', comment.id)}
+        onReply={(comment) => console.log("Reply to:", comment.id)}
       />
     </div>
   );

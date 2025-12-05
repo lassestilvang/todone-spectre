@@ -1,6 +1,10 @@
-import { ExtensionState, ExtensionAction, ExtensionConfig } from '../../types/extensionTypes';
-import { extensionService } from '../../services';
-import { extensionConfigService } from '../../services';
+import {
+  ExtensionState,
+  ExtensionAction,
+  ExtensionConfig,
+} from "../../types/extensionTypes";
+import { extensionService } from "../../services";
+import { extensionConfigService } from "../../services";
 
 /**
  * Extension State Manager - Centralized state management for browser extension
@@ -50,11 +54,11 @@ class ExtensionStateManager {
       // Set up event listeners
       this.setupEventListeners();
     } catch (error) {
-      console.error('State manager initialization failed:', error);
+      console.error("State manager initialization failed:", error);
       this.state = {
         ...this.state,
-        status: 'error',
-        error: error.message
+        status: "error",
+        error: error.message,
       };
       this.notifyStateListeners();
     }
@@ -66,7 +70,7 @@ class ExtensionStateManager {
   private setupEventListeners(): void {
     // Listen for extension service events
     extensionService.onMessage((message) => {
-      if (message.type === 'EXTENSION_STATE_UPDATE') {
+      if (message.type === "EXTENSION_STATE_UPDATE") {
         this.updateState(message.payload);
       }
     });
@@ -105,35 +109,47 @@ class ExtensionStateManager {
   /**
    * State reducer function
    */
-  private reduceState(state: ExtensionState, action: ExtensionAction): ExtensionState {
+  private reduceState(
+    state: ExtensionState,
+    action: ExtensionAction,
+  ): ExtensionState {
     switch (action.type) {
-      case 'INITIALIZE':
-        return { ...state, status: 'idle' };
-      case 'STARTUP':
-        return { ...state, status: 'ready' };
-      case 'SYNC_START':
-        return { ...state, status: 'syncing', error: undefined };
-      case 'SYNC_COMPLETE':
-        return { ...state, status: 'ready', lastSync: Date.now(), error: undefined };
-      case 'ERROR':
-        return { ...state, status: 'error', error: action.payload };
-      case 'CONTENT_SCRIPT_READY':
-        return { ...state, contentScriptsReady: true, activeTabUrl: action.payload?.url };
-      case 'PAGE_INTEGRATION_COMPLETE':
-        return { ...state, pageIntegrationStatus: 'complete' };
-      case 'TAB_UPDATED':
+      case "INITIALIZE":
+        return { ...state, status: "idle" };
+      case "STARTUP":
+        return { ...state, status: "ready" };
+      case "SYNC_START":
+        return { ...state, status: "syncing", error: undefined };
+      case "SYNC_COMPLETE":
+        return {
+          ...state,
+          status: "ready",
+          lastSync: Date.now(),
+          error: undefined,
+        };
+      case "ERROR":
+        return { ...state, status: "error", error: action.payload };
+      case "CONTENT_SCRIPT_READY":
+        return {
+          ...state,
+          contentScriptsReady: true,
+          activeTabUrl: action.payload?.url,
+        };
+      case "PAGE_INTEGRATION_COMPLETE":
+        return { ...state, pageIntegrationStatus: "complete" };
+      case "TAB_UPDATED":
         return {
           ...state,
           activeTabId: action.payload?.tabId,
-          activeTabUrl: action.payload?.url
+          activeTabUrl: action.payload?.url,
         };
-      case 'TAB_ACTIVATED':
+      case "TAB_ACTIVATED":
         return { ...state, activeTabId: action.payload?.tabId };
-      case 'CONFIG_UPDATED':
+      case "CONFIG_UPDATED":
         return state; // Config updates don't change state directly
-      case 'CONFIG_RESET':
+      case "CONFIG_RESET":
         return state; // Config reset doesn't change state directly
-      case 'RESTORE_STATE':
+      case "RESTORE_STATE":
         return { ...state, ...action.payload };
       default:
         return state;
@@ -150,7 +166,9 @@ class ExtensionStateManager {
   /**
    * Update config
    */
-  public async updateConfig(configUpdate: Partial<ExtensionConfig>): Promise<void> {
+  public async updateConfig(
+    configUpdate: Partial<ExtensionConfig>,
+  ): Promise<void> {
     this.config = { ...this.config, ...configUpdate };
     await this.saveConfig();
     this.notifyConfigListeners();
@@ -177,7 +195,7 @@ class ExtensionStateManager {
    */
   public removeStateListener(callback: (state: ExtensionState) => void): void {
     this.stateListeners = this.stateListeners.filter(
-      listener => listener !== callback
+      (listener) => listener !== callback,
     );
   }
 
@@ -191,9 +209,11 @@ class ExtensionStateManager {
   /**
    * Remove config listener
    */
-  public removeConfigListener(callback: (config: ExtensionConfig) => void): void {
+  public removeConfigListener(
+    callback: (config: ExtensionConfig) => void,
+  ): void {
     this.configListeners = this.configListeners.filter(
-      listener => listener !== callback
+      (listener) => listener !== callback,
     );
   }
 
@@ -201,11 +221,11 @@ class ExtensionStateManager {
    * Notify all state listeners
    */
   private notifyStateListeners(): void {
-    this.stateListeners.forEach(listener => {
+    this.stateListeners.forEach((listener) => {
       try {
         listener(this.state);
       } catch (error) {
-        console.error('State listener error:', error);
+        console.error("State listener error:", error);
       }
     });
   }
@@ -214,11 +234,11 @@ class ExtensionStateManager {
    * Notify all config listeners
    */
   private notifyConfigListeners(): void {
-    this.configListeners.forEach(listener => {
+    this.configListeners.forEach((listener) => {
       try {
         listener(this.config);
       } catch (error) {
-        console.error('Config listener error:', error);
+        console.error("Config listener error:", error);
       }
     });
   }
@@ -228,10 +248,10 @@ class ExtensionStateManager {
    */
   private async loadState(): Promise<ExtensionState | null> {
     try {
-      const result = await chrome.storage.local.get('extensionState');
+      const result = await chrome.storage.local.get("extensionState");
       return result.extensionState || null;
     } catch (error) {
-      console.error('Failed to load state:', error);
+      console.error("Failed to load state:", error);
       return null;
     }
   }
@@ -243,7 +263,7 @@ class ExtensionStateManager {
     try {
       await chrome.storage.local.set({ extensionState: this.state });
     } catch (error) {
-      console.error('Failed to save state:', error);
+      console.error("Failed to save state:", error);
     }
   }
 
@@ -252,10 +272,10 @@ class ExtensionStateManager {
    */
   private async loadConfig(): Promise<ExtensionConfig | null> {
     try {
-      const result = await chrome.storage.sync.get('extensionConfig');
+      const result = await chrome.storage.sync.get("extensionConfig");
       return result.extensionConfig || null;
     } catch (error) {
-      console.error('Failed to load config:', error);
+      console.error("Failed to load config:", error);
       return null;
     }
   }
@@ -267,7 +287,7 @@ class ExtensionStateManager {
     try {
       await chrome.storage.sync.set({ extensionConfig: this.config });
     } catch (error) {
-      console.error('Failed to save config:', error);
+      console.error("Failed to save config:", error);
     }
   }
 
@@ -276,9 +296,9 @@ class ExtensionStateManager {
    */
   private getDefaultState(): ExtensionState {
     return {
-      status: 'idle',
+      status: "idle",
       contentScriptsReady: false,
-      pageIntegrationStatus: 'idle'
+      pageIntegrationStatus: "idle",
     };
   }
 
@@ -291,13 +311,13 @@ class ExtensionStateManager {
       autoSyncEnabled: true,
       syncInterval: 300000, // 5 minutes
       showNotifications: true,
-      theme: 'system',
+      theme: "system",
       quickActions: [
-        { id: 'create-task', label: 'Create Task', icon: 'plus' },
-        { id: 'view-tasks', label: 'View Tasks', icon: 'list' },
-        { id: 'sync-data', label: 'Sync Data', icon: 'sync' },
-        { id: 'settings', label: 'Settings', icon: 'cog' }
-      ]
+        { id: "create-task", label: "Create Task", icon: "plus" },
+        { id: "view-tasks", label: "View Tasks", icon: "list" },
+        { id: "sync-data", label: "Sync Data", icon: "sync" },
+        { id: "settings", label: "Settings", icon: "cog" },
+      ],
     };
   }
 
@@ -313,7 +333,7 @@ class ExtensionStateManager {
       this.notifyStateListeners();
       this.notifyConfigListeners();
     } catch (error) {
-      console.error('Failed to clear all data:', error);
+      console.error("Failed to clear all data:", error);
       throw error;
     }
   }

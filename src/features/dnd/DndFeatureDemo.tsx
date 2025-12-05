@@ -1,48 +1,48 @@
-import React, { useState } from 'react';
-import { Task } from '../../types/task';
-import { DndListView, DndBoardView } from './';
-import { createMockTasks } from '../../utils/dndTestUtils';
+import React, { useState } from "react";
+import { Task } from "../../types/task";
+import { DndListView, DndBoardView } from "./";
+import { createMockTasks } from "../../utils/dndTestUtils";
 
 interface DndFeatureDemoProps {
   initialTasks?: Task[];
 }
 
 export const DndFeatureDemo: React.FC<DndFeatureDemoProps> = ({
-  initialTasks = createMockTasks(10)
+  initialTasks = createMockTasks(10),
 }) => {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
-  const [viewMode, setViewMode] = useState<'list' | 'board'>('list');
+  const [viewMode, setViewMode] = useState<"list" | "board">("list");
 
   const handleTaskToggleCompletion = async (taskId: string) => {
-    setTasks(prevTasks =>
-      prevTasks.map(task =>
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
         task.id === taskId
           ? { ...task, completed: !task.completed, updatedAt: new Date() }
-          : task
-      )
+          : task,
+      ),
     );
   };
 
   const handleTaskDelete = async (taskId: string) => {
-    setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
   };
 
   const handleTaskClick = (task: Task) => {
-    console.log('Task clicked:', task.title);
+    console.log("Task clicked:", task.title);
   };
 
   return (
     <div className="dnd-feature-demo">
       <div className="demo-controls mb-4 flex space-x-4">
         <button
-          onClick={() => setViewMode('list')}
-          className={`px-4 py-2 rounded ${viewMode === 'list' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => setViewMode("list")}
+          className={`px-4 py-2 rounded ${viewMode === "list" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
         >
           List View
         </button>
         <button
-          onClick={() => setViewMode('board')}
-          className={`px-4 py-2 rounded ${viewMode === 'board' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => setViewMode("board")}
+          className={`px-4 py-2 rounded ${viewMode === "board" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
         >
           Board View
         </button>
@@ -60,7 +60,7 @@ export const DndFeatureDemo: React.FC<DndFeatureDemoProps> = ({
         </ul>
       </div>
 
-      {viewMode === 'list' ? (
+      {viewMode === "list" ? (
         <DndListView
           tasks={tasks}
           onTaskToggleCompletion={handleTaskToggleCompletion}

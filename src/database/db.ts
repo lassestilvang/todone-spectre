@@ -1,6 +1,15 @@
-import Dexie, { Table } from 'dexie';
-import { User, Project, Section, Task, Label, Filter, Comment, Attachment } from './models';
-import { migrations } from './migrations';
+import Dexie, { Table } from "dexie";
+import {
+  User,
+  Project,
+  Section,
+  Task,
+  Label,
+  Filter,
+  Comment,
+  Attachment,
+} from "./models";
+import { migrations } from "./migrations";
 
 export class TodoneDatabase extends Dexie {
   users!: Table<User>;
@@ -13,36 +22,37 @@ export class TodoneDatabase extends Dexie {
   attachments!: Table<Attachment>;
 
   constructor() {
-    super('TodoneDatabase');
+    super("TodoneDatabase");
     this.version(3).stores({
-      users: '++id,email,name',
-      projects: '++id,name,color,viewType,favorite,shared,parentProjectId',
-      sections: '++id,name,projectId,order',
-      tasks: '++id,content,projectId,sectionId,priority,dueDate,completed,createdDate,parentTaskId,order',
-      labels: '++id,name,color,isPersonal',
-      filters: '++id,name,favorite',
-      comments: '++id,taskId,timestamp',
-      attachments: '++id,fileName,url,type'
+      users: "++id,email,name",
+      projects: "++id,name,color,viewType,favorite,shared,parentProjectId",
+      sections: "++id,name,projectId,order",
+      tasks:
+        "++id,content,projectId,sectionId,priority,dueDate,completed,createdDate,parentTaskId,order",
+      labels: "++id,name,color,isPersonal",
+      filters: "++id,name,favorite",
+      comments: "++id,taskId,timestamp",
+      attachments: "++id,fileName,url,type",
     });
 
     // Apply migrations
-    this.on('ready', () => {
+    this.on("ready", () => {
       this.applyMigrations();
     });
 
-    this.on('versionchange', (event) => {
-      console.log('Database version change detected:', event);
+    this.on("versionchange", (event) => {
+      console.log("Database version change detected:", event);
     });
 
-    this.on('blocked', () => {
-      console.warn('Database is blocked by another connection');
+    this.on("blocked", () => {
+      console.warn("Database is blocked by another connection");
     });
   }
 
   private async applyMigrations(): Promise<void> {
     try {
       const currentVersion = await this.getDatabaseVersion();
-      console.log('Current database version:', currentVersion);
+      console.log("Current database version:", currentVersion);
 
       for (const migration of migrations) {
         if (migration.version > currentVersion) {
@@ -51,7 +61,7 @@ export class TodoneDatabase extends Dexie {
         }
       }
     } catch (error) {
-      console.error('Error applying migrations:', error);
+      console.error("Error applying migrations:", error);
     }
   }
 
@@ -62,9 +72,9 @@ export class TodoneDatabase extends Dexie {
   async initialize(): Promise<void> {
     try {
       await this.open();
-      console.log('Database initialized successfully');
+      console.log("Database initialized successfully");
     } catch (error) {
-      console.error('Error initializing database:', error);
+      console.error("Error initializing database:", error);
       throw error;
     }
   }
@@ -72,14 +82,31 @@ export class TodoneDatabase extends Dexie {
   async close(): Promise<void> {
     try {
       await this.close();
-      console.log('Database closed successfully');
+      console.log("Database closed successfully");
     } catch (error) {
-      console.error('Error closing database:', error);
+      console.error("Error closing database:", error);
       throw error;
     }
   }
 
-  async transaction<T>(name: string, mode: 'readwrite' | 'readonly', callback: () => Promise<T>): Promise<T> {
-    return this.transaction(mode, [this.users, this.projects, this.sections, this.tasks, this.labels, this.filters, this.comments, this.attachments], callback);
+  async transaction<T>(
+    name: string,
+    mode: "readwrite" | "readonly",
+    callback: () => Promise<T>,
+  ): Promise<T> {
+    return this.transaction(
+      mode,
+      [
+        this.users,
+        this.projects,
+        this.sections,
+        this.tasks,
+        this.labels,
+        this.filters,
+        this.comments,
+        this.attachments,
+      ],
+      callback,
+    );
   }
 }

@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
-import { Task } from '../../types/task';
-import { ViewHeader } from './ViewHeader';
-import { ViewToolbar } from './ViewToolbar';
-import { ViewFilterControls } from './ViewFilterControls';
-import { ViewSortControls } from './ViewSortControls';
-import { TaskItem } from '../../features/tasks/TaskItem';
-import { format, addDays, subDays, startOfWeek, endOfWeek, eachDayOfInterval } from 'date-fns';
+import React, { useState } from "react";
+import { Task } from "../../types/task";
+import { ViewHeader } from "./ViewHeader";
+import { ViewToolbar } from "./ViewToolbar";
+import { ViewFilterControls } from "./ViewFilterControls";
+import { ViewSortControls } from "./ViewSortControls";
+import { TaskItem } from "../../features/tasks/TaskItem";
+import {
+  format,
+  addDays,
+  subDays,
+  startOfWeek,
+  endOfWeek,
+  eachDayOfInterval,
+} from "date-fns";
 
 interface CalendarViewProps {
   tasks: Task[];
@@ -39,14 +46,17 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
   const weekDays = eachDayOfInterval({ start: weekStart, end: weekEnd });
 
   // Group tasks by date
-  const tasksByDate = tasks.reduce((acc, task) => {
-    if (task.dueDate) {
-      const dateKey = format(new Date(task.dueDate), 'yyyy-MM-dd');
-      if (!acc[dateKey]) acc[dateKey] = [];
-      acc[dateKey].push(task);
-    }
-    return acc;
-  }, {} as Record<string, Task[]>);
+  const tasksByDate = tasks.reduce(
+    (acc, task) => {
+      if (task.dueDate) {
+        const dateKey = format(new Date(task.dueDate), "yyyy-MM-dd");
+        if (!acc[dateKey]) acc[dateKey] = [];
+        acc[dateKey].push(task);
+      }
+      return acc;
+    },
+    {} as Record<string, Task[]>,
+  );
 
   return (
     <div className="calendar-view">
@@ -61,21 +71,21 @@ export const CalendarView: React.FC<CalendarViewProps> = ({
         <button onClick={goToToday}>Today</button>
         <button onClick={goToNextWeek}>Next Week</button>
         <div className="current-week-range">
-          {format(weekStart, 'MMM d')} - {format(weekEnd, 'MMM d, yyyy')}
+          {format(weekStart, "MMM d")} - {format(weekEnd, "MMM d, yyyy")}
         </div>
       </div>
 
       <div className="calendar-view-content">
         <div className="calendar-week">
           {weekDays.map((day) => {
-            const dateKey = format(day, 'yyyy-MM-dd');
+            const dateKey = format(day, "yyyy-MM-dd");
             const dayTasks = tasksByDate[dateKey] || [];
 
             return (
               <div key={dateKey} className="calendar-day">
                 <div className="day-header">
-                  <div className="day-name">{format(day, 'EEE')}</div>
-                  <div className="day-date">{format(day, 'd')}</div>
+                  <div className="day-name">{format(day, "EEE")}</div>
+                  <div className="day-date">{format(day, "d")}</div>
                 </div>
                 <div className="day-tasks">
                   {dayTasks.length === 0 ? (

@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import { Command } from '../types/command';
-import { getCommandService } from '../services/commandService';
+import { useState, useEffect } from "react";
+import { Command } from "../types/command";
+import { getCommandService } from "../services/commandService";
 
 export const useCommandPalette = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [commands, setCommands] = useState<Command[]>([]);
   const [filteredCommands, setFilteredCommands] = useState<Command[]>([]);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -19,7 +19,7 @@ export const useCommandPalette = () => {
 
   const openCommandPalette = () => {
     setIsOpen(true);
-    setQuery('');
+    setQuery("");
     setSelectedIndex(0);
     setFilteredCommands(commands);
   };
@@ -47,9 +47,9 @@ export const useCommandPalette = () => {
     setSelectedIndex(0);
   };
 
-  const navigateCommands = (direction: 'up' | 'down') => {
-    setSelectedIndex(prev => {
-      if (direction === 'up') {
+  const navigateCommands = (direction: "up" | "down") => {
+    setSelectedIndex((prev) => {
+      if (direction === "up") {
         return Math.max(prev - 1, 0);
       } else {
         return Math.min(prev + 1, filteredCommands.length - 1);
@@ -67,18 +67,18 @@ export const useCommandPalette = () => {
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.ctrlKey || e.metaKey)) {
+      if (e.key === "k" && (e.ctrlKey || e.metaKey)) {
         e.preventDefault();
         openCommandPalette();
-      } else if (e.key === 'Escape' && isOpen) {
+      } else if (e.key === "Escape" && isOpen) {
         e.preventDefault();
         closeCommandPalette();
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen]);
 
@@ -95,6 +95,6 @@ export const useCommandPalette = () => {
     executeCommandById,
     searchCommands,
     navigateCommands,
-    selectCurrentCommand
+    selectCurrentCommand,
   };
 };

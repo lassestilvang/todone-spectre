@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import filterService from '../services/filterService';
-import { Filter } from '../types/models';
+import { useState, useEffect } from "react";
+import filterService from "../services/filterService";
+import { Filter } from "../types/models";
 
 /**
  * Custom hook for managing filters
@@ -23,10 +23,12 @@ export const useFilters = () => {
       if (result.success && result.data) {
         setFilters(result.data);
       } else {
-        setError(result.error || new Error('Failed to load filters'));
+        setError(result.error || new Error("Failed to load filters"));
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to load filters'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to load filters"),
+      );
     } finally {
       setLoading(false);
     }
@@ -42,14 +44,16 @@ export const useFilters = () => {
       const result = await filterService.createFilter(filterData);
 
       if (result.success && result.data) {
-        setFilters(prev => [...prev, result.data]);
+        setFilters((prev) => [...prev, result.data]);
         return result.data;
       } else {
-        setError(result.error || new Error('Failed to create filter'));
+        setError(result.error || new Error("Failed to create filter"));
         return null;
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to create filter'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to create filter"),
+      );
       return null;
     } finally {
       setLoading(false);
@@ -66,14 +70,16 @@ export const useFilters = () => {
       const result = await filterService.updateFilter(id, filterData);
 
       if (result.success && result.data) {
-        setFilters(prev => prev.map(f => f.id === id ? result.data : f));
+        setFilters((prev) => prev.map((f) => (f.id === id ? result.data : f)));
         return result.data;
       } else {
-        setError(result.error || new Error('Failed to update filter'));
+        setError(result.error || new Error("Failed to update filter"));
         return null;
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to update filter'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to update filter"),
+      );
       return null;
     } finally {
       setLoading(false);
@@ -90,17 +96,19 @@ export const useFilters = () => {
       const result = await filterService.deleteFilter(id);
 
       if (result.success) {
-        setFilters(prev => prev.filter(f => f.id !== id));
+        setFilters((prev) => prev.filter((f) => f.id !== id));
         if (selectedFilterId === id) {
           setSelectedFilterId(null);
         }
         return true;
       } else {
-        setError(result.error || new Error('Failed to delete filter'));
+        setError(result.error || new Error("Failed to delete filter"));
         return false;
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to delete filter'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to delete filter"),
+      );
       return false;
     } finally {
       setLoading(false);
@@ -117,14 +125,16 @@ export const useFilters = () => {
       const result = await filterService.toggleFavorite(id);
 
       if (result.success && result.data) {
-        setFilters(prev => prev.map(f => f.id === id ? result.data : f));
+        setFilters((prev) => prev.map((f) => (f.id === id ? result.data : f)));
         return result.data;
       } else {
-        setError(result.error || new Error('Failed to toggle favorite'));
+        setError(result.error || new Error("Failed to toggle favorite"));
         return null;
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to toggle favorite'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to toggle favorite"),
+      );
       return null;
     } finally {
       setLoading(false);
@@ -143,11 +153,13 @@ export const useFilters = () => {
       if (result.success && result.data) {
         return result.data;
       } else {
-        setError(result.error || new Error('Failed to search filters'));
+        setError(result.error || new Error("Failed to search filters"));
         return [];
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to search filters'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to search filters"),
+      );
       return [];
     } finally {
       setLoading(false);
@@ -166,11 +178,15 @@ export const useFilters = () => {
       if (result.success && result.data) {
         return result.data;
       } else {
-        setError(result.error || new Error('Failed to get favorite filters'));
+        setError(result.error || new Error("Failed to get favorite filters"));
         return [];
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to get favorite filters'));
+      setError(
+        err instanceof Error
+          ? err
+          : new Error("Failed to get favorite filters"),
+      );
       return [];
     } finally {
       setLoading(false);
@@ -201,6 +217,6 @@ export const useFilters = () => {
     toggleFavorite,
     searchFilters,
     getFavoriteFilters,
-    selectFilter
+    selectFilter,
   };
 };

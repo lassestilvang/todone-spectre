@@ -1,21 +1,21 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+const fs = require("fs");
+// const path = require("path");
+// const { execSync } = require("child_process");
 
-console.log('📚 Generating API documentation...');
+console.log("📚 Generating API documentation...");
 
 try {
   // Generate API documentation from source code
-  console.log('🔧 Analyzing API services...');
+  console.log("🔧 Analyzing API services...");
 
   const apiServices = [
-    'authService',
-    'taskService',
-    'projectService',
-    'userService',
-    'collaborationService',
+    "authService",
+    "taskService",
+    "projectService",
+    "userService",
+    "collaborationService",
   ];
 
   let apiDocsContent =
@@ -30,11 +30,11 @@ try {
     "## Usage Examples\n\n```typescript\n// Example API call\nconst response = await fetch('/api/tasks', {\n  method: 'GET',\n  headers: {\n    'Authorization': 'Bearer your-token'\n  }\n});\n```\n";
 
   // Write to file
-  fs.writeFileSync('docs/api-generated.md', apiDocsContent);
+  fs.writeFileSync("docs/api-generated.md", apiDocsContent);
 
-  console.log('✅ API documentation generated successfully!');
-  console.log('📄 File: docs/api-generated.md');
+  console.log("✅ API documentation generated successfully!");
+  console.log("📄 File: docs/api-generated.md");
 } catch (error) {
-  console.error('❌ API documentation generation failed:', error.message);
+  console.error("❌ API documentation generation failed:", error.message);
   process.exit(1);
 }

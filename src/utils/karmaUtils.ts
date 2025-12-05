@@ -33,15 +33,15 @@ export class KarmaUtils {
 
   public static calculateXPForAchievement(
     achievementId: string,
-    baseXP: number = 50
+    baseXP: number = 50,
   ): number {
     // Different achievements have different XP rewards
     const achievementXPMap: Record<string, number> = {
-      'first_task': 50,
-      'five_tasks': 100,
-      'ten_tasks': 200,
-      'streak_3': 150,
-      'streak_7': 300,
+      first_task: 50,
+      five_tasks: 100,
+      ten_tasks: 200,
+      streak_3: 150,
+      streak_7: 300,
     };
 
     return achievementXPMap[achievementId] || baseXP;
@@ -50,7 +50,7 @@ export class KarmaUtils {
   public static calculateKarmaBonus(
     level: number,
     streak: number,
-    options: KarmaCalculationOptions = {}
+    options: KarmaCalculationOptions = {},
   ): number {
     const {
       levelMultiplier = 0.1,
@@ -72,16 +72,16 @@ export class KarmaUtils {
 
   public static getLevelName(level: number): string {
     const levelNames = [
-      'Novice',
-      'Apprentice',
-      'Journeyman',
-      'Expert',
-      'Master',
-      'Grandmaster',
-      'Legend',
-      'Myth',
-      'Titan',
-      'Deity',
+      "Novice",
+      "Apprentice",
+      "Journeyman",
+      "Expert",
+      "Master",
+      "Grandmaster",
+      "Legend",
+      "Myth",
+      "Titan",
+      "Deity",
     ];
 
     // Cycle through level names
@@ -91,7 +91,7 @@ export class KarmaUtils {
 
   public static calculateXPForTaskCompletion(
     taskPriority: string,
-    options: KarmaCalculationOptions = {}
+    options: KarmaCalculationOptions = {},
   ): number {
     const {
       levelMultiplier = 0.1,
@@ -104,29 +104,34 @@ export class KarmaUtils {
 
     // Priority bonus
     switch (taskPriority) {
-      case 'high':
+      case "high":
         xp += 15;
         break;
-      case 'medium':
+      case "medium":
         xp += 10;
         break;
-      case 'low':
+      case "low":
         xp += 5;
         break;
     }
 
     // Apply multipliers
-    xp = Math.round(xp * (1 + levelMultiplier + achievementBonus + streakBonus));
+    xp = Math.round(
+      xp * (1 + levelMultiplier + achievementBonus + streakBonus),
+    );
 
     return xp;
   }
 
   public static calculateProgressToNextLevel(
     currentXP: number,
-    currentLevel: number
+    currentLevel: number,
   ): { xpToNextLevel: number; progressPercentage: number } {
     const xpRequired = this.calculateXPRequiredForLevel(currentLevel);
-    const progressPercentage = Math.min(100, Math.round((currentXP / xpRequired) * 100));
+    const progressPercentage = Math.min(
+      100,
+      Math.round((currentXP / xpRequired) * 100),
+    );
 
     return {
       xpToNextLevel: xpRequired,

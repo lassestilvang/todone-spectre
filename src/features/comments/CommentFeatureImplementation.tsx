@@ -1,17 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { useComments } from '../../hooks/useComments';
-import { useCommentForm } from '../../hooks/useCommentForm';
-import { CommentUtils } from '../../utils/commentUtils';
-import { CommentValidation } from '../../utils/commentValidation';
-import CommentSectionWithHeader from './CommentSectionWithHeader';
-import CommentListWithPagination from './CommentListWithPagination';
-import CommentFormWithValidation from './CommentFormWithValidation';
-import CommentItemWithActions from './CommentItemWithActions';
-import CommentNotifications from './CommentNotifications';
-import { Comment } from '../../types/common';
-import { Button } from '../../components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../../components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import React, { useState, useEffect } from "react";
+import { useComments } from "../../hooks/useComments";
+import { useCommentForm } from "../../hooks/useCommentForm";
+import { CommentUtils } from "../../utils/commentUtils";
+import { CommentValidation } from "../../utils/commentValidation";
+import CommentSectionWithHeader from "./CommentSectionWithHeader";
+import CommentListWithPagination from "./CommentListWithPagination";
+import CommentFormWithValidation from "./CommentFormWithValidation";
+import CommentItemWithActions from "./CommentItemWithActions";
+import CommentNotifications from "./CommentNotifications";
+import { Comment } from "../../types/common";
+import { Button } from "../../components/ui/button";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "../../components/ui/tabs";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
 
 interface CommentFeatureImplementationProps {
   taskId: string;
@@ -19,11 +30,9 @@ interface CommentFeatureImplementationProps {
   showAdvancedFeatures?: boolean;
 }
 
-const CommentFeatureImplementation: React.FC<CommentFeatureImplementationProps> = ({
-  taskId,
-  showNotifications = true,
-  showAdvancedFeatures = true
-}) => {
+const CommentFeatureImplementation: React.FC<
+  CommentFeatureImplementationProps
+> = ({ taskId, showNotifications = true, showAdvancedFeatures = true }) => {
   const {
     comments,
     loading,
@@ -36,18 +45,20 @@ const CommentFeatureImplementation: React.FC<CommentFeatureImplementationProps> 
     refreshComments,
     filterCommentsByUser,
     sortComments,
-    getCommentStats
+    getCommentStats,
   } = useComments(taskId);
 
-  const [activeTab, setActiveTab] = useState<'all' | 'mine' | 'recent'>('all');
-  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'popular'>('newest');
+  const [activeTab, setActiveTab] = useState<"all" | "mine" | "recent">("all");
+  const [sortBy, setSortBy] = useState<"newest" | "oldest" | "popular">(
+    "newest",
+  );
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [editingComment, setEditingComment] = useState<Comment | null>(null);
   const [filteredComments, setFilteredComments] = useState<Comment[]>([]);
   const [stats, setStats] = useState({
     total: 0,
     byUser: {} as Record<string, number>,
-    recent: [] as Comment[]
+    recent: [] as Comment[],
   });
 
   // Update filtered comments when dependencies change
@@ -55,25 +66,32 @@ const CommentFeatureImplementation: React.FC<CommentFeatureImplementationProps> 
     let result = [...comments];
 
     // Apply tab filtering
-    if (activeTab === 'mine') {
-      const currentUserId = localStorage.getItem('userId') || 'user-1';
+    if (activeTab === "mine") {
+      const currentUserId = localStorage.getItem("userId") || "user-1";
       result = filterCommentsByUser(currentUserId);
-    } else if (activeTab === 'recent') {
-      result = sortComments('desc').slice(0, 10);
+    } else if (activeTab === "recent") {
+      result = sortComments("desc").slice(0, 10);
     }
 
     // Apply sorting
-    if (sortBy === 'newest') {
-      result = sortComments('desc');
-    } else if (sortBy === 'oldest') {
-      result = sortComments('asc');
-    } else if (sortBy === 'popular') {
+    if (sortBy === "newest") {
+      result = sortComments("desc");
+    } else if (sortBy === "oldest") {
+      result = sortComments("asc");
+    } else if (sortBy === "popular") {
       result = [...comments].sort((a, b) => (b.likes || 0) - (a.likes || 0));
     }
 
     setFilteredComments(result);
     setStats(getCommentStats());
-  }, [comments, activeTab, sortBy, filterCommentsByUser, sortComments, getCommentStats]);
+  }, [
+    comments,
+    activeTab,
+    sortBy,
+    filterCommentsByUser,
+    sortComments,
+    getCommentStats,
+  ]);
 
   const handleCreateComment = async (content: string) => {
     await createComment(content);
@@ -101,7 +119,7 @@ const CommentFeatureImplementation: React.FC<CommentFeatureImplementationProps> 
 
   const handleReply = (comment: Comment) => {
     // In a real implementation, this would handle replies
-    console.log('Reply to comment:', comment.id);
+    console.log("Reply to comment:", comment.id);
   };
 
   if (loading) {
@@ -119,7 +137,9 @@ const CommentFeatureImplementation: React.FC<CommentFeatureImplementationProps> 
         <div>
           <h3 className="text-lg font-medium">Comments</h3>
           <p className="text-sm text-gray-500">
-            {stats.total} comment{stats.total !== 1 ? 's' : ''} from {Object.keys(stats.byUser).length} user{Object.keys(stats.byUser).length !== 1 ? 's' : ''}
+            {stats.total} comment{stats.total !== 1 ? "s" : ""} from{" "}
+            {Object.keys(stats.byUser).length} user
+            {Object.keys(stats.byUser).length !== 1 ? "s" : ""}
           </p>
         </div>
 
@@ -132,7 +152,7 @@ const CommentFeatureImplementation: React.FC<CommentFeatureImplementationProps> 
               setEditingComment(null);
             }}
           >
-            {showCommentForm ? 'Cancel' : 'Add Comment'}
+            {showCommentForm ? "Cancel" : "Add Comment"}
           </Button>
 
           <Button
@@ -150,22 +170,28 @@ const CommentFeatureImplementation: React.FC<CommentFeatureImplementationProps> 
       {showCommentForm && (
         <CommentFormWithValidation
           taskId={taskId}
-          onSubmit={editingComment
-            ? (content) => handleEditComment(editingComment.id, content)
-            : handleCreateComment}
+          onSubmit={
+            editingComment
+              ? (content) => handleEditComment(editingComment.id, content)
+              : handleCreateComment
+          }
           onCancel={() => {
             setShowCommentForm(false);
             setEditingComment(null);
           }}
-          initialContent={editingComment?.content || ''}
-          submitButtonText={editingComment ? 'Update Comment' : 'Post Comment'}
+          initialContent={editingComment?.content || ""}
+          submitButtonText={editingComment ? "Update Comment" : "Post Comment"}
         />
       )}
 
       {/* Tabs and controls */}
       {showAdvancedFeatures && (
         <div className="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0">
-          <Tabs value={activeTab} onValueChange={(value: any) => setActiveTab(value)} className="w-full sm:w-auto">
+          <Tabs
+            value={activeTab}
+            onValueChange={(value: any) => setActiveTab(value)}
+            className="w-full sm:w-auto"
+          >
             <TabsList className="grid grid-cols-3 w-full sm:w-auto">
               <TabsTrigger value="all">All</TabsTrigger>
               <TabsTrigger value="mine">My Comments</TabsTrigger>
@@ -174,7 +200,10 @@ const CommentFeatureImplementation: React.FC<CommentFeatureImplementationProps> 
           </Tabs>
 
           <div className="flex items-center space-x-2">
-            <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
+            <Select
+              value={sortBy}
+              onValueChange={(value: any) => setSortBy(value)}
+            >
               <SelectTrigger className="w-[120px]">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>

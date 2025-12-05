@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
-import { CommentState, Comment, CommentNotification } from '../types/store';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
+import { CommentState, Comment, CommentNotification } from "../types/store";
 
 export const useCommentStore = create<CommentState>()(
   devtools(
@@ -10,20 +10,20 @@ export const useCommentStore = create<CommentState>()(
         comments: [],
         filteredComments: [],
         currentFilter: {},
-        sortBy: 'timestamp',
-        sortDirection: 'desc',
+        sortBy: "timestamp",
+        sortDirection: "desc",
         commentError: null,
         selectedCommentIds: [],
         notifications: [],
 
         // CRUD Operations
-        addComment: (commentData: Omit<Comment, 'id' | 'timestamp'>) => {
+        addComment: (commentData: Omit<Comment, "id" | "timestamp">) => {
           const newComment: Comment = {
             ...commentData,
             id: Math.random().toString(36).substr(2, 9),
             timestamp: new Date(),
             likes: 0,
-            dislikes: 0
+            dislikes: 0,
           };
           set((state) => ({
             comments: [...state.comments, newComment],
@@ -31,7 +31,10 @@ export const useCommentStore = create<CommentState>()(
           get().applyCommentFilters();
         },
 
-        updateComment: (id: string, updates: Partial<Omit<Comment, 'id' | 'timestamp'>>) => {
+        updateComment: (
+          id: string,
+          updates: Partial<Omit<Comment, "id" | "timestamp">>,
+        ) => {
           set((state) => ({
             comments: state.comments.map((comment) =>
               comment.id === id
@@ -40,7 +43,7 @@ export const useCommentStore = create<CommentState>()(
                     ...updates,
                     timestamp: new Date(),
                   }
-                : comment
+                : comment,
             ),
           }));
           get().applyCommentFilters();
@@ -61,7 +64,7 @@ export const useCommentStore = create<CommentState>()(
                     ...comment,
                     likes: (comment.likes || 0) + 1,
                   }
-                : comment
+                : comment,
             ),
           }));
         },
@@ -74,7 +77,7 @@ export const useCommentStore = create<CommentState>()(
                     ...comment,
                     likes: Math.max((comment.likes || 0) - 1, 0),
                   }
-                : comment
+                : comment,
             ),
           }));
         },
@@ -87,7 +90,7 @@ export const useCommentStore = create<CommentState>()(
                     ...comment,
                     dislikes: (comment.dislikes || 0) + 1,
                   }
-                : comment
+                : comment,
             ),
           }));
         },
@@ -100,18 +103,21 @@ export const useCommentStore = create<CommentState>()(
                     ...comment,
                     dislikes: Math.max((comment.dislikes || 0) - 1, 0),
                   }
-                : comment
+                : comment,
             ),
           }));
         },
 
         // Filtering and Sorting
-        setCommentFilter: (filter: CommentState['currentFilter']) => {
+        setCommentFilter: (filter: CommentState["currentFilter"]) => {
           set({ currentFilter: filter });
           get().applyCommentFilters();
         },
 
-        setCommentSort: (sortBy: CommentState['sortBy'], sortDirection: CommentState['sortDirection']) => {
+        setCommentSort: (
+          sortBy: CommentState["sortBy"],
+          sortDirection: CommentState["sortDirection"],
+        ) => {
           set({ sortBy, sortDirection });
           get().applyCommentFilters();
         },
@@ -122,12 +128,16 @@ export const useCommentStore = create<CommentState>()(
 
           // Apply task filter
           if (currentFilter.taskId) {
-            filtered = filtered.filter((comment) => comment.taskId === currentFilter.taskId);
+            filtered = filtered.filter(
+              (comment) => comment.taskId === currentFilter.taskId,
+            );
           }
 
           // Apply user filter
           if (currentFilter.userId) {
-            filtered = filtered.filter((comment) => comment.user === currentFilter.userId);
+            filtered = filtered.filter(
+              (comment) => comment.user === currentFilter.userId,
+            );
           }
 
           // Apply search query filter
@@ -136,24 +146,28 @@ export const useCommentStore = create<CommentState>()(
             filtered = filtered.filter(
               (comment) =>
                 comment.content.toLowerCase().includes(query) ||
-                comment.user.toLowerCase().includes(query)
+                comment.user.toLowerCase().includes(query),
             );
           }
 
           // Apply sorting
           filtered.sort((a, b) => {
-            if (sortBy === 'timestamp') {
+            if (sortBy === "timestamp") {
               const dateA = new Date(a.timestamp).getTime();
               const dateB = new Date(b.timestamp).getTime();
-              return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
-            } else if (sortBy === 'likes') {
+              return sortDirection === "asc" ? dateA - dateB : dateB - dateA;
+            } else if (sortBy === "likes") {
               const likesA = a.likes || 0;
               const likesB = b.likes || 0;
-              return sortDirection === 'asc' ? likesA - likesB : likesB - likesA;
-            } else if (sortBy === 'dislikes') {
+              return sortDirection === "asc"
+                ? likesA - likesB
+                : likesB - likesA;
+            } else if (sortBy === "dislikes") {
               const dislikesA = a.dislikes || 0;
               const dislikesB = b.dislikes || 0;
-              return sortDirection === 'asc' ? dislikesA - dislikesB : dislikesB - dislikesA;
+              return sortDirection === "asc"
+                ? dislikesA - dislikesB
+                : dislikesB - dislikesA;
             }
 
             return 0;
@@ -179,12 +193,14 @@ export const useCommentStore = create<CommentState>()(
         },
 
         // Notification management
-        addNotification: (notification: Omit<CommentNotification, 'id' | 'createdAt'>) => {
+        addNotification: (
+          notification: Omit<CommentNotification, "id" | "createdAt">,
+        ) => {
           const newNotification: CommentNotification = {
             ...notification,
             id: Math.random().toString(36).substr(2, 9),
             createdAt: new Date(),
-            read: false
+            read: false,
           };
           set((state) => ({
             notifications: [...state.notifications, newNotification],
@@ -194,7 +210,9 @@ export const useCommentStore = create<CommentState>()(
         markNotificationAsRead: (id: string) => {
           set((state) => ({
             notifications: state.notifications.map((notification) =>
-              notification.id === id ? { ...notification, read: true } : notification
+              notification.id === id
+                ? { ...notification, read: true }
+                : notification,
             ),
           }));
         },
@@ -202,20 +220,24 @@ export const useCommentStore = create<CommentState>()(
         markAllNotificationsAsRead: () => {
           set((state) => ({
             notifications: state.notifications.map((notification) =>
-              notification.read ? notification : { ...notification, read: true }
+              notification.read
+                ? notification
+                : { ...notification, read: true },
             ),
           }));
         },
 
         dismissNotification: (id: string) => {
           set((state) => ({
-            notifications: state.notifications.filter((notification) => notification.id !== id),
+            notifications: state.notifications.filter(
+              (notification) => notification.id !== id,
+            ),
           }));
         },
 
         // Get comments by task
         getCommentsByTask: (taskId: string): Comment[] => {
-          return get().comments.filter(comment => comment.taskId === taskId);
+          return get().comments.filter((comment) => comment.taskId === taskId);
         },
 
         // Get comment statistics
@@ -227,17 +249,21 @@ export const useCommentStore = create<CommentState>()(
           const comments = get().comments;
           const byUser: Record<string, number> = {};
           const recent = [...comments]
-            .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+            .sort(
+              (a, b) =>
+                new Date(b.timestamp).getTime() -
+                new Date(a.timestamp).getTime(),
+            )
             .slice(0, 5);
 
-          comments.forEach(comment => {
+          comments.forEach((comment) => {
             byUser[comment.user] = (byUser[comment.user] || 0) + 1;
           });
 
           return {
             total: comments.length,
             byUser,
-            recent
+            recent,
           };
         },
 
@@ -245,32 +271,35 @@ export const useCommentStore = create<CommentState>()(
         initializeSampleComments: () => {
           const sampleComments: Comment[] = [
             {
-              id: 'comment-1',
-              taskId: 'task-1',
-              user: 'user-1',
-              content: 'Great work on the documentation! This will be very helpful for new users.',
+              id: "comment-1",
+              taskId: "task-1",
+              user: "user-1",
+              content:
+                "Great work on the documentation! This will be very helpful for new users.",
               timestamp: new Date(),
               likes: 2,
-              dislikes: 0
+              dislikes: 0,
             },
             {
-              id: 'comment-2',
-              taskId: 'task-1',
-              user: 'user-2',
-              content: 'I have a question about the authentication flow. Can you clarify how the token refresh works?',
+              id: "comment-2",
+              taskId: "task-1",
+              user: "user-2",
+              content:
+                "I have a question about the authentication flow. Can you clarify how the token refresh works?",
               timestamp: new Date(Date.now() - 3600000), // 1 hour ago
               likes: 1,
-              dislikes: 0
+              dislikes: 0,
             },
             {
-              id: 'comment-3',
-              taskId: 'task-2',
-              user: 'user-1',
-              content: 'The pull request looks good overall. Just a few minor style suggestions.',
+              id: "comment-3",
+              taskId: "task-2",
+              user: "user-1",
+              content:
+                "The pull request looks good overall. Just a few minor style suggestions.",
               timestamp: new Date(Date.now() - 7200000), // 2 hours ago
               likes: 3,
-              dislikes: 0
-            }
+              dislikes: 0,
+            },
           ];
 
           set({ comments: sampleComments });
@@ -278,11 +307,11 @@ export const useCommentStore = create<CommentState>()(
         },
       }),
       {
-        name: 'todone-comments-storage',
+        name: "todone-comments-storage",
         storage: createJSONStorage(() => localStorage),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
 
 // Helper function to create localStorage

@@ -1,14 +1,14 @@
-import { EmptyStateConfig } from '../types/emptyStateTypes';
+import { EmptyStateConfig } from "../types/emptyStateTypes";
 
 class EmptyStateService {
   private static instance: EmptyStateService;
   private emptyStateConfigs: Map<string, EmptyStateConfig> = new Map();
   private defaultConfig: EmptyStateConfig = {
-    title: 'No content available',
-    description: 'There is nothing to display here yet',
+    title: "No content available",
+    description: "There is nothing to display here yet",
     icon: null,
     actions: null,
-    show: true
+    show: true,
   };
 
   private constructor() {
@@ -45,7 +45,10 @@ class EmptyStateService {
    * @param key Unique identifier for the empty state
    * @param config Partial empty state configuration to update
    */
-  public updateEmptyStateConfig(key: string, config: Partial<EmptyStateConfig>): void {
+  public updateEmptyStateConfig(
+    key: string,
+    config: Partial<EmptyStateConfig>,
+  ): void {
     const existingConfig = this.getEmptyStateConfig(key);
     this.emptyStateConfigs.set(key, { ...existingConfig, ...config });
   }

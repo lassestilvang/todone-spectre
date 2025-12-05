@@ -4,10 +4,14 @@
  * Provides realistic mock behavior for testing without real service dependencies
  */
 
-import { Task, RecurringTaskConfig, RecurringPatternConfig } from '../../types/task';
-import { RecurringPattern, TaskStatus, PriorityLevel } from '../../types/enums';
-import { addDays, addWeeks, addMonths, addYears } from 'date-fns';
-import { faker } from '@faker-js/faker';
+import {
+  Task,
+  RecurringTaskConfig,
+  RecurringPatternConfig,
+} from "../../types/task";
+import { RecurringPattern, TaskStatus, PriorityLevel } from "../../types/enums";
+import { addDays, addWeeks, addMonths, addYears } from "date-fns";
+import { faker } from "@faker-js/faker";
 
 /**
  * Mock Recurring Task Service
@@ -15,7 +19,8 @@ import { faker } from '@faker-js/faker';
 export class MockRecurringTaskService {
   private tasks: Task[] = [];
   private instances: Task[] = [];
-  private callHistory: Array<{ method: string; args: any[]; timestamp: Date }> = [];
+  private callHistory: Array<{ method: string; args: any[]; timestamp: Date }> =
+    [];
 
   constructor(initialTasks: Task[] = []) {
     this.tasks = [...initialTasks];
@@ -25,8 +30,8 @@ export class MockRecurringTaskService {
    * Create a new recurring task (mock)
    */
   async createRecurringTask(
-    taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'completed'>,
-    config: RecurringTaskConfig
+    taskData: Omit<Task, "id" | "createdAt" | "updatedAt" | "completed">,
+    config: RecurringTaskConfig,
   ): Promise<Task> {
     const newTask: Task = {
       ...taskData,
@@ -34,17 +39,17 @@ export class MockRecurringTaskService {
       createdAt: new Date(),
       updatedAt: new Date(),
       completed: false,
-      status: taskData.status || 'active',
-      priority: taskData.priority || 'P2',
+      status: taskData.status || "active",
+      priority: taskData.priority || "P2",
       recurringPattern: config.pattern,
       customFields: {
         recurringConfig: config,
-        ...(taskData.customFields || {})
-      }
+        ...(taskData.customFields || {}),
+      },
     };
 
     this.tasks.push(newTask);
-    this.recordCall('createRecurringTask', [taskData, config]);
+    this.recordCall("createRecurringTask", [taskData, config]);
 
     // Generate initial instances
     await this.generateRecurringInstances(newTask, config);
@@ -56,18 +61,18 @@ export class MockRecurringTaskService {
    * Get recurring tasks (mock)
    */
   async getRecurringTasks(): Promise<Task[]> {
-    this.recordCall('getRecurringTasks', []);
-    return this.tasks.filter(task => task.recurringPattern);
+    this.recordCall("getRecurringTasks", []);
+    return this.tasks.filter((task) => task.recurringPattern);
   }
 
   /**
    * Get recurring task by ID (mock)
    */
   async getRecurringTask(taskId: string): Promise<Task> {
-    this.recordCall('getRecurringTask', [taskId]);
-    const task = this.tasks.find(t => t.id === taskId);
+    this.recordCall("getRecurringTask", [taskId]);
+    const task = this.tasks.find((t) => t.id === taskId);
     if (!task) {
-      throw new Error('Task not found');
+      throw new Error("Task not found");
     }
     return task;
   }
@@ -78,13 +83,13 @@ export class MockRecurringTaskService {
   async updateRecurringTask(
     taskId: string,
     updates: Partial<Task>,
-    configUpdates?: Partial<RecurringTaskConfig>
+    configUpdates?: Partial<RecurringTaskConfig>,
   ): Promise<Task> {
-    this.recordCall('updateRecurringTask', [taskId, updates, configUpdates]);
+    this.recordCall("updateRecurringTask", [taskId, updates, configUpdates]);
 
-    const taskIndex = this.tasks.findIndex(t => t.id === taskId);
+    const taskIndex = this.tasks.findIndex((t) => t.id === taskId);
     if (taskIndex === -1) {
-      throw new Error('Task not found');
+      throw new Error("Task not found");
     }
 
     const updatedTask = {
@@ -97,10 +102,10 @@ export class MockRecurringTaskService {
         ...(configUpdates && {
           recurringConfig: {
             ...this.tasks[taskIndex].customFields?.recurringConfig,
-            ...configUpdates
-          }
-        })
-      }
+            ...configUpdates,
+          },
+        }),
+      },
     };
 
     this.tasks[taskIndex] = updatedTask;
@@ -109,7 +114,7 @@ export class MockRecurringTaskService {
     if (configUpdates) {
       await this.regenerateRecurringInstances(updatedTask, {
         ...this.tasks[taskIndex].customFields?.recurringConfig,
-        ...configUpdates
+        ...configUpdates,
       });
     }
 
@@ -119,17 +124,20 @@ export class MockRecurringTaskService {
   /**
    * Delete a recurring task (mock)
    */
-  async deleteRecurringTask(taskId: string, confirm: boolean = true): Promise<void> {
-    this.recordCall('deleteRecurringTask', [taskId, confirm]);
+  async deleteRecurringTask(
+    taskId: string,
+    confirm: boolean = true,
+  ): Promise<void> {
+    this.recordCall("deleteRecurringTask", [taskId, confirm]);
 
-    const taskIndex = this.tasks.findIndex(t => t.id === taskId);
+    const taskIndex = this.tasks.findIndex((t) => t.id === taskId);
     if (taskIndex === -1) {
-      throw new Error('Task not found');
+      throw new Error("Task not found");
     }
 
     // Remove all instances first
-    this.instances = this.instances.filter(i =>
-      i.customFields?.originalTaskId !== taskId
+    this.instances = this.instances.filter(
+      (i) => i.customFields?.originalTaskId !== taskId,
     );
 
     // Remove the task
@@ -141,9 +149,9 @@ export class MockRecurringTaskService {
    */
   async generateRecurringInstances(
     task: Task,
-    config: RecurringTaskConfig
+    config: RecurringTaskConfig,
   ): Promise<Task[]> {
-    this.recordCall('generateRecurringInstances', [task, config]);
+    this.recordCall("generateRecurringInstances", [task, config]);
 
     if (!task.recurringPattern || !task.dueDate) {
       return [];
@@ -163,8 +171,8 @@ export class MockRecurringTaskService {
       customFields: {
         ...task.customFields,
         originalTaskId: task.id,
-        isRecurringInstance: false
-      }
+        isRecurringInstance: false,
+      },
     });
 
     // Generate future instances
@@ -172,7 +180,11 @@ export class MockRecurringTaskService {
       if (endDate && currentDate > endDate) break;
       if (count >= maxCount) break;
 
-      currentDate = this.getNextDate(currentDate, task.recurringPattern, config);
+      currentDate = this.getNextDate(
+        currentDate,
+        task.recurringPattern,
+        config,
+      );
       if (currentDate < new Date()) continue; // Skip past dates
 
       const instanceId = `${task.id}-instance-${count + 1}`;
@@ -186,12 +198,12 @@ export class MockRecurringTaskService {
           ...task.customFields,
           originalTaskId: task.id,
           isRecurringInstance: true,
-          instanceNumber: count + 1
+          instanceNumber: count + 1,
         },
         createdAt: new Date(),
         updatedAt: new Date(),
         completed: false,
-        status: 'active'
+        status: "active",
       };
 
       instances.push(generatedTask);
@@ -208,13 +220,13 @@ export class MockRecurringTaskService {
    */
   async regenerateRecurringInstances(
     task: Task,
-    config: RecurringTaskConfig
+    config: RecurringTaskConfig,
   ): Promise<void> {
-    this.recordCall('regenerateRecurringInstances', [task, config]);
+    this.recordCall("regenerateRecurringInstances", [task, config]);
 
     // Remove existing instances
-    this.instances = this.instances.filter(i =>
-      i.customFields?.originalTaskId !== task.id
+    this.instances = this.instances.filter(
+      (i) => i.customFields?.originalTaskId !== task.id,
     );
 
     // Generate new instances
@@ -225,25 +237,25 @@ export class MockRecurringTaskService {
    * Complete a recurring instance (mock)
    */
   async completeRecurringInstance(instanceId: string): Promise<Task> {
-    this.recordCall('completeRecurringInstance', [instanceId]);
+    this.recordCall("completeRecurringInstance", [instanceId]);
 
-    const instanceIndex = this.instances.findIndex(i => i.id === instanceId);
+    const instanceIndex = this.instances.findIndex((i) => i.id === instanceId);
     if (instanceIndex === -1) {
-      throw new Error('Instance not found');
+      throw new Error("Instance not found");
     }
 
     const completedInstance = {
       ...this.instances[instanceIndex],
       completed: true,
       completedAt: new Date(),
-      status: 'completed'
+      status: "completed",
     };
 
     this.instances[instanceIndex] = completedInstance;
 
     // Check if we should generate next instance
-    const originalTask = this.tasks.find(t =>
-      t.id === completedInstance.customFields?.originalTaskId
+    const originalTask = this.tasks.find(
+      (t) => t.id === completedInstance.customFields?.originalTaskId,
     );
 
     if (originalTask && originalTask.recurringPattern) {
@@ -265,21 +277,26 @@ export class MockRecurringTaskService {
     pendingInstances: number;
     nextInstanceDate?: Date;
   } {
-    this.recordCall('getRecurringTaskStats', [taskId]);
+    this.recordCall("getRecurringTaskStats", [taskId]);
 
     const instances = this.getRecurringInstances(taskId);
-    const completedInstances = instances.filter(i => i.completed);
-    const pendingInstances = instances.filter(i => !i.completed && i.status !== 'archived');
+    const completedInstances = instances.filter((i) => i.completed);
+    const pendingInstances = instances.filter(
+      (i) => !i.completed && i.status !== "archived",
+    );
 
     const futureInstances = instances
-      .filter(i => !i.completed && i.dueDate && i.dueDate > new Date())
-      .sort((a, b) => (a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0));
+      .filter((i) => !i.completed && i.dueDate && i.dueDate > new Date())
+      .sort(
+        (a, b) => (a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0),
+      );
 
     return {
       totalInstances: instances.length,
       completedInstances: completedInstances.length,
       pendingInstances: pendingInstances.length,
-      nextInstanceDate: futureInstances.length > 0 ? futureInstances[0].dueDate : undefined
+      nextInstanceDate:
+        futureInstances.length > 0 ? futureInstances[0].dueDate : undefined,
     };
   }
 
@@ -287,10 +304,12 @@ export class MockRecurringTaskService {
    * Get all instances for a recurring task (mock)
    */
   getRecurringInstances(taskId: string): Task[] {
-    this.recordCall('getRecurringInstances', [taskId]);
+    this.recordCall("getRecurringInstances", [taskId]);
     return [
-      ...this.tasks.filter(t => t.id === taskId),
-      ...this.instances.filter(i => i.customFields?.originalTaskId === taskId)
+      ...this.tasks.filter((t) => t.id === taskId),
+      ...this.instances.filter(
+        (i) => i.customFields?.originalTaskId === taskId,
+      ),
     ].sort((a, b) => (a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0));
   }
 
@@ -298,33 +317,43 @@ export class MockRecurringTaskService {
    * Get upcoming recurring instances (mock)
    */
   async getUpcomingRecurringInstances(daysAhead: number = 30): Promise<Task[]> {
-    this.recordCall('getUpcomingRecurringInstances', [daysAhead]);
+    this.recordCall("getUpcomingRecurringInstances", [daysAhead]);
 
     const today = new Date();
     const futureDate = addDays(today, daysAhead);
 
-    return this.instances.filter(instance =>
-      instance.customFields?.isRecurringInstance &&
-      instance.dueDate &&
-      instance.dueDate > today &&
-      instance.dueDate < futureDate
-    ).sort((a, b) => (a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0));
+    return this.instances
+      .filter(
+        (instance) =>
+          instance.customFields?.isRecurringInstance &&
+          instance.dueDate &&
+          instance.dueDate > today &&
+          instance.dueDate < futureDate,
+      )
+      .sort(
+        (a, b) => (a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0),
+      );
   }
 
   /**
    * Get overdue recurring instances (mock)
    */
   async getOverdueRecurringInstances(): Promise<Task[]> {
-    this.recordCall('getOverdueRecurringInstances', []);
+    this.recordCall("getOverdueRecurringInstances", []);
 
     const today = new Date();
 
-    return this.instances.filter(instance =>
-      instance.customFields?.isRecurringInstance &&
-      instance.dueDate &&
-      instance.dueDate < today &&
-      !instance.completed
-    ).sort((a, b) => (a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0));
+    return this.instances
+      .filter(
+        (instance) =>
+          instance.customFields?.isRecurringInstance &&
+          instance.dueDate &&
+          instance.dueDate < today &&
+          !instance.completed,
+      )
+      .sort(
+        (a, b) => (a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0),
+      );
   }
 
   /**
@@ -337,41 +366,43 @@ export class MockRecurringTaskService {
     completedInstances: number;
     pendingInstances: number;
   }> {
-    this.recordCall('getRecurringTaskCompletionStats', []);
+    this.recordCall("getRecurringTaskCompletionStats", []);
 
-    const recurringTasks = this.tasks.filter(task => task.recurringPattern);
-    const recurringInstances = this.instances.filter(instance =>
-      instance.customFields?.isRecurringInstance
+    const recurringTasks = this.tasks.filter((task) => task.recurringPattern);
+    const recurringInstances = this.instances.filter(
+      (instance) => instance.customFields?.isRecurringInstance,
     );
 
     return {
       totalRecurringTasks: recurringTasks.length,
-      activeRecurringTasks: recurringTasks.filter(t =>
-        t.status === 'active' && !t.customFields?.isPaused
+      activeRecurringTasks: recurringTasks.filter(
+        (t) => t.status === "active" && !t.customFields?.isPaused,
       ).length,
-      pausedRecurringTasks: recurringTasks.filter(t =>
-        t.customFields?.isPaused
+      pausedRecurringTasks: recurringTasks.filter(
+        (t) => t.customFields?.isPaused,
       ).length,
-      completedInstances: recurringInstances.filter(i => i.completed).length,
-      pendingInstances: recurringInstances.filter(i => !i.completed).length
+      completedInstances: recurringInstances.filter((i) => i.completed).length,
+      pendingInstances: recurringInstances.filter((i) => !i.completed).length,
     };
   }
 
   /**
    * Get recurring task pattern distribution (mock)
    */
-  async getRecurringTaskPatternDistribution(): Promise<Record<RecurringPattern, number>> {
-    this.recordCall('getRecurringTaskPatternDistribution', []);
+  async getRecurringTaskPatternDistribution(): Promise<
+    Record<RecurringPattern, number>
+  > {
+    this.recordCall("getRecurringTaskPatternDistribution", []);
 
     const patternCounts: Record<RecurringPattern, number> = {
       daily: 0,
       weekly: 0,
       monthly: 0,
       yearly: 0,
-      custom: 0
+      custom: 0,
     };
 
-    this.tasks.forEach(task => {
+    this.tasks.forEach((task) => {
       if (task.recurringPattern) {
         patternCounts[task.recurringPattern]++;
       }
@@ -405,25 +436,29 @@ export class MockRecurringTaskService {
 
   // Private helper methods
 
-  private getNextDate(currentDate: Date, pattern: RecurringPattern, config?: RecurringTaskConfig): Date {
+  private getNextDate(
+    currentDate: Date,
+    pattern: RecurringPattern,
+    config?: RecurringTaskConfig,
+  ): Date {
     switch (pattern) {
-      case 'daily':
+      case "daily":
         return addDays(currentDate, config?.customInterval || 1);
-      case 'weekly':
+      case "weekly":
         return addWeeks(currentDate, config?.customInterval || 1);
-      case 'monthly':
+      case "monthly":
         return addMonths(currentDate, config?.customInterval || 1);
-      case 'yearly':
+      case "yearly":
         return addYears(currentDate, config?.customInterval || 1);
-      case 'custom':
+      case "custom":
       default:
-        if (config?.customUnit === 'days') {
+        if (config?.customUnit === "days") {
           return addDays(currentDate, config.customInterval || 1);
-        } else if (config?.customUnit === 'weeks') {
+        } else if (config?.customUnit === "weeks") {
           return addWeeks(currentDate, config.customInterval || 1);
-        } else if (config?.customUnit === 'months') {
+        } else if (config?.customUnit === "months") {
           return addMonths(currentDate, config.customInterval || 1);
-        } else if (config?.customUnit === 'years') {
+        } else if (config?.customUnit === "years") {
           return addYears(currentDate, config.customInterval || 1);
         }
         return addWeeks(currentDate, config?.customInterval || 1);
@@ -431,7 +466,7 @@ export class MockRecurringTaskService {
   }
 
   private generateNextRecurringInstance(task: Task): Promise<Task | null> {
-    this.recordCall('generateNextRecurringInstance', [task]);
+    this.recordCall("generateNextRecurringInstance", [task]);
 
     if (!task.recurringPattern || !task.dueDate) {
       return Promise.resolve(null);
@@ -444,11 +479,12 @@ export class MockRecurringTaskService {
 
     // Find the most recent instance
     const instances = this.getRecurringInstances(task.id);
-    const latestInstance = instances.length > 0 ? instances[instances.length - 1] : task;
+    const latestInstance =
+      instances.length > 0 ? instances[instances.length - 1] : task;
     const nextDate = this.getNextDate(
       new Date(latestInstance.dueDate || task.dueDate),
       task.recurringPattern,
-      config
+      config,
     );
 
     // Check if we should generate more instances
@@ -474,12 +510,12 @@ export class MockRecurringTaskService {
         ...task.customFields,
         originalTaskId: task.id,
         isRecurringInstance: true,
-        instanceNumber: instances.length + 1
+        instanceNumber: instances.length + 1,
       },
       createdAt: new Date(),
       updatedAt: new Date(),
       completed: false,
-      status: 'active'
+      status: "active",
     };
 
     this.instances.push(generatedTask);
@@ -490,7 +526,7 @@ export class MockRecurringTaskService {
     this.callHistory.push({
       method,
       args,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 }
@@ -499,35 +535,39 @@ export class MockRecurringTaskService {
  * Mock Recurring Pattern Service
  */
 export class MockRecurringPatternService {
-  private callHistory: Array<{ method: string; args: any[]; timestamp: Date }> = [];
+  private callHistory: Array<{ method: string; args: any[]; timestamp: Date }> =
+    [];
 
   /**
    * Validate pattern configuration (mock)
    */
-  validatePatternConfig(config: RecurringPatternConfig): { valid: boolean; errors: string[] } {
-    this.recordCall('validatePatternConfig', [config]);
+  validatePatternConfig(config: RecurringPatternConfig): {
+    valid: boolean;
+    errors: string[];
+  } {
+    this.recordCall("validatePatternConfig", [config]);
 
     const errors: string[] = [];
 
     if (!config.pattern) {
-      errors.push('Pattern is required');
+      errors.push("Pattern is required");
     }
 
     if (!config.startDate) {
-      errors.push('Start date is required');
+      errors.push("Start date is required");
     }
 
     if (config.maxOccurrences && config.maxOccurrences < 1) {
-      errors.push('Maximum occurrences must be at least 1');
+      errors.push("Maximum occurrences must be at least 1");
     }
 
     if (config.interval && config.interval < 1) {
-      errors.push('Interval must be at least 1');
+      errors.push("Interval must be at least 1");
     }
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
@@ -537,9 +577,9 @@ export class MockRecurringPatternService {
   generateRecurringDates(
     startDate: Date,
     config: RecurringPatternConfig,
-    count: number
+    count: number,
   ): Date[] {
-    this.recordCall('generateRecurringDates', [startDate, config, count]);
+    this.recordCall("generateRecurringDates", [startDate, config, count]);
 
     const dates: Date[] = [];
     let currentDate = new Date(startDate);
@@ -547,22 +587,22 @@ export class MockRecurringPatternService {
     for (let i = 0; i < count; i++) {
       dates.push(new Date(currentDate));
 
-      if (config.pattern === 'daily') {
+      if (config.pattern === "daily") {
         currentDate = addDays(currentDate, config.interval || 1);
-      } else if (config.pattern === 'weekly') {
+      } else if (config.pattern === "weekly") {
         currentDate = addWeeks(currentDate, config.interval || 1);
-      } else if (config.pattern === 'monthly') {
+      } else if (config.pattern === "monthly") {
         currentDate = addMonths(currentDate, config.interval || 1);
-      } else if (config.pattern === 'yearly') {
+      } else if (config.pattern === "yearly") {
         currentDate = addYears(currentDate, config.interval || 1);
-      } else if (config.pattern === 'custom') {
-        if (config.customUnit === 'days') {
+      } else if (config.pattern === "custom") {
+        if (config.customUnit === "days") {
           currentDate = addDays(currentDate, config.interval || 1);
-        } else if (config.customUnit === 'weeks') {
+        } else if (config.customUnit === "weeks") {
           currentDate = addWeeks(currentDate, config.interval || 1);
-        } else if (config.customUnit === 'months') {
+        } else if (config.customUnit === "months") {
           currentDate = addMonths(currentDate, config.interval || 1);
-        } else if (config.customUnit === 'years') {
+        } else if (config.customUnit === "years") {
           currentDate = addYears(currentDate, config.interval || 1);
         }
       }
@@ -575,19 +615,19 @@ export class MockRecurringPatternService {
    * Get default pattern configuration (mock)
    */
   getDefaultPatternConfig(pattern: RecurringPattern): RecurringPatternConfig {
-    this.recordCall('getDefaultPatternConfig', [pattern]);
+    this.recordCall("getDefaultPatternConfig", [pattern]);
 
     const baseConfig: RecurringPatternConfig = {
       pattern,
       frequency: pattern,
-      endCondition: 'never',
+      endCondition: "never",
       endDate: null,
       maxOccurrences: null,
       interval: 1,
       customDays: null,
       customMonthDays: null,
       customMonthPosition: null,
-      customMonthDay: null
+      customMonthDay: null,
     };
 
     return baseConfig;
@@ -611,7 +651,7 @@ export class MockRecurringPatternService {
     this.callHistory.push({
       method,
       args,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 }
@@ -622,7 +662,8 @@ export class MockRecurringPatternService {
 export class MockRecurringTaskIntegration {
   private mockTaskService: MockRecurringTaskService;
   private mockPatternService: MockRecurringPatternService;
-  private callHistory: Array<{ method: string; args: any[]; timestamp: Date }> = [];
+  private callHistory: Array<{ method: string; args: any[]; timestamp: Date }> =
+    [];
 
   constructor() {
     this.mockTaskService = new MockRecurringTaskService();
@@ -633,17 +674,17 @@ export class MockRecurringTaskIntegration {
    * Initialize mock services
    */
   initialize(): void {
-    this.recordCall('initialize', []);
+    this.recordCall("initialize", []);
   }
 
   /**
    * Create recurring task with full integration (mock)
    */
   async createRecurringTaskIntegrated(
-    taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'completed'>,
-    config: RecurringTaskConfig
+    taskData: Omit<Task, "id" | "createdAt" | "updatedAt" | "completed">,
+    config: RecurringTaskConfig,
   ): Promise<Task> {
-    this.recordCall('createRecurringTaskIntegrated', [taskData, config]);
+    this.recordCall("createRecurringTaskIntegrated", [taskData, config]);
 
     // Validate configuration
     const validation = this.mockPatternService.validatePatternConfig({
@@ -652,11 +693,11 @@ export class MockRecurringTaskIntegration {
       endDate: config.endDate,
       maxOccurrences: config.maxOccurrences,
       interval: config.customInterval || 1,
-      customUnit: config.customUnit || null
+      customUnit: config.customUnit || null,
     });
 
     if (!validation.valid) {
-      throw new Error(`Invalid configuration: ${validation.errors.join(', ')}`);
+      throw new Error(`Invalid configuration: ${validation.errors.join(", ")}`);
     }
 
     // Create the task
@@ -676,7 +717,7 @@ export class MockRecurringTaskIntegration {
       nextInstanceDate?: Date;
     };
   }> {
-    this.recordCall('getComprehensiveRecurringTaskData', [taskId]);
+    this.recordCall("getComprehensiveRecurringTaskData", [taskId]);
 
     const task = await this.mockTaskService.getRecurringTask(taskId);
     const instances = this.mockTaskService.getRecurringInstances(taskId);
@@ -685,7 +726,7 @@ export class MockRecurringTaskIntegration {
     return {
       task,
       instances,
-      stats
+      stats,
     };
   }
 
@@ -702,7 +743,7 @@ export class MockRecurringTaskIntegration {
       errorRate: number;
     };
   }> {
-    this.recordCall('getSystemHealthReport', []);
+    this.recordCall("getSystemHealthReport", []);
 
     return {
       healthScore: 95,
@@ -711,8 +752,8 @@ export class MockRecurringTaskIntegration {
       performanceMetrics: {
         averageResponseTime: 150,
         memoryUsage: 1024,
-        errorRate: 0.01
-      }
+        errorRate: 0.01,
+      },
     };
   }
 
@@ -720,7 +761,7 @@ export class MockRecurringTaskIntegration {
    * Reset all mock services
    */
   reset(): void {
-    this.recordCall('reset', []);
+    this.recordCall("reset", []);
     this.mockTaskService.reset();
     this.mockPatternService.reset();
     this.callHistory = [];
@@ -732,14 +773,14 @@ export class MockRecurringTaskIntegration {
   getCallHistory(): Array<{ method: string; args: any[]; timestamp: Date }> {
     return [
       ...this.callHistory,
-      ...this.mockTaskService.getCallHistory().map(call => ({
+      ...this.mockTaskService.getCallHistory().map((call) => ({
         ...call,
-        method: `taskService.${call.method}`
+        method: `taskService.${call.method}`,
       })),
-      ...this.mockPatternService.getCallHistory().map(call => ({
+      ...this.mockPatternService.getCallHistory().map((call) => ({
         ...call,
-        method: `patternService.${call.method}`
-      }))
+        method: `patternService.${call.method}`,
+      })),
     ];
   }
 
@@ -747,7 +788,7 @@ export class MockRecurringTaskIntegration {
     this.callHistory.push({
       method,
       args,
-      timestamp: new Date()
+      timestamp: new Date(),
     });
   }
 }

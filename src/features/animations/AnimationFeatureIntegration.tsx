@@ -1,20 +1,22 @@
-import React from 'react';
-import { AnimationSystemIntegration } from './AnimationSystemIntegration';
+import React from "react";
+import { AnimationSystemIntegration } from "./AnimationSystemIntegration";
 
 interface AnimationFeatureIntegrationProps {
   children: React.ReactNode;
-  performanceMode?: 'balanced' | 'performance' | 'quality';
-  accessibilityMode?: 'auto' | 'enhanced' | 'minimal';
+  performanceMode?: "balanced" | "performance" | "quality";
+  accessibilityMode?: "auto" | "enhanced" | "minimal";
   showControls?: boolean;
   maxConcurrentAnimations?: number;
 }
 
-export const AnimationFeatureIntegration: React.FC<AnimationFeatureIntegrationProps> = ({
+export const AnimationFeatureIntegration: React.FC<
+  AnimationFeatureIntegrationProps
+> = ({
   children,
-  performanceMode = 'balanced',
-  accessibilityMode = 'auto',
+  performanceMode = "balanced",
+  accessibilityMode = "auto",
   showControls = true,
-  maxConcurrentAnimations = 3
+  maxConcurrentAnimations = 3,
 }) => {
   return (
     <AnimationSystemIntegration

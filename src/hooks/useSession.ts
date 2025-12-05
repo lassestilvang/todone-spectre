@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { getSession, isAuthenticated, validateToken } from '../utils/auth';
+import { useState, useEffect } from "react";
+import { getSession, isAuthenticated, validateToken } from "../utils/auth";
 
 export const useSession = () => {
   const [session, setSession] = useState<{

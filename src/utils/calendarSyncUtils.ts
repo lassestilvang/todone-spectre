@@ -1,5 +1,5 @@
-import { CalendarEventType, CalendarType } from '../types/calendarTypes';
-import { Task } from '../types/taskTypes';
+import { CalendarEventType, CalendarType } from "../types/calendarTypes";
+import { Task } from "../types/taskTypes";
 
 /**
  * Calendar Sync Utilities
@@ -10,17 +10,17 @@ export class CalendarSyncUtils {
    * Convert tasks to calendar events
    */
   static convertTasksToCalendarEvents(tasks: Task[]): CalendarEventType[] {
-    return tasks.map(task => ({
+    return tasks.map((task) => ({
       id: `task-event-${task.id}`,
-      title: task.title || 'Untitled Task',
-      description: task.description || '',
+      title: task.title || "Untitled Task",
+      description: task.description || "",
       startDate: task.dueDate || new Date().toISOString(),
       endDate: task.dueDate || new Date().toISOString(),
-      priority: task.priority || 'normal',
+      priority: task.priority || "normal",
       taskId: task.id,
-      status: task.completed ? 'completed' : 'confirmed',
+      status: task.completed ? "completed" : "confirmed",
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     }));
   }
 
@@ -28,23 +28,26 @@ export class CalendarSyncUtils {
    * Convert calendar events to tasks
    */
   static convertCalendarEventsToTasks(events: CalendarEventType[]): Task[] {
-    return events.map(event => ({
+    return events.map((event) => ({
       id: event.taskId || `event-task-${event.id}`,
       title: event.title,
-      description: event.description || '',
+      description: event.description || "",
       dueDate: event.startDate.toString(),
-      priority: event.priority || 'normal',
-      completed: event.status === 'completed',
+      priority: event.priority || "normal",
+      completed: event.status === "completed",
       createdAt: event.createdAt?.toString() || new Date().toISOString(),
-      updatedAt: event.updatedAt?.toString() || new Date().toISOString()
+      updatedAt: event.updatedAt?.toString() || new Date().toISOString(),
     }));
   }
 
   /**
    * Filter events by calendar type
    */
-  static filterEventsByCalendarType(events: CalendarEventType[], calendarType: string): CalendarEventType[] {
-    return events.filter(event => {
+  static filterEventsByCalendarType(
+    events: CalendarEventType[],
+    calendarType: string,
+  ): CalendarEventType[] {
+    return events.filter((event) => {
       // This would typically check against calendar metadata
       // For now, we'll implement a simple filter
       return true;
@@ -54,8 +57,11 @@ export class CalendarSyncUtils {
   /**
    * Filter calendars by type
    */
-  static filterCalendarsByType(calendars: CalendarType[], types: string[]): CalendarType[] {
-    return calendars.filter(calendar => types.includes(calendar.type));
+  static filterCalendarsByType(
+    calendars: CalendarType[],
+    types: string[],
+  ): CalendarType[] {
+    return calendars.filter((calendar) => types.includes(calendar.type));
   }
 
   /**
@@ -92,7 +98,9 @@ export class CalendarSyncUtils {
   /**
    * Merge events from multiple calendars
    */
-  static mergeEventsFromMultipleCalendars(eventGroups: CalendarEventType[][]): CalendarEventType[] {
+  static mergeEventsFromMultipleCalendars(
+    eventGroups: CalendarEventType[][],
+  ): CalendarEventType[] {
     const mergedEvents: CalendarEventType[] = [];
 
     // Simple merge - just combine all events
@@ -111,7 +119,7 @@ export class CalendarSyncUtils {
     syncedEvents: CalendarEventType[],
     createdEvents: CalendarEventType[],
     updatedEvents: CalendarEventType[],
-    errors: Error[]
+    errors: Error[],
   ): {
     totalEvents: number;
     createdEvents: number;
@@ -124,56 +132,67 @@ export class CalendarSyncUtils {
       createdEvents: createdEvents.length,
       updatedEvents: updatedEvents.length,
       errorCount: errors.length,
-      successRate: syncedEvents.length > 0
-        ? ((syncedEvents.length - errors.length) / syncedEvents.length) * 100
-        : 100
+      successRate:
+        syncedEvents.length > 0
+          ? ((syncedEvents.length - errors.length) / syncedEvents.length) * 100
+          : 100,
     };
   }
 
   /**
    * Validate calendar event data
    */
-  static validateCalendarEvent(event: Partial<CalendarEventType>): { valid: boolean; errors: string[] } {
+  static validateCalendarEvent(event: Partial<CalendarEventType>): {
+    valid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
-    if (!event.title || event.title.trim() === '') {
-      errors.push('Title is required');
+    if (!event.title || event.title.trim() === "") {
+      errors.push("Title is required");
     }
 
     if (!event.startDate) {
-      errors.push('Start date is required');
+      errors.push("Start date is required");
     } else {
       const startDate = new Date(event.startDate);
       if (isNaN(startDate.getTime())) {
-        errors.push('Invalid start date');
+        errors.push("Invalid start date");
       }
     }
 
     if (event.endDate) {
       const endDate = new Date(event.endDate);
-      const startDate = new Date(event.startDate || '');
-      if (!isNaN(endDate.getTime()) && !isNaN(startDate.getTime()) && endDate < startDate) {
-        errors.push('End date cannot be before start date');
+      const startDate = new Date(event.startDate || "");
+      if (
+        !isNaN(endDate.getTime()) &&
+        !isNaN(startDate.getTime()) &&
+        endDate < startDate
+      ) {
+        errors.push("End date cannot be before start date");
       }
     }
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
   /**
    * Generate calendar event ID
    */
-  static generateEventId(prefix: string = 'event'): string {
+  static generateEventId(prefix: string = "event"): string {
     return `${prefix}-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`;
   }
 
   /**
    * Check if event is within working hours
    */
-  static isEventWithinWorkingHours(event: CalendarEventType, workHours: { start: string; end: string }): boolean {
+  static isEventWithinWorkingHours(
+    event: CalendarEventType,
+    workHours: { start: string; end: string },
+  ): boolean {
     const startTime = this.parseTimeString(workHours.start);
     const endTime = this.parseTimeString(workHours.end);
     const eventStart = new Date(event.startDate);
@@ -190,7 +209,7 @@ export class CalendarSyncUtils {
    * Parse time string (HH:mm) to minutes
    */
   private static parseTimeString(timeStr: string): number {
-    const [hours, minutes] = timeStr.split(':').map(Number);
+    const [hours, minutes] = timeStr.split(":").map(Number);
     return hours * 60 + minutes;
   }
 }

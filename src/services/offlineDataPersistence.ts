@@ -1,11 +1,11 @@
 /**
  * Offline Data Persistence Service - Handles offline data storage and retrieval
  */
-import { Task } from '../types/task';
-import { useOfflineStore } from '../store/useOfflineStore';
-import { TodoneDatabase } from '../database/db';
-import { SyncEngine } from '../database/sync';
-import { OfflineQueueItem } from '../types/offlineTypes';
+import { Task } from "../types/task";
+import { useOfflineStore } from "../store/useOfflineStore";
+import { TodoneDatabase } from "../database/db";
+import { SyncEngine } from "../database/sync";
+import { OfflineQueueItem } from "../types/offlineTypes";
 
 export class OfflineDataPersistence {
   private static instance: OfflineDataPersistence;
@@ -40,13 +40,13 @@ export class OfflineDataPersistence {
   private loadOfflineData(): void {
     try {
       // Load from localStorage or IndexedDB
-      const savedData = localStorage.getItem('todone-offline-data');
+      const savedData = localStorage.getItem("todone-offline-data");
       if (savedData) {
         const parsedData = JSON.parse(savedData);
         this.restoreOfflineState(parsedData);
       }
     } catch (error) {
-      console.error('Failed to load offline data:', error);
+      console.error("Failed to load offline data:", error);
     }
   }
 
@@ -56,9 +56,9 @@ export class OfflineDataPersistence {
   async saveOfflineData(): Promise<void> {
     try {
       const offlineState = this.getCurrentOfflineState();
-      localStorage.setItem('todone-offline-data', JSON.stringify(offlineState));
+      localStorage.setItem("todone-offline-data", JSON.stringify(offlineState));
     } catch (error) {
-      console.error('Failed to save offline data:', error);
+      console.error("Failed to save offline data:", error);
     }
   }
 
@@ -70,7 +70,7 @@ export class OfflineDataPersistence {
       tasks: this.getOfflineTasks(),
       queue: this.offlineStore.queue.items,
       settings: this.offlineStore.settings,
-      lastSync: this.offlineStore.lastSync
+      lastSync: this.offlineStore.lastSync,
     };
   }
 
@@ -93,10 +93,10 @@ export class OfflineDataPersistence {
 
       // Also update sync engine
       for (const task of tasks) {
-        await this.syncEngine.addToSyncQueue('create', 'tasks', task.id, task);
+        await this.syncEngine.addToSyncQueue("create", "tasks", task.id, task);
       }
     } catch (error) {
-      console.error('Failed to store offline tasks:', error);
+      console.error("Failed to store offline tasks:", error);
       throw error;
     }
   }
@@ -109,7 +109,7 @@ export class OfflineDataPersistence {
       const tasks = await this.db.tasks.toArray();
       return tasks;
     } catch (error) {
-      console.error('Failed to get offline tasks:', error);
+      console.error("Failed to get offline tasks:", error);
       return [];
     }
   }
@@ -125,15 +125,15 @@ export class OfflineDataPersistence {
       // Also add to sync engine for persistence
       await this.syncEngine.addToSyncQueue(
         operation.type,
-        'offline_queue',
+        "offline_queue",
         Date.now(),
-        operation
+        operation,
       );
 
       // Save to local storage
       await this.saveOfflineData();
     } catch (error) {
-      console.error('Failed to store offline operation:', error);
+      console.error("Failed to store offline operation:", error);
       throw error;
     }
   }
@@ -145,7 +145,7 @@ export class OfflineDataPersistence {
     try {
       return this.offlineStore.queue.items;
     } catch (error) {
-      console.error('Failed to get offline operations:', error);
+      console.error("Failed to get offline operations:", error);
       return [];
     }
   }
@@ -158,7 +158,7 @@ export class OfflineDataPersistence {
       const operations = await this.getOfflineOperations();
 
       if (operations.length === 0) {
-        console.log('No offline operations to process');
+        console.log("No offline operations to process");
         return;
       }
 
@@ -169,7 +169,10 @@ export class OfflineDataPersistence {
           await this.processSingleOperation(operation);
           this.offlineStore.removeQueueItem(operation.id);
         } catch (error) {
-          console.error(`Failed to process operation ${operation.operation}:`, error);
+          console.error(
+            `Failed to process operation ${operation.operation}:`,
+            error,
+          );
           this.offlineStore.retryQueueItem(operation.id);
         }
       }
@@ -177,7 +180,7 @@ export class OfflineDataPersistence {
       // Save state after processing
       await this.saveOfflineData();
     } catch (error) {
-      console.error('Failed to process offline operations:', error);
+      console.error("Failed to process offline operations:", error);
       throw error;
     }
   }
@@ -185,19 +188,26 @@ export class OfflineDataPersistence {
   /**
    * Process single offline operation
    */
-  private async processSingleOperation(operation: OfflineQueueItem): Promise<void> {
+  private async processSingleOperation(
+    operation: OfflineQueueItem,
+  ): Promise<void> {
     // This would be implemented based on the specific operation type
     // For now, we'll just log it and mark as completed
     console.log(`Processing offline operation: ${operation.operation}`);
 
     // Simulate processing delay
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
 
     // Mark as completed in sync engine
-    await this.syncEngine.addToSyncQueue('completed', 'offline_queue', Date.now(), {
-      ...operation,
-      status: 'completed'
-    });
+    await this.syncEngine.addToSyncQueue(
+      "completed",
+      "offline_queue",
+      Date.now(),
+      {
+        ...operation,
+        status: "completed",
+      },
+    );
   }
 
   /**
@@ -206,10 +216,10 @@ export class OfflineDataPersistence {
   async syncOfflineData(): Promise<void> {
     try {
       if (this.offlineStore.status.isOffline) {
-        throw new Error('Cannot sync while offline');
+        throw new Error("Cannot sync while offline");
       }
 
-      console.log('Starting offline data sync');
+      console.log("Starting offline data sync");
 
       // Process sync queue
       await this.syncEngine.processSyncQueue();
@@ -217,9 +227,9 @@ export class OfflineDataPersistence {
       // Save state after sync
       await this.saveOfflineData();
 
-      console.log('Offline data sync completed');
+      console.log("Offline data sync completed");
     } catch (error) {
-      console.error('Failed to sync offline data:', error);
+      console.error("Failed to sync offline data:", error);
       throw error;
     }
   }
@@ -235,7 +245,7 @@ export class OfflineDataPersistence {
     return {
       isSyncing: this.offlineStore.sync.isSyncing,
       lastSynced: this.offlineStore.lastSync,
-      pendingOperations: this.offlineStore.pendingChanges
+      pendingOperations: this.offlineStore.pendingChanges,
     };
   }
 
@@ -245,7 +255,7 @@ export class OfflineDataPersistence {
   async clearOfflineData(): Promise<void> {
     try {
       // Clear local storage
-      localStorage.removeItem('todone-offline-data');
+      localStorage.removeItem("todone-offline-data");
 
       // Clear IndexedDB
       await this.db.tasks.clear();
@@ -253,9 +263,9 @@ export class OfflineDataPersistence {
       // Reset offline store
       this.offlineStore.initializeOfflineStore();
 
-      console.log('Offline data cleared');
+      console.log("Offline data cleared");
     } catch (error) {
-      console.error('Failed to clear offline data:', error);
+      console.error("Failed to clear offline data:", error);
       throw error;
     }
   }
@@ -274,20 +284,22 @@ export class OfflineDataPersistence {
 
       // Calculate approximate storage usage
       const tasksSize = JSON.stringify(tasks).length;
-      const queueSizeBytes = JSON.stringify(this.offlineStore.queue.items).length;
+      const queueSizeBytes = JSON.stringify(
+        this.offlineStore.queue.items,
+      ).length;
       const totalSize = tasksSize + queueSizeBytes;
 
       return {
         taskCount: tasks.length,
         queueSize,
-        storageUsage: totalSize
+        storageUsage: totalSize,
       };
     } catch (error) {
-      console.error('Failed to get offline storage stats:', error);
+      console.error("Failed to get offline storage stats:", error);
       return {
         taskCount: 0,
         queueSize: 0,
-        storageUsage: 0
+        storageUsage: 0,
       };
     }
   }
@@ -296,7 +308,10 @@ export class OfflineDataPersistence {
    * Check if offline data needs sync
    */
   needsSync(): boolean {
-    return this.offlineStore.pendingChanges > 0 && !this.offlineStore.status.isOffline;
+    return (
+      this.offlineStore.pendingChanges > 0 &&
+      !this.offlineStore.status.isOffline
+    );
   }
 
   /**
@@ -305,7 +320,7 @@ export class OfflineDataPersistence {
   setupAutoSync(): void {
     // This would be handled by the useEffect in the offline store
     // But we can add additional logic here if needed
-    console.log('Auto-sync setup completed');
+    console.log("Auto-sync setup completed");
   }
 }
 

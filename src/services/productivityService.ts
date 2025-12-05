@@ -1,4 +1,4 @@
-import { Task } from '../database/models';
+import { Task } from "../database/models";
 
 interface ProductivityData {
   tasksCompleted: number;
@@ -84,10 +84,11 @@ export class ProductivityService {
     const lastActive = new Date(this.productivityData.lastActiveDate);
 
     // Check if it's a new day
-    if (today.getDate() !== lastActive.getDate() ||
-        today.getMonth() !== lastActive.getMonth() ||
-        today.getFullYear() !== lastActive.getFullYear()) {
-
+    if (
+      today.getDate() !== lastActive.getDate() ||
+      today.getMonth() !== lastActive.getMonth() ||
+      today.getFullYear() !== lastActive.getFullYear()
+    ) {
       // Check if streak should continue (completed tasks yesterday)
       if (this.productivityData.tasksCompleted > 0) {
         this.productivityData.streak++;
@@ -102,11 +103,14 @@ export class ProductivityService {
   private updateMetrics(): void {
     // Update daily metrics (simplified)
     const todayIndex = new Date().getDay();
-    this.productivityMetrics.dailyProductivity[todayIndex] = this.productivityData.productivityScore;
+    this.productivityMetrics.dailyProductivity[todayIndex] =
+      this.productivityData.productivityScore;
 
     // Update trends
-    this.productivityMetrics.productivityTrends.improvement = this.calculateImprovement();
-    this.productivityMetrics.productivityTrends.consistency = this.calculateConsistency();
+    this.productivityMetrics.productivityTrends.improvement =
+      this.calculateImprovement();
+    this.productivityMetrics.productivityTrends.consistency =
+      this.calculateConsistency();
   }
 
   private calculateImprovement(): number {

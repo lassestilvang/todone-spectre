@@ -1,8 +1,8 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
-import { SearchResult, SearchState } from '../types/search';
-import { Command } from '../types/command';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
+import { SearchResult, SearchState } from "../types/search";
+import { Command } from "../types/command";
 
 export interface SearchStoreState extends SearchState {
   isSearchModalOpen: boolean;
@@ -35,7 +35,7 @@ export interface SearchStoreState extends SearchState {
   setSelectedCommandIndex: (index: number) => void;
   addToCommandHistory: (commandId: string) => void;
   clearCommandHistory: () => void;
-  navigateCommands: (direction: 'up' | 'down') => void;
+  navigateCommands: (direction: "up" | "down") => void;
 }
 
 export const useSearchStore = create<SearchStoreState>()(
@@ -43,7 +43,7 @@ export const useSearchStore = create<SearchStoreState>()(
     persist(
       (set) => ({
         // Search state
-        query: '',
+        query: "",
         results: [],
         isLoading: false,
         error: null,
@@ -66,9 +66,9 @@ export const useSearchStore = create<SearchStoreState>()(
         closeSearchModal: () => {
           set({
             isSearchModalOpen: false,
-            query: '',
+            query: "",
             results: [],
-            error: null
+            error: null,
           });
         },
 
@@ -76,10 +76,10 @@ export const useSearchStore = create<SearchStoreState>()(
           set((state) => ({
             isSearchModalOpen: !state.isSearchModalOpen,
             ...(!state.isSearchModalOpen && {
-              query: '',
+              query: "",
               results: [],
-              error: null
-            })
+              error: null,
+            }),
           }));
         },
 
@@ -87,7 +87,7 @@ export const useSearchStore = create<SearchStoreState>()(
         openCommandPalette: () => {
           set({
             isCommandPaletteOpen: true,
-            selectedCommandIndex: 0
+            selectedCommandIndex: 0,
           });
         },
 
@@ -99,8 +99,8 @@ export const useSearchStore = create<SearchStoreState>()(
           set((state) => ({
             isCommandPaletteOpen: !state.isCommandPaletteOpen,
             ...(!state.isCommandPaletteOpen && {
-              selectedCommandIndex: 0
-            })
+              selectedCommandIndex: 0,
+            }),
           }));
         },
 
@@ -115,10 +115,10 @@ export const useSearchStore = create<SearchStoreState>()(
 
         clearSearch: () => {
           set({
-            query: '',
+            query: "",
             results: [],
             error: null,
-            isLoading: false
+            isLoading: false,
           });
         },
 
@@ -126,21 +126,23 @@ export const useSearchStore = create<SearchStoreState>()(
         setCommands: (commands: Command[]) => {
           set({
             commands,
-            filteredCommands: commands
+            filteredCommands: commands,
           });
         },
 
         addCommand: (command: Command) => {
           set((state) => ({
             commands: [...state.commands, command],
-            filteredCommands: [...state.filteredCommands, command]
+            filteredCommands: [...state.filteredCommands, command],
           }));
         },
 
         removeCommand: (commandId: string) => {
           set((state) => ({
-            commands: state.commands.filter(cmd => cmd.id !== commandId),
-            filteredCommands: state.filteredCommands.filter(cmd => cmd.id !== commandId)
+            commands: state.commands.filter((cmd) => cmd.id !== commandId),
+            filteredCommands: state.filteredCommands.filter(
+              (cmd) => cmd.id !== commandId,
+            ),
           }));
         },
 
@@ -154,7 +156,7 @@ export const useSearchStore = create<SearchStoreState>()(
 
         addToCommandHistory: (commandId: string) => {
           set((state) => ({
-            commandHistory: [...state.commandHistory, commandId]
+            commandHistory: [...state.commandHistory, commandId],
           }));
         },
 
@@ -162,31 +164,34 @@ export const useSearchStore = create<SearchStoreState>()(
           set({ commandHistory: [] });
         },
 
-        navigateCommands: (direction: 'up' | 'down') => {
+        navigateCommands: (direction: "up" | "down") => {
           set((state) => {
             if (state.filteredCommands.length === 0) return {};
 
-            if (direction === 'up') {
+            if (direction === "up") {
               return {
-                selectedCommandIndex: Math.max(state.selectedCommandIndex - 1, 0)
+                selectedCommandIndex: Math.max(
+                  state.selectedCommandIndex - 1,
+                  0,
+                ),
               };
             } else {
               return {
                 selectedCommandIndex: Math.min(
                   state.selectedCommandIndex + 1,
-                  state.filteredCommands.length - 1
-                )
+                  state.filteredCommands.length - 1,
+                ),
               };
             }
           });
-        }
+        },
       }),
       {
-        name: 'todone-search-storage',
+        name: "todone-search-storage",
         storage: createJSONStorage(() => localStorage),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
 
 // Helper function to create localStorage

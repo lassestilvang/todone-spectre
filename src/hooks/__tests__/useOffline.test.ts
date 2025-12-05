@@ -1,14 +1,14 @@
-import { renderHook, act } from '@testing-library/react';
-import { useOffline } from '../useOffline';
-import { useOfflineStore } from '../../store/useOfflineStore';
-import { OfflineQueueItem } from '../../types/offlineTypes';
+import { renderHook, act } from "@testing-library/react";
+import { useOffline } from "../useOffline";
+import { useOfflineStore } from "../../store/useOfflineStore";
+import { OfflineQueueItem } from "../../types/offlineTypes";
 
 // Mock the offline store
-jest.mock('../../store/useOfflineStore', () => ({
-  useOfflineStore: jest.fn()
+jest.mock("../../store/useOfflineStore", () => ({
+  useOfflineStore: jest.fn(),
 }));
 
-describe('useOffline Hook', () => {
+describe("useOffline Hook", () => {
   const mockStore = {
     isOffline: false,
     pendingChanges: 0,
@@ -20,10 +20,10 @@ describe('useOffline Hook', () => {
       autoSyncEnabled: true,
       syncInterval: 30000,
       maxQueueSize: 100,
-      conflictResolution: 'timestamp',
+      conflictResolution: "timestamp",
       offlineDataRetention: 30,
       showOfflineIndicator: true,
-      syncOnReconnect: true
+      syncOnReconnect: true,
     },
     checkOnlineStatus: jest.fn().mockReturnValue(false),
     addToQueue: jest.fn().mockImplementation((item) => {
@@ -31,8 +31,8 @@ describe('useOffline Hook', () => {
         ...item,
         id: `queue-${Date.now()}`,
         timestamp: new Date(),
-        status: 'pending',
-        attempts: 0
+        status: "pending",
+        attempts: 0,
       });
       mockStore.pendingChanges++;
       return true;
@@ -45,7 +45,7 @@ describe('useOffline Hook', () => {
     processQueue: jest.fn().mockResolvedValue(true),
     simulateNetworkChange: jest.fn().mockImplementation((isOnline) => {
       mockStore.isOffline = !isOnline;
-    })
+    }),
   };
 
   beforeEach(() => {
@@ -59,24 +59,40 @@ describe('useOffline Hook', () => {
     mockStore.isOffline = false;
   });
 
-  it('should initialize with correct status', () => {
+  it("should initialize with correct status", () => {
     const { result } = renderHook(() => useOffline());
-    expect(result.current.status).toBe('online');
+    expect(result.current.status).toBe("online");
     expect(result.current.isOffline).toBe(false);
   });
 
-  it('should return offline status when offline', () => {
+  it("should return offline status when offline", () => {
     mockStore.isOffline = true;
     const { result } = renderHook(() => useOffline());
-    expect(result.current.status).toBe('offline');
+    expect(result.current.status).toBe("offline");
     expect(result.current.isOffline).toBe(true);
   });
 
-  it('should get offline state correctly', () => {
+  it("should get offline state correctly", () => {
     mockStore.pendingChanges = 3;
     mockStore.queue = [
-      { id: '1', operation: 'test', type: 'create', data: {}, timestamp: new Date(), status: 'pending', attempts: 0 },
-      { id: '2', operation: 'test2', type: 'update', data: {}, timestamp: new Date(), status: 'completed', attempts: 1 }
+      {
+        id: "1",
+        operation: "test",
+        type: "create",
+        data: {},
+        timestamp: new Date(),
+        status: "pending",
+        attempts: 0,
+      },
+      {
+        id: "2",
+        operation: "test2",
+        type: "update",
+        data: {},
+        timestamp: new Date(),
+        status: "completed",
+        attempts: 1,
+      },
     ];
 
     const { result } = renderHook(() => useOffline());
@@ -87,56 +103,90 @@ describe('useOffline Hook', () => {
     expect(state.queueLength).toBe(2);
   });
 
-  it('should enqueue operations when offline', async () => {
+  it("should enqueue operations when offline", async () => {
     mockStore.isOffline = true;
     const { result } = renderHook(() => useOffline());
 
-    const enqueueResult = await result.current.enqueueOperation('test-operation', 'create', { test: 'data' });
+    const enqueueResult = await result.current.enqueueOperation(
+      "test-operation",
+      "create",
+      { test: "data" },
+    );
 
     expect(enqueueResult.success).toBe(true);
     expect(mockStore.addToQueue).toHaveBeenCalled();
     expect(mockStore.queue.length).toBe(1);
   });
 
-  it('should not enqueue operations when online (except sync)', async () => {
+  it("should not enqueue operations when online (except sync)", async () => {
     mockStore.isOffline = false;
     const { result } = renderHook(() => useOffline());
 
-    const enqueueResult = await result.current.enqueueOperation('test-operation', 'create', { test: 'data' });
+    const enqueueResult = await result.current.enqueueOperation(
+      "test-operation",
+      "create",
+      { test: "data" },
+    );
 
     expect(enqueueResult.success).toBe(false);
-    expect(enqueueResult.error?.message).toContain('Cannot enqueue operation when online');
+    expect(enqueueResult.error?.message).toContain(
+      "Cannot enqueue operation when online",
+    );
   });
 
-  it('should allow sync operations when online', async () => {
+  it("should allow sync operations when online", async () => {
     mockStore.isOffline = false;
     const { result } = renderHook(() => useOffline());
 
-    const enqueueResult = await result.current.enqueueOperation('sync-operation', 'sync', { test: 'data' });
+    const enqueueResult = await result.current.enqueueOperation(
+      "sync-operation",
+      "sync",
+      { test: "data" },
+    );
 
     expect(enqueueResult.success).toBe(true);
     expect(mockStore.addToQueue).toHaveBeenCalled();
   });
 
-  it('should handle queue full scenario', async () => {
+  it("should handle queue full scenario", async () => {
     mockStore.isOffline = true;
     mockStore.settings.maxQueueSize = 1;
     mockStore.queue = [
-      { id: '1', operation: 'test', type: 'create', data: {}, timestamp: new Date(), status: 'pending', attempts: 0 }
+      {
+        id: "1",
+        operation: "test",
+        type: "create",
+        data: {},
+        timestamp: new Date(),
+        status: "pending",
+        attempts: 0,
+      },
     ];
 
     const { result } = renderHook(() => useOffline());
 
-    const enqueueResult = await result.current.enqueueOperation('test-operation', 'create', { test: 'data' });
+    const enqueueResult = await result.current.enqueueOperation(
+      "test-operation",
+      "create",
+      { test: "data" },
+    );
 
     expect(enqueueResult.success).toBe(false);
-    expect(enqueueResult.error?.message).toContain('Queue full');
+    expect(enqueueResult.error?.message).toContain("Queue full");
   });
 
-  it('should process queue when online', async () => {
+  it("should process queue when online", async () => {
     mockStore.isOffline = false;
     mockStore.queue = [
-      { id: '1', operation: 'test', type: 'create', data: {}, timestamp: new Date(), status: 'pending', attempts: 0 }
+      {
+        id: "1",
+        operation: "test",
+        type: "create",
+        data: {},
+        timestamp: new Date(),
+        status: "pending",
+        attempts: 0,
+      },
     ];
 
     const { result } = renderHook(() => useOffline());
@@ -147,10 +197,18 @@ describe('useOffline Hook', () => {
     expect(mockStore.processQueue).toHaveBeenCalled();
   });
 
-  it('should not process queue when offline', async () => {
+  it("should not process queue when offline", async () => {
     mockStore.isOffline = true;
     mockStore.queue = [
-      { id: '1', operation: 'test', type: 'create', data: {}, timestamp: new Date(), status: 'pending', attempts: 0 }
+      {
+        id: "1",
+        operation: "test",
+        type: "create",
+        data: {},
+        timestamp: new Date(),
+        status: "pending",
+        attempts: 0,
+      },
     ];
 
     const { result } = renderHook(() => useOffline());
@@ -158,15 +216,49 @@ describe('useOffline Hook', () => {
     const processResult = await result.current.processOfflineQueue();
 
     expect(processResult.success).toBe(false);
-    expect(processResult.error?.message).toContain('Cannot process queue while offline');
+    expect(processResult.error?.message).toContain(
+      "Cannot process queue while offline",
+    );
   });
 
-  it('should get queue statistics correctly', () => {
+  it("should get queue statistics correctly", () => {
     mockStore.queue = [
-      { id: '1', operation: 'test1', type: 'create', data: {}, timestamp: new Date(), status: 'pending', attempts: 0 },
-      { id: '2', operation: 'test2', type: 'update', data: {}, timestamp: new Date(), status: 'processing', attempts: 1 },
-      { id: '3', operation: 'test3', type: 'delete', data: {}, timestamp: new Date(), status: 'completed', attempts: 2 },
-      { id: '4', operation: 'test4', type: 'create', data: {}, timestamp: new Date(), status: 'failed', attempts: 3 }
+      {
+        id: "1",
+        operation: "test1",
+        type: "create",
+        data: {},
+        timestamp: new Date(),
+        status: "pending",
+        attempts: 0,
+      },
+      {
+        id: "2",
+        operation: "test2",
+        type: "update",
+        data: {},
+        timestamp: new Date(),
+        status: "processing",
+        attempts: 1,
+      },
+      {
+        id: "3",
+        operation: "test3",
+        type: "delete",
+        data: {},
+        timestamp: new Date(),
+        status: "completed",
+        attempts: 2,
+      },
+      {
+        id: "4",
+        operation: "test4",
+        type: "create",
+        data: {},
+        timestamp: new Date(),
+        status: "failed",
+        attempts: 3,
+      },
     ];
 
     const { result } = renderHook(() => useOffline());
@@ -179,24 +271,64 @@ describe('useOffline Hook', () => {
     expect(stats.failedItems).toBe(1);
   });
 
-  it('should get queue items by status', () => {
+  it("should get queue items by status", () => {
     mockStore.queue = [
-      { id: '1', operation: 'test1', type: 'create', data: {}, timestamp: new Date(), status: 'pending', attempts: 0 },
-      { id: '2', operation: 'test2', type: 'update', data: {}, timestamp: new Date(), status: 'completed', attempts: 1 },
-      { id: '3', operation: 'test3', type: 'delete', data: {}, timestamp: new Date(), status: 'pending', attempts: 0 }
+      {
+        id: "1",
+        operation: "test1",
+        type: "create",
+        data: {},
+        timestamp: new Date(),
+        status: "pending",
+        attempts: 0,
+      },
+      {
+        id: "2",
+        operation: "test2",
+        type: "update",
+        data: {},
+        timestamp: new Date(),
+        status: "completed",
+        attempts: 1,
+      },
+      {
+        id: "3",
+        operation: "test3",
+        type: "delete",
+        data: {},
+        timestamp: new Date(),
+        status: "pending",
+        attempts: 0,
+      },
     ];
 
     const { result } = renderHook(() => useOffline());
-    const pendingItems = result.current.getQueueItemsByStatus('pending');
+    const pendingItems = result.current.getQueueItemsByStatus("pending");
 
     expect(pendingItems.length).toBe(2);
-    expect(pendingItems[0].operation).toBe('test1');
+    expect(pendingItems[0].operation).toBe("test1");
   });
 
-  it('should retry failed items', async () => {
+  it("should retry failed items", async () => {
     mockStore.queue = [
-      { id: '1', operation: 'test1', type: 'create', data: {}, timestamp: new Date(), status: 'failed', attempts: 0 },
-      { id: '2', operation: 'test2', type: 'update', data: {}, timestamp: new Date(), status: 'failed', attempts: 1 }
+      {
+        id: "1",
+        operation: "test1",
+        type: "create",
+        data: {},
+        timestamp: new Date(),
+        status: "failed",
+        attempts: 0,
+      },
+      {
+        id: "2",
+        operation: "test2",
+        type: "update",
+        data: {},
+        timestamp: new Date(),
+        status: "failed",
+        attempts: 1,
+      },
     ];
 
     const { result } = renderHook(() => useOffline());
@@ -208,9 +340,17 @@ describe('useOffline Hook', () => {
     expect(mockStore.retryQueueItem).toHaveBeenCalledTimes(2);
   });
 
-  it('should clear queue', () => {
+  it("should clear queue", () => {
     mockStore.queue = [
-      { id: '1', operation: 'test1', type: 'create', data: {}, timestamp: new Date(), status: 'pending', attempts: 0 }
+      {
+        id: "1",
+        operation: "test1",
+        type: "create",
+        data: {},
+        timestamp: new Date(),
+        status: "pending",
+        attempts: 0,
+      },
     ];
     mockStore.pendingChanges = 1;
 
@@ -223,19 +363,19 @@ describe('useOffline Hook', () => {
     expect(mockStore.pendingChanges).toBe(0);
   });
 
-  it('should simulate network change', () => {
+  it("should simulate network change", () => {
     const { result } = renderHook(() => useOffline());
 
     act(() => {
       result.current.simulateNetworkChange(true);
     });
 
-    expect(result.current.status).toBe('online');
+    expect(result.current.status).toBe("online");
 
     act(() => {
       result.current.simulateNetworkChange(false);
     });
 
-    expect(result.current.status).toBe('offline');
+    expect(result.current.status).toBe("offline");
   });
 });

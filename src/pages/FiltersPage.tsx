@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { useFilters } from '../hooks/useFilters';
-import FilterList from '../features/filters/FilterList';
-import FilterForm from '../features/filters/FilterForm';
-import { Filter } from '../types/models';
+import React, { useState } from "react";
+import { useFilters } from "../hooks/useFilters";
+import FilterList from "../features/filters/FilterList";
+import FilterForm from "../features/filters/FilterForm";
+import { Filter } from "../types/models";
 
 const FiltersPage: React.FC = () => {
   const {
@@ -13,7 +13,7 @@ const FiltersPage: React.FC = () => {
     createFilter,
     updateFilter,
     deleteFilter,
-    selectFilter
+    selectFilter,
   } = useFilters();
 
   const [showForm, setShowForm] = useState(false);
@@ -37,7 +37,7 @@ const FiltersPage: React.FC = () => {
   };
 
   const handleDelete = async (filterId: string) => {
-    if (window.confirm('Are you sure you want to delete this filter?')) {
+    if (window.confirm("Are you sure you want to delete this filter?")) {
       await deleteFilter(filterId);
     }
   };
@@ -79,7 +79,7 @@ const FiltersPage: React.FC = () => {
           {showForm ? (
             <div className="bg-white p-6 rounded-lg shadow-sm border mb-6">
               <h2 className="text-xl font-semibold mb-4">
-                {editingFilter ? 'Edit Filter' : 'Create New Filter'}
+                {editingFilter ? "Edit Filter" : "Create New Filter"}
               </h2>
               <FilterForm
                 filter={editingFilter || undefined}

@@ -1,7 +1,7 @@
-import { CollaborationIntegrationSystem } from '../../features/collaboration/CollaborationIntegrationSystem';
-import { TaskCollaborationIntegration } from '../../features/collaboration/TaskCollaborationIntegration';
-import { ProjectCollaborationIntegration } from '../../features/collaboration/ProjectCollaborationIntegration';
-import { UserProfileCollaborationIntegration } from '../../features/collaboration/UserProfileCollaborationIntegration';
+import { CollaborationIntegrationSystem } from "../../features/collaboration/CollaborationIntegrationSystem";
+import { TaskCollaborationIntegration } from "../../features/collaboration/TaskCollaborationIntegration";
+import { ProjectCollaborationIntegration } from "../../features/collaboration/ProjectCollaborationIntegration";
+import { UserProfileCollaborationIntegration } from "../../features/collaboration/UserProfileCollaborationIntegration";
 
 /**
  * Collaboration Integration Validation Suite
@@ -17,7 +17,8 @@ export class CollaborationIntegrationValidator {
 
   public static getInstance(): CollaborationIntegrationValidator {
     if (!CollaborationIntegrationValidator.instance) {
-      CollaborationIntegrationValidator.instance = new CollaborationIntegrationValidator();
+      CollaborationIntegrationValidator.instance =
+        new CollaborationIntegrationValidator();
     }
     return CollaborationIntegrationValidator.instance;
   }
@@ -25,35 +26,45 @@ export class CollaborationIntegrationValidator {
   /**
    * Validate that all collaboration integration components exist and are properly structured
    */
-  public validateIntegrationComponents(): { success: boolean; errors: string[]; warnings: string[] } {
+  public validateIntegrationComponents(): {
+    success: boolean;
+    errors: string[];
+    warnings: string[];
+  } {
     const result = {
       success: true,
       errors: [] as string[],
-      warnings: [] as string[]
+      warnings: [] as string[],
     };
 
     try {
       // Validate Task Collaboration Integration
       if (!TaskCollaborationIntegration) {
-        result.errors.push('TaskCollaborationIntegration component is missing');
+        result.errors.push("TaskCollaborationIntegration component is missing");
         result.success = false;
       }
 
       // Validate Project Collaboration Integration
       if (!ProjectCollaborationIntegration) {
-        result.errors.push('ProjectCollaborationIntegration component is missing');
+        result.errors.push(
+          "ProjectCollaborationIntegration component is missing",
+        );
         result.success = false;
       }
 
       // Validate User Profile Collaboration Integration
       if (!UserProfileCollaborationIntegration) {
-        result.errors.push('UserProfileCollaborationIntegration component is missing');
+        result.errors.push(
+          "UserProfileCollaborationIntegration component is missing",
+        );
         result.success = false;
       }
 
       // Validate Collaboration Integration System
       if (!CollaborationIntegrationSystem) {
-        result.errors.push('CollaborationIntegrationSystem component is missing');
+        result.errors.push(
+          "CollaborationIntegrationSystem component is missing",
+        );
         result.success = false;
       }
 
@@ -61,11 +72,14 @@ export class CollaborationIntegrationValidator {
       this.validateComponentStructure();
 
       if (result.errors.length === 0) {
-        result.warnings.push('All collaboration integration components are properly structured');
+        result.warnings.push(
+          "All collaboration integration components are properly structured",
+        );
       }
-
     } catch (error) {
-      result.errors.push(`Validation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      result.errors.push(
+        `Validation failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
       result.success = false;
     }
 
@@ -80,10 +94,22 @@ export class CollaborationIntegrationValidator {
     // For now, we'll just check that the components can be referenced
 
     const components = [
-      { name: 'TaskCollaborationIntegration', component: TaskCollaborationIntegration },
-      { name: 'ProjectCollaborationIntegration', component: ProjectCollaborationIntegration },
-      { name: 'UserProfileCollaborationIntegration', component: UserProfileCollaborationIntegration },
-      { name: 'CollaborationIntegrationSystem', component: CollaborationIntegrationSystem }
+      {
+        name: "TaskCollaborationIntegration",
+        component: TaskCollaborationIntegration,
+      },
+      {
+        name: "ProjectCollaborationIntegration",
+        component: ProjectCollaborationIntegration,
+      },
+      {
+        name: "UserProfileCollaborationIntegration",
+        component: UserProfileCollaborationIntegration,
+      },
+      {
+        name: "CollaborationIntegrationSystem",
+        component: CollaborationIntegrationSystem,
+      },
     ];
 
     components.forEach(({ name, component }) => {
@@ -108,8 +134,8 @@ export class CollaborationIntegrationValidator {
   } {
     const startTime = new Date();
 
-    console.log('🔍 Starting Collaboration Integration Validation...');
-    console.log('==============================================');
+    console.log("🔍 Starting Collaboration Integration Validation...");
+    console.log("==============================================");
 
     // Validate components
     const validationResult = this.validateIntegrationComponents();
@@ -117,42 +143,46 @@ export class CollaborationIntegrationValidator {
     const endTime = new Date();
     const validationDuration = (endTime.getTime() - startTime.getTime()) / 1000;
 
-    console.log('✅ Validation completed in', validationDuration.toFixed(2), 'seconds');
-    console.log('==============================================');
+    console.log(
+      "✅ Validation completed in",
+      validationDuration.toFixed(2),
+      "seconds",
+    );
+    console.log("==============================================");
 
     if (validationResult.errors.length > 0) {
-      console.log('❌ Errors found:');
+      console.log("❌ Errors found:");
       validationResult.errors.forEach((error, index) => {
         console.log(`  ${index + 1}. ${error}`);
       });
     }
 
     if (validationResult.warnings.length > 0) {
-      console.log('⚠️  Warnings:');
+      console.log("⚠️  Warnings:");
       validationResult.warnings.forEach((warning, index) => {
         console.log(`  ${index + 1}. ${warning}`);
       });
     }
 
     if (validationResult.success) {
-      console.log('🎉 Collaboration Integration Validation PASSED!');
-      console.log('   All components are properly structured and integrated.');
+      console.log("🎉 Collaboration Integration Validation PASSED!");
+      console.log("   All components are properly structured and integrated.");
     } else {
-      console.log('💥 Collaboration Integration Validation FAILED!');
-      console.log('   Please review the errors above.');
+      console.log("💥 Collaboration Integration Validation FAILED!");
+      console.log("   Please review the errors above.");
     }
 
     return {
       success: validationResult.success,
       message: validationResult.success
-        ? 'Collaboration integration validation passed successfully'
-        : 'Collaboration integration validation failed',
+        ? "Collaboration integration validation passed successfully"
+        : "Collaboration integration validation failed",
       details: {
         componentsValidated: 4, // Task, Project, User, System
         errorsFound: validationResult.errors.length,
         warningsFound: validationResult.warnings.length,
-        validationTime: `${validationDuration.toFixed(2)} seconds`
-      }
+        validationTime: `${validationDuration.toFixed(2)} seconds`,
+      },
     };
   }
 
@@ -174,8 +204,8 @@ export class CollaborationIntegrationValidator {
       error?: string;
     }> = [];
 
-    console.log('🧪 Testing Collaboration Integration with Sample Data...');
-    console.log('====================================================');
+    console.log("🧪 Testing Collaboration Integration with Sample Data...");
+    console.log("====================================================");
 
     try {
       // Test Task Collaboration Integration
@@ -183,20 +213,20 @@ export class CollaborationIntegrationValidator {
         const taskComponent = TaskCollaborationIntegration;
         if (taskComponent) {
           testResults.push({
-            component: 'TaskCollaborationIntegration',
-            testPassed: true
+            component: "TaskCollaborationIntegration",
+            testPassed: true,
           });
-          console.log('✅ Task Collaboration Integration - PASSED');
+          console.log("✅ Task Collaboration Integration - PASSED");
         } else {
-          throw new Error('Component not found');
+          throw new Error("Component not found");
         }
       } catch (error) {
         testResults.push({
-          component: 'TaskCollaborationIntegration',
+          component: "TaskCollaborationIntegration",
           testPassed: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : "Unknown error",
         });
-        console.log('❌ Task Collaboration Integration - FAILED');
+        console.log("❌ Task Collaboration Integration - FAILED");
       }
 
       // Test Project Collaboration Integration
@@ -204,20 +234,20 @@ export class CollaborationIntegrationValidator {
         const projectComponent = ProjectCollaborationIntegration;
         if (projectComponent) {
           testResults.push({
-            component: 'ProjectCollaborationIntegration',
-            testPassed: true
+            component: "ProjectCollaborationIntegration",
+            testPassed: true,
           });
-          console.log('✅ Project Collaboration Integration - PASSED');
+          console.log("✅ Project Collaboration Integration - PASSED");
         } else {
-          throw new Error('Component not found');
+          throw new Error("Component not found");
         }
       } catch (error) {
         testResults.push({
-          component: 'ProjectCollaborationIntegration',
+          component: "ProjectCollaborationIntegration",
           testPassed: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : "Unknown error",
         });
-        console.log('❌ Project Collaboration Integration - FAILED');
+        console.log("❌ Project Collaboration Integration - FAILED");
       }
 
       // Test User Profile Collaboration Integration
@@ -225,20 +255,20 @@ export class CollaborationIntegrationValidator {
         const userComponent = UserProfileCollaborationIntegration;
         if (userComponent) {
           testResults.push({
-            component: 'UserProfileCollaborationIntegration',
-            testPassed: true
+            component: "UserProfileCollaborationIntegration",
+            testPassed: true,
           });
-          console.log('✅ User Profile Collaboration Integration - PASSED');
+          console.log("✅ User Profile Collaboration Integration - PASSED");
         } else {
-          throw new Error('Component not found');
+          throw new Error("Component not found");
         }
       } catch (error) {
         testResults.push({
-          component: 'UserProfileCollaborationIntegration',
+          component: "UserProfileCollaborationIntegration",
           testPassed: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : "Unknown error",
         });
-        console.log('❌ User Profile Collaboration Integration - FAILED');
+        console.log("❌ User Profile Collaboration Integration - FAILED");
       }
 
       // Test Collaboration Integration System
@@ -246,40 +276,48 @@ export class CollaborationIntegrationValidator {
         const systemComponent = CollaborationIntegrationSystem;
         if (systemComponent) {
           testResults.push({
-            component: 'CollaborationIntegrationSystem',
-            testPassed: true
+            component: "CollaborationIntegrationSystem",
+            testPassed: true,
           });
-          console.log('✅ Collaboration Integration System - PASSED');
+          console.log("✅ Collaboration Integration System - PASSED");
         } else {
-          throw new Error('Component not found');
+          throw new Error("Component not found");
         }
       } catch (error) {
         testResults.push({
-          component: 'CollaborationIntegrationSystem',
+          component: "CollaborationIntegrationSystem",
           testPassed: false,
-          error: error instanceof Error ? error.message : 'Unknown error'
+          error: error instanceof Error ? error.message : "Unknown error",
         });
-        console.log('❌ Collaboration Integration System - FAILED');
+        console.log("❌ Collaboration Integration System - FAILED");
       }
-
     } catch (error) {
-      console.log('💥 Integration testing failed:', error instanceof Error ? error.message : 'Unknown error');
+      console.log(
+        "💥 Integration testing failed:",
+        error instanceof Error ? error.message : "Unknown error",
+      );
       return {
         success: false,
-        message: 'Integration testing failed',
-        testResults: []
+        message: "Integration testing failed",
+        testResults: [],
       };
     }
 
-    const allPassed = testResults.every(result => result.testPassed);
-    const passedCount = testResults.filter(result => result.testPassed).length;
-    const failedCount = testResults.filter(result => !result.testPassed).length;
+    const allPassed = testResults.every((result) => result.testPassed);
+    const passedCount = testResults.filter(
+      (result) => result.testPassed,
+    ).length;
+    const failedCount = testResults.filter(
+      (result) => !result.testPassed,
+    ).length;
 
-    console.log('====================================================');
-    console.log(`📊 Test Results: ${passedCount}/${testResults.length} components passed`);
+    console.log("====================================================");
+    console.log(
+      `📊 Test Results: ${passedCount}/${testResults.length} components passed`,
+    );
 
     if (allPassed) {
-      console.log('🎉 All Collaboration Integration Tests PASSED!');
+      console.log("🎉 All Collaboration Integration Tests PASSED!");
     } else {
       console.log(`⚠️  ${failedCount} component(s) failed validation`);
     }
@@ -287,18 +325,19 @@ export class CollaborationIntegrationValidator {
     return {
       success: allPassed,
       message: allPassed
-        ? 'All collaboration integration tests passed'
+        ? "All collaboration integration tests passed"
         : `${failedCount} component(s) failed validation`,
-      testResults
+      testResults,
     };
   }
 }
 
 // Singleton instance for easy access
-export const collaborationIntegrationValidator = CollaborationIntegrationValidator.getInstance();
+export const collaborationIntegrationValidator =
+  CollaborationIntegrationValidator.getInstance();
 
 // Run the validation if this file is executed directly
-if (typeof window === 'undefined' && require.main === module) {
+if (typeof window === "undefined" && require.main === module) {
   const validator = CollaborationIntegrationValidator.getInstance();
   validator.runComprehensiveValidation();
 }

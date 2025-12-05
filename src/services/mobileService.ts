@@ -1,8 +1,12 @@
-import { Platform, Dimensions, NativeModules } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
-import { mobileUtils } from '../utils/mobileUtils';
-import { mobileConfigUtils } from '../utils/mobileConfigUtils';
-import { MobileConfig, MobileDeviceInfo, MobileState } from '../types/mobileTypes';
+import { Platform, Dimensions, NativeModules } from "react-native";
+import DeviceInfo from "react-native-device-info";
+import { mobileUtils } from "../utils/mobileUtils";
+import { mobileConfigUtils } from "../utils/mobileConfigUtils";
+import {
+  MobileConfig,
+  MobileDeviceInfo,
+  MobileState,
+} from "../types/mobileTypes";
 
 export class MobileService {
   private static instance: MobileService;
@@ -11,12 +15,12 @@ export class MobileService {
 
   private constructor() {
     this.mobileState = {
-      isMobile: Platform.OS !== 'web',
+      isMobile: Platform.OS !== "web",
       deviceType: this.detectDeviceType(),
       orientation: this.getCurrentOrientation(),
       isTablet: false,
       screenDimensions: this.getScreenDimensions(),
-      networkStatus: 'online',
+      networkStatus: "online",
       batteryLevel: 1.0,
       isLowPowerMode: false,
     };
@@ -54,14 +58,14 @@ export class MobileService {
       this.mobileState.batteryLevel = this.deviceInfo.batteryLevel / 100;
       this.mobileState.isLowPowerMode = this.deviceInfo.isLowPowerMode;
     } catch (error) {
-      console.error('Failed to load device info:', error);
+      console.error("Failed to load device info:", error);
       this.deviceInfo = null;
     }
   }
 
   private async setupEventListeners(): Promise<void> {
     // Set up orientation change listener
-    Dimensions.addEventListener('change', () => {
+    Dimensions.addEventListener("change", () => {
       this.mobileState.orientation = this.getCurrentOrientation();
       this.mobileState.screenDimensions = this.getScreenDimensions();
     });
@@ -78,10 +82,10 @@ export class MobileService {
     const checkNetworkStatus = async () => {
       try {
         const isConnected = await mobileUtils.checkNetworkConnectivity();
-        this.mobileState.networkStatus = isConnected ? 'online' : 'offline';
+        this.mobileState.networkStatus = isConnected ? "online" : "offline";
       } catch (error) {
-        console.error('Network status check failed:', error);
-        this.mobileState.networkStatus = 'unknown';
+        console.error("Network status check failed:", error);
+        this.mobileState.networkStatus = "unknown";
       }
     };
 
@@ -100,12 +104,15 @@ export class MobileService {
         this.mobileState.batteryLevel = batteryLevel / 100;
         this.mobileState.isLowPowerMode = isLowPower;
 
-        if (this.mobileState.batteryLevel < 0.2 && !this.mobileState.isLowPowerMode) {
+        if (
+          this.mobileState.batteryLevel < 0.2 &&
+          !this.mobileState.isLowPowerMode
+        ) {
           // Trigger low battery warning
           this.handleLowBatteryWarning();
         }
       } catch (error) {
-        console.error('Battery status check failed:', error);
+        console.error("Battery status check failed:", error);
       }
     };
 
@@ -115,20 +122,21 @@ export class MobileService {
   }
 
   private async checkLowPowerMode(): Promise<boolean> {
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === "ios") {
       try {
         const powerMode = await NativeModules.PowerManager?.getPowerMode();
-        return powerMode === 'lowPower';
+        return powerMode === "lowPower";
       } catch (error) {
-        console.warn('Low power mode check not available on this device');
+        console.warn("Low power mode check not available on this device");
         return false;
       }
-    } else if (Platform.OS === 'android') {
+    } else if (Platform.OS === "android") {
       try {
-        const powerSaveMode = await NativeModules.PowerManager?.isPowerSaveMode();
+        const powerSaveMode =
+          await NativeModules.PowerManager?.isPowerSaveMode();
         return powerSaveMode;
       } catch (error) {
-        console.warn('Power save mode check not available on this device');
+        console.warn("Power save mode check not available on this device");
         return false;
       }
     }
@@ -137,52 +145,59 @@ export class MobileService {
 
   private handleLowBatteryWarning(): void {
     // Implement low battery warning logic
-    console.warn('Low battery warning: Battery level below 20%');
+    console.warn("Low battery warning: Battery level below 20%");
     // Could trigger a notification or UI warning here
   }
 
-  private detectDeviceType(): 'phone' | 'tablet' | 'unknown' {
-    const { width, height } = Dimensions.get('window');
+  private detectDeviceType(): "phone" | "tablet" | "unknown" {
+    const { width, height } = Dimensions.get("window");
     const aspectRatio = height / width;
 
     // Tablet detection logic
     if (Platform.isPad || (width >= 600 && height >= 900)) {
-      return 'tablet';
-    } else if (Platform.OS === 'ios' || Platform.OS === 'android') {
-      return 'phone';
+      return "tablet";
+    } else if (Platform.OS === "ios" || Platform.OS === "android") {
+      return "phone";
     } else {
-      return 'unknown';
+      return "unknown";
     }
   }
 
-  private getCurrentOrientation(): 'portrait' | 'landscape' {
-    const { width, height } = Dimensions.get('window');
-    return height >= width ? 'portrait' : 'landscape';
+  private getCurrentOrientation(): "portrait" | "landscape" {
+    const { width, height } = Dimensions.get("window");
+    return height >= width ? "portrait" : "landscape";
   }
 
-  private getScreenDimensions(): { width: number; height: number; scale: number } {
-    const { width, height } = Dimensions.get('window');
-    const { scale } = Dimensions.get('screen');
+  private getScreenDimensions(): {
+    width: number;
+    height: number;
+    scale: number;
+  } {
+    const { width, height } = Dimensions.get("window");
+    const { scale } = Dimensions.get("screen");
     return { width, height, scale };
   }
 
   public async checkInitialState(): Promise<void> {
     // Check initial network status
     const isConnected = await mobileUtils.checkNetworkConnectivity();
-    this.mobileState.networkStatus = isConnected ? 'online' : 'offline';
+    this.mobileState.networkStatus = isConnected ? "online" : "offline";
 
     // Check if we should enable performance mode
-    if (this.mobileState.batteryLevel < 0.3 || this.mobileState.isLowPowerMode) {
+    if (
+      this.mobileState.batteryLevel < 0.3 ||
+      this.mobileState.isLowPowerMode
+    ) {
       await this.enablePerformanceMode();
     }
   }
 
   public async enablePerformanceMode(): Promise<void> {
     // Implement performance optimizations for mobile
-    console.log('Enabling mobile performance mode');
+    console.log("Enabling mobile performance mode");
 
     // Reduce animation complexity
-    mobileConfigUtils.setAnimationQuality('low');
+    mobileConfigUtils.setAnimationQuality("low");
 
     // Enable battery saving features
     this.mobileState.isLowPowerMode = true;
@@ -192,10 +207,10 @@ export class MobileService {
 
   public async disablePerformanceMode(): Promise<void> {
     // Restore normal performance settings
-    console.log('Disabling mobile performance mode');
+    console.log("Disabling mobile performance mode");
 
     // Restore animation quality
-    mobileConfigUtils.setAnimationQuality('high');
+    mobileConfigUtils.setAnimationQuality("high");
 
     // Disable battery saving features
     this.mobileState.isLowPowerMode = false;
@@ -209,9 +224,13 @@ export class MobileService {
     return this.deviceInfo ? { ...this.deviceInfo } : null;
   }
 
-  public async checkMobileCapabilities(): Promise<{ supportsTouch: boolean; supportsBiometrics: boolean; supportsHapticFeedback: boolean }> {
+  public async checkMobileCapabilities(): Promise<{
+    supportsTouch: boolean;
+    supportsBiometrics: boolean;
+    supportsHapticFeedback: boolean;
+  }> {
     return {
-      supportsTouch: Platform.OS !== 'web',
+      supportsTouch: Platform.OS !== "web",
       supportsBiometrics: await this.checkBiometricSupport(),
       supportsHapticFeedback: await this.checkHapticSupport(),
     };
@@ -219,43 +238,47 @@ export class MobileService {
 
   private async checkBiometricSupport(): Promise<boolean> {
     try {
-      if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      if (Platform.OS === "ios" || Platform.OS === "android") {
         // Check if biometric authentication is available
-        const biometryType = await NativeModules.BiometricManager?.getBiometryType();
-        return biometryType !== null && biometryType !== 'none';
+        const biometryType =
+          await NativeModules.BiometricManager?.getBiometryType();
+        return biometryType !== null && biometryType !== "none";
       }
       return false;
     } catch (error) {
-      console.warn('Biometric support check failed:', error);
+      console.warn("Biometric support check failed:", error);
       return false;
     }
   }
 
   private async checkHapticSupport(): Promise<boolean> {
     try {
-      if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      if (Platform.OS === "ios" || Platform.OS === "android") {
         // Check if haptic feedback is supported
-        const hasHaptic = await NativeModules.HapticFeedback?.hasHapticSupport();
+        const hasHaptic =
+          await NativeModules.HapticFeedback?.hasHapticSupport();
         return hasHaptic;
       }
       return false;
     } catch (error) {
-      console.warn('Haptic support check failed:', error);
+      console.warn("Haptic support check failed:", error);
       return false;
     }
   }
 
-  public async triggerHapticFeedback(type: 'selection' | 'impact' | 'notification' = 'selection'): Promise<void> {
+  public async triggerHapticFeedback(
+    type: "selection" | "impact" | "notification" = "selection",
+  ): Promise<void> {
     try {
-      if (Platform.OS === 'ios' || Platform.OS === 'android') {
+      if (Platform.OS === "ios" || Platform.OS === "android") {
         await NativeModules.HapticFeedback?.trigger(type);
       }
     } catch (error) {
-      console.warn('Haptic feedback failed:', error);
+      console.warn("Haptic feedback failed:", error);
     }
   }
 
-  public async checkNetworkStatus(): Promise<'online' | 'offline' | 'unknown'> {
+  public async checkNetworkStatus(): Promise<"online" | "offline" | "unknown"> {
     return this.mobileState.networkStatus;
   }
 
@@ -263,13 +286,13 @@ export class MobileService {
     return this.mobileState.isMobile;
   }
 
-  public getCurrentDeviceType(): 'phone' | 'tablet' | 'unknown' {
+  public getCurrentDeviceType(): "phone" | "tablet" | "unknown" {
     return this.mobileState.deviceType;
   }
 
   public cleanup(): void {
     // Clean up event listeners
-    Dimensions.removeEventListener('change', () => {});
+    Dimensions.removeEventListener("change", () => {});
     // Additional cleanup if needed
   }
 }

@@ -1,20 +1,20 @@
-const { merge } = require('lodash');
+const { merge } = require("lodash");
 
 const baseConfig = {
   app: {
-    name: 'Todone',
-    version: require('../package.json').version,
-    environment: process.env.NODE_ENV || 'development',
+    name: "Todone",
+    version: require("../package.json").version,
+    environment: process.env.NODE_ENV || "development",
   },
   server: {
     port: process.env.PORT || 3000,
-    host: process.env.HOST || 'localhost',
+    host: process.env.HOST || "localhost",
   },
   logging: {
-    level: 'info',
-    file: './logs/app.log',
-    maxSize: '10m',
-    maxFiles: '7d',
+    level: "info",
+    file: "./logs/app.log",
+    maxSize: "10m",
+    maxFiles: "7d",
   },
 };
 
@@ -22,7 +22,7 @@ const environmentConfigs = {
   development: {
     debug: true,
     database: {
-      url: 'mongodb://localhost:27017/todone-dev',
+      url: "mongodb://localhost:27017/todone-dev",
       options: {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -37,7 +37,7 @@ const environmentConfigs = {
     debug: false,
     database: {
       url:
-        process.env.DATABASE_URL || 'mongodb://localhost:27017/todone-staging',
+        process.env.DATABASE_URL || "mongodb://localhost:27017/todone-staging",
       options: {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -53,7 +53,7 @@ const environmentConfigs = {
   production: {
     debug: false,
     database: {
-      url: process.env.DATABASE_URL || 'mongodb://localhost:27017/todone',
+      url: process.env.DATABASE_URL || "mongodb://localhost:27017/todone",
       options: {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -74,7 +74,7 @@ const environmentConfigs = {
   test: {
     debug: false,
     database: {
-      url: 'mongodb://localhost:27017/todone-test',
+      url: "mongodb://localhost:27017/todone-test",
       options: {
         useNewUrlParser: true,
         useUnifiedTopology: true,
@@ -86,7 +86,7 @@ const environmentConfigs = {
   },
 };
 
-function getConfig(env = 'development') {
+function getConfig(env = "development") {
   const envConfig = environmentConfigs[env] || environmentConfigs.development;
   return merge({}, baseConfig, envConfig);
 }

@@ -3,10 +3,10 @@
  * Contains comprehensive project management interfaces and types
  */
 
-import { ViewType } from './enums';
-import { User } from './user';
-import { TaskListItem } from './task';
-import { DateTimeRange } from './common';
+import { ViewType } from "./enums";
+import { User } from "./user";
+import { TaskListItem } from "./task";
+import { DateTimeRange } from "./common";
 
 /**
  * Base project interface
@@ -100,12 +100,12 @@ export interface Project extends BaseProject {
   /**
    * Project status
    */
-  status?: 'active' | 'archived' | 'completed';
+  status?: "active" | "archived" | "completed";
 
   /**
    * Project visibility
    */
-  visibility?: 'private' | 'team' | 'public';
+  visibility?: "private" | "team" | "public";
 
   /**
    * Project settings
@@ -136,7 +136,17 @@ export interface Project extends BaseProject {
 /**
  * Project creation DTO
  */
-export interface CreateProjectDto extends Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'childProjectIds' | 'sectionIds' | 'taskIds' | 'labelIds' | 'memberIds'> {
+export interface CreateProjectDto extends Omit<
+  Project,
+  | "id"
+  | "createdAt"
+  | "updatedAt"
+  | "childProjectIds"
+  | "sectionIds"
+  | "taskIds"
+  | "labelIds"
+  | "memberIds"
+> {
   /**
    * Optional ID for client-side generation
    */
@@ -146,7 +156,9 @@ export interface CreateProjectDto extends Omit<Project, 'id' | 'createdAt' | 'up
 /**
  * Project update DTO
  */
-export interface UpdateProjectDto extends Partial<Omit<Project, 'id' | 'createdAt' | 'updatedAt'>> {
+export interface UpdateProjectDto extends Partial<
+  Omit<Project, "id" | "createdAt" | "updatedAt">
+> {
   /**
    * Project ID (required for updates)
    */
@@ -235,7 +247,7 @@ export interface ProjectListItem {
   /**
    * Project status
    */
-  status?: 'active' | 'archived' | 'completed';
+  status?: "active" | "archived" | "completed";
 
   /**
    * Last updated timestamp
@@ -301,7 +313,10 @@ export interface Section {
 /**
  * Section creation DTO
  */
-export interface CreateSectionDto extends Omit<Section, 'id' | 'createdAt' | 'updatedAt'> {
+export interface CreateSectionDto extends Omit<
+  Section,
+  "id" | "createdAt" | "updatedAt"
+> {
   /**
    * Optional ID for client-side generation
    */
@@ -311,7 +326,9 @@ export interface CreateSectionDto extends Omit<Section, 'id' | 'createdAt' | 'up
 /**
  * Section update DTO
  */
-export interface UpdateSectionDto extends Partial<Omit<Section, 'id' | 'createdAt' | 'updatedAt' | 'projectId'>> {
+export interface UpdateSectionDto extends Partial<
+  Omit<Section, "id" | "createdAt" | "updatedAt" | "projectId">
+> {
   /**
    * Section ID (required for updates)
    */
@@ -325,7 +342,11 @@ export interface ProjectFilterCriteria {
   /**
    * Filter by status
    */
-  status?: 'active' | 'archived' | 'completed' | ('active' | 'archived' | 'completed')[];
+  status?:
+    | "active"
+    | "archived"
+    | "completed"
+    | ("active" | "archived" | "completed")[];
 
   /**
    * Filter by favorite status
@@ -360,7 +381,11 @@ export interface ProjectFilterCriteria {
   /**
    * Filter by visibility
    */
-  visibility?: 'private' | 'team' | 'public' | ('private' | 'team' | 'public')[];
+  visibility?:
+    | "private"
+    | "team"
+    | "public"
+    | ("private" | "team" | "public")[];
 
   /**
    * Custom filter criteria
@@ -375,12 +400,18 @@ export interface ProjectSortOptions {
   /**
    * Field to sort by
    */
-  field: 'name' | 'createdAt' | 'updatedAt' | 'taskCount' | 'completionPercentage' | 'favorite';
+  field:
+    | "name"
+    | "createdAt"
+    | "updatedAt"
+    | "taskCount"
+    | "completionPercentage"
+    | "favorite";
 
   /**
    * Sort direction
    */
-  direction: 'asc' | 'desc';
+  direction: "asc" | "desc";
 }
 
 /**
@@ -478,7 +509,7 @@ export interface ProjectMember {
   /**
    * Member role
    */
-  role: 'owner' | 'admin' | 'member' | 'viewer';
+  role: "owner" | "admin" | "member" | "viewer";
 
   /**
    * Join date
@@ -520,7 +551,14 @@ export interface ProjectActivityEvent {
   /**
    * Event type
    */
-  type: 'created' | 'updated' | 'deleted' | 'member_added' | 'member_removed' | 'task_created' | 'task_completed';
+  type:
+    | "created"
+    | "updated"
+    | "deleted"
+    | "member_added"
+    | "member_removed"
+    | "task_created"
+    | "task_completed";
 
   /**
    * Event timestamp

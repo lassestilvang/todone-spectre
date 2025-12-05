@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
-import { onboardingService } from '../services/onboardingService';
-import { OnboardingState, OnboardingStepConfig } from '../types/onboardingTypes';
+import { useState, useEffect } from "react";
+import { onboardingService } from "../services/onboardingService";
+import {
+  OnboardingState,
+  OnboardingStepConfig,
+} from "../types/onboardingTypes";
 
 export const useOnboarding = () => {
   const [onboardingState, setOnboardingState] = useState<OnboardingState>(
-    onboardingService.getOnboardingState()
+    onboardingService.getOnboardingState(),
   );
 
   useEffect(() => {
@@ -72,6 +75,6 @@ export const useOnboarding = () => {
     resetOnboarding,
     isOnboardingCompleted,
     getCurrentStep,
-    onboardingService
+    onboardingService,
   };
 };

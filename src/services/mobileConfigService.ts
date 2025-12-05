@@ -1,12 +1,16 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AppState, Platform, Appearance } from 'react-native';
-import { mobileConfigUtils } from '../utils/mobileConfigUtils';
-import { MobileConfig, MobilePreferences, MobileThemeConfig } from '../types/mobileTypes';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppState, Platform, Appearance } from "react-native";
+import { mobileConfigUtils } from "../utils/mobileConfigUtils";
+import {
+  MobileConfig,
+  MobilePreferences,
+  MobileThemeConfig,
+} from "../types/mobileTypes";
 
 const STORAGE_KEYS = {
-  MOBILE_CONFIG: '@todone_mobile_config',
-  MOBILE_PREFERENCES: '@todone_mobile_preferences',
-  MOBILE_THEME: '@todone_mobile_theme',
+  MOBILE_CONFIG: "@todone_mobile_config",
+  MOBILE_PREFERENCES: "@todone_mobile_preferences",
+  MOBILE_THEME: "@todone_mobile_theme",
 };
 
 export class MobileConfigService {
@@ -37,23 +41,23 @@ export class MobileConfigService {
 
   private getDefaultConfig(): MobileConfig {
     return {
-      darkMode: Appearance.getColorScheme() === 'dark',
-      primaryColor: '#6200EE',
-      secondaryColor: '#03DAC6',
-      accentColor: '#FFC107',
-      backgroundColor: '#FFFFFF',
-      textColor: '#333333',
-      fontSize: 'medium',
-      animationQuality: 'high',
+      darkMode: Appearance.getColorScheme() === "dark",
+      primaryColor: "#6200EE",
+      secondaryColor: "#03DAC6",
+      accentColor: "#FFC107",
+      backgroundColor: "#FFFFFF",
+      textColor: "#333333",
+      fontSize: "medium",
+      animationQuality: "high",
       enableHapticFeedback: true,
       enableSwipeGestures: true,
       enableTouchFeedback: true,
       maxTasksPerView: 20,
-      defaultView: 'list',
-      syncFrequency: 'automatic',
+      defaultView: "list",
+      syncFrequency: "automatic",
       offlineMode: false,
       batterySaverMode: false,
-      performanceMode: 'balanced',
+      performanceMode: "balanced",
       notificationPreferences: {
         taskReminders: true,
         projectUpdates: true,
@@ -66,8 +70,8 @@ export class MobileConfigService {
 
   private getDefaultPreferences(): MobilePreferences {
     return {
-      preferredView: 'list',
-      lastActiveTab: 'tasks',
+      preferredView: "list",
+      lastActiveTab: "tasks",
       tutorialCompleted: false,
       onboardingCompleted: false,
       featureFlags: {
@@ -79,11 +83,11 @@ export class MobileConfigService {
         reducedMotion: false,
         highContrast: false,
         screenReaderEnabled: false,
-        fontSizeAdjustment: 'normal',
+        fontSizeAdjustment: "normal",
       },
       cacheSettings: {
         cacheEnabled: true,
-        cacheSize: 'medium',
+        cacheSize: "medium",
         clearCacheOnExit: false,
       },
     };
@@ -91,47 +95,60 @@ export class MobileConfigService {
 
   private async loadStoredConfig(): Promise<void> {
     try {
-      const storedConfig = await AsyncStorage.getItem(STORAGE_KEYS.MOBILE_CONFIG);
+      const storedConfig = await AsyncStorage.getItem(
+        STORAGE_KEYS.MOBILE_CONFIG,
+      );
       if (storedConfig) {
         const parsedConfig = JSON.parse(storedConfig);
-        this.mobileConfig = mobileConfigUtils.mergeConfigs(this.mobileConfig, parsedConfig);
+        this.mobileConfig = mobileConfigUtils.mergeConfigs(
+          this.mobileConfig,
+          parsedConfig,
+        );
       }
     } catch (error) {
-      console.error('Failed to load mobile config:', error);
+      console.error("Failed to load mobile config:", error);
     }
   }
 
   private async loadStoredPreferences(): Promise<void> {
     try {
-      const storedPreferences = await AsyncStorage.getItem(STORAGE_KEYS.MOBILE_PREFERENCES);
+      const storedPreferences = await AsyncStorage.getItem(
+        STORAGE_KEYS.MOBILE_PREFERENCES,
+      );
       if (storedPreferences) {
         const parsedPreferences = JSON.parse(storedPreferences);
-        this.mobilePreferences = { ...this.mobilePreferences, ...parsedPreferences };
+        this.mobilePreferences = {
+          ...this.mobilePreferences,
+          ...parsedPreferences,
+        };
       }
     } catch (error) {
-      console.error('Failed to load mobile preferences:', error);
+      console.error("Failed to load mobile preferences:", error);
     }
   }
 
   private async setupAppStateListener(): Promise<void> {
-    this.appStateListener = AppState.addEventListener('change', (nextAppState) => {
-      if (nextAppState === 'active') {
-        this.handleAppActive();
-      } else if (nextAppState === 'background') {
-        this.handleAppBackground();
-      }
-    });
+    this.appStateListener = AppState.addEventListener(
+      "change",
+      (nextAppState) => {
+        if (nextAppState === "active") {
+          this.handleAppActive();
+        } else if (nextAppState === "background") {
+          this.handleAppBackground();
+        }
+      },
+    );
   }
 
   private handleAppActive(): void {
     // App came to foreground
-    console.log('App became active - refreshing mobile config');
+    console.log("App became active - refreshing mobile config");
     this.applySystemPreferences();
   }
 
   private handleAppBackground(): void {
     // App went to background
-    console.log('App went to background - saving mobile config');
+    console.log("App went to background - saving mobile config");
     this.saveConfig();
     this.savePreferences();
   }
@@ -140,12 +157,12 @@ export class MobileConfigService {
     // Apply system theme preferences
     const systemColorScheme = Appearance.getColorScheme();
     if (this.mobilePreferences.accessibility.reducedMotion) {
-      this.mobileConfig.animationQuality = 'low';
+      this.mobileConfig.animationQuality = "low";
     }
 
     // Check if we should follow system theme
     if (this.mobilePreferences.featureFlags.developerMode) {
-      console.log('Developer mode enabled - additional logging active');
+      console.log("Developer mode enabled - additional logging active");
     }
   }
 
@@ -153,10 +170,10 @@ export class MobileConfigService {
     try {
       await AsyncStorage.setItem(
         STORAGE_KEYS.MOBILE_CONFIG,
-        JSON.stringify(this.mobileConfig)
+        JSON.stringify(this.mobileConfig),
       );
     } catch (error) {
-      console.error('Failed to save mobile config:', error);
+      console.error("Failed to save mobile config:", error);
     }
   }
 
@@ -164,10 +181,10 @@ export class MobileConfigService {
     try {
       await AsyncStorage.setItem(
         STORAGE_KEYS.MOBILE_PREFERENCES,
-        JSON.stringify(this.mobilePreferences)
+        JSON.stringify(this.mobilePreferences),
       );
     } catch (error) {
-      console.error('Failed to save mobile preferences:', error);
+      console.error("Failed to save mobile preferences:", error);
     }
   }
 
@@ -189,7 +206,9 @@ export class MobileConfigService {
     }
   }
 
-  public async updatePreferences(updates: Partial<MobilePreferences>): Promise<void> {
+  public async updatePreferences(
+    updates: Partial<MobilePreferences>,
+  ): Promise<void> {
     this.mobilePreferences = { ...this.mobilePreferences, ...updates };
     await this.savePreferences();
   }
@@ -198,12 +217,12 @@ export class MobileConfigService {
     // Apply theme changes to the app
     if (this.mobileConfig.darkMode) {
       // Apply dark theme
-      this.mobileConfig.backgroundColor = '#121212';
-      this.mobileConfig.textColor = '#FFFFFF';
+      this.mobileConfig.backgroundColor = "#121212";
+      this.mobileConfig.textColor = "#FFFFFF";
     } else {
       // Apply light theme
-      this.mobileConfig.backgroundColor = '#FFFFFF';
-      this.mobileConfig.textColor = '#333333';
+      this.mobileConfig.backgroundColor = "#FFFFFF";
+      this.mobileConfig.textColor = "#333333";
     }
   }
 
@@ -212,12 +231,16 @@ export class MobileConfigService {
     await this.updateConfig({ darkMode: newDarkMode });
   }
 
-  public async setThemeConfig(themeConfig: Partial<MobileThemeConfig>): Promise<void> {
+  public async setThemeConfig(
+    themeConfig: Partial<MobileThemeConfig>,
+  ): Promise<void> {
     const updatedConfig = {
       primaryColor: themeConfig.primaryColor || this.mobileConfig.primaryColor,
-      secondaryColor: themeConfig.secondaryColor || this.mobileConfig.secondaryColor,
+      secondaryColor:
+        themeConfig.secondaryColor || this.mobileConfig.secondaryColor,
       accentColor: themeConfig.accentColor || this.mobileConfig.accentColor,
-      backgroundColor: themeConfig.backgroundColor || this.mobileConfig.backgroundColor,
+      backgroundColor:
+        themeConfig.backgroundColor || this.mobileConfig.backgroundColor,
       textColor: themeConfig.textColor || this.mobileConfig.textColor,
     };
 
@@ -235,20 +258,22 @@ export class MobileConfigService {
     });
   }
 
-  public async setPerformanceMode(mode: 'high' | 'balanced' | 'battery_saver'): Promise<void> {
+  public async setPerformanceMode(
+    mode: "high" | "balanced" | "battery_saver",
+  ): Promise<void> {
     let configUpdates: Partial<MobileConfig> = { performanceMode: mode };
 
-    if (mode === 'battery_saver') {
+    if (mode === "battery_saver") {
       configUpdates = {
         ...configUpdates,
-        animationQuality: 'low',
+        animationQuality: "low",
         enableHapticFeedback: false,
         batterySaverMode: true,
       };
-    } else if (mode === 'high') {
+    } else if (mode === "high") {
       configUpdates = {
         ...configUpdates,
-        animationQuality: 'high',
+        animationQuality: "high",
         enableHapticFeedback: true,
         batterySaverMode: false,
       };
@@ -256,7 +281,7 @@ export class MobileConfigService {
       // Balanced mode
       configUpdates = {
         ...configUpdates,
-        animationQuality: 'medium',
+        animationQuality: "medium",
         enableHapticFeedback: true,
         batterySaverMode: false,
       };
@@ -296,15 +321,20 @@ export class MobileConfigService {
     reducedMotion?: boolean;
     highContrast?: boolean;
     screenReaderEnabled?: boolean;
-    fontSizeAdjustment?: 'small' | 'normal' | 'large' | 'extra_large';
+    fontSizeAdjustment?: "small" | "normal" | "large" | "extra_large";
   }): Promise<void> {
-    const updatedAccessibility = { ...this.mobilePreferences.accessibility, ...preferences };
+    const updatedAccessibility = {
+      ...this.mobilePreferences.accessibility,
+      ...preferences,
+    };
     await this.updatePreferences({ accessibility: updatedAccessibility });
 
     // Apply accessibility changes
     if (preferences.reducedMotion !== undefined) {
       await this.updateConfig({
-        animationQuality: preferences.reducedMotion ? 'low' : this.mobileConfig.animationQuality,
+        animationQuality: preferences.reducedMotion
+          ? "low"
+          : this.mobileConfig.animationQuality,
       });
     }
   }

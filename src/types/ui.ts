@@ -3,8 +3,8 @@
  * Contains comprehensive UI state and component interfaces
  */
 
-import { ViewType } from './enums';
-import { User, Project, Task } from './common';
+import { ViewType } from "./enums";
+import { User, Project, Task } from "./common";
 
 /**
  * Main UI state interface
@@ -51,15 +51,15 @@ export interface UiState {
   viewSorting: {
     inbox: {
       field: string;
-      direction: 'asc' | 'desc';
+      direction: "asc" | "desc";
     };
     today: {
       field: string;
-      direction: 'asc' | 'desc';
+      direction: "asc" | "desc";
     };
     upcoming: {
       field: string;
-      direction: 'asc' | 'desc';
+      direction: "asc" | "desc";
     };
   };
 
@@ -153,7 +153,7 @@ export interface SidebarState {
   /**
    * Active sidebar tab
    */
-  activeTab: 'projects' | 'labels' | 'filters' | 'settings' | 'activity';
+  activeTab: "projects" | "labels" | "filters" | "settings" | "activity";
 
   /**
    * Collapsed sections
@@ -181,7 +181,7 @@ export interface ModalState {
   taskModal: {
     isOpen: boolean;
     taskId?: string;
-    mode: 'create' | 'edit' | 'view' | null;
+    mode: "create" | "edit" | "view" | null;
   };
 
   /**
@@ -190,7 +190,7 @@ export interface ModalState {
   projectModal: {
     isOpen: boolean;
     projectId?: string;
-    mode: 'create' | 'edit' | 'view' | 'settings' | null;
+    mode: "create" | "edit" | "view" | "settings" | null;
   };
 
   /**
@@ -199,7 +199,7 @@ export interface ModalState {
   userModal: {
     isOpen: boolean;
     userId?: string;
-    mode: 'profile' | 'settings' | 'preferences' | null;
+    mode: "profile" | "settings" | "preferences" | null;
   };
 
   /**
@@ -207,7 +207,13 @@ export interface ModalState {
    */
   settingsModal: {
     isOpen: boolean;
-    activeTab: 'general' | 'account' | 'appearance' | 'notifications' | 'advanced' | null;
+    activeTab:
+      | "general"
+      | "account"
+      | "appearance"
+      | "notifications"
+      | "advanced"
+      | null;
   };
 
   /**
@@ -221,7 +227,7 @@ export interface ModalState {
     onCancel?: () => void;
     confirmText?: string;
     cancelText?: string;
-    type?: 'info' | 'warning' | 'danger';
+    type?: "info" | "warning" | "danger";
   };
 
   /**
@@ -230,7 +236,7 @@ export interface ModalState {
   searchModal: {
     isOpen: boolean;
     query?: string;
-    activeTab: 'tasks' | 'projects' | 'users' | 'all';
+    activeTab: "tasks" | "projects" | "users" | "all";
   };
 }
 
@@ -241,7 +247,7 @@ export interface ThemeSettings {
   /**
    * Current theme
    */
-  current: 'light' | 'dark' | 'system';
+  current: "light" | "dark" | "system";
 
   /**
    * Custom theme colors
@@ -277,32 +283,32 @@ export interface LayoutSettings {
   /**
    * Current layout mode
    */
-  mode: 'default' | 'compact' | 'cozy';
+  mode: "default" | "compact" | "cozy";
 
   /**
    * Task list density
    */
-  taskDensity: 'comfortable' | 'compact' | 'cozy';
+  taskDensity: "comfortable" | "compact" | "cozy";
 
   /**
    * Project list density
    */
-  projectDensity: 'comfortable' | 'compact' | 'cozy';
+  projectDensity: "comfortable" | "compact" | "cozy";
 
   /**
    * Sidebar position
    */
-  sidebarPosition: 'left' | 'right';
+  sidebarPosition: "left" | "right";
 
   /**
    * Main content layout
    */
-  contentLayout: 'single' | 'split' | 'grid';
+  contentLayout: "single" | "split" | "grid";
 
   /**
    * Task view layout
    */
-  taskViewLayout: 'list' | 'board' | 'calendar' | 'timeline';
+  taskViewLayout: "list" | "board" | "calendar" | "timeline";
 
   /**
    * Show completed tasks
@@ -347,7 +353,7 @@ export interface NotificationItem {
   /**
    * Notification type
    */
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: "info" | "success" | "warning" | "error";
 
   /**
    * Notification title
@@ -504,7 +510,7 @@ export interface ContextMenuState {
    * Context menu target
    */
   target: {
-    type: 'task' | 'project' | 'user' | 'label' | 'section' | 'empty';
+    type: "task" | "project" | "user" | "label" | "section" | "empty";
     id?: string;
     data?: any;
   };
@@ -547,7 +553,7 @@ export interface ContextMenuItem {
   /**
    * Item type
    */
-  type: 'action' | 'divider' | 'submenu';
+  type: "action" | "divider" | "submenu";
 
   /**
    * Submenu items (if type is submenu)
@@ -573,7 +579,7 @@ export interface DragDropState {
    * Dragged item
    */
   draggedItem: {
-    type: 'task' | 'project' | 'section' | 'label' | null;
+    type: "task" | "project" | "section" | "label" | null;
     id?: string;
     data?: any;
   };
@@ -582,9 +588,9 @@ export interface DragDropState {
    * Drop target
    */
   dropTarget: {
-    type: 'task' | 'project' | 'section' | 'label' | 'area' | null;
+    type: "task" | "project" | "section" | "label" | "area" | null;
     id?: string;
-    position?: 'before' | 'after' | 'inside';
+    position?: "before" | "after" | "inside";
   };
 
   /**
@@ -618,7 +624,7 @@ export interface KeyboardShortcutsState {
   preferences: {
     enabled: boolean;
     showHints: boolean;
-    conflictResolution: 'override' | 'ignore' | 'warn';
+    conflictResolution: "override" | "ignore" | "warn";
   };
 }
 
@@ -649,7 +655,7 @@ export interface KeyboardShortcut {
   /**
    * Shortcut category
    */
-  category: 'global' | 'tasks' | 'projects' | 'navigation' | 'modals';
+  category: "global" | "tasks" | "projects" | "navigation" | "modals";
 
   /**
    * Shortcut enabled state
@@ -669,14 +675,21 @@ export interface TaskViewState {
   /**
    * Current task view mode
    */
-  mode: 'list' | 'board' | 'calendar' | 'timeline' | 'gantt';
+  mode: "list" | "board" | "calendar" | "timeline" | "gantt";
 
   /**
    * Task grouping
    */
   grouping: {
-    field: 'project' | 'status' | 'priority' | 'dueDate' | 'assignee' | 'label' | 'none';
-    direction: 'asc' | 'desc';
+    field:
+      | "project"
+      | "status"
+      | "priority"
+      | "dueDate"
+      | "assignee"
+      | "label"
+      | "none";
+    direction: "asc" | "desc";
   };
 
   /**
@@ -695,8 +708,14 @@ export interface TaskViewState {
    * Task sorting
    */
   sorting: {
-    field: 'title' | 'priority' | 'dueDate' | 'createdAt' | 'updatedAt' | 'status';
-    direction: 'asc' | 'desc';
+    field:
+      | "title"
+      | "priority"
+      | "dueDate"
+      | "createdAt"
+      | "updatedAt"
+      | "status";
+    direction: "asc" | "desc";
   };
 
   /**
@@ -718,14 +737,14 @@ export interface ProjectViewState {
   /**
    * Current project view mode
    */
-  mode: 'list' | 'board' | 'calendar' | 'timeline' | 'gantt';
+  mode: "list" | "board" | "calendar" | "timeline" | "gantt";
 
   /**
    * Project grouping
    */
   grouping: {
-    field: 'status' | 'priority' | 'assignee' | 'label' | 'dueDate' | 'none';
-    direction: 'asc' | 'desc';
+    field: "status" | "priority" | "assignee" | "label" | "dueDate" | "none";
+    direction: "asc" | "desc";
   };
 
   /**
@@ -743,8 +762,8 @@ export interface ProjectViewState {
    * Project sorting
    */
   sorting: {
-    field: 'name' | 'createdAt' | 'updatedAt' | 'taskCount' | 'completion';
-    direction: 'asc' | 'desc';
+    field: "name" | "createdAt" | "updatedAt" | "taskCount" | "completion";
+    direction: "asc" | "desc";
   };
 
   /**
@@ -829,7 +848,7 @@ export interface UserAvatarProps {
   /**
    * Size of avatar
    */
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
 
   /**
    * Show online status

@@ -1,20 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { useAnimationContext } from './AnimationProvider';
-import { useAnimation } from '../../hooks/useAnimation';
-import { useMicroInteraction } from '../../hooks/useMicroInteraction';
+import React, { useState, useEffect } from "react";
+import { useAnimationContext } from "./AnimationProvider";
+import { useAnimation } from "../../hooks/useAnimation";
+import { useMicroInteraction } from "../../hooks/useMicroInteraction";
 
 interface AnimationStateManagerProps {
   children: React.ReactNode;
 }
 
-export const AnimationStateManager: React.FC<AnimationStateManagerProps> = ({ children }) => {
+export const AnimationStateManager: React.FC<AnimationStateManagerProps> = ({
+  children,
+}) => {
   const { animationState } = useAnimation();
   const { microInteractionState } = useMicroInteraction();
   const {
     isAnimating,
     animationSpeed,
     animationType,
-    microInteractionEnabled
+    microInteractionEnabled,
   } = useAnimationContext();
 
   const [stateHistory, setStateHistory] = useState<any[]>([]);
@@ -29,10 +31,10 @@ export const AnimationStateManager: React.FC<AnimationStateManagerProps> = ({ ch
       microInteractionEnabled,
       currentAnimation: animationState.currentAnimation,
       animationQueue: animationState.animationQueue,
-      activeInteractions: microInteractionState.activeInteractions
+      activeInteractions: microInteractionState.activeInteractions,
     };
 
-    setStateHistory(prev => {
+    setStateHistory((prev) => {
       const updatedHistory = [...prev, newState];
       return updatedHistory.slice(-10); // Keep last 10 states
     });
@@ -42,7 +44,7 @@ export const AnimationStateManager: React.FC<AnimationStateManagerProps> = ({ ch
     animationType,
     microInteractionEnabled,
     animationState,
-    microInteractionState
+    microInteractionState,
   ]);
 
   const getCurrentState = () => {
@@ -53,20 +55,16 @@ export const AnimationStateManager: React.FC<AnimationStateManagerProps> = ({ ch
       microInteractionEnabled,
       currentAnimation: animationState.currentAnimation,
       animationQueue: animationState.animationQueue,
-      activeInteractions: microInteractionState.activeInteractions
+      activeInteractions: microInteractionState.activeInteractions,
     };
   };
 
   const restoreState = (state: any) => {
     // This would be implemented to restore animation state
-    console.log('Restoring animation state:', state);
+    console.log("Restoring animation state:", state);
   };
 
-  return (
-    <div style={{ display: 'contents' }}>
-      {children}
-    </div>
-  );
+  return <div style={{ display: "contents" }}>{children}</div>;
 };
 
 export const useAnimationState = () => {
@@ -76,7 +74,7 @@ export const useAnimationState = () => {
     isAnimating,
     animationSpeed,
     animationType,
-    microInteractionEnabled
+    microInteractionEnabled,
   } = useAnimationContext();
 
   const getCurrentState = () => ({
@@ -86,12 +84,12 @@ export const useAnimationState = () => {
     microInteractionEnabled,
     currentAnimation: animationState.currentAnimation,
     animationQueue: animationState.animationQueue,
-    activeInteractions: microInteractionState.activeInteractions
+    activeInteractions: microInteractionState.activeInteractions,
   });
 
   return {
     getCurrentState,
     animationState,
-    microInteractionState
+    microInteractionState,
   };
 };

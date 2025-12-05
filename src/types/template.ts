@@ -3,7 +3,7 @@
  * Contains comprehensive template management interfaces and types
  */
 
-import { PriorityLevel, TaskStatus } from './enums';
+import { PriorityLevel, TaskStatus } from "./enums";
 
 /**
  * Base template interface
@@ -98,7 +98,10 @@ export interface Template extends BaseTemplate {
 /**
  * Template creation DTO (Data Transfer Object)
  */
-export interface CreateTemplateDto extends Omit<Template, 'id' | 'createdAt' | 'updatedAt'> {
+export interface CreateTemplateDto extends Omit<
+  Template,
+  "id" | "createdAt" | "updatedAt"
+> {
   /**
    * Optional ID for client-side generation
    */
@@ -108,7 +111,9 @@ export interface CreateTemplateDto extends Omit<Template, 'id' | 'createdAt' | '
 /**
  * Template update DTO
  */
-export interface UpdateTemplateDto extends Partial<Omit<Template, 'id' | 'createdAt' | 'updatedAt'>> {
+export interface UpdateTemplateDto extends Partial<
+  Omit<Template, "id" | "createdAt" | "updatedAt">
+> {
   /**
    * Template ID (required for updates)
    */
@@ -163,7 +168,10 @@ export interface TemplateCategory {
 /**
  * Template category creation DTO
  */
-export interface CreateTemplateCategoryDto extends Omit<TemplateCategory, 'id' | 'createdAt' | 'updatedAt'> {
+export interface CreateTemplateCategoryDto extends Omit<
+  TemplateCategory,
+  "id" | "createdAt" | "updatedAt"
+> {
   /**
    * Optional ID for client-side generation
    */
@@ -173,7 +181,9 @@ export interface CreateTemplateCategoryDto extends Omit<TemplateCategory, 'id' |
 /**
  * Template category update DTO
  */
-export interface UpdateTemplateCategoryDto extends Partial<Omit<TemplateCategory, 'id' | 'createdAt' | 'updatedAt'>> {
+export interface UpdateTemplateCategoryDto extends Partial<
+  Omit<TemplateCategory, "id" | "createdAt" | "updatedAt">
+> {
   /**
    * Category ID (required for updates)
    */
@@ -217,12 +227,12 @@ export interface TemplateSortOptions {
   /**
    * Field to sort by
    */
-  field: 'name' | 'createdAt' | 'updatedAt' | 'usageCount' | 'rating';
+  field: "name" | "createdAt" | "updatedAt" | "usageCount" | "rating";
 
   /**
    * Sort direction
    */
-  direction: 'asc' | 'desc';
+  direction: "asc" | "desc";
 }
 
 /**

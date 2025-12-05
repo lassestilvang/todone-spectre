@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { Task, TaskStatus, PriorityLevel } from '../../types/task';
-import { Button } from '../../components/Button';
-import { Input } from '../../components/Input';
-import { Textarea } from '../../components/Textarea';
-import { Select } from '../../components/Select';
-import { DatePicker } from '../../components/DatePicker';
+import React, { useState, useEffect, useCallback } from "react";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { Task, TaskStatus, PriorityLevel } from "../../types/task";
+import { Button } from "../../components/Button";
+import { Input } from "../../components/Input";
+import { Textarea } from "../../components/Textarea";
+import { Select } from "../../components/Select";
+import { DatePicker } from "../../components/DatePicker";
 
 interface SubTaskFormProps {
   subTask?: Task;
@@ -28,7 +28,7 @@ export const SubTaskForm: React.FC<SubTaskFormProps> = ({
   onSubmit,
   onCancel,
   parentTaskId,
-  projectId
+  projectId,
 }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const {
@@ -37,15 +37,15 @@ export const SubTaskForm: React.FC<SubTaskFormProps> = ({
     formState: { errors },
     setValue,
     watch,
-    reset
+    reset,
   } = useForm<FormValues>({
     defaultValues: {
-      title: subTask?.title || '',
-      description: subTask?.description || '',
-      status: subTask?.status || 'todo',
-      priority: subTask?.priority || 'medium',
-      dueDate: subTask?.dueDate || null
-    }
+      title: subTask?.title || "",
+      description: subTask?.description || "",
+      status: subTask?.status || "todo",
+      priority: subTask?.priority || "medium",
+      dueDate: subTask?.dueDate || null,
+    },
   });
 
   // Reset form when subTask changes
@@ -53,40 +53,43 @@ export const SubTaskForm: React.FC<SubTaskFormProps> = ({
     if (subTask) {
       reset({
         title: subTask.title,
-        description: subTask.description || '',
+        description: subTask.description || "",
         status: subTask.status,
         priority: subTask.priority,
-        dueDate: subTask.dueDate || null
+        dueDate: subTask.dueDate || null,
       });
     }
   }, [subTask, reset]);
 
-  const onSubmitForm: SubmitHandler<FormValues> = useCallback(async (data) => {
-    setIsSubmitting(true);
-    try {
-      const subTaskData: Partial<Task> = {
-        title: data.title,
-        description: data.description || '',
-        status: data.status,
-        priority: data.priority,
-        dueDate: data.dueDate || null,
-        parentTaskId,
-        projectId: projectId || subTask?.projectId
-      };
+  const onSubmitForm: SubmitHandler<FormValues> = useCallback(
+    async (data) => {
+      setIsSubmitting(true);
+      try {
+        const subTaskData: Partial<Task> = {
+          title: data.title,
+          description: data.description || "",
+          status: data.status,
+          priority: data.priority,
+          dueDate: data.dueDate || null,
+          parentTaskId,
+          projectId: projectId || subTask?.projectId,
+        };
 
-      await onSubmit(subTaskData);
-    } catch (error) {
-      console.error('Form submission error:', error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [onSubmit, parentTaskId, projectId, subTask?.projectId]);
+        await onSubmit(subTaskData);
+      } catch (error) {
+        console.error("Form submission error:", error);
+      } finally {
+        setIsSubmitting(false);
+      }
+    },
+    [onSubmit, parentTaskId, projectId, subTask?.projectId],
+  );
 
   return (
     <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
       <div>
         <Input
-          {...register('title', { required: 'Title is required' })}
+          {...register("title", { required: "Title is required" })}
           label="Title"
           placeholder="Enter sub-task title"
           error={errors.title?.message}
@@ -96,7 +99,7 @@ export const SubTaskForm: React.FC<SubTaskFormProps> = ({
 
       <div>
         <Textarea
-          {...register('description')}
+          {...register("description")}
           label="Description"
           placeholder="Enter sub-task description (optional)"
           rows={3}
@@ -107,13 +110,13 @@ export const SubTaskForm: React.FC<SubTaskFormProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Select
-            {...register('status')}
+            {...register("status")}
             label="Status"
             options={[
-              { value: 'todo', label: 'To Do' },
-              { value: 'in-progress', label: 'In Progress' },
-              { value: 'completed', label: 'Completed' },
-              { value: 'archived', label: 'Archived' }
+              { value: "todo", label: "To Do" },
+              { value: "in-progress", label: "In Progress" },
+              { value: "completed", label: "Completed" },
+              { value: "archived", label: "Archived" },
             ]}
             disabled={isSubmitting}
           />
@@ -121,13 +124,13 @@ export const SubTaskForm: React.FC<SubTaskFormProps> = ({
 
         <div>
           <Select
-            {...register('priority')}
+            {...register("priority")}
             label="Priority"
             options={[
-              { value: 'low', label: 'Low' },
-              { value: 'medium', label: 'Medium' },
-              { value: 'high', label: 'High' },
-              { value: 'critical', label: 'Critical' }
+              { value: "low", label: "Low" },
+              { value: "medium", label: "Medium" },
+              { value: "high", label: "High" },
+              { value: "critical", label: "Critical" },
             ]}
             disabled={isSubmitting}
           />
@@ -137,8 +140,8 @@ export const SubTaskForm: React.FC<SubTaskFormProps> = ({
       <div>
         <DatePicker
           label="Due Date"
-          selected={watch('dueDate')}
-          onChange={(date) => setValue('dueDate', date)}
+          selected={watch("dueDate")}
+          onChange={(date) => setValue("dueDate", date)}
           placeholderText="Select due date"
           disabled={isSubmitting}
           isClearable
@@ -146,12 +149,12 @@ export const SubTaskForm: React.FC<SubTaskFormProps> = ({
       </div>
 
       <div className="flex space-x-3">
-        <Button
-          type="submit"
-          variant="primary"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? 'Saving...' : subTask ? 'Update Sub-Task' : 'Create Sub-Task'}
+        <Button type="submit" variant="primary" disabled={isSubmitting}>
+          {isSubmitting
+            ? "Saving..."
+            : subTask
+              ? "Update Sub-Task"
+              : "Create Sub-Task"}
         </Button>
 
         {onCancel && (

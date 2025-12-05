@@ -6,13 +6,13 @@ export interface QuickAction {
 }
 
 export interface ExtensionState {
-  status: 'idle' | 'syncing' | 'error' | 'ready';
+  status: "idle" | "syncing" | "error" | "ready";
   lastSync?: number;
   error?: string;
   activeTabId?: number;
   activeTabUrl?: string;
   contentScriptsReady: boolean;
-  pageIntegrationStatus: 'idle' | 'integrating' | 'complete' | 'failed';
+  pageIntegrationStatus: "idle" | "integrating" | "complete" | "failed";
 }
 
 export interface ExtensionConfig {
@@ -20,14 +20,14 @@ export interface ExtensionConfig {
   autoSyncEnabled: boolean;
   syncInterval: number;
   showNotifications: boolean;
-  theme: 'system' | 'light' | 'dark';
+  theme: "system" | "light" | "dark";
   quickActions?: QuickAction[];
 }
 
 export interface ExtensionMessage {
   type: string;
   payload?: any;
-  sender?: 'popup' | 'content' | 'background' | 'options';
+  sender?: "popup" | "content" | "background" | "options";
   timestamp?: number;
 }
 
@@ -39,18 +39,18 @@ export interface ExtensionEvent {
 
 export interface ExtensionAction {
   type:
-    | 'INITIALIZE'
-    | 'STARTUP'
-    | 'SYNC_START'
-    | 'SYNC_COMPLETE'
-    | 'ERROR'
-    | 'CONTENT_SCRIPT_READY'
-    | 'PAGE_INTEGRATION_COMPLETE'
-    | 'TAB_UPDATED'
-    | 'TAB_ACTIVATED'
-    | 'CONFIG_UPDATED'
-    | 'CONFIG_RESET'
-    | 'RESTORE_STATE';
+    | "INITIALIZE"
+    | "STARTUP"
+    | "SYNC_START"
+    | "SYNC_COMPLETE"
+    | "ERROR"
+    | "CONTENT_SCRIPT_READY"
+    | "PAGE_INTEGRATION_COMPLETE"
+    | "TAB_UPDATED"
+    | "TAB_ACTIVATED"
+    | "CONFIG_UPDATED"
+    | "CONFIG_RESET"
+    | "RESTORE_STATE";
   payload?: any;
 }
 

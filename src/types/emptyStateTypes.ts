@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export interface EmptyStateConfig {
   title: string;
@@ -17,7 +17,7 @@ export interface EmptyStateDisplayOptions {
 }
 
 export interface EmptyStateTemplateType {
-  type: 'tasks' | 'projects' | 'calendar' | 'search' | 'custom';
+  type: "tasks" | "projects" | "calendar" | "search" | "custom";
   config?: {
     title?: string;
     description?: string;

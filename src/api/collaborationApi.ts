@@ -1,6 +1,11 @@
-import { CollaborationTeam, CollaborationMember, CollaborationSettings, CollaborationActivity } from '../types/collaboration';
-import { ApiResponse } from '../types/api';
-import { API_BASE_URL } from '../config/app.config';
+import {
+  CollaborationTeam,
+  CollaborationMember,
+  CollaborationSettings,
+  CollaborationActivity,
+} from "../types/collaboration";
+import { ApiResponse } from "../types/api";
+import { API_BASE_URL } from "../config/app.config";
 
 /**
  * Collaboration API Service - Handles all API communication for collaboration features
@@ -21,7 +26,7 @@ export class CollaborationApi {
     return {
       ...rest,
       createdAt: teamData.createdAt?.toISOString(),
-      updatedAt: teamData.updatedAt?.toISOString()
+      updatedAt: teamData.updatedAt?.toISOString(),
     };
   }
 
@@ -33,29 +38,36 @@ export class CollaborationApi {
       ...responseData,
       id: responseData.id,
       name: responseData.name,
-      description: responseData.description || '',
-      privacySetting: responseData.privacySetting || 'team-only',
+      description: responseData.description || "",
+      privacySetting: responseData.privacySetting || "team-only",
       ownerId: responseData.ownerId,
       createdAt: new Date(responseData.createdAt),
       updatedAt: new Date(responseData.updatedAt),
       memberCount: responseData.memberCount || 0,
       activityCount: responseData.activityCount || 0,
-      members: responseData.members?.map((member: any) => this.transformMemberResponse(member)) || [],
+      members:
+        responseData.members?.map((member: any) =>
+          this.transformMemberResponse(member),
+        ) || [],
       projectIds: responseData.projectIds || [],
-      settings: responseData.settings ? this.transformSettingsResponse(responseData.settings) : undefined
+      settings: responseData.settings
+        ? this.transformSettingsResponse(responseData.settings)
+        : undefined,
     };
   }
 
   /**
    * Transform member data for API requests
    */
-  private transformMemberRequest(memberData: Partial<CollaborationMember>): any {
+  private transformMemberRequest(
+    memberData: Partial<CollaborationMember>,
+  ): any {
     const { id, joinedAt, lastActive, ...rest } = memberData;
 
     return {
       ...rest,
       joinedAt: memberData.joinedAt?.toISOString(),
-      lastActive: memberData.lastActive?.toISOString()
+      lastActive: memberData.lastActive?.toISOString(),
     };
   }
 
@@ -69,22 +81,26 @@ export class CollaborationApi {
       teamId: responseData.teamId,
       userId: responseData.userId,
       user: responseData.user,
-      role: responseData.role || 'member',
-      status: responseData.status || 'active',
+      role: responseData.role || "member",
+      status: responseData.status || "active",
       joinedAt: new Date(responseData.joinedAt),
-      lastActive: responseData.lastActive ? new Date(responseData.lastActive) : undefined
+      lastActive: responseData.lastActive
+        ? new Date(responseData.lastActive)
+        : undefined,
     };
   }
 
   /**
    * Transform settings data for API requests
    */
-  private transformSettingsRequest(settingsData: Partial<CollaborationSettings>): any {
+  private transformSettingsRequest(
+    settingsData: Partial<CollaborationSettings>,
+  ): any {
     const { teamId, updatedAt, ...rest } = settingsData;
 
     return {
       ...rest,
-      updatedAt: settingsData.updatedAt?.toISOString()
+      updatedAt: settingsData.updatedAt?.toISOString(),
     };
   }
 
@@ -99,37 +115,39 @@ export class CollaborationApi {
         emailNotifications: true,
         pushNotifications: true,
         mentionNotifications: true,
-        dailyDigest: false
+        dailyDigest: false,
       },
       permissionSettings: responseData.permissionSettings || {
         allowGuestInvites: false,
         allowPublicSharing: false,
         requireAdminApproval: true,
-        allowMemberInvites: false
+        allowMemberInvites: false,
       },
       privacySettings: responseData.privacySettings || {
         visibleToPublic: false,
         searchable: false,
-        allowExternalAccess: false
+        allowExternalAccess: false,
       },
       integrationSettings: responseData.integrationSettings || {
         calendarIntegration: false,
         taskIntegration: false,
-        fileIntegration: false
+        fileIntegration: false,
       },
-      updatedAt: new Date(responseData.updatedAt)
+      updatedAt: new Date(responseData.updatedAt),
     };
   }
 
   /**
    * Transform activity data for API requests
    */
-  private transformActivityRequest(activityData: Partial<CollaborationActivity>): any {
+  private transformActivityRequest(
+    activityData: Partial<CollaborationActivity>,
+  ): any {
     const { id, timestamp, ...rest } = activityData;
 
     return {
       ...rest,
-      timestamp: activityData.timestamp?.toISOString()
+      timestamp: activityData.timestamp?.toISOString(),
     };
   }
 
@@ -144,18 +162,20 @@ export class CollaborationApi {
       userId: responseData.userId,
       user: responseData.user,
       action: responseData.action,
-      type: responseData.type || 'other',
+      type: responseData.type || "other",
       timestamp: new Date(responseData.timestamp),
       details: responseData.details,
       entityId: responseData.entityId,
-      entityType: responseData.entityType
+      entityType: responseData.entityType,
     };
   }
 
   /**
    * Handle API errors with retry logic
    */
-  private async handleApiRequest<T>(requestFn: () => Promise<Response>): Promise<ApiResponse<T>> {
+  private async handleApiRequest<T>(
+    requestFn: () => Promise<Response>,
+  ): Promise<ApiResponse<T>> {
     const MAX_RETRIES = 3;
     let retryCount = 0;
 
@@ -167,58 +187,61 @@ export class CollaborationApi {
           const errorData = await response.json().catch(() => ({}));
           return {
             success: false,
-            message: errorData.message || `HTTP error! status: ${response.status}`,
-            data: null
+            message:
+              errorData.message || `HTTP error! status: ${response.status}`,
+            data: null,
           };
         }
 
         const data = await response.json();
         return {
           success: true,
-          message: 'Success',
-          data: data
+          message: "Success",
+          data: data,
         };
       } catch (error) {
         retryCount++;
         if (retryCount >= MAX_RETRIES) {
           return {
             success: false,
-            message: error instanceof Error ? error.message : 'Unknown error',
-            data: null
+            message: error instanceof Error ? error.message : "Unknown error",
+            data: null,
           };
         }
         // Exponential backoff
-        await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+        await new Promise((resolve) => setTimeout(resolve, 1000 * retryCount));
       }
     }
 
     return {
       success: false,
-      message: 'Max retries exceeded',
-      data: null
+      message: "Max retries exceeded",
+      data: null,
     };
   }
 
   /**
    * Create a new team
    */
-  async createTeam(teamData: Omit<CollaborationTeam, 'id'>): Promise<ApiResponse<CollaborationTeam>> {
+  async createTeam(
+    teamData: Omit<CollaborationTeam, "id">,
+  ): Promise<ApiResponse<CollaborationTeam>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/teams`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(this.transformTeamRequest(teamData))
+          body: JSON.stringify(this.transformTeamRequest(teamData)),
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformTeamResponse(response.data)
+          data: this.transformTeamResponse(response.data),
         };
       }
 
@@ -226,8 +249,9 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to create team',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to create team",
+        data: null,
       };
     }
   }
@@ -239,17 +263,17 @@ export class CollaborationApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/teams/${teamId}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformTeamResponse(response.data)
+          data: this.transformTeamResponse(response.data),
         };
       }
 
@@ -257,8 +281,9 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch team',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to fetch team",
+        data: null,
       };
     }
   }
@@ -270,17 +295,19 @@ export class CollaborationApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/teams`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((team: any) => this.transformTeamResponse(team))
+          data: response.data.map((team: any) =>
+            this.transformTeamResponse(team),
+          ),
         };
       }
 
@@ -288,8 +315,9 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch teams',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to fetch teams",
+        data: null,
       };
     }
   }
@@ -297,23 +325,26 @@ export class CollaborationApi {
   /**
    * Update a team
    */
-  async updateTeam(teamId: string, teamData: Partial<CollaborationTeam>): Promise<ApiResponse<CollaborationTeam>> {
+  async updateTeam(
+    teamId: string,
+    teamData: Partial<CollaborationTeam>,
+  ): Promise<ApiResponse<CollaborationTeam>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/teams/${teamId}`, {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(this.transformTeamRequest(teamData))
+          body: JSON.stringify(this.transformTeamRequest(teamData)),
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformTeamResponse(response.data)
+          data: this.transformTeamResponse(response.data),
         };
       }
 
@@ -321,8 +352,9 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to update team',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to update team",
+        data: null,
       };
     }
   }
@@ -334,23 +366,24 @@ export class CollaborationApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/teams/${teamId}`, {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       return {
         success: response.success,
         message: response.message,
-        data: undefined
+        data: undefined,
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to delete team',
-        data: undefined
+        message:
+          error instanceof Error ? error.message : "Failed to delete team",
+        data: undefined,
       };
     }
   }
@@ -358,23 +391,26 @@ export class CollaborationApi {
   /**
    * Add a member to a team
    */
-  async addMemberToTeam(teamId: string, memberData: Omit<CollaborationMember, 'id'>): Promise<ApiResponse<CollaborationMember>> {
+  async addMemberToTeam(
+    teamId: string,
+    memberData: Omit<CollaborationMember, "id">,
+  ): Promise<ApiResponse<CollaborationMember>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/teams/${teamId}/members`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(this.transformMemberRequest(memberData))
+          body: JSON.stringify(this.transformMemberRequest(memberData)),
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformMemberResponse(response.data)
+          data: this.transformMemberResponse(response.data),
         };
       }
 
@@ -382,8 +418,9 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to add member',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to add member",
+        data: null,
       };
     }
   }
@@ -391,27 +428,34 @@ export class CollaborationApi {
   /**
    * Remove a member from a team
    */
-  async removeMemberFromTeam(teamId: string, memberId: string): Promise<ApiResponse<void>> {
+  async removeMemberFromTeam(
+    teamId: string,
+    memberId: string,
+  ): Promise<ApiResponse<void>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
-        return await fetch(`${this.baseUrl}/teams/${teamId}/members/${memberId}`, {
-          method: 'DELETE',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
+        return await fetch(
+          `${this.baseUrl}/teams/${teamId}/members/${memberId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          },
+        );
       });
 
       return {
         success: response.success,
         message: response.message,
-        data: undefined
+        data: undefined,
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to remove member',
-        data: undefined
+        message:
+          error instanceof Error ? error.message : "Failed to remove member",
+        data: undefined,
       };
     }
   }
@@ -419,23 +463,30 @@ export class CollaborationApi {
   /**
    * Update member role
    */
-  async updateMemberRole(teamId: string, memberId: string, newRole: CollaborationMember['role']): Promise<ApiResponse<CollaborationMember>> {
+  async updateMemberRole(
+    teamId: string,
+    memberId: string,
+    newRole: CollaborationMember["role"],
+  ): Promise<ApiResponse<CollaborationMember>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
-        return await fetch(`${this.baseUrl}/teams/${teamId}/members/${memberId}/role`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+        return await fetch(
+          `${this.baseUrl}/teams/${teamId}/members/${memberId}/role`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+            body: JSON.stringify({ role: newRole }),
           },
-          body: JSON.stringify({ role: newRole })
-        });
+        );
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformMemberResponse(response.data)
+          data: this.transformMemberResponse(response.data),
         };
       }
 
@@ -443,8 +494,11 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to update member role',
-        data: null
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to update member role",
+        data: null,
       };
     }
   }
@@ -452,21 +506,25 @@ export class CollaborationApi {
   /**
    * Get team members
    */
-  async getTeamMembers(teamId: string): Promise<ApiResponse<CollaborationMember[]>> {
+  async getTeamMembers(
+    teamId: string,
+  ): Promise<ApiResponse<CollaborationMember[]>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/teams/${teamId}/members`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((member: any) => this.transformMemberResponse(member))
+          data: response.data.map((member: any) =>
+            this.transformMemberResponse(member),
+          ),
         };
       }
 
@@ -474,8 +532,11 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch team members',
-        data: null
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch team members",
+        data: null,
       };
     }
   }
@@ -483,23 +544,26 @@ export class CollaborationApi {
   /**
    * Update team settings
    */
-  async updateTeamSettings(teamId: string, settings: Partial<CollaborationSettings>): Promise<ApiResponse<CollaborationSettings>> {
+  async updateTeamSettings(
+    teamId: string,
+    settings: Partial<CollaborationSettings>,
+  ): Promise<ApiResponse<CollaborationSettings>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/teams/${teamId}/settings`, {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(this.transformSettingsRequest(settings))
+          body: JSON.stringify(this.transformSettingsRequest(settings)),
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformSettingsResponse(response.data)
+          data: this.transformSettingsResponse(response.data),
         };
       }
 
@@ -507,8 +571,11 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to update team settings',
-        data: null
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to update team settings",
+        data: null,
       };
     }
   }
@@ -516,21 +583,23 @@ export class CollaborationApi {
   /**
    * Get team settings
    */
-  async getTeamSettings(teamId: string): Promise<ApiResponse<CollaborationSettings>> {
+  async getTeamSettings(
+    teamId: string,
+  ): Promise<ApiResponse<CollaborationSettings>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/teams/${teamId}/settings`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformSettingsResponse(response.data)
+          data: this.transformSettingsResponse(response.data),
         };
       }
 
@@ -538,8 +607,11 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch team settings',
-        data: null
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch team settings",
+        data: null,
       };
     }
   }
@@ -547,23 +619,25 @@ export class CollaborationApi {
   /**
    * Create a new activity
    */
-  async createActivity(activityData: Omit<CollaborationActivity, 'id'>): Promise<ApiResponse<CollaborationActivity>> {
+  async createActivity(
+    activityData: Omit<CollaborationActivity, "id">,
+  ): Promise<ApiResponse<CollaborationActivity>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/activities`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(this.transformActivityRequest(activityData))
+          body: JSON.stringify(this.transformActivityRequest(activityData)),
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformActivityResponse(response.data)
+          data: this.transformActivityResponse(response.data),
         };
       }
 
@@ -571,8 +645,9 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to create activity',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to create activity",
+        data: null,
       };
     }
   }
@@ -580,21 +655,25 @@ export class CollaborationApi {
   /**
    * Get activities by team ID
    */
-  async getActivitiesByTeam(teamId: string): Promise<ApiResponse<CollaborationActivity[]>> {
+  async getActivitiesByTeam(
+    teamId: string,
+  ): Promise<ApiResponse<CollaborationActivity[]>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/activities?teamId=${teamId}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((activity: any) => this.transformActivityResponse(activity))
+          data: response.data.map((activity: any) =>
+            this.transformActivityResponse(activity),
+          ),
         };
       }
 
@@ -602,8 +681,9 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch activities',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to fetch activities",
+        data: null,
       };
     }
   }
@@ -611,21 +691,25 @@ export class CollaborationApi {
   /**
    * Get recent activities across all teams
    */
-  async getRecentActivities(limit: number = 10): Promise<ApiResponse<CollaborationActivity[]>> {
+  async getRecentActivities(
+    limit: number = 10,
+  ): Promise<ApiResponse<CollaborationActivity[]>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/activities/recent?limit=${limit}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((activity: any) => this.transformActivityResponse(activity))
+          data: response.data.map((activity: any) =>
+            this.transformActivityResponse(activity),
+          ),
         };
       }
 
@@ -633,8 +717,11 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch recent activities',
-        data: null
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch recent activities",
+        data: null,
       };
     }
   }
@@ -642,21 +729,25 @@ export class CollaborationApi {
   /**
    * Get activities by user
    */
-  async getActivitiesByUser(userId: string): Promise<ApiResponse<CollaborationActivity[]>> {
+  async getActivitiesByUser(
+    userId: string,
+  ): Promise<ApiResponse<CollaborationActivity[]>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/activities?userId=${userId}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((activity: any) => this.transformActivityResponse(activity))
+          data: response.data.map((activity: any) =>
+            this.transformActivityResponse(activity),
+          ),
         };
       }
 
@@ -664,8 +755,11 @@ export class CollaborationApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch user activities',
-        data: null
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch user activities",
+        data: null,
       };
     }
   }
@@ -677,23 +771,24 @@ export class CollaborationApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/activities/${activityId}`, {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       return {
         success: response.success,
         message: response.message,
-        data: undefined
+        data: undefined,
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to delete activity',
-        data: undefined
+        message:
+          error instanceof Error ? error.message : "Failed to delete activity",
+        data: undefined,
       };
     }
   }

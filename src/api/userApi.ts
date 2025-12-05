@@ -1,6 +1,6 @@
-import { User } from '../types/user';
-import { ApiResponse } from '../types/api';
-import { API_BASE_URL } from '../config/app.config';
+import { User } from "../types/user";
+import { ApiResponse } from "../types/api";
+import { API_BASE_URL } from "../config/app.config";
 
 /**
  * User API Service - Handles all API communication for user CRUD operations
@@ -22,7 +22,7 @@ export class UserApi {
       ...rest,
       createdAt: userData.createdAt?.toISOString(),
       updatedAt: userData.updatedAt?.toISOString(),
-      lastLogin: userData.lastLogin?.toISOString()
+      lastLogin: userData.lastLogin?.toISOString(),
     };
   }
 
@@ -39,57 +39,59 @@ export class UserApi {
       bio: responseData.bio || null,
       createdAt: new Date(responseData.createdAt),
       updatedAt: new Date(responseData.updatedAt),
-      lastLogin: responseData.lastLogin ? new Date(responseData.lastLogin) : null,
+      lastLogin: responseData.lastLogin
+        ? new Date(responseData.lastLogin)
+        : null,
       settings: responseData.settings || {
-        theme: 'system',
-        language: 'en',
+        theme: "system",
+        language: "en",
         notifications: {
           emailEnabled: true,
           pushEnabled: true,
           desktopEnabled: true,
-          emailFrequency: 'daily'
+          emailFrequency: "daily",
         },
         privacy: {
-          profileVisibility: 'public',
-          activityVisibility: 'public',
-          searchVisibility: true
+          profileVisibility: "public",
+          activityVisibility: "public",
+          searchVisibility: true,
         },
         security: {
           require2FA: false,
           sessionTimeout: 30,
-          rememberDevices: true
-        }
+          rememberDevices: true,
+        },
       },
       preferences: responseData.preferences || {
-        defaultView: 'list',
-        defaultPriority: 'medium',
+        defaultView: "list",
+        defaultPriority: "medium",
         taskSorting: {
-          field: 'dueDate',
-          direction: 'asc'
+          field: "dueDate",
+          direction: "asc",
         },
         projectSorting: {
-          field: 'name',
-          direction: 'asc'
+          field: "name",
+          direction: "asc",
         },
         dateTime: {
-          dateFormat: 'MMMM d, yyyy',
-          timeFormat: 'h:mm a',
-          weekStartsOn: 'sunday',
-          timeZone: 'UTC'
+          dateFormat: "MMMM d, yyyy",
+          timeFormat: "h:mm a",
+          weekStartsOn: "sunday",
+          timeZone: "UTC",
         },
         ui: {
-          density: 'comfortable',
-          animation: 'full',
+          density: "comfortable",
+          animation: "full",
           sidebarWidth: 240,
           showCompletedTasks: true,
-          showArchivedProjects: false
+          showArchivedProjects: false,
         },
         keyboardShortcuts: {
-          createTask: 'Ctrl+N',
-          search: 'Ctrl+K',
-          toggleSidebar: 'Ctrl+B',
-          quickAdd: 'Ctrl+Q'
-        }
+          createTask: "Ctrl+N",
+          search: "Ctrl+K",
+          toggleSidebar: "Ctrl+B",
+          quickAdd: "Ctrl+Q",
+        },
       },
       stats: responseData.stats || {
         totalTasksCreated: 0,
@@ -103,7 +105,7 @@ export class UserApi {
         currentStreak: 0,
         longestStreak: 0,
         avgTasksPerDay: 0,
-        productivityScore: 0
+        productivityScore: 0,
       },
       karmaStats: responseData.karmaStats || {
         totalPoints: 0,
@@ -114,25 +116,27 @@ export class UserApi {
         badges: [],
         streakBonuses: 0,
         completionBonuses: 0,
-        collaborationPoints: 0
+        collaborationPoints: 0,
       },
       projectIds: responseData.projectIds || [],
       accessibleProjectIds: responseData.accessibleProjectIds || [],
       labelIds: responseData.labelIds || [],
       filterIds: responseData.filterIds || [],
-      status: responseData.status || 'active',
-      role: responseData.role || 'user',
-      authProvider: responseData.authProvider || 'email',
+      status: responseData.status || "active",
+      role: responseData.role || "user",
+      authProvider: responseData.authProvider || "email",
       emailVerified: responseData.emailVerified || false,
       customFields: responseData.customFields || {},
-      metadata: responseData.metadata || {}
+      metadata: responseData.metadata || {},
     };
   }
 
   /**
    * Handle API errors with retry logic
    */
-  private async handleApiRequest<T>(requestFn: () => Promise<Response>): Promise<ApiResponse<T>> {
+  private async handleApiRequest<T>(
+    requestFn: () => Promise<Response>,
+  ): Promise<ApiResponse<T>> {
     const MAX_RETRIES = 3;
     let retryCount = 0;
 
@@ -144,35 +148,36 @@ export class UserApi {
           const errorData = await response.json().catch(() => ({}));
           return {
             success: false,
-            message: errorData.message || `HTTP error! status: ${response.status}`,
-            data: null
+            message:
+              errorData.message || `HTTP error! status: ${response.status}`,
+            data: null,
           };
         }
 
         const data = await response.json();
         return {
           success: true,
-          message: 'Success',
-          data: data
+          message: "Success",
+          data: data,
         };
       } catch (error) {
         retryCount++;
         if (retryCount >= MAX_RETRIES) {
           return {
             success: false,
-            message: error instanceof Error ? error.message : 'Unknown error',
-            data: null
+            message: error instanceof Error ? error.message : "Unknown error",
+            data: null,
           };
         }
         // Exponential backoff
-        await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+        await new Promise((resolve) => setTimeout(resolve, 1000 * retryCount));
       }
     }
 
     return {
       success: false,
-      message: 'Max retries exceeded',
-      data: null
+      message: "Max retries exceeded",
+      data: null,
     };
   }
 
@@ -183,17 +188,17 @@ export class UserApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${userId}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -201,8 +206,9 @@ export class UserApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch user',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to fetch user",
+        data: null,
       };
     }
   }
@@ -214,17 +220,17 @@ export class UserApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((user: any) => this.transformResponse(user))
+          data: response.data.map((user: any) => this.transformResponse(user)),
         };
       }
 
@@ -232,8 +238,8 @@ export class UserApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? err.message : 'Failed to fetch users',
-        data: null
+        message: error instanceof Error ? err.message : "Failed to fetch users",
+        data: null,
       };
     }
   }
@@ -241,23 +247,26 @@ export class UserApi {
   /**
    * Update a user
    */
-  async updateUser(userId: string, userData: Partial<User>): Promise<ApiResponse<User>> {
+  async updateUser(
+    userId: string,
+    userData: Partial<User>,
+  ): Promise<ApiResponse<User>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${userId}`, {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(this.transformRequest(userData))
+          body: JSON.stringify(this.transformRequest(userData)),
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -265,8 +274,9 @@ export class UserApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to update user',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to update user",
+        data: null,
       };
     }
   }

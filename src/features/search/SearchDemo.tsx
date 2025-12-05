@@ -1,25 +1,31 @@
-import React, { useState } from 'react';
-import { SearchBar } from './SearchBar';
-import { SearchResults } from './SearchResults';
-import { CommandPalette } from './CommandPalette';
-import { SearchModal } from './SearchModal';
-import { SearchHeader } from './SearchHeader';
-import { useSearch } from '../../hooks/useSearch';
-import { useCommandPalette } from '../../hooks/useCommandPalette';
-import { useSearchStore } from '../../store/useSearchStore';
-import { createMockSearchResults, createMockCommands } from '../../utils/searchTestUtils';
+import React, { useState } from "react";
+import { SearchBar } from "./SearchBar";
+import { SearchResults } from "./SearchResults";
+import { CommandPalette } from "./CommandPalette";
+import { SearchModal } from "./SearchModal";
+import { SearchHeader } from "./SearchHeader";
+import { useSearch } from "../../hooks/useSearch";
+import { useCommandPalette } from "../../hooks/useCommandPalette";
+import { useSearchStore } from "../../store/useSearchStore";
+import {
+  createMockSearchResults,
+  createMockCommands,
+} from "../../utils/searchTestUtils";
 
 export const SearchDemo: React.FC = () => {
-  const [demoMode, setDemoMode] = useState<'search' | 'commands' | 'modal' | 'header'>('search');
+  const [demoMode, setDemoMode] = useState<
+    "search" | "commands" | "modal" | "header"
+  >("search");
   const { search, results, clearResults } = useSearch();
-  const { commands, filteredCommands, executeCommand, openCommandPalette } = useCommandPalette();
+  const { commands, filteredCommands, executeCommand, openCommandPalette } =
+    useCommandPalette();
   const {
     isSearchModalOpen,
     isCommandPaletteOpen,
     openSearchModal,
     closeSearchModal,
     openCommandPalette: openCommandPaletteStore,
-    closeCommandPalette
+    closeCommandPalette,
   } = useSearchStore();
 
   // Mock data for demo
@@ -32,7 +38,9 @@ export const SearchDemo: React.FC = () => {
 
   const handleCommandExecute = async (command: any) => {
     const success = await executeCommand(command);
-    console.log(`Command ${command.name} executed: ${success ? 'success' : 'failed'}`);
+    console.log(
+      `Command ${command.name} executed: ${success ? "success" : "failed"}`,
+    );
     closeCommandPalette();
   };
 
@@ -42,26 +50,26 @@ export const SearchDemo: React.FC = () => {
 
       <div className="mb-4 flex space-x-2">
         <button
-          onClick={() => setDemoMode('search')}
-          className={`px-4 py-2 rounded ${demoMode === 'search' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => setDemoMode("search")}
+          className={`px-4 py-2 rounded ${demoMode === "search" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
         >
           Search Bar
         </button>
         <button
-          onClick={() => setDemoMode('commands')}
-          className={`px-4 py-2 rounded ${demoMode === 'commands' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => setDemoMode("commands")}
+          className={`px-4 py-2 rounded ${demoMode === "commands" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
         >
           Command Palette
         </button>
         <button
-          onClick={() => setDemoMode('modal')}
-          className={`px-4 py-2 rounded ${demoMode === 'modal' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => setDemoMode("modal")}
+          className={`px-4 py-2 rounded ${demoMode === "modal" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
         >
           Search Modal
         </button>
         <button
-          onClick={() => setDemoMode('header')}
-          className={`px-4 py-2 rounded ${demoMode === 'header' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => setDemoMode("header")}
+          className={`px-4 py-2 rounded ${demoMode === "header" ? "bg-blue-500 text-white" : "bg-gray-200"}`}
         >
           Search Header
         </button>
@@ -72,24 +80,32 @@ export const SearchDemo: React.FC = () => {
         <div className="grid grid-cols-2 gap-4">
           <div className="flex items-center justify-between">
             <span>Open Search</span>
-            <kbd className="px-2 py-1 border border-gray-300 rounded bg-gray-100">Ctrl+F</kbd>
+            <kbd className="px-2 py-1 border border-gray-300 rounded bg-gray-100">
+              Ctrl+F
+            </kbd>
           </div>
           <div className="flex items-center justify-between">
             <span>Command Palette</span>
-            <kbd className="px-2 py-1 border border-gray-300 rounded bg-gray-100">Ctrl+K</kbd>
+            <kbd className="px-2 py-1 border border-gray-300 rounded bg-gray-100">
+              Ctrl+K
+            </kbd>
           </div>
           <div className="flex items-center justify-between">
             <span>Navigate Down</span>
-            <kbd className="px-2 py-1 border border-gray-300 rounded bg-gray-100">↓</kbd>
+            <kbd className="px-2 py-1 border border-gray-300 rounded bg-gray-100">
+              ↓
+            </kbd>
           </div>
           <div className="flex items-center justify-between">
             <span>Navigate Up</span>
-            <kbd className="px-2 py-1 border border-gray-300 rounded bg-gray-100">↑</kbd>
+            <kbd className="px-2 py-1 border border-gray-300 rounded bg-gray-100">
+              ↑
+            </kbd>
           </div>
         </div>
       </div>
 
-      {demoMode === 'search' && (
+      {demoMode === "search" && (
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4">Search Bar Demo</h2>
           <div className="max-w-md">
@@ -106,14 +122,14 @@ export const SearchDemo: React.FC = () => {
         </div>
       )}
 
-      {demoMode === 'header' && (
+      {demoMode === "header" && (
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4">Search Header Demo</h2>
           <SearchHeader />
         </div>
       )}
 
-      {demoMode === 'modal' && (
+      {demoMode === "modal" && (
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4">Search Modal Demo</h2>
           <button
@@ -123,14 +139,11 @@ export const SearchDemo: React.FC = () => {
             Open Search Modal
           </button>
 
-          <SearchModal
-            isOpen={isSearchModalOpen}
-            onClose={closeSearchModal}
-          />
+          <SearchModal isOpen={isSearchModalOpen} onClose={closeSearchModal} />
         </div>
       )}
 
-      {demoMode === 'commands' && (
+      {demoMode === "commands" && (
         <div className="mb-8">
           <h2 className="text-lg font-semibold mb-4">Command Palette Demo</h2>
           <button

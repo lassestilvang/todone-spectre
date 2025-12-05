@@ -1,13 +1,13 @@
-import { useState, useEffect } from 'react';
-import { emptyStateService } from '../services/emptyStateService';
-import { EmptyStateConfig } from '../types/emptyStateTypes';
+import { useState, useEffect } from "react";
+import { emptyStateService } from "../services/emptyStateService";
+import { EmptyStateConfig } from "../types/emptyStateTypes";
 
 export const useEmptyState = (emptyStateKey: string) => {
   const [emptyStateConfig, setEmptyStateConfig] = useState<EmptyStateConfig>(
-    emptyStateService.getEmptyStateConfig(emptyStateKey)
+    emptyStateService.getEmptyStateConfig(emptyStateKey),
   );
   const [isVisible, setIsVisible] = useState<boolean>(
-    emptyStateService.shouldShowEmptyState(emptyStateKey)
+    emptyStateService.shouldShowEmptyState(emptyStateKey),
   );
 
   // Update config when key changes
@@ -38,6 +38,6 @@ export const useEmptyState = (emptyStateKey: string) => {
     updateEmptyState,
     setVisibility,
     registerEmptyState,
-    emptyStateService
+    emptyStateService,
   };
 };

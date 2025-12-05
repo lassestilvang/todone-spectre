@@ -1,4 +1,4 @@
-import { nlpService } from './nlpService';
+import { nlpService } from "./nlpService";
 
 interface ParseResult {
   title?: string;
@@ -25,18 +25,18 @@ export class NlpParserService {
       debug: false,
       strictMode: false,
       fallbackToBasic: true,
-      ...options
+      ...options,
     };
   }
 
   async parse(text: string): Promise<ParseResult> {
-    if (!text || typeof text !== 'string') {
-      throw new Error('Invalid input text for NLP parser');
+    if (!text || typeof text !== "string") {
+      throw new Error("Invalid input text for NLP parser");
     }
 
     const trimmedText = text.trim();
     if (!trimmedText) {
-      throw new Error('Empty input text for NLP parser');
+      throw new Error("Empty input text for NLP parser");
     }
 
     try {
@@ -51,7 +51,7 @@ export class NlpParserService {
       return this.normalizeResult(result);
     } catch (error) {
       if (this.options.debug) {
-        console.error('NLP Parser Service error:', error);
+        console.error("NLP Parser Service error:", error);
       }
 
       // Fallback to basic parsing if enabled
@@ -65,24 +65,24 @@ export class NlpParserService {
 
   private validateResult(result: ParseResult): void {
     if (!result.title) {
-      throw new Error('No title extracted from text');
+      throw new Error("No title extracted from text");
     }
 
     if (result.confidence && result.confidence < 30) {
-      throw new Error('Parsing confidence too low');
+      throw new Error("Parsing confidence too low");
     }
   }
 
   private normalizeResult(result: ParseResult): ParseResult {
     return {
-      title: result.title || 'Untitled Task',
-      description: result.description || '',
+      title: result.title || "Untitled Task",
+      description: result.description || "",
       dueDate: result.dueDate || undefined,
-      priority: result.priority || 'medium',
+      priority: result.priority || "medium",
       labels: result.labels || [],
       project: result.project || undefined,
       rawText: result.rawText,
-      confidence: result.confidence || 0
+      confidence: result.confidence || 0,
     };
   }
 
@@ -90,19 +90,20 @@ export class NlpParserService {
     // Simple fallback parser when main service fails
     const firstSentence = text.split(/[.!?]/)[0] || text;
     const title = firstSentence.substring(0, 50).trim();
-    const description = text.length > title.length ? text.substring(title.length).trim() : '';
+    const description =
+      text.length > title.length ? text.substring(title.length).trim() : "";
 
     return {
       title,
       description: description || undefined,
       rawText: text,
       confidence: 20,
-      priority: 'medium'
+      priority: "medium",
     };
   }
 
   async parseBatch(texts: string[]): Promise<ParseResult[]> {
-    return Promise.all(texts.map(text => this.parse(text)));
+    return Promise.all(texts.map((text) => this.parse(text)));
   }
 
   async parseWithContext(text: string, context: any): Promise<ParseResult> {

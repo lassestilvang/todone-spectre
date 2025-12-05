@@ -1,11 +1,20 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Task, RecurringPattern, TaskStatus } from '../../types/task';
-import { format, addDays, addWeeks, addMonths, addYears, isBefore, isAfter, parseISO } from 'date-fns';
-import { useRecurringTasks } from '../../hooks/useRecurringTasks';
-import { recurringTaskService } from '../../services/recurringTaskService';
-import { recurringPatternService } from '../../services/recurringPatternService';
-import { PriorityBadge } from '../../components/PriorityBadge';
-import { StatusBadge } from '../../components/StatusBadge';
+import React, { useState, useEffect, useCallback } from "react";
+import { Task, RecurringPattern, TaskStatus } from "../../types/task";
+import {
+  format,
+  addDays,
+  addWeeks,
+  addMonths,
+  addYears,
+  isBefore,
+  isAfter,
+  parseISO,
+} from "date-fns";
+import { useRecurringTasks } from "../../hooks/useRecurringTasks";
+import { recurringTaskService } from "../../services/recurringTaskService";
+import { recurringPatternService } from "../../services/recurringPatternService";
+import { PriorityBadge } from "../../components/PriorityBadge";
+import { StatusBadge } from "../../components/StatusBadge";
 
 interface RecurringTaskSchedulerProps {
   task: Task;
@@ -18,7 +27,7 @@ interface RecurringInstance {
   id: string;
   date: Date;
   isGenerated: boolean;
-  status: Task['status'];
+  status: Task["status"];
   completed: boolean;
   originalTaskId: string;
 }
@@ -27,26 +36,27 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
   task,
   onScheduleUpdate,
   onCancel,
-  showAdvancedOptions = false
+  showAdvancedOptions = false,
 }) => {
   const [instances, setInstances] = useState<RecurringInstance[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [editingInstance, setEditingInstance] = useState<RecurringInstance | null>(null);
-  const [editStatus, setEditStatus] = useState<Task['status']>('active');
+  const [editingInstance, setEditingInstance] =
+    useState<RecurringInstance | null>(null);
+  const [editStatus, setEditStatus] = useState<Task["status"]>("active");
   const [showAll, setShowAll] = useState(false);
   const [bulkEditMode, setBulkEditMode] = useState(false);
   const [selectedInstanceIds, setSelectedInstanceIds] = useState<string[]>([]);
-  const [bulkStatus, setBulkStatus] = useState<Task['status']>('active');
-  const [filterStatus, setFilterStatus] = useState<TaskStatus | 'all'>('all');
-  const [sortBy, setSortBy] = useState<'date' | 'status'>('date');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [bulkStatus, setBulkStatus] = useState<Task["status"]>("active");
+  const [filterStatus, setFilterStatus] = useState<TaskStatus | "all">("all");
+  const [sortBy, setSortBy] = useState<"date" | "status">("date");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   const {
     updateRecurringTask,
     completeRecurringInstance,
     generateNextInstance,
-    regenerateAllInstances
+    regenerateAllInstances,
   } = useRecurringTasks();
 
   const loadInstances = useCallback(async () => {
@@ -64,19 +74,21 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
       const taskInstances = recurringTaskService.getRecurringInstances(task.id);
 
       // Map to our instance format
-      const mappedInstances: RecurringInstance[] = taskInstances.map(taskInstance => ({
-        id: taskInstance.id,
-        date: taskInstance.dueDate || new Date(),
-        isGenerated: !!taskInstance.customFields?.isRecurringInstance,
-        status: taskInstance.status,
-        completed: taskInstance.completed,
-        originalTaskId: task.id
-      }));
+      const mappedInstances: RecurringInstance[] = taskInstances.map(
+        (taskInstance) => ({
+          id: taskInstance.id,
+          date: taskInstance.dueDate || new Date(),
+          isGenerated: !!taskInstance.customFields?.isRecurringInstance,
+          status: taskInstance.status,
+          completed: taskInstance.completed,
+          originalTaskId: task.id,
+        }),
+      );
 
       setInstances(mappedInstances);
     } catch (err) {
-      setError('Failed to load recurring instances');
-      console.error('Error loading instances:', err);
+      setError("Failed to load recurring instances");
+      console.error("Error loading instances:", err);
       setInstances([]);
     } finally {
       setIsLoading(false);
@@ -87,33 +99,39 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
     loadInstances();
   }, [task, loadInstances]);
 
-  const handleStatusChange = useCallback(async (instanceId: string, newStatus: Task['status']) => {
-    try {
-      // Update local state optimistically
-      setInstances(prevInstances =>
-        prevInstances.map(instance =>
-          instance.id === instanceId ? { ...instance, status: newStatus } : instance
-        )
-      );
+  const handleStatusChange = useCallback(
+    async (instanceId: string, newStatus: Task["status"]) => {
+      try {
+        // Update local state optimistically
+        setInstances((prevInstances) =>
+          prevInstances.map((instance) =>
+            instance.id === instanceId
+              ? { ...instance, status: newStatus }
+              : instance,
+          ),
+        );
 
-      // Find the task instance to update
-      const instanceToUpdate = instances.find(instance => instance.id === instanceId);
-      if (!instanceToUpdate) return;
+        // Find the task instance to update
+        const instanceToUpdate = instances.find(
+          (instance) => instance.id === instanceId,
+        );
+        if (!instanceToUpdate) return;
 
-      // Update the task via service
-      await updateRecurringTask(instanceId, {
-        status: newStatus
-      });
+        // Update the task via service
+        await updateRecurringTask(instanceId, {
+          status: newStatus,
+        });
 
-      // Refresh instances
-      await loadInstances();
-
-    } catch (err) {
-      console.error('Error updating instance status:', err);
-      // Revert on error
-      await loadInstances();
-    }
-  }, [instances, updateRecurringTask, loadInstances]);
+        // Refresh instances
+        await loadInstances();
+      } catch (err) {
+        console.error("Error updating instance status:", err);
+        // Revert on error
+        await loadInstances();
+      }
+    },
+    [instances, updateRecurringTask, loadInstances],
+  );
 
   const startEditing = (instance: RecurringInstance) => {
     setEditingInstance(instance);
@@ -136,7 +154,7 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
       await completeRecurringInstance(instanceId);
       await loadInstances();
     } catch (err) {
-      console.error('Error completing instance:', err);
+      console.error("Error completing instance:", err);
     }
   };
 
@@ -145,7 +163,7 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
       await generateNextInstance(task.id);
       await loadInstances();
     } catch (err) {
-      console.error('Error generating next instance:', err);
+      console.error("Error generating next instance:", err);
     }
   };
 
@@ -154,7 +172,7 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
       await regenerateAllInstances(task.id);
       await loadInstances();
     } catch (err) {
-      console.error('Error regenerating instances:', err);
+      console.error("Error regenerating instances:", err);
     }
   };
 
@@ -167,14 +185,16 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
 
   const handleInstanceSelect = (instanceId: string) => {
     if (selectedInstanceIds.includes(instanceId)) {
-      setSelectedInstanceIds(selectedInstanceIds.filter(id => id !== instanceId));
+      setSelectedInstanceIds(
+        selectedInstanceIds.filter((id) => id !== instanceId),
+      );
     } else {
       setSelectedInstanceIds([...selectedInstanceIds, instanceId]);
     }
   };
 
   const selectAllInstances = () => {
-    setSelectedInstanceIds(instances.map(instance => instance.id));
+    setSelectedInstanceIds(instances.map((instance) => instance.id));
   };
 
   const deselectAllInstances = () => {
@@ -190,9 +210,8 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
       // Clear selection and exit bulk mode
       setSelectedInstanceIds([]);
       setBulkEditMode(false);
-
     } catch (err) {
-      console.error('Error applying bulk status change:', err);
+      console.error("Error applying bulk status change:", err);
     }
   };
 
@@ -207,9 +226,8 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
       setBulkEditMode(false);
 
       await loadInstances();
-
     } catch (err) {
-      console.error('Error completing instances in bulk:', err);
+      console.error("Error completing instances in bulk:", err);
     }
   };
 
@@ -220,57 +238,65 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
         ...task,
         customFields: {
           ...task.customFields,
-          recurringInstances: instances.map(instance => ({
+          recurringInstances: instances.map((instance) => ({
             id: instance.id,
             date: instance.date.toISOString(),
             status: instance.status,
             isGenerated: instance.isGenerated,
-            completed: instance.completed
-          }))
-        }
+            completed: instance.completed,
+          })),
+        },
       };
 
       await onScheduleUpdate(updatedTask);
     } catch (err) {
-      console.error('Error saving schedule changes:', err);
+      console.error("Error saving schedule changes:", err);
     }
   };
 
-  const handleSort = (field: 'date' | 'status') => {
+  const handleSort = (field: "date" | "status") => {
     if (sortBy === field) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
       setSortBy(field);
-      setSortDirection('asc');
+      setSortDirection("asc");
     }
   };
 
-  const getSortIndicator = (field: 'date' | 'status') => {
+  const getSortIndicator = (field: "date" | "status") => {
     if (sortBy !== field) return null;
-    return sortDirection === 'asc' ? '↑' : '↓';
+    return sortDirection === "asc" ? "↑" : "↓";
   };
 
-  const filteredInstances = instances.filter(instance => {
-    if (filterStatus === 'all') return true;
+  const filteredInstances = instances.filter((instance) => {
+    if (filterStatus === "all") return true;
     return instance.status === filterStatus;
   });
 
   const sortedInstances = [...filteredInstances].sort((a, b) => {
-    if (sortBy === 'status') {
+    if (sortBy === "status") {
       const statusOrder: Record<string, number> = {
-        'in-progress': 1,
-        'active': 2,
-        'pending': 3,
-        'completed': 4,
-        'archived': 5
+        "in-progress": 1,
+        active: 2,
+        pending: 3,
+        completed: 4,
+        archived: 5,
       };
-      return (statusOrder[a.status] - statusOrder[b.status]) * (sortDirection === 'asc' ? 1 : -1);
+      return (
+        (statusOrder[a.status] - statusOrder[b.status]) *
+        (sortDirection === "asc" ? 1 : -1)
+      );
     } else {
-      return (a.date.getTime() - b.date.getTime()) * (sortDirection === 'asc' ? 1 : -1);
+      return (
+        (a.date.getTime() - b.date.getTime()) *
+        (sortDirection === "asc" ? 1 : -1)
+      );
     }
   });
 
-  const visibleInstances = showAll ? sortedInstances : sortedInstances.slice(0, 10);
+  const visibleInstances = showAll
+    ? sortedInstances
+    : sortedInstances.slice(0, 10);
 
   if (isLoading) {
     return (
@@ -300,7 +326,7 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
               onClick={() => setShowAll(!showAll)}
               className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50"
             >
-              {showAll ? 'Show Less' : `Show All (${instances.length})`}
+              {showAll ? "Show Less" : `Show All (${instances.length})`}
             </button>
           )}
           {onCancel && (
@@ -318,14 +344,16 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <p className="text-sm text-gray-600 mb-1">
-              <strong>Pattern:</strong> {task.recurringPattern || 'None'}
+              <strong>Pattern:</strong> {task.recurringPattern || "None"}
             </p>
             <p className="text-sm text-gray-600 mb-1">
-              <strong>Start Date:</strong> {task.dueDate ? format(new Date(task.dueDate), 'PPP') : 'Not set'}
+              <strong>Start Date:</strong>{" "}
+              {task.dueDate ? format(new Date(task.dueDate), "PPP") : "Not set"}
             </p>
             {task.customFields?.recurringEndDate && (
               <p className="text-sm text-gray-600 mb-1">
-                <strong>End Date:</strong> {format(new Date(task.customFields.recurringEndDate), 'PPP')}
+                <strong>End Date:</strong>{" "}
+                {format(new Date(task.customFields.recurringEndDate), "PPP")}
               </p>
             )}
             {task.customFields?.recurringCount && (
@@ -340,7 +368,8 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
               <strong>Status:</strong> <StatusBadge status={task.status} />
             </p>
             <p className="text-sm text-gray-600 mb-1">
-              <strong>Priority:</strong> <PriorityBadge priority={task.priority} />
+              <strong>Priority:</strong>{" "}
+              <PriorityBadge priority={task.priority} />
             </p>
             {task.description && (
               <p className="text-sm text-gray-600 mb-1">
@@ -356,9 +385,24 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
             className="px-3 py-1 text-sm border border-blue-600 text-blue-600 rounded-md hover:bg-blue-50"
             title="Generate next instance"
           >
-            <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4l8 8-8 8" />
+            <svg
+              className="w-4 h-4 inline mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4v16m8-8H4"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M12 4l8 8-8 8"
+              />
             </svg>
             Generate Next
           </button>
@@ -368,8 +412,18 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
             className="px-3 py-1 text-sm border border-green-600 text-green-600 rounded-md hover:bg-green-50"
             title="Regenerate all instances"
           >
-            <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5M4 20h5v-5M20 4h-5v5" />
+            <svg
+              className="w-4 h-4 inline mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 4v5h5M20 20v-5h-5M4 20h5v-5M20 4h-5v5"
+              />
             </svg>
             Regenerate All
           </button>
@@ -379,10 +433,20 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
             className="px-3 py-1 text-sm border border-purple-600 text-purple-600 rounded-md hover:bg-purple-50"
             title="Bulk edit instances"
           >
-            <svg className="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <svg
+              className="w-4 h-4 inline mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
             </svg>
-            {bulkEditMode ? 'Exit Bulk Mode' : 'Bulk Actions'}
+            {bulkEditMode ? "Exit Bulk Mode" : "Bulk Actions"}
           </button>
         </div>
       </div>
@@ -406,7 +470,9 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
             <div className="flex items-center space-x-2">
               <select
                 value={bulkStatus}
-                onChange={(e) => setBulkStatus(e.target.value as Task['status'])}
+                onChange={(e) =>
+                  setBulkStatus(e.target.value as Task["status"])
+                }
                 className="px-2 py-1 border border-gray-300 rounded-md text-sm"
               >
                 <option value="active">Active</option>
@@ -437,7 +503,8 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
       <div className="space-y-3">
         {visibleInstances.length === 0 ? (
           <div className="p-4 text-center text-gray-500">
-            No recurring instances found. This task doesn't have a recurring pattern.
+            No recurring instances found. This task doesn't have a recurring
+            pattern.
           </div>
         ) : (
           <>
@@ -446,7 +513,9 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
                 <span className="text-sm text-gray-600">Filter:</span>
                 <select
                   value={filterStatus}
-                  onChange={(e) => setFilterStatus(e.target.value as TaskStatus | 'all')}
+                  onChange={(e) =>
+                    setFilterStatus(e.target.value as TaskStatus | "all")
+                  }
                   className="px-2 py-1 border border-gray-300 rounded-md text-sm"
                 >
                   <option value="all">All Statuses</option>
@@ -461,16 +530,16 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-600">Sort:</span>
                 <button
-                  onClick={() => handleSort('date')}
-                  className={`px-2 py-1 text-sm border border-gray-300 rounded-md ${sortBy === 'date' ? 'bg-gray-100' : 'hover:bg-gray-50'}`}
+                  onClick={() => handleSort("date")}
+                  className={`px-2 py-1 text-sm border border-gray-300 rounded-md ${sortBy === "date" ? "bg-gray-100" : "hover:bg-gray-50"}`}
                 >
-                  Date {getSortIndicator('date')}
+                  Date {getSortIndicator("date")}
                 </button>
                 <button
-                  onClick={() => handleSort('status')}
-                  className={`px-2 py-1 text-sm border border-gray-300 rounded-md ${sortBy === 'status' ? 'bg-gray-100' : 'hover:bg-gray-50'}`}
+                  onClick={() => handleSort("status")}
+                  className={`px-2 py-1 text-sm border border-gray-300 rounded-md ${sortBy === "status" ? "bg-gray-100" : "hover:bg-gray-50"}`}
                 >
-                  Status {getSortIndicator('status')}
+                  Status {getSortIndicator("status")}
                 </button>
               </div>
             </div>
@@ -483,24 +552,30 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
                 return (
                   <div
                     key={instance.id}
-                    className={`border border-gray-200 rounded-lg p-3 ${isSelected ? 'ring-2 ring-blue-500' : ''}`}
+                    className={`border border-gray-200 rounded-lg p-3 ${isSelected ? "ring-2 ring-blue-500" : ""}`}
                   >
                     <div className="flex justify-between items-start mb-2">
                       <div>
                         <p className="font-medium text-gray-900">
-                          {format(instance.date, 'PPP')}
+                          {format(instance.date, "PPP")}
                         </p>
                         <p className="text-xs text-gray-500">
-                          {instance.isGenerated ? 'Generated' : 'Original'} Instance
+                          {instance.isGenerated ? "Generated" : "Original"}{" "}
+                          Instance
                         </p>
                       </div>
-                      <span className={`px-2 py-1 text-xs rounded-full ${
-                        instance.status === 'completed' ? 'bg-green-100 text-green-800' :
-                        instance.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
-                        instance.status === 'archived' ? 'bg-gray-100 text-gray-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {instance.status.replace('-', ' ')}
+                      <span
+                        className={`px-2 py-1 text-xs rounded-full ${
+                          instance.status === "completed"
+                            ? "bg-green-100 text-green-800"
+                            : instance.status === "in-progress"
+                              ? "bg-blue-100 text-blue-800"
+                              : instance.status === "archived"
+                                ? "bg-gray-100 text-gray-800"
+                                : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {instance.status.replace("-", " ")}
                       </span>
                     </div>
 
@@ -517,7 +592,9 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
                       <div className="space-y-2">
                         <select
                           value={editStatus}
-                          onChange={(e) => setEditStatus(e.target.value as Task['status'])}
+                          onChange={(e) =>
+                            setEditStatus(e.target.value as Task["status"])
+                          }
                           className="w-full px-2 py-1 border border-gray-300 rounded-md text-sm"
                         >
                           <option value="active">Active</option>

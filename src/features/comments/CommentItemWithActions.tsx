@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Comment } from '../../types/common';
-import CommentDisplay from './CommentDisplay';
-import CommentManagement from './CommentManagement';
-import CommentEditor from './CommentEditor';
-import { useCommentForm } from '../../hooks/useCommentForm';
+import React, { useState } from "react";
+import { Comment } from "../../types/common";
+import CommentDisplay from "./CommentDisplay";
+import CommentManagement from "./CommentManagement";
+import CommentEditor from "./CommentEditor";
+import { useCommentForm } from "../../hooks/useCommentForm";
 
 interface CommentItemWithActionsProps {
   comment: Comment;
@@ -22,7 +22,7 @@ const CommentItemWithActions: React.FC<CommentItemWithActionsProps> = ({
   onReply,
   onLike,
   onDislike,
-  currentUserId
+  currentUserId,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [likes, setLikes] = useState(comment.likes || 0);

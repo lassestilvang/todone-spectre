@@ -1,7 +1,7 @@
-import React from 'react';
-import { DraggableTask } from './DraggableTask';
-import TaskItem from '../tasks/TaskItem';
-import { Task } from '../../types/task';
+import React from "react";
+import { DraggableTask } from "./DraggableTask";
+import TaskItem from "../tasks/TaskItem";
+import { Task } from "../../types/task";
 
 interface DraggableTaskItemProps {
   task: Task;
@@ -17,8 +17,8 @@ export const DraggableTaskItem: React.FC<DraggableTaskItemProps> = ({
   onToggleCompletion,
   onDelete,
   onClick,
-  source = 'task-list',
-  className = ''
+  source = "task-list",
+  className = "",
 }) => {
   return (
     <DraggableTask task={task} source={source} className={className}>

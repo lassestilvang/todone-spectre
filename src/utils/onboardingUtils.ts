@@ -1,4 +1,5 @@
 import { OnboardingStepConfig } from '../types/onboardingTypes';
+import React from 'react';
 
 /**
  * Generate default onboarding steps for Todone application
@@ -130,5 +131,5 @@ export const shouldShowOnboarding = (
   userPreferences: any,
   onboardingKey: string = 'showOnboarding'
 ): boolean => {
-  return !userPreferences?.[onboardingKey] === false;
+  return !userPreferences?.[onboardingKey];
 };

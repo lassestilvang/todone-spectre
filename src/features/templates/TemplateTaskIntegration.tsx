@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Template } from '../../types/template';
-import { useTemplates } from '../../hooks/useTemplates';
-import { useTemplateContext } from '../../context/TemplateContext';
-import { TemplateList, TemplatePreview } from './';
-import { Plus, Search, Template as TemplateIcon } from 'lucide-react';
+import React, { useState } from "react";
+import { Template } from "../../types/template";
+import { useTemplates } from "../../hooks/useTemplates";
+import { useTemplateContext } from "../../context/TemplateContext";
+import { TemplateList, TemplatePreview } from "./";
+import { Plus, Search, Template as TemplateIcon } from "lucide-react";
 
 interface TemplateTaskIntegrationProps {
   onTemplateSelected: (template: Template) => void;
@@ -12,22 +12,29 @@ interface TemplateTaskIntegrationProps {
 
 const TemplateTaskIntegration: React.FC<TemplateTaskIntegrationProps> = ({
   onTemplateSelected,
-  onTemplateApplied
+  onTemplateApplied,
 }) => {
-  const { templates, categories, isLoading, error, fetchTemplates } = useTemplates();
-  const { setIsPreviewModalOpen, setPreviewTemplate, setPreviewVariables } = useTemplateContext();
+  const { templates, categories, isLoading, error, fetchTemplates } =
+    useTemplates();
+  const { setIsPreviewModalOpen, setPreviewTemplate, setPreviewVariables } =
+    useTemplateContext();
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | 'all'>('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | "all">(
+    "all",
+  );
   const [showTemplateList, setShowTemplateList] = useState(false);
 
-  const filteredTemplates = templates.filter(template => {
-    const matchesSearch = template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         template.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         template.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredTemplates = templates.filter((template) => {
+    const matchesSearch =
+      template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.tags?.some((tag) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
 
-    const matchesCategory = selectedCategory === 'all' ||
-                           template.categoryId === selectedCategory;
+    const matchesCategory =
+      selectedCategory === "all" || template.categoryId === selectedCategory;
 
     return matchesSearch && matchesCategory;
   });
@@ -58,7 +65,7 @@ const TemplateTaskIntegration: React.FC<TemplateTaskIntegrationProps> = ({
           className="flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 text-sm"
         >
           <Plus className="w-4 h-4 mr-1" />
-          {showTemplateList ? 'Hide Templates' : 'Browse Templates'}
+          {showTemplateList ? "Hide Templates" : "Browse Templates"}
         </button>
       </div>
 
@@ -102,7 +109,8 @@ const TemplateTaskIntegration: React.FC<TemplateTaskIntegrationProps> = ({
             </div>
           ) : filteredTemplates.length === 0 ? (
             <div className="p-3 text-center text-gray-500 text-sm">
-              No templates found. Try adjusting your search or create a new template.
+              No templates found. Try adjusting your search or create a new
+              template.
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-64 overflow-y-auto">
@@ -114,9 +122,13 @@ const TemplateTaskIntegration: React.FC<TemplateTaskIntegrationProps> = ({
                 >
                   <div className="flex items-start justify-between">
                     <div>
-                      <h4 className="font-medium text-sm text-gray-900 truncate">{template.name}</h4>
+                      <h4 className="font-medium text-sm text-gray-900 truncate">
+                        {template.name}
+                      </h4>
                       {template.description && (
-                        <p className="text-xs text-gray-500 mt-1 truncate">{template.description}</p>
+                        <p className="text-xs text-gray-500 mt-1 truncate">
+                          {template.description}
+                        </p>
                       )}
                     </div>
                     {template.isPublic && (

@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useOfflineStore } from '../../store/useOfflineStore';
-import { OfflineStatus } from '../../types/offlineTypes';
+import React, { useState, useEffect } from "react";
+import { useOfflineStore } from "../../store/useOfflineStore";
+import { OfflineStatus } from "../../types/offlineTypes";
 
 interface OfflineIndicatorProps {
-  position?: 'top' | 'bottom' | 'inline';
+  position?: "top" | "bottom" | "inline";
   showDetails?: boolean;
   onStatusChange?: (status: OfflineStatus) => void;
 }
 
 export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
-  position = 'bottom',
+  position = "bottom",
   showDetails = false,
-  onStatusChange
+  onStatusChange,
 }) => {
   const { isOffline, pendingChanges, lastSync, error } = useOfflineStore();
-  const [status, setStatus] = useState<OfflineStatus>('online');
+  const [status, setStatus] = useState<OfflineStatus>("online");
 
   useEffect(() => {
-    const newStatus: OfflineStatus = isOffline ? 'offline' : 'online';
+    const newStatus: OfflineStatus = isOffline ? "offline" : "online";
     setStatus(newStatus);
     if (onStatusChange) {
       onStatusChange(newStatus);
@@ -26,34 +26,36 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
 
   const getStatusText = () => {
     switch (status) {
-      case 'offline':
-        return 'You are offline. Changes will sync when you reconnect.';
-      case 'online':
-        return 'You are online. All changes are syncing automatically.';
+      case "offline":
+        return "You are offline. Changes will sync when you reconnect.";
+      case "online":
+        return "You are online. All changes are syncing automatically.";
       default:
-        return 'Network status unknown';
+        return "Network status unknown";
     }
   };
 
   const getStatusClass = () => {
     switch (status) {
-      case 'offline':
-        return 'offline-indicator-offline';
-      case 'online':
-        return 'offline-indicator-online';
+      case "offline":
+        return "offline-indicator-offline";
+      case "online":
+        return "offline-indicator-online";
       default:
-        return 'offline-indicator-unknown';
+        return "offline-indicator-unknown";
     }
   };
 
   const positionClasses = {
-    top: 'offline-indicator-top',
-    bottom: 'offline-indicator-bottom',
-    inline: 'offline-indicator-inline'
+    top: "offline-indicator-top",
+    bottom: "offline-indicator-bottom",
+    inline: "offline-indicator-inline",
   };
 
   return (
-    <div className={`offline-indicator ${getStatusClass()} ${positionClasses[position]}`}>
+    <div
+      className={`offline-indicator ${getStatusClass()} ${positionClasses[position]}`}
+    >
       <div className="offline-indicator-content">
         <div className="offline-indicator-status">
           <span className="offline-indicator-dot" />
@@ -64,7 +66,7 @@ export const OfflineIndicator: React.FC<OfflineIndicatorProps> = ({
           <div className="offline-indicator-details">
             {pendingChanges > 0 && (
               <span className="offline-indicator-changes">
-                {pendingChanges} pending change{pendingChanges !== 1 ? 's' : ''}
+                {pendingChanges} pending change{pendingChanges !== 1 ? "s" : ""}
               </span>
             )}
             {lastSync && (

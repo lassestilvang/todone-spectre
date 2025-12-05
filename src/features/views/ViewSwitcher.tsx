@@ -1,5 +1,5 @@
-import React from 'react';
-import { ViewType } from '../../types/enums';
+import React from "react";
+import { ViewType } from "../../types/enums";
 
 interface ViewSwitcherProps {
   currentView: ViewType;
@@ -13,13 +13,13 @@ export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
   availableViews = [ViewType.LIST, ViewType.BOARD, ViewType.CALENDAR],
 }) => {
   const viewOptions = [
-    { value: ViewType.LIST, label: 'List', icon: '📋' },
-    { value: ViewType.BOARD, label: 'Board', icon: '📊' },
-    { value: ViewType.CALENDAR, label: 'Calendar', icon: '📅' },
+    { value: ViewType.LIST, label: "List", icon: "📋" },
+    { value: ViewType.BOARD, label: "Board", icon: "📊" },
+    { value: ViewType.CALENDAR, label: "Calendar", icon: "📅" },
   ];
 
-  const filteredOptions = viewOptions.filter(option =>
-    availableViews.includes(option.value)
+  const filteredOptions = viewOptions.filter((option) =>
+    availableViews.includes(option.value),
   );
 
   return (
@@ -27,7 +27,7 @@ export const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
       {filteredOptions.map((option) => (
         <button
           key={option.value}
-          className={`view-option ${currentView === option.value ? 'active' : ''}`}
+          className={`view-option ${currentView === option.value ? "active" : ""}`}
           onClick={() => onViewChange(option.value)}
           title={option.label}
         >

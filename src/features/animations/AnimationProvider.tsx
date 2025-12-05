@@ -1,6 +1,12 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useAnimation } from '../../hooks/useAnimation';
-import { useMicroInteraction } from '../../hooks/useMicroInteraction';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { useAnimation } from "../../hooks/useAnimation";
+import { useMicroInteraction } from "../../hooks/useMicroInteraction";
 
 interface AnimationContextType {
   isAnimating: boolean;
@@ -14,12 +20,16 @@ interface AnimationContextType {
   triggerMicroInteraction: (type: string) => void;
 }
 
-const AnimationContext = createContext<AnimationContextType | undefined>(undefined);
+const AnimationContext = createContext<AnimationContextType | undefined>(
+  undefined,
+);
 
-export const AnimationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AnimationProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const [isAnimating, setIsAnimating] = useState(true);
   const [animationSpeed, setAnimationSpeed] = useState(1);
-  const [animationType, setAnimationType] = useState('fade');
+  const [animationType, setAnimationType] = useState("fade");
   const [microInteractionEnabled, setMicroInteractionEnabled] = useState(true);
 
   const { triggerAnimation } = useAnimation();
@@ -42,22 +52,24 @@ export const AnimationProvider: React.FC<{ children: ReactNode }> = ({ children 
   useEffect(() => {
     // Initialize default animations
     if (isAnimating) {
-      triggerAnimation('init');
+      triggerAnimation("init");
     }
   }, [isAnimating]);
 
   return (
-    <AnimationContext.Provider value={{
-      isAnimating,
-      animationSpeed,
-      animationType,
-      microInteractionEnabled,
-      toggleAnimation,
-      setAnimationSpeed,
-      setAnimationType,
-      toggleMicroInteraction,
-      triggerMicroInteraction
-    }}>
+    <AnimationContext.Provider
+      value={{
+        isAnimating,
+        animationSpeed,
+        animationType,
+        microInteractionEnabled,
+        toggleAnimation,
+        setAnimationSpeed,
+        setAnimationType,
+        toggleMicroInteraction,
+        triggerMicroInteraction,
+      }}
+    >
       {children}
     </AnimationContext.Provider>
   );
@@ -66,7 +78,9 @@ export const AnimationProvider: React.FC<{ children: ReactNode }> = ({ children 
 export const useAnimationContext = () => {
   const context = useContext(AnimationContext);
   if (context === undefined) {
-    throw new Error('useAnimationContext must be used within an AnimationProvider');
+    throw new Error(
+      "useAnimationContext must be used within an AnimationProvider",
+    );
   }
   return context;
 };

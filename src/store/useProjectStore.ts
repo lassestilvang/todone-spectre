@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
-import { ProjectState, Project } from '../types/store';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
+import { ProjectState, Project } from "../types/store";
 
 export const useProjectStore = create<ProjectState>()(
   devtools(
@@ -11,7 +11,12 @@ export const useProjectStore = create<ProjectState>()(
         currentProjectId: null,
 
         // CRUD Operations
-        addProject: (projectData: Omit<Project, 'id' | 'createdAt' | 'updatedAt' | 'taskIds'>) => {
+        addProject: (
+          projectData: Omit<
+            Project,
+            "id" | "createdAt" | "updatedAt" | "taskIds"
+          >,
+        ) => {
           const newProject: Project = {
             ...projectData,
             id: Math.random().toString(36).substr(2, 9),
@@ -24,7 +29,10 @@ export const useProjectStore = create<ProjectState>()(
           }));
         },
 
-        updateProject: (id: string, updates: Partial<Omit<Project, 'id' | 'createdAt'>>) => {
+        updateProject: (
+          id: string,
+          updates: Partial<Omit<Project, "id" | "createdAt">>,
+        ) => {
           set((state) => ({
             projects: state.projects.map((project) =>
               project.id === id
@@ -33,7 +41,7 @@ export const useProjectStore = create<ProjectState>()(
                     ...updates,
                     updatedAt: new Date(),
                   }
-                : project
+                : project,
             ),
           }));
         },
@@ -41,7 +49,8 @@ export const useProjectStore = create<ProjectState>()(
         deleteProject: (id: string) => {
           set((state) => ({
             projects: state.projects.filter((project) => project.id !== id),
-            currentProjectId: state.currentProjectId === id ? null : state.currentProjectId,
+            currentProjectId:
+              state.currentProjectId === id ? null : state.currentProjectId,
           }));
         },
 
@@ -59,7 +68,7 @@ export const useProjectStore = create<ProjectState>()(
                     taskIds: [...project.taskIds, taskId],
                     updatedAt: new Date(),
                   }
-                : project
+                : project,
             ),
           }));
         },
@@ -73,7 +82,7 @@ export const useProjectStore = create<ProjectState>()(
                     taskIds: project.taskIds.filter((id) => id !== taskId),
                     updatedAt: new Date(),
                   }
-                : project
+                : project,
             ),
           }));
         },
@@ -87,28 +96,28 @@ export const useProjectStore = create<ProjectState>()(
         initializeSampleProjects: () => {
           const sampleProjects: Project[] = [
             {
-              id: 'proj-1',
-              name: 'Website Redesign',
-              description: 'Complete redesign of company website',
-              color: '#4F46E5',
+              id: "proj-1",
+              name: "Website Redesign",
+              description: "Complete redesign of company website",
+              color: "#4F46E5",
               createdAt: new Date(),
               updatedAt: new Date(),
               taskIds: [],
             },
             {
-              id: 'proj-2',
-              name: 'Mobile App Development',
-              description: 'Develop native mobile application',
-              color: '#10B981',
+              id: "proj-2",
+              name: "Mobile App Development",
+              description: "Develop native mobile application",
+              color: "#10B981",
               createdAt: new Date(),
               updatedAt: new Date(),
               taskIds: [],
             },
             {
-              id: 'proj-3',
-              name: 'API Integration',
-              description: 'Integrate third-party APIs',
-              color: '#F59E0B',
+              id: "proj-3",
+              name: "API Integration",
+              description: "Integrate third-party APIs",
+              color: "#F59E0B",
               createdAt: new Date(),
               updatedAt: new Date(),
               taskIds: [],
@@ -119,11 +128,11 @@ export const useProjectStore = create<ProjectState>()(
         },
       }),
       {
-        name: 'todone-projects-storage',
+        name: "todone-projects-storage",
         storage: createJSONStorage(() => localStorage),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
 
 // Helper function to create localStorage

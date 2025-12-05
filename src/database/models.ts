@@ -1,4 +1,3 @@
-import { Dexie } from 'dexie';
 
 export interface User {
   id?: number;
@@ -26,7 +25,7 @@ export interface Project {
   id?: number;
   name: string;
   color: string;
-  viewType: 'list' | 'board' | 'calendar' | 'timeline';
+  viewType: "list" | "board" | "calendar" | "timeline";
   favorite: boolean;
   shared: boolean;
   parentProjectId?: number;
@@ -45,7 +44,7 @@ export interface Task {
   description?: string;
   projectId?: number;
   sectionId?: number;
-  priority: 'low' | 'medium' | 'high' | 'urgent';
+  priority: "low" | "medium" | "high" | "urgent";
   labels?: string[];
   dueDate?: Date;
   dueTime?: string;
@@ -91,12 +90,12 @@ export interface Attachment {
 
 export interface SyncQueueItem {
   id?: number;
-  operation: 'create' | 'update' | 'delete';
+  operation: "create" | "update" | "delete";
   table: string;
   recordId: number;
   data?: any;
   timestamp: Date;
-  status: 'pending' | 'completed' | 'failed';
+  status: "pending" | "completed" | "failed";
   attempts: number;
 }
 

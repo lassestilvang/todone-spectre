@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
-import CommentList from './CommentList';
-import CommentForm from './CommentForm';
-import { Comment } from '../../types/models';
-import { Button } from '../../components/ui/button';
-import { useComments } from '../../hooks/useComments';
+import React, { useState } from "react";
+import CommentList from "./CommentList";
+import CommentForm from "./CommentForm";
+import { Comment } from "../../types/models";
+import { Button } from "../../components/ui/button";
+import { useComments } from "../../hooks/useComments";
 
 interface CommentSectionProps {
   taskId: string;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({ taskId }) => {
-  const { comments, loading, error, createComment, updateComment, deleteComment } = useComments(taskId);
+  const {
+    comments,
+    loading,
+    error,
+    createComment,
+    updateComment,
+    deleteComment,
+  } = useComments(taskId);
   const [showCommentForm, setShowCommentForm] = useState(false);
   const [editingComment, setEditingComment] = useState<Comment | null>(null);
 
@@ -37,7 +44,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ taskId }) => {
 
   const handleReply = (comment: Comment) => {
     // In a real implementation, this would handle replies
-    console.log('Reply to comment:', comment.id);
+    console.log("Reply to comment:", comment.id);
   };
 
   if (loading) {
@@ -45,7 +52,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ taskId }) => {
   }
 
   if (error) {
-    return <div className="text-center py-4 text-red-600">Error loading comments</div>;
+    return (
+      <div className="text-center py-4 text-red-600">
+        Error loading comments
+      </div>
+    );
   }
 
   return (
@@ -74,7 +85,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ taskId }) => {
             setShowCommentForm(false);
             setEditingComment(null);
           }}
-          initialContent={editingComment?.content || ''}
+          initialContent={editingComment?.content || ""}
         />
       )}
 

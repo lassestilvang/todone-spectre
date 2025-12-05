@@ -1,5 +1,5 @@
 interface MicroInteractionConfig {
-  feedbackType: 'visual' | 'haptic' | 'sound' | 'combined';
+  feedbackType: "visual" | "haptic" | "sound" | "combined";
   intensity: number;
   duration: number;
   enabled: boolean;
@@ -10,10 +10,16 @@ interface MicroInteractionParams {
   config: MicroInteractionConfig;
 }
 
-const interactionRegistry: Record<string, (params: MicroInteractionParams) => Promise<void>> = {};
+const interactionRegistry: Record<
+  string,
+  (params: MicroInteractionParams) => Promise<void>
+> = {};
 
 export const microInteractionUtils = {
-  registerInteraction: (type: string, fn: (params: MicroInteractionParams) => Promise<void>) => {
+  registerInteraction: (
+    type: string,
+    fn: (params: MicroInteractionParams) => Promise<void>,
+  ) => {
     interactionRegistry[type] = fn;
   },
 
@@ -23,85 +29,88 @@ export const microInteractionUtils = {
 
   getInteractionConfig: (type: string): Partial<MicroInteractionConfig> => {
     const baseConfig: Partial<MicroInteractionConfig> = {
-      feedbackType: 'visual',
+      feedbackType: "visual",
       intensity: 1,
       duration: 200,
       enabled: true,
-      hapticPattern: 'light',
-      soundFeedback: false
+      hapticPattern: "light",
+      soundFeedback: false,
     };
 
-    if (type === 'click') {
+    if (type === "click") {
       return {
         ...baseConfig,
         duration: 150,
         intensity: 0.8,
-        hapticPattern: 'light'
+        hapticPattern: "light",
       };
-    } else if (type === 'hover') {
+    } else if (type === "hover") {
       return {
         ...baseConfig,
         duration: 100,
         intensity: 0.5,
-        hapticPattern: 'light'
+        hapticPattern: "light",
       };
-    } else if (type === 'press') {
+    } else if (type === "press") {
       return {
         ...baseConfig,
         duration: 200,
         intensity: 1.2,
-        hapticPattern: 'medium'
+        hapticPattern: "medium",
       };
-    } else if (type === 'success') {
+    } else if (type === "success") {
       return {
         ...baseConfig,
-        feedbackType: 'combined',
+        feedbackType: "combined",
         duration: 300,
-        hapticPattern: 'medium',
-        soundFeedback: true
+        hapticPattern: "medium",
+        soundFeedback: true,
       };
-    } else if (type === 'error') {
+    } else if (type === "error") {
       return {
         ...baseConfig,
-        feedbackType: 'combined',
+        feedbackType: "combined",
         duration: 400,
-        hapticPattern: 'heavy',
-        soundFeedback: true
+        hapticPattern: "heavy",
+        soundFeedback: true,
       };
-    } else if (type === 'focus') {
+    } else if (type === "focus") {
       return {
         ...baseConfig,
         duration: 180,
         intensity: 0.7,
-        feedbackType: 'visual'
+        feedbackType: "visual",
       };
-    } else if (type === 'drag') {
+    } else if (type === "drag") {
       return {
         ...baseConfig,
         duration: 250,
         intensity: 1.1,
-        hapticPattern: 'medium'
+        hapticPattern: "medium",
       };
-    } else if (type === 'tap') {
+    } else if (type === "tap") {
       return {
         ...baseConfig,
         duration: 120,
         intensity: 0.9,
-        hapticPattern: 'light'
+        hapticPattern: "light",
       };
-    } else if (type === 'loading') {
+    } else if (type === "loading") {
       return {
         ...baseConfig,
         duration: 500,
         intensity: 0.8,
-        feedbackType: 'visual'
+        feedbackType: "visual",
       };
     }
 
     return baseConfig;
   },
 
-  executeInteraction: async (type: string, config: Partial<MicroInteractionConfig> = {}) => {
+  executeInteraction: async (
+    type: string,
+    config: Partial<MicroInteractionConfig> = {},
+  ) => {
     const interactionFn = interactionRegistry[type];
     if (!interactionFn) {
       console.warn(`Micro-interaction "${type}" not found in registry`);
@@ -109,11 +118,11 @@ export const microInteractionUtils = {
     }
 
     const fullConfig: MicroInteractionConfig = {
-      feedbackType: 'visual',
+      feedbackType: "visual",
       intensity: 1,
       duration: 200,
       enabled: true,
-      ...config
+      ...config,
     };
 
     try {
@@ -122,60 +131,60 @@ export const microInteractionUtils = {
       console.error(`Failed to execute micro-interaction "${type}":`, error);
       throw error;
     }
-  }
+  },
 };
 
 // Register default micro-interactions
-microInteractionUtils.registerInteraction('click', async ({ config }) => {
-  return new Promise(resolve => {
+microInteractionUtils.registerInteraction("click", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-microInteractionUtils.registerInteraction('hover', async ({ config }) => {
-  return new Promise(resolve => {
+microInteractionUtils.registerInteraction("hover", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-microInteractionUtils.registerInteraction('press', async ({ config }) => {
-  return new Promise(resolve => {
+microInteractionUtils.registerInteraction("press", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-microInteractionUtils.registerInteraction('success', async ({ config }) => {
-  return new Promise(resolve => {
+microInteractionUtils.registerInteraction("success", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-microInteractionUtils.registerInteraction('error', async ({ config }) => {
-  return new Promise(resolve => {
+microInteractionUtils.registerInteraction("error", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-microInteractionUtils.registerInteraction('loading', async ({ config }) => {
-  return new Promise(resolve => {
+microInteractionUtils.registerInteraction("loading", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-microInteractionUtils.registerInteraction('focus', async ({ config }) => {
-  return new Promise(resolve => {
+microInteractionUtils.registerInteraction("focus", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-microInteractionUtils.registerInteraction('drag', async ({ config }) => {
-  return new Promise(resolve => {
+microInteractionUtils.registerInteraction("drag", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-microInteractionUtils.registerInteraction('tap', async ({ config }) => {
-  return new Promise(resolve => {
+microInteractionUtils.registerInteraction("tap", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });

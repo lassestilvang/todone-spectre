@@ -1,8 +1,9 @@
-import React from 'react';
-import { usePerformance } from '../../../hooks/usePerformance';
+import React from "react";
+import { usePerformance } from "../../../hooks/usePerformance";
 
 export const PerformanceControls: React.FC = () => {
-  const { performanceConfig, updatePerformanceConfig, resetToDefaults } = usePerformance();
+  const { performanceConfig, updatePerformanceConfig, resetToDefaults } =
+    usePerformance();
 
   const handleConfigChange = (key: string, value: any) => {
     updatePerformanceConfig({ [key]: value });
@@ -16,7 +17,9 @@ export const PerformanceControls: React.FC = () => {
           <input
             type="checkbox"
             checked={performanceConfig.enableMonitoring}
-            onChange={(e) => handleConfigChange('enableMonitoring', e.target.checked)}
+            onChange={(e) =>
+              handleConfigChange("enableMonitoring", e.target.checked)
+            }
           />
           Enable Monitoring
         </label>
@@ -27,7 +30,9 @@ export const PerformanceControls: React.FC = () => {
           <input
             type="checkbox"
             checked={performanceConfig.enableLogging}
-            onChange={(e) => handleConfigChange('enableLogging', e.target.checked)}
+            onChange={(e) =>
+              handleConfigChange("enableLogging", e.target.checked)
+            }
           />
           Enable Logging
         </label>
@@ -38,7 +43,9 @@ export const PerformanceControls: React.FC = () => {
           Sampling Rate:
           <select
             value={performanceConfig.samplingRate}
-            onChange={(e) => handleConfigChange('samplingRate', parseInt(e.target.value))}
+            onChange={(e) =>
+              handleConfigChange("samplingRate", parseInt(e.target.value))
+            }
           >
             <option value={1000}>1 second</option>
             <option value={500}>500ms</option>
@@ -54,7 +61,9 @@ export const PerformanceControls: React.FC = () => {
           <input
             type="number"
             value={performanceConfig.memoryThreshold}
-            onChange={(e) => handleConfigChange('memoryThreshold', parseFloat(e.target.value))}
+            onChange={(e) =>
+              handleConfigChange("memoryThreshold", parseFloat(e.target.value))
+            }
             min="10"
             max="1000"
           />

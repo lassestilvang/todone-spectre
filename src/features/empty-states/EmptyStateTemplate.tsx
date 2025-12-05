@@ -1,8 +1,8 @@
-import React from 'react';
-import { EmptyState } from './EmptyState';
+import React from "react";
+import { EmptyState } from "./EmptyState";
 
 interface EmptyStateTemplateProps {
-  templateType: 'tasks' | 'projects' | 'calendar' | 'search' | 'custom';
+  templateType: "tasks" | "projects" | "calendar" | "search" | "custom";
   customConfig?: {
     title?: string;
     description?: string;
@@ -13,71 +13,60 @@ interface EmptyStateTemplateProps {
 
 export const EmptyStateTemplate: React.FC<EmptyStateTemplateProps> = ({
   templateType,
-  customConfig
+  customConfig,
 }) => {
   const getTemplateConfig = () => {
     switch (templateType) {
-      case 'tasks':
+      case "tasks":
         return {
-          title: 'No tasks found',
-          description: 'Create your first task to get started with your productivity journey',
+          title: "No tasks found",
+          description:
+            "Create your first task to get started with your productivity journey",
           icon: <span className="template-icon">📝</span>,
-          actions: (
-            <button className="primary-action">
-              Create Task
-            </button>
-          )
+          actions: <button className="primary-action">Create Task</button>,
         };
 
-      case 'projects':
+      case "projects":
         return {
-          title: 'No projects yet',
-          description: 'Start organizing your work by creating your first project',
+          title: "No projects yet",
+          description:
+            "Start organizing your work by creating your first project",
           icon: <span className="template-icon">🗂️</span>,
-          actions: (
-            <button className="primary-action">
-              Create Project
-            </button>
-          )
+          actions: <button className="primary-action">Create Project</button>,
         };
 
-      case 'calendar':
+      case "calendar":
         return {
-          title: 'Empty calendar',
-          description: 'Schedule your first event or task to populate your calendar',
+          title: "Empty calendar",
+          description:
+            "Schedule your first event or task to populate your calendar",
           icon: <span className="template-icon">📅</span>,
-          actions: (
-            <button className="primary-action">
-              Add Event
-            </button>
-          )
+          actions: <button className="primary-action">Add Event</button>,
         };
 
-      case 'search':
+      case "search":
         return {
-          title: 'No results found',
-          description: 'Try adjusting your search criteria or create new content',
+          title: "No results found",
+          description:
+            "Try adjusting your search criteria or create new content",
           icon: <span className="template-icon">🔍</span>,
-          actions: (
-            <button className="primary-action">
-              Search Again
-            </button>
-          )
+          actions: <button className="primary-action">Search Again</button>,
         };
 
-      case 'custom':
+      case "custom":
         return {
-          title: customConfig?.title || 'Custom empty state',
-          description: customConfig?.description || 'This is a custom empty state',
+          title: customConfig?.title || "Custom empty state",
+          description:
+            customConfig?.description || "This is a custom empty state",
           icon: customConfig?.icon,
-          actions: customConfig?.actions
+          actions: customConfig?.actions,
         };
 
       default:
         return {
-          title: 'No content',
-          description: 'There is nothing to display here',
-          icon: <span className="template-icon">🤷</span>
+          title: "No content",
+          description: "There is nothing to display here",
+          icon: <span className="template-icon">🤷</span>,
         };
     }
   };

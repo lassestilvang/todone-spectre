@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Task, TaskStatus } from '../types/task';
-import { inboxService } from '../services/inboxService';
-import { useTaskStore } from '../store/useTaskStore';
+import { useState, useEffect, useCallback } from "react";
+import { Task, TaskStatus } from "../types/task";
+import { inboxService } from "../services/inboxService";
+import { useTaskStore } from "../store/useTaskStore";
 
 /**
  * Custom hook for Inbox view management
@@ -9,9 +9,9 @@ import { useTaskStore } from '../store/useTaskStore';
 export const useInbox = (projectId?: string) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState<TaskStatus | 'all'>('all');
-  const [priorityFilter, setPriorityFilter] = useState<string | 'all'>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [statusFilter, setStatusFilter] = useState<TaskStatus | "all">("all");
+  const [priorityFilter, setPriorityFilter] = useState<string | "all">("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const { tasks: allTasks, setTasks } = useTaskStore();
 
@@ -26,7 +26,9 @@ export const useInbox = (projectId?: string) => {
       const tasks = await inboxService.getInboxTasks(projectId);
       setTasks(tasks);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch inbox tasks');
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch inbox tasks",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -41,20 +43,21 @@ export const useInbox = (projectId?: string) => {
     // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(task =>
-        task.title.toLowerCase().includes(query) ||
-        (task.description && task.description.toLowerCase().includes(query))
+      result = result.filter(
+        (task) =>
+          task.title.toLowerCase().includes(query) ||
+          (task.description && task.description.toLowerCase().includes(query)),
       );
     }
 
     // Apply status filter
-    if (statusFilter !== 'all') {
-      result = result.filter(task => task.status === statusFilter);
+    if (statusFilter !== "all") {
+      result = result.filter((task) => task.status === statusFilter);
     }
 
     // Apply priority filter
-    if (priorityFilter !== 'all') {
-      result = result.filter(task => task.priority === priorityFilter);
+    if (priorityFilter !== "all") {
+      result = result.filter((task) => task.priority === priorityFilter);
     }
 
     return result;
@@ -75,7 +78,7 @@ export const useInbox = (projectId?: string) => {
     try {
       return await inboxService.getInboxStatistics(projectId);
     } catch (err) {
-      console.error('Error getting inbox statistics:', err);
+      console.error("Error getting inbox statistics:", err);
       return null;
     }
   }, [projectId]);
@@ -83,14 +86,14 @@ export const useInbox = (projectId?: string) => {
   /**
    * Filter by status
    */
-  const filterByStatus = useCallback((status: TaskStatus | 'all') => {
+  const filterByStatus = useCallback((status: TaskStatus | "all") => {
     setStatusFilter(status);
   }, []);
 
   /**
    * Filter by priority
    */
-  const filterByPriority = useCallback((priority: string | 'all') => {
+  const filterByPriority = useCallback((priority: string | "all") => {
     setPriorityFilter(priority);
   }, []);
 
@@ -105,9 +108,9 @@ export const useInbox = (projectId?: string) => {
    * Reset all filters
    */
   const resetFilters = useCallback(() => {
-    setSearchQuery('');
-    setStatusFilter('all');
-    setPriorityFilter('all');
+    setSearchQuery("");
+    setStatusFilter("all");
+    setPriorityFilter("all");
   }, []);
 
   /**
@@ -152,6 +155,6 @@ export const useInbox = (projectId?: string) => {
     // Utility
     getProcessedTasks,
     getGroupedTasks,
-    getStatistics
+    getStatistics,
   };
 };

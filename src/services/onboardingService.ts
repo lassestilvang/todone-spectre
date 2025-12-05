@@ -1,4 +1,7 @@
-import { OnboardingStepConfig, OnboardingState } from '../types/onboardingTypes';
+import {
+  OnboardingStepConfig,
+  OnboardingState,
+} from "../types/onboardingTypes";
 
 class OnboardingService {
   private static instance: OnboardingService;
@@ -6,7 +9,7 @@ class OnboardingService {
     currentStep: 0,
     completed: false,
     steps: [],
-    progress: 0
+    progress: 0,
   };
 
   private constructor() {
@@ -29,7 +32,7 @@ class OnboardingService {
       currentStep: 0,
       completed: false,
       steps,
-      progress: 0
+      progress: 0,
     };
   }
 
@@ -45,7 +48,10 @@ class OnboardingService {
    * Go to next step in onboarding
    */
   public goToNextStep(): void {
-    if (this.onboardingState.currentStep < this.onboardingState.steps.length - 1) {
+    if (
+      this.onboardingState.currentStep <
+      this.onboardingState.steps.length - 1
+    ) {
       this.onboardingState.currentStep += 1;
       this.updateProgress();
     }
@@ -88,7 +94,7 @@ class OnboardingService {
       currentStep: 0,
       completed: false,
       steps: [],
-      progress: 0
+      progress: 0,
     };
   }
 
@@ -98,7 +104,9 @@ class OnboardingService {
   private updateProgress(): void {
     if (this.onboardingState.steps.length > 0) {
       this.onboardingState.progress =
-        (this.onboardingState.currentStep / (this.onboardingState.steps.length - 1)) * 100;
+        (this.onboardingState.currentStep /
+          (this.onboardingState.steps.length - 1)) *
+        100;
     }
   }
 

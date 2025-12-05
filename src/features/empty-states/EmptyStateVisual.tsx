@@ -1,34 +1,33 @@
-import React from 'react';
-import { EmptyStateConfig } from '../../../types/emptyStateTypes';
+import React from "react";
+import { EmptyStateConfig } from "../../../types/emptyStateTypes";
 
 interface EmptyStateVisualProps {
   config: EmptyStateConfig;
   className?: string;
-  animation?: 'fade' | 'slide' | 'none';
+  animation?: "fade" | "slide" | "none";
 }
 
 export const EmptyStateVisual: React.FC<EmptyStateVisualProps> = ({
   config,
-  className = '',
-  animation = 'fade'
+  className = "",
+  animation = "fade",
 }) => {
   const getAnimationClass = () => {
     switch (animation) {
-      case 'fade': return 'animate-fade-in';
-      case 'slide': return 'animate-slide-up';
-      case 'none':
-      default: return '';
+      case "fade":
+        return "animate-fade-in";
+      case "slide":
+        return "animate-slide-up";
+      case "none":
+      default:
+        return "";
     }
   };
 
   return (
     <div className={`empty-state-visual ${className} ${getAnimationClass()}`}>
       <div className="visual-container">
-        {config.icon && (
-          <div className="visual-icon">
-            {config.icon}
-          </div>
-        )}
+        {config.icon && <div className="visual-icon">{config.icon}</div>}
 
         <div className="visual-content">
           <h2 className="visual-title">{config.title}</h2>
@@ -36,9 +35,7 @@ export const EmptyStateVisual: React.FC<EmptyStateVisualProps> = ({
         </div>
 
         {config.actions && (
-          <div className="visual-actions">
-            {config.actions}
-          </div>
+          <div className="visual-actions">{config.actions}</div>
         )}
       </div>
 
@@ -91,13 +88,23 @@ export const EmptyStateVisual: React.FC<EmptyStateVisualProps> = ({
         }
 
         @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
         }
 
         @keyframes slideUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
         }
       `}</style>
     </div>

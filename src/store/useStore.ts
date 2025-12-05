@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
-import { AppState } from '../types/store';
+import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
+import { AppState } from "../types/store";
 
 export const useStore = create<AppState>()(
   devtools(
@@ -18,8 +18,8 @@ export const useStore = create<AppState>()(
           tasks: [],
           filteredTasks: [],
           currentFilter: {},
-          sortBy: 'createdAt',
-          sortDirection: 'desc',
+          sortBy: "createdAt",
+          sortDirection: "desc",
         },
         projects: {
           projects: [],
@@ -27,8 +27,8 @@ export const useStore = create<AppState>()(
         },
         ui: {
           isSidebarOpen: true,
-          theme: 'system',
-          currentView: 'dashboard',
+          theme: "system",
+          currentView: "dashboard",
           isTaskModalOpen: false,
           isProjectModalOpen: false,
           isSettingsModalOpen: false,
@@ -37,15 +37,15 @@ export const useStore = create<AppState>()(
           comments: [],
           filteredComments: [],
           currentFilter: {},
-          sortBy: 'timestamp',
-          sortDirection: 'desc',
+          sortBy: "timestamp",
+          sortDirection: "desc",
           commentError: null,
           selectedCommentIds: [],
           notifications: [],
         },
       }),
       {
-        name: 'todone-storage',
+        name: "todone-storage",
         storage: createJSONStorage(() => localStorage),
         partialize: (state) => ({
           auth: {
@@ -61,7 +61,7 @@ export const useStore = create<AppState>()(
             notifications: state.comments.notifications,
           },
         }),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );

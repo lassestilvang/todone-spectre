@@ -3,62 +3,62 @@
  * Validates the seamless integration of recurring tasks throughout the Todone application
  */
 
-import { describe, expect, test, beforeAll } from '@jest/globals';
-import { useRecurringTaskIntegration } from '../../../hooks/useRecurringTaskIntegration';
-import { useTasks } from '../../../hooks/useTasks';
-import { recurringTaskService } from '../../../services/recurringTaskService';
+import { describe, expect, test, beforeAll } from "@jest/globals";
+import { useRecurringTaskIntegration } from "../../../hooks/useRecurringTaskIntegration";
+import { useTasks } from "../../../hooks/useTasks";
+import { recurringTaskService } from "../../../services/recurringTaskService";
 
 // Mock data
 const mockRegularTask = {
-  id: 'task-1',
-  title: 'Regular Task',
-  description: 'This is a regular task',
-  status: 'active',
-  priority: 'P2',
+  id: "task-1",
+  title: "Regular Task",
+  description: "This is a regular task",
+  status: "active",
+  priority: "P2",
   completed: false,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };
 
 const mockRecurringTask = {
-  id: 'task-2',
-  title: 'Recurring Task',
-  description: 'This is a recurring task',
-  status: 'active',
-  priority: 'P1',
-  recurringPattern: 'weekly',
+  id: "task-2",
+  title: "Recurring Task",
+  description: "This is a recurring task",
+  status: "active",
+  priority: "P1",
+  recurringPattern: "weekly",
   completed: false,
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
   customFields: {
     recurringConfig: {
-      pattern: 'weekly',
+      pattern: "weekly",
       startDate: new Date(),
       maxOccurrences: 10,
     },
   },
 };
 
-describe('Recurring Task Integration Validation', () => {
-  describe('Task Creation Integration', () => {
-    test('should allow creating regular tasks', async () => {
+describe("Recurring Task Integration Validation", () => {
+  describe("Task Creation Integration", () => {
+    test("should allow creating regular tasks", async () => {
       // Mock the createTask function
       const mockCreateTask = jest.fn().mockResolvedValue(mockRegularTask);
 
       // Test that regular task creation works
       const result = await mockCreateTask({
-        title: 'New Task',
-        description: 'Task description',
-        status: 'active',
-        priority: 'P2',
+        title: "New Task",
+        description: "Task description",
+        status: "active",
+        priority: "P2",
       });
 
-      expect(result).toHaveProperty('id');
-      expect(result.title).toBe('Regular Task');
-      expect(result).not.toHaveProperty('recurringPattern');
+      expect(result).toHaveProperty("id");
+      expect(result.title).toBe("Regular Task");
+      expect(result).not.toHaveProperty("recurringPattern");
     });
 
-    test('should allow creating recurring tasks', async () => {
+    test("should allow creating recurring tasks", async () => {
       // Mock the createRecurringTaskIntegrated function
       const mockCreateRecurringTask = jest
         .fn()
@@ -67,50 +67,50 @@ describe('Recurring Task Integration Validation', () => {
       // Test that recurring task creation works
       const result = await mockCreateRecurringTask(
         {
-          title: 'New Recurring Task',
-          description: 'Recurring task description',
-          status: 'active',
-          priority: 'P1',
+          title: "New Recurring Task",
+          description: "Recurring task description",
+          status: "active",
+          priority: "P1",
         },
         {
-          pattern: 'weekly',
+          pattern: "weekly",
           startDate: new Date(),
           maxOccurrences: 10,
         },
       );
 
-      expect(result).toHaveProperty('id');
-      expect(result.title).toBe('Recurring Task');
-      expect(result).toHaveProperty('recurringPattern', 'weekly');
+      expect(result).toHaveProperty("id");
+      expect(result.title).toBe("Recurring Task");
+      expect(result).toHaveProperty("recurringPattern", "weekly");
       expect(result.customFields.recurringConfig).toBeDefined();
     });
   });
 
-  describe('Task Detail Integration', () => {
-    test('should display regular task details correctly', () => {
+  describe("Task Detail Integration", () => {
+    test("should display regular task details correctly", () => {
       // Test that regular task details are displayed
-      expect(mockRegularTask).toHaveProperty('title', 'Regular Task');
-      expect(mockRegularTask).toHaveProperty('description');
-      expect(mockRegularTask).not.toHaveProperty('recurringPattern');
+      expect(mockRegularTask).toHaveProperty("title", "Regular Task");
+      expect(mockRegularTask).toHaveProperty("description");
+      expect(mockRegularTask).not.toHaveProperty("recurringPattern");
     });
 
-    test('should display recurring task details with pattern info', () => {
+    test("should display recurring task details with pattern info", () => {
       // Test that recurring task details include pattern information
-      expect(mockRecurringTask).toHaveProperty('title', 'Recurring Task');
-      expect(mockRecurringTask).toHaveProperty('recurringPattern', 'weekly');
+      expect(mockRecurringTask).toHaveProperty("title", "Recurring Task");
+      expect(mockRecurringTask).toHaveProperty("recurringPattern", "weekly");
       expect(mockRecurringTask.customFields.recurringConfig).toHaveProperty(
-        'pattern',
-        'weekly',
+        "pattern",
+        "weekly",
       );
       expect(mockRecurringTask.customFields.recurringConfig).toHaveProperty(
-        'maxOccurrences',
+        "maxOccurrences",
         10,
       );
     });
   });
 
-  describe('Task List Integration', () => {
-    test('should separate regular and recurring tasks in lists', () => {
+  describe("Task List Integration", () => {
+    test("should separate regular and recurring tasks in lists", () => {
       const tasks = [mockRegularTask, mockRecurringTask];
 
       const regularTasks = tasks.filter((task) => !task.recurringPattern);
@@ -118,11 +118,11 @@ describe('Recurring Task Integration Validation', () => {
 
       expect(regularTasks.length).toBe(1);
       expect(recurringTasks.length).toBe(1);
-      expect(regularTasks[0].title).toBe('Regular Task');
-      expect(recurringTasks[0].title).toBe('Recurring Task');
+      expect(regularTasks[0].title).toBe("Regular Task");
+      expect(recurringTasks[0].title).toBe("Recurring Task");
     });
 
-    test('should handle empty task lists gracefully', () => {
+    test("should handle empty task lists gracefully", () => {
       const emptyTasks = [];
       const regularTasks = emptyTasks.filter((task) => !task.recurringPattern);
       const recurringTasks = emptyTasks.filter((task) => task.recurringPattern);
@@ -132,29 +132,29 @@ describe('Recurring Task Integration Validation', () => {
     });
   });
 
-  describe('Routing Integration', () => {
-    test('should navigate between task types correctly', () => {
+  describe("Routing Integration", () => {
+    test("should navigate between task types correctly", () => {
       // Mock navigation paths
       const paths = {
-        regularTask: '/tasks/task-1',
-        recurringTask: '/tasks/task-2',
-        recurringTasksList: '/tasks/recurring',
+        regularTask: "/tasks/task-1",
+        recurringTask: "/tasks/task-2",
+        recurringTasksList: "/tasks/recurring",
       };
 
-      expect(paths.regularTask).toContain('/tasks/');
-      expect(paths.recurringTask).toContain('/tasks/');
-      expect(paths.recurringTasksList).toContain('/tasks/recurring');
+      expect(paths.regularTask).toContain("/tasks/");
+      expect(paths.recurringTask).toContain("/tasks/");
+      expect(paths.recurringTasksList).toContain("/tasks/recurring");
     });
   });
 
-  describe('Component Integration', () => {
-    test('should integrate recurring task components with existing UI', () => {
+  describe("Component Integration", () => {
+    test("should integrate recurring task components with existing UI", () => {
       // Test component structure
       const components = {
-        TaskManagementSystem: 'TaskManagementSystem',
-        RecurringTaskList: 'RecurringTaskList',
-        RecurringTaskPreview: 'RecurringTaskPreview',
-        RecurringTaskForm: 'RecurringTaskForm',
+        TaskManagementSystem: "TaskManagementSystem",
+        RecurringTaskList: "RecurringTaskList",
+        RecurringTaskPreview: "RecurringTaskPreview",
+        RecurringTaskForm: "RecurringTaskForm",
       };
 
       expect(components.TaskManagementSystem).toBeDefined();
@@ -163,7 +163,7 @@ describe('Recurring Task Integration Validation', () => {
       expect(components.RecurringTaskForm).toBeDefined();
     });
 
-    test('should maintain existing task functionality', () => {
+    test("should maintain existing task functionality", () => {
       // Test that existing functionality is preserved
       const existingFeatures = {
         taskCreation: true,
@@ -183,13 +183,13 @@ describe('Recurring Task Integration Validation', () => {
     });
   });
 
-  describe('Service Integration', () => {
-    test('should integrate with existing task services', () => {
+  describe("Service Integration", () => {
+    test("should integrate with existing task services", () => {
       // Test service integration
       const services = {
-        useTasks: 'useTasks',
-        useRecurringTaskIntegration: 'useRecurringTaskIntegration',
-        recurringTaskService: 'recurringTaskService',
+        useTasks: "useTasks",
+        useRecurringTaskIntegration: "useRecurringTaskIntegration",
+        recurringTaskService: "recurringTaskService",
       };
 
       expect(services.useTasks).toBeDefined();
@@ -197,7 +197,7 @@ describe('Recurring Task Integration Validation', () => {
       expect(services.recurringTaskService).toBeDefined();
     });
 
-    test('should maintain service compatibility', () => {
+    test("should maintain service compatibility", () => {
       // Test that services work together
       const serviceCompatibility = {
         taskServiceWorks: true,

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 import {
   generateToken,
   generateRefreshToken,
@@ -12,9 +12,10 @@ import {
   setSession,
   clearSession,
   getSession,
-} from '../utils/auth';
+} from "../utils/auth";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
 
 interface LoginResponse {
   token: string;
@@ -46,18 +47,21 @@ interface User {
 // Mock database for demonstration
 const mockUsers: User[] = [];
 
-export const login = async (email: string, password: string): Promise<LoginResponse> => {
+export const login = async (
+  email: string,
+  password: string,
+): Promise<LoginResponse> => {
   try {
     // In a real app, this would be an API call
-    const user = mockUsers.find(u => u.email === email);
+    const user = mockUsers.find((u) => u.email === email);
 
     if (!user) {
-      throw new AuthenticationError('User not found');
+      throw new AuthenticationError("User not found");
     }
 
     const isPasswordValid = await comparePasswords(password, user.password);
     if (!isPasswordValid) {
-      throw new AuthenticationError('Invalid password');
+      throw new AuthenticationError("Invalid password");
     }
 
     const token = generateToken({
@@ -86,20 +90,20 @@ export const login = async (email: string, password: string): Promise<LoginRespo
     if (error instanceof AuthError) {
       throw error;
     }
-    throw new AuthenticationError('Login failed');
+    throw new AuthenticationError("Login failed");
   }
 };
 
 export const register = async (
   name: string,
   email: string,
-  password: string
+  password: string,
 ): Promise<RegisterResponse> => {
   try {
     // Check if user already exists
-    const existingUser = mockUsers.find(u => u.email === email);
+    const existingUser = mockUsers.find((u) => u.email === email);
     if (existingUser) {
-      throw new AuthError('User already exists');
+      throw new AuthError("User already exists");
     }
 
     // Hash password
@@ -142,7 +146,7 @@ export const register = async (
     if (error instanceof AuthError) {
       throw error;
     }
-    throw new AuthError('Registration failed');
+    throw new AuthError("Registration failed");
   }
 };
 
@@ -150,17 +154,20 @@ export const logout = async (): Promise<void> => {
   try {
     // In a real app, this would be an API call to invalidate the token
     clearSession();
-  } catch (error) {
-    throw new AuthError('Logout failed');
+  } catch {
+    throw new AuthError("Logout failed");
   }
 };
 
-export const refreshToken = async (): Promise<{ token: string; refreshToken: string }> => {
+export const refreshToken = async (): Promise<{
+  token: string;
+  refreshToken: string;
+}> => {
   try {
     const { refreshToken: currentRefreshToken } = getSession();
 
     if (!currentRefreshToken) {
-      throw new AuthorizationError('No refresh token available');
+      throw new AuthorizationError("No refresh token available");
     }
 
     // Validate refresh token
@@ -184,21 +191,18 @@ export const refreshToken = async (): Promise<{ token: string; refreshToken: str
       token: newToken,
       refreshToken: newRefreshToken,
     };
-  } catch (error) {
-    if (error instanceof AuthError) {
-      throw error;
-    }
-    throw new TokenExpiredError('Token refresh failed');
+  } catch {
+    throw new TokenExpiredError("Token refresh failed");
   }
 };
 
 export const requestPasswordReset = async (email: string): Promise<void> => {
   try {
     // In a real app, this would be an API call
-    const user = mockUsers.find(u => u.email === email);
+    const user = mockUsers.find((u) => u.email === email);
 
     if (!user) {
-      throw new AuthError('User not found');
+      throw new AuthError("User not found");
     }
 
     // Generate reset token (in real app, this would be sent via email)
@@ -209,26 +213,23 @@ export const requestPasswordReset = async (email: string): Promise<void> => {
 
     console.log(`Password reset token for ${email}: ${resetToken}`);
     // In a real app, you would send this token via email
-  } catch (error) {
-    if (error instanceof AuthError) {
-      throw error;
-    }
-    throw new AuthError('Password reset request failed');
+  } catch {
+    throw new AuthError("Password reset request failed");
   }
 };
 
 export const resetPassword = async (
   token: string,
-  newPassword: string
+  newPassword: string,
 ): Promise<void> => {
   try {
     // Validate reset token
     const userPayload = validateToken(token);
 
     // Find user and update password
-    const userIndex = mockUsers.findIndex(u => u.id === userPayload.id);
+    const userIndex = mockUsers.findIndex((u) => u.id === userPayload.id);
     if (userIndex === -1) {
-      throw new AuthError('User not found');
+      throw new AuthError("User not found");
     }
 
     // Update password
@@ -237,11 +238,8 @@ export const resetPassword = async (
 
     // Clear session to force re-login
     clearSession();
-  } catch (error) {
-    if (error instanceof AuthError) {
-      throw error;
-    }
-    throw new AuthError('Password reset failed');
+  } catch {
+    throw new AuthError("Password reset failed");
   }
 };
 
@@ -260,15 +258,15 @@ export const createAuthApiClient = () => {
           // Check if token is expired
           validateToken(token);
           config.headers.Authorization = `Bearer ${token}`;
-        } catch (error) {
+        } catch {
           // Token expired, try to refresh
           try {
             const { token: newToken } = await refreshToken();
             config.headers.Authorization = `Bearer ${newToken}`;
-          } catch (refreshError) {
+          } catch {
             // Refresh failed, clear session and redirect to login
             clearSession();
-            throw new TokenExpiredError('Session expired');
+            throw new TokenExpiredError("Session expired");
           }
         }
       }
@@ -277,7 +275,7 @@ export const createAuthApiClient = () => {
     },
     (error) => {
       return Promise.reject(error);
-    }
+    },
   );
 
   return api;

@@ -1,6 +1,6 @@
-import { Task, TaskStatus } from '../types/task';
-import { taskService } from './taskService';
-import { isToday, isFutureDate } from '../utils/dateUtils';
+import { Task, TaskStatus } from "../types/task";
+import { taskService } from "./taskService";
+import { isToday, isFutureDate } from "../utils/dateUtils";
 
 /**
  * Inbox Service - Handles business logic for the Inbox view
@@ -31,12 +31,12 @@ export class InboxService {
       const allTasks = await taskService.getTasks(projectId);
 
       // Filter for inbox: non-completed tasks only
-      const inboxTasks = allTasks.filter(task => !task.completed);
+      const inboxTasks = allTasks.filter((task) => !task.completed);
 
       // Sort by priority and due date
       return this.sortInboxTasks(inboxTasks);
     } catch (error) {
-      console.error('Error fetching inbox tasks:', error);
+      console.error("Error fetching inbox tasks:", error);
       throw error;
     }
   }
@@ -48,15 +48,16 @@ export class InboxService {
    */
   private sortInboxTasks(tasks: Task[]): Task[] {
     const priorityOrder: Record<string, number> = {
-      'critical': 1,
-      'high': 2,
-      'medium': 3,
-      'low': 4
+      critical: 1,
+      high: 2,
+      medium: 3,
+      low: 4,
     };
 
     return [...tasks].sort((a, b) => {
       // First by priority
-      const priorityCompare = (priorityOrder[a.priority] || 5) - (priorityOrder[b.priority] || 5);
+      const priorityCompare =
+        (priorityOrder[a.priority] || 5) - (priorityOrder[b.priority] || 5);
       if (priorityCompare !== 0) return priorityCompare;
 
       // Then by due date (earlier dates first)
@@ -71,13 +72,13 @@ export class InboxService {
    */
   groupTasksByStatus(tasks: Task[]): Record<TaskStatus, Task[]> {
     const grouped: Record<TaskStatus, Task[]> = {
-      'todo': [],
-      'in-progress': [],
-      'completed': [],
-      'archived': []
+      todo: [],
+      "in-progress": [],
+      completed: [],
+      archived: [],
     };
 
-    tasks.forEach(task => {
+    tasks.forEach((task) => {
       grouped[task.status].push(task);
     });
 
@@ -100,23 +101,23 @@ export class InboxService {
         total: tasks.length,
         overdue: 0,
         byStatus: {
-          'todo': 0,
-          'in-progress': 0,
-          'completed': 0,
-          'archived': 0
+          todo: 0,
+          "in-progress": 0,
+          completed: 0,
+          archived: 0,
         },
         byPriority: {
-          'critical': 0,
-          'high': 0,
-          'medium': 0,
-          'low': 0
-        }
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
+        },
       };
 
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
-      tasks.forEach(task => {
+      tasks.forEach((task) => {
         // Count by status
         statistics.byStatus[task.status]++;
 
@@ -127,7 +128,7 @@ export class InboxService {
         if (task.dueDate) {
           const dueDate = new Date(task.dueDate);
           dueDate.setHours(0, 0, 0, 0);
-          if (dueDate < today && task.status !== 'completed') {
+          if (dueDate < today && task.status !== "completed") {
             statistics.overdue++;
           }
         }
@@ -135,7 +136,7 @@ export class InboxService {
 
       return statistics;
     } catch (error) {
-      console.error('Error getting inbox statistics:', error);
+      console.error("Error getting inbox statistics:", error);
       throw error;
     }
   }
@@ -143,21 +144,21 @@ export class InboxService {
   /**
    * Filter inbox tasks by status
    */
-  filterByStatus(tasks: Task[], status: TaskStatus | 'all' = 'all'): Task[] {
-    if (status === 'all') {
+  filterByStatus(tasks: Task[], status: TaskStatus | "all" = "all"): Task[] {
+    if (status === "all") {
       return tasks;
     }
-    return tasks.filter(task => task.status === status);
+    return tasks.filter((task) => task.status === status);
   }
 
   /**
    * Filter inbox tasks by priority
    */
-  filterByPriority(tasks: Task[], priority: string | 'all' = 'all'): Task[] {
-    if (priority === 'all') {
+  filterByPriority(tasks: Task[], priority: string | "all" = "all"): Task[] {
+    if (priority === "all") {
       return tasks;
     }
-    return tasks.filter(task => task.priority === priority);
+    return tasks.filter((task) => task.priority === priority);
   }
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface BoardViewControlsProps {
   columns: string[];
@@ -20,7 +20,9 @@ export const BoardViewControls: React.FC<BoardViewControlsProps> = ({
   return (
     <div className="board-view-controls flex flex-wrap items-center gap-3 mb-4">
       <div className="flex items-center space-x-2">
-        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Columns:</span>
+        <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          Columns:
+        </span>
         <div className="flex items-center space-x-1">
           {columns.map((column, index) => (
             <div key={index} className="flex items-center space-x-1">
@@ -55,7 +57,9 @@ export const BoardViewControls: React.FC<BoardViewControlsProps> = ({
             onChange={(e) => onShowTaskCountChange(e.target.checked)}
             className="h-4 w-4 text-blue-600 border-gray-300 rounded"
           />
-          <span className="text-sm text-gray-700 dark:text-gray-300">Show task count</span>
+          <span className="text-sm text-gray-700 dark:text-gray-300">
+            Show task count
+          </span>
         </label>
       </div>
     </div>

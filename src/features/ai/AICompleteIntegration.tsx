@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { AIAssistant } from './AIAssistant';
-import { AITaskSuggestionsEnhanced } from './AITaskSuggestionsEnhanced';
-import { AINaturalLanguageTaskCreator } from './AINaturalLanguageTaskCreator';
-import { AIContextAwareAssistant } from './AIContextAwareAssistant';
-import { AITaskBreakdown } from './AITaskBreakdown';
-import { AITaskActionable } from './AITaskActionable';
-import { useTaskStore } from '../../../store/useTaskStore';
-import { useAIStore } from '../../../store/useAIStore';
-import { useProjectStore } from '../../../store/useProjectStore';
-import { Task } from '../../../types/taskTypes';
+import React, { useState, useEffect } from "react";
+import { AIAssistant } from "./AIAssistant";
+import { AITaskSuggestionsEnhanced } from "./AITaskSuggestionsEnhanced";
+import { AINaturalLanguageTaskCreator } from "./AINaturalLanguageTaskCreator";
+import { AIContextAwareAssistant } from "./AIContextAwareAssistant";
+import { AITaskBreakdown } from "./AITaskBreakdown";
+import { useTaskStore } from "../../../store/useTaskStore";
+import { useAIStore } from "../../../store/useAIStore";
+import { useProjectStore } from "../../../store/useProjectStore";
 
 interface AICompleteIntegrationProps {
   taskId?: string;
   projectId?: string;
-  mode?: 'compact' | 'full' | 'creator' | 'assistant';
+  mode?: "compact" | "full" | "creator" | "assistant";
   onTaskCreated?: (task: Partial<Task>) => void;
   onSuggestionSelect?: (suggestion: string) => void;
 }
@@ -21,54 +19,56 @@ interface AICompleteIntegrationProps {
 export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
   taskId,
   projectId,
-  mode = 'compact',
+  mode = "compact",
   onTaskCreated,
-  onSuggestionSelect
+  onSuggestionSelect,
 }) => {
   const { tasks } = useTaskStore();
   const { projects } = useProjectStore();
   const { aiAssistantEnabled, aiUsageStatistics } = useAIStore();
 
-  const [activeFeature, setActiveFeature] = useState<'suggestions' | 'creator' | 'assistant' | 'context' | 'breakdown'>('suggestions');
+  const [activeFeature, setActiveFeature] = useState<
+    "suggestions" | "creator" | "assistant" | "context" | "breakdown"
+  >("suggestions");
   const [showStats, setShowStats] = useState(false);
 
-  const task = taskId ? tasks.find(t => t.id === taskId) : null;
-  const project = projectId ? projects.find(p => p.id === projectId) : null;
+  const task = taskId ? tasks.find((t) => t.id === taskId) : null;
+  const project = projectId ? projects.find((p) => p.id === projectId) : null;
 
   useEffect(() => {
     // Set default active feature based on mode
-    if (mode === 'creator') {
-      setActiveFeature('creator');
-    } else if (mode === 'assistant') {
-      setActiveFeature('assistant');
+    if (mode === "creator") {
+      setActiveFeature("creator");
+    } else if (mode === "assistant") {
+      setActiveFeature("assistant");
     }
   }, [mode]);
 
   const getFeatureContent = () => {
     switch (activeFeature) {
-      case 'suggestions':
+      case "suggestions":
         return (
           <AITaskSuggestionsEnhanced
-            taskId={taskId || ''}
+            taskId={taskId || ""}
             onSuggestionSelect={onSuggestionSelect}
             maxSuggestions={5}
             showContext={true}
           />
         );
 
-      case 'creator':
+      case "creator":
         return (
           <AINaturalLanguageTaskCreator
             onTaskCreated={onTaskCreated}
             showAdvancedOptions={true}
             defaultContext={{
               defaultProject: project?.id,
-              defaultPriority: task?.priority || 'medium'
+              defaultPriority: task?.priority || "medium",
             }}
           />
         );
 
-      case 'assistant':
+      case "assistant":
         return (
           <AIAssistant
             taskId={taskId}
@@ -76,21 +76,21 @@ export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
           />
         );
 
-      case 'context':
+      case "context":
         return (
           <AIContextAwareAssistant
             taskId={taskId}
             projectId={projectId}
-            mode={projectId ? 'project' : taskId ? 'task' : 'global'}
+            mode={projectId ? "project" : taskId ? "task" : "global"}
           />
         );
 
-      case 'breakdown':
+      case "breakdown":
         return taskId ? (
           <AITaskBreakdown
             taskId={taskId}
-            taskTitle={task?.title || 'Untitled Task'}
-            taskDescription={task?.description || ''}
+            taskTitle={task?.title || "Untitled Task"}
+            taskDescription={task?.description || ""}
           />
         ) : null;
 
@@ -99,7 +99,7 @@ export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
     }
   };
 
-  if (mode === 'full') {
+  if (mode === "full") {
     return (
       <div className="ai-complete-integration">
         <div className="ai-integration-header">
@@ -111,58 +111,57 @@ export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
               📊 AI Requests: {aiUsageStatistics.totalRequests}
             </span>
             <span className="stat-item">
-              ✅ Success Rate: {aiUsageStatistics.totalRequests > 0
+              ✅ Success Rate:{" "}
+              {aiUsageStatistics.totalRequests > 0
                 ? `${Math.round((aiUsageStatistics.successfulRequests / aiUsageStatistics.totalRequests) * 100)}%`
-                : 'N/A'}
+                : "N/A"}
             </span>
           </div>
         </div>
 
         <div className="ai-feature-tabs">
           <button
-            className={`feature-tab ${activeFeature === 'suggestions' ? 'active' : ''}`}
-            onClick={() => setActiveFeature('suggestions')}
+            className={`feature-tab ${activeFeature === "suggestions" ? "active" : ""}`}
+            onClick={() => setActiveFeature("suggestions")}
             title="Intelligent task suggestions"
           >
             💡 Suggestions
           </button>
 
           <button
-            className={`feature-tab ${activeFeature === 'creator' ? 'active' : ''}`}
-            onClick={() => setActiveFeature('creator')}
+            className={`feature-tab ${activeFeature === "creator" ? "active" : ""}`}
+            onClick={() => setActiveFeature("creator")}
             title="Natural language task creation"
           >
             ✍️ Creator
           </button>
 
           <button
-            className={`feature-tab ${activeFeature === 'assistant' ? 'active' : ''}`}
-            onClick={() => setActiveFeature('assistant')}
+            className={`feature-tab ${activeFeature === "assistant" ? "active" : ""}`}
+            onClick={() => setActiveFeature("assistant")}
             title="AI task assistant"
           >
             🤖 Assistant
           </button>
 
           <button
-            className={`feature-tab ${activeFeature === 'context' ? 'active' : ''}`}
-            onClick={() => setActiveFeature('context')}
+            className={`feature-tab ${activeFeature === "context" ? "active" : ""}`}
+            onClick={() => setActiveFeature("context")}
             title="Context-aware assistance"
           >
             🧠 Context
           </button>
 
           <button
-            className={`feature-tab ${activeFeature === 'breakdown' ? 'active' : ''}`}
-            onClick={() => setActiveFeature('breakdown')}
+            className={`feature-tab ${activeFeature === "breakdown" ? "active" : ""}`}
+            onClick={() => setActiveFeature("breakdown")}
             title="Task breakdown and analysis"
           >
             📊 Breakdown
           </button>
         </div>
 
-        <div className="ai-feature-content">
-          {getFeatureContent()}
-        </div>
+        <div className="ai-feature-content">{getFeatureContent()}</div>
 
         <div className="ai-integration-footer">
           <div className="ai-status">
@@ -177,7 +176,7 @@ export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
             className="ai-feedback-button"
             onClick={() => setShowStats(!showStats)}
           >
-            {showStats ? 'Hide Stats' : 'Show Detailed Stats'}
+            {showStats ? "Hide Stats" : "Show Detailed Stats"}
           </button>
         </div>
 
@@ -187,12 +186,16 @@ export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
             <div className="stats-grid">
               <div className="stat-card">
                 <div className="stat-label">Total Requests</div>
-                <div className="stat-value">{aiUsageStatistics.totalRequests}</div>
+                <div className="stat-value">
+                  {aiUsageStatistics.totalRequests}
+                </div>
               </div>
 
               <div className="stat-card">
                 <div className="stat-label">Successful Requests</div>
-                <div className="stat-value">{aiUsageStatistics.successfulRequests}</div>
+                <div className="stat-value">
+                  {aiUsageStatistics.successfulRequests}
+                </div>
               </div>
 
               <div className="stat-card">
@@ -200,7 +203,7 @@ export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
                 <div className="stat-value">
                   {aiUsageStatistics.totalRequests > 0
                     ? `${Math.round((aiUsageStatistics.successfulRequests / aiUsageStatistics.totalRequests) * 100)}%`
-                    : 'N/A'}
+                    : "N/A"}
                 </div>
               </div>
 
@@ -208,8 +211,10 @@ export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
                 <div className="stat-label">Last Request</div>
                 <div className="stat-value">
                   {aiUsageStatistics.lastRequestTime
-                    ? new Date(aiUsageStatistics.lastRequestTime).toLocaleString()
-                    : 'Never'}
+                    ? new Date(
+                        aiUsageStatistics.lastRequestTime,
+                      ).toLocaleString()
+                    : "Never"}
                 </div>
               </div>
             </div>
@@ -219,7 +224,7 @@ export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
     );
   }
 
-  if (mode === 'creator') {
+  if (mode === "creator") {
     return (
       <div className="ai-creator-mode">
         <AINaturalLanguageTaskCreator
@@ -227,20 +232,17 @@ export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
           showAdvancedOptions={true}
           defaultContext={{
             defaultProject: project?.id,
-            defaultPriority: 'medium'
+            defaultPriority: "medium",
           }}
         />
       </div>
     );
   }
 
-  if (mode === 'assistant') {
+  if (mode === "assistant") {
     return (
       <div className="ai-assistant-mode">
-        <AIAssistant
-          taskId={taskId}
-          onSuggestionSelect={onSuggestionSelect}
-        />
+        <AIAssistant taskId={taskId} onSuggestionSelect={onSuggestionSelect} />
       </div>
     );
   }
@@ -253,14 +255,14 @@ export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
         <div className="ai-compact-controls">
           <button
             className="compact-control-button"
-            onClick={() => setActiveFeature('suggestions')}
+            onClick={() => setActiveFeature("suggestions")}
             title="Task suggestions"
           >
             💡
           </button>
           <button
             className="compact-control-button"
-            onClick={() => setActiveFeature('context')}
+            onClick={() => setActiveFeature("context")}
             title="Context-aware assistance"
           >
             🧠
@@ -269,9 +271,9 @@ export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
       </div>
 
       <div className="ai-compact-content">
-        {activeFeature === 'suggestions' ? (
+        {activeFeature === "suggestions" ? (
           <AITaskSuggestionsEnhanced
-            taskId={taskId || ''}
+            taskId={taskId || ""}
             onSuggestionSelect={onSuggestionSelect}
             maxSuggestions={3}
             showContext={false}
@@ -280,7 +282,7 @@ export const AICompleteIntegration: React.FC<AICompleteIntegrationProps> = ({
           <AIContextAwareAssistant
             taskId={taskId}
             projectId={projectId}
-            mode={projectId ? 'project' : taskId ? 'task' : 'global'}
+            mode={projectId ? "project" : taskId ? "task" : "global"}
           />
         )}
       </div>

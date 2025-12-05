@@ -1,8 +1,8 @@
-import React from 'react';
-import { useKarma } from '../../../hooks/useKarma';
-import { KarmaProgress } from './KarmaProgress';
-import { KarmaStats } from './KarmaStats';
-import { KarmaAchievements } from './KarmaAchievements';
+import React from "react";
+import { useKarma } from "../../../hooks/useKarma";
+import { KarmaProgress } from "./KarmaProgress";
+import { KarmaStats } from "./KarmaStats";
+import { KarmaAchievements } from "./KarmaAchievements";
 
 export const KarmaSystem: React.FC = () => {
   const { karma, level, xp, achievements } = useKarma();

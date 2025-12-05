@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { useOfflineStore } from '../../store/useOfflineStore';
-import { OfflineQueueItem, OfflineQueuePriority } from '../../types/offlineTypes';
+import React, { useState, useEffect } from "react";
+import { useOfflineStore } from "../../store/useOfflineStore";
+import {
+  OfflineQueueItem,
+  OfflineQueuePriority,
+} from "../../types/offlineTypes";
 
 interface OfflineQueueEnhancedProps {
   maxItems?: number;
@@ -11,7 +14,10 @@ interface OfflineQueueEnhancedProps {
   onQueueChange?: (items: OfflineQueueItem[]) => void;
   onRetryAll?: () => void;
   onClearAll?: () => void;
-  onPriorityChange?: (itemId: string, newPriority: OfflineQueuePriority) => void;
+  onPriorityChange?: (
+    itemId: string,
+    newPriority: OfflineQueuePriority,
+  ) => void;
 }
 
 export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
@@ -23,7 +29,7 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
   onQueueChange,
   onRetryAll,
   onClearAll,
-  onPriorityChange
+  onPriorityChange,
 }) => {
   const {
     queue,
@@ -33,13 +39,15 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
     updateQueueItemPriority,
     removeQueueItem,
     getQueueItemsByStatus,
-    getQueueItemsByPriority
+    getQueueItemsByPriority,
   } = useOfflineStore();
 
   const [displayedItems, setDisplayedItems] = useState<OfflineQueueItem[]>([]);
-  const [filterStatus, setFilterStatus] = useState<string | 'all'>('all');
-  const [filterPriority, setFilterPriority] = useState<OfflineQueuePriority | 'all'>('all');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState<string | "all">("all");
+  const [filterPriority, setFilterPriority] = useState<
+    OfflineQueuePriority | "all"
+  >("all");
+  const [searchTerm, setSearchTerm] = useState("");
   const [selectedItems, setSelectedItems] = useState<string[]>([]);
   const [showBulkActions, setShowBulkActions] = useState(false);
 
@@ -48,33 +56,47 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
     let filteredItems = [...queue.items];
 
     // Filter by status
-    if (filterStatus !== 'all') {
-      filteredItems = filteredItems.filter(item => item.status === filterStatus);
+    if (filterStatus !== "all") {
+      filteredItems = filteredItems.filter(
+        (item) => item.status === filterStatus,
+      );
     }
 
     // Filter by priority
-    if (filterPriority !== 'all') {
-      filteredItems = filteredItems.filter(item => item.priority === filterPriority);
+    if (filterPriority !== "all") {
+      filteredItems = filteredItems.filter(
+        (item) => item.priority === filterPriority,
+      );
     }
 
     // Filter by search term
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
-      filteredItems = filteredItems.filter(item =>
-        item.operation.toLowerCase().includes(term) ||
-        item.type.toLowerCase().includes(term) ||
-        (item.metadata?.description?.toLowerCase()?.includes(term) || false)
+      filteredItems = filteredItems.filter(
+        (item) =>
+          item.operation.toLowerCase().includes(term) ||
+          item.type.toLowerCase().includes(term) ||
+          item.metadata?.description?.toLowerCase()?.includes(term) ||
+          false,
       );
     }
 
     // Limit the number of items displayed
-    const limitedItems = maxItems > 0 ? filteredItems.slice(0, maxItems) : filteredItems;
+    const limitedItems =
+      maxItems > 0 ? filteredItems.slice(0, maxItems) : filteredItems;
     setDisplayedItems(limitedItems);
 
     if (onQueueChange) {
       onQueueChange(limitedItems);
     }
-  }, [queue.items, maxItems, filterStatus, filterPriority, searchTerm, onQueueChange]);
+  }, [
+    queue.items,
+    maxItems,
+    filterStatus,
+    filterPriority,
+    searchTerm,
+    onQueueChange,
+  ]);
 
   const handleRetryItem = async (itemId: string) => {
     await retryQueueItem(itemId);
@@ -99,7 +121,10 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
     }
   };
 
-  const handlePriorityChange = async (itemId: string, newPriority: OfflineQueuePriority) => {
+  const handlePriorityChange = async (
+    itemId: string,
+    newPriority: OfflineQueuePriority,
+  ) => {
     if (onPriorityChange) {
       onPriorityChange(itemId, newPriority);
     }
@@ -111,8 +136,10 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
   };
 
   const handleSelectItem = (itemId: string) => {
-    setSelectedItems(prev =>
-      prev.includes(itemId) ? prev.filter(id => id !== itemId) : [...prev, itemId]
+    setSelectedItems((prev) =>
+      prev.includes(itemId)
+        ? prev.filter((id) => id !== itemId)
+        : [...prev, itemId],
     );
   };
 
@@ -120,7 +147,7 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
     if (selectedItems.length === displayedItems.length) {
       setSelectedItems([]);
     } else {
-      setSelectedItems(displayedItems.map(item => item.id));
+      setSelectedItems(displayedItems.map((item) => item.id));
     }
   };
 
@@ -140,7 +167,9 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
     setShowBulkActions(false);
   };
 
-  const handleBulkPriorityChange = async (newPriority: OfflineQueuePriority) => {
+  const handleBulkPriorityChange = async (
+    newPriority: OfflineQueuePriority,
+  ) => {
     for (const itemId of selectedItems) {
       await updateQueueItemPriority(itemId, newPriority);
     }
@@ -150,68 +179,73 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
 
   const getItemStatusText = (item: OfflineQueueItem) => {
     switch (item.status) {
-      case 'pending':
-        return 'Pending';
-      case 'processing':
-        return 'Processing...';
-      case 'completed':
-        return 'Completed';
-      case 'failed':
-        return 'Failed';
-      case 'retrying':
-        return 'Retrying...';
+      case "pending":
+        return "Pending";
+      case "processing":
+        return "Processing...";
+      case "completed":
+        return "Completed";
+      case "failed":
+        return "Failed";
+      case "retrying":
+        return "Retrying...";
       default:
-        return 'Unknown';
+        return "Unknown";
     }
   };
 
   const getItemStatusClass = (item: OfflineQueueItem) => {
     switch (item.status) {
-      case 'pending':
-        return 'offline-queue-item-pending';
-      case 'processing':
-        return 'offline-queue-item-processing';
-      case 'completed':
-        return 'offline-queue-item-completed';
-      case 'failed':
-        return 'offline-queue-item-failed';
-      case 'retrying':
-        return 'offline-queue-item-retrying';
+      case "pending":
+        return "offline-queue-item-pending";
+      case "processing":
+        return "offline-queue-item-processing";
+      case "completed":
+        return "offline-queue-item-completed";
+      case "failed":
+        return "offline-queue-item-failed";
+      case "retrying":
+        return "offline-queue-item-retrying";
       default:
-        return 'offline-queue-item-unknown';
+        return "offline-queue-item-unknown";
     }
   };
 
   const getPriorityClass = (priority: OfflineQueuePriority | undefined) => {
     switch (priority) {
-      case 'critical': return 'priority-critical';
-      case 'high': return 'priority-high';
-      case 'medium': return 'priority-medium';
-      case 'low': return 'priority-low';
-      default: return 'priority-default';
+      case "critical":
+        return "priority-critical";
+      case "high":
+        return "priority-high";
+      case "medium":
+        return "priority-medium";
+      case "low":
+        return "priority-low";
+      default:
+        return "priority-default";
     }
   };
 
   const getPriorityText = (priority: OfflineQueuePriority | undefined) => {
-    return priority || 'medium';
+    return priority || "medium";
   };
 
   // Get statistics for filters
   const statusStats = {
     all: queue.totalCount,
-    pending: getQueueItemsByStatus('pending').length,
-    processing: getQueueItemsByStatus('processing').length,
-    completed: getQueueItemsByStatus('completed').length,
-    failed: getQueueItemsByStatus('failed').length,
-    retrying: getQueueItemsByStatus('retrying').length
+    pending: getQueueItemsByStatus("pending").length,
+    processing: getQueueItemsByStatus("processing").length,
+    completed: getQueueItemsByStatus("completed").length,
+    failed: getQueueItemsByStatus("failed").length,
+    retrying: getQueueItemsByStatus("retrying").length,
   };
 
   const priorityStats = {
     all: queue.totalCount,
-    critical: getQueueItemsByPriority('critical').length,
-    high: getQueueItemsByPriority('high').length,
-    medium: getQueueItemsByPriority('medium').length,
-    low: getQueueItemsByPriority('low').length
+    critical: getQueueItemsByPriority("critical").length,
+    high: getQueueItemsByPriority("high").length,
+    medium: getQueueItemsByPriority("medium").length,
+    low: getQueueItemsByPriority("low").length,
   };
 
   return (
@@ -230,10 +264,16 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
             >
               <option value="all">All ({statusStats.all})</option>
               <option value="pending">Pending ({statusStats.pending})</option>
-              <option value="processing">Processing ({statusStats.processing})</option>
-              <option value="completed">Completed ({statusStats.completed})</option>
+              <option value="processing">
+                Processing ({statusStats.processing})
+              </option>
+              <option value="completed">
+                Completed ({statusStats.completed})
+              </option>
               <option value="failed">Failed ({statusStats.failed})</option>
-              <option value="retrying">Retrying ({statusStats.retrying})</option>
+              <option value="retrying">
+                Retrying ({statusStats.retrying})
+              </option>
             </select>
           </div>
 
@@ -245,7 +285,9 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
               onChange={(e) => setFilterPriority(e.target.value as any)}
             >
               <option value="all">All ({priorityStats.all})</option>
-              <option value="critical">Critical ({priorityStats.critical})</option>
+              <option value="critical">
+                Critical ({priorityStats.critical})
+              </option>
               <option value="high">High ({priorityStats.high})</option>
               <option value="medium">Medium ({priorityStats.medium})</option>
               <option value="low">Low ({priorityStats.low})</option>
@@ -295,7 +337,8 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
           {showBatchOperations && selectedItems.length > 0 && (
             <div className="bulk-operations">
               <button onClick={() => setShowBulkActions(!showBulkActions)}>
-                {showBulkActions ? 'Cancel' : 'Bulk Actions'} ({selectedItems.length} selected)
+                {showBulkActions ? "Cancel" : "Bulk Actions"} (
+                {selectedItems.length} selected)
               </button>
 
               {showBulkActions && (
@@ -309,7 +352,11 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
                   <div className="priority-change">
                     <label>Change Priority:</label>
                     <select
-                      onChange={(e) => handleBulkPriorityChange(e.target.value as OfflineQueuePriority)}
+                      onChange={(e) =>
+                        handleBulkPriorityChange(
+                          e.target.value as OfflineQueuePriority,
+                        )
+                      }
                     >
                       <option value="critical">Critical</option>
                       <option value="high">High</option>
@@ -326,7 +373,10 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
             <div className="header-cell">
               <input
                 type="checkbox"
-                checked={selectedItems.length === displayedItems.length && displayedItems.length > 0}
+                checked={
+                  selectedItems.length === displayedItems.length &&
+                  displayedItems.length > 0
+                }
                 onChange={handleSelectAll}
                 disabled={displayedItems.length === 0}
               />
@@ -340,7 +390,10 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
 
           <div className="offline-queue-items">
             {displayedItems.map((item) => (
-              <div key={item.id} className={`offline-queue-item ${getItemStatusClass(item)}`}>
+              <div
+                key={item.id}
+                className={`offline-queue-item ${getItemStatusClass(item)}`}
+              >
                 <div className="queue-item-cell">
                   <input
                     type="checkbox"
@@ -350,7 +403,9 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
                 </div>
 
                 <div className="offline-queue-item-operation">
-                  <span className="offline-queue-item-name">{item.operation}</span>
+                  <span className="offline-queue-item-name">
+                    {item.operation}
+                  </span>
                   <span className="offline-queue-item-timestamp">
                     {new Date(item.timestamp).toLocaleTimeString()}
                   </span>
@@ -361,9 +416,7 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
                   )}
                 </div>
 
-                <div className="offline-queue-item-type">
-                  {item.type}
-                </div>
+                <div className="offline-queue-item-type">{item.type}</div>
 
                 <div className="offline-queue-item-status">
                   {getItemStatusText(item)}
@@ -373,9 +426,14 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
                   {showPriorityManagement ? (
                     <select
                       value={getPriorityText(item.priority)}
-                      onChange={(e) => handlePriorityChange(item.id, e.target.value as OfflineQueuePriority)}
+                      onChange={(e) =>
+                        handlePriorityChange(
+                          item.id,
+                          e.target.value as OfflineQueuePriority,
+                        )
+                      }
                       className={getPriorityClass(item.priority)}
-                      disabled={item.status !== 'pending'}
+                      disabled={item.status !== "pending"}
                     >
                       <option value="critical">Critical</option>
                       <option value="high">High</option>
@@ -383,14 +441,16 @@ export const OfflineQueueEnhanced: React.FC<OfflineQueueEnhancedProps> = ({
                       <option value="low">Low</option>
                     </select>
                   ) : (
-                    <span className={`priority-badge ${getPriorityClass(item.priority)}`}>
+                    <span
+                      className={`priority-badge ${getPriorityClass(item.priority)}`}
+                    >
                       {getPriorityText(item.priority)}
                     </span>
                   )}
                 </div>
 
                 <div className="offline-queue-item-actions">
-                  {item.status === 'failed' && (
+                  {item.status === "failed" && (
                     <button
                       className="offline-queue-retry-button"
                       onClick={() => handleRetryItem(item.id)}

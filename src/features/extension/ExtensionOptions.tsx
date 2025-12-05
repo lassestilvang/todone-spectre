@@ -1,53 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { useExtension } from '../../../hooks/useExtension';
-import { useExtensionConfig } from '../../../hooks/useExtensionConfig';
+import React, { useState, useEffect } from "react";
+import { useExtension } from "../../../hooks/useExtension";
+import { useExtensionConfig } from "../../../hooks/useExtensionConfig";
 
 interface ExtensionOptionsProps {
   onSave?: () => void;
   onCancel?: () => void;
 }
 
-export const ExtensionOptions: React.FC<ExtensionOptionsProps> = ({ onSave, onCancel }) => {
+export const ExtensionOptions: React.FC<ExtensionOptionsProps> = ({
+  onSave,
+  onCancel,
+}) => {
   const { extensionState, dispatch } = useExtension();
   const { config, updateConfig } = useExtensionConfig();
   const [formConfig, setFormConfig] = useState({ ...config });
   const [isSaving, setIsSaving] = useState(false);
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">(
+    "idle",
+  );
 
   useEffect(() => {
     // Load saved configuration
     const loadConfig = async () => {
       try {
-        const savedConfig = await chrome.storage.sync.get('extensionConfig');
+        const savedConfig = await chrome.storage.sync.get("extensionConfig");
         if (savedConfig.extensionConfig) {
           setFormConfig(savedConfig.extensionConfig);
         }
       } catch (error) {
-        console.error('Failed to load configuration:', error);
-        dispatch({ type: 'ERROR', payload: error.message });
+        console.error("Failed to load configuration:", error);
+        dispatch({ type: "ERROR", payload: error.message });
       }
     };
 
     loadConfig();
   }, [dispatch]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value, type, checked } = e.target;
-    setFormConfig(prev => ({
+    setFormConfig((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSaving(true);
-    setSaveStatus('idle');
+    setSaveStatus("idle");
 
     try {
       // Validate configuration
       if (!validateConfig(formConfig)) {
-        setSaveStatus('error');
+        setSaveStatus("error");
         return;
       }
 
@@ -56,9 +63,9 @@ export const ExtensionOptions: React.FC<ExtensionOptionsProps> = ({ onSave, onCa
       await chrome.storage.sync.set({ extensionConfig: formConfig });
 
       // Update state
-      dispatch({ type: 'CONFIG_UPDATED', payload: formConfig });
+      dispatch({ type: "CONFIG_UPDATED", payload: formConfig });
 
-      setSaveStatus('success');
+      setSaveStatus("success");
       onSave?.();
 
       // Auto-close after successful save
@@ -66,9 +73,9 @@ export const ExtensionOptions: React.FC<ExtensionOptionsProps> = ({ onSave, onCa
         window.close();
       }, 1000);
     } catch (error) {
-      console.error('Failed to save configuration:', error);
-      dispatch({ type: 'ERROR', payload: error.message });
-      setSaveStatus('error');
+      console.error("Failed to save configuration:", error);
+      dispatch({ type: "ERROR", payload: error.message });
+      setSaveStatus("error");
     } finally {
       setIsSaving(false);
     }
@@ -76,7 +83,7 @@ export const ExtensionOptions: React.FC<ExtensionOptionsProps> = ({ onSave, onCa
 
   const validateConfig = (config: typeof formConfig) => {
     // Basic validation
-    if (typeof config.syncInterval !== 'number' || config.syncInterval <= 0) {
+    if (typeof config.syncInterval !== "number" || config.syncInterval <= 0) {
       return false;
     }
     return true;
@@ -90,36 +97,36 @@ export const ExtensionOptions: React.FC<ExtensionOptionsProps> = ({ onSave, onCa
         autoSyncEnabled: true,
         syncInterval: 300000, // 5 minutes
         showNotifications: true,
-        theme: 'system'
+        theme: "system",
       };
 
       await updateConfig(defaultConfig);
       await chrome.storage.sync.set({ extensionConfig: defaultConfig });
       setFormConfig(defaultConfig);
 
-      dispatch({ type: 'CONFIG_RESET' });
+      dispatch({ type: "CONFIG_RESET" });
     } catch (error) {
-      console.error('Failed to reset configuration:', error);
-      dispatch({ type: 'ERROR', payload: error.message });
+      console.error("Failed to reset configuration:", error);
+      dispatch({ type: "ERROR", payload: error.message });
     }
   };
 
   const handleExportConfig = async () => {
     try {
       const configData = JSON.stringify(formConfig, null, 2);
-      const blob = new Blob([configData], { type: 'application/json' });
+      const blob = new Blob([configData], { type: "application/json" });
       const url = URL.createObjectURL(blob);
 
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = 'todone-extension-config.json';
+      a.download = "todone-extension-config.json";
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Failed to export configuration:', error);
-      dispatch({ type: 'ERROR', payload: error.message });
+      console.error("Failed to export configuration:", error);
+      dispatch({ type: "ERROR", payload: error.message });
     }
   };
 
@@ -133,13 +140,13 @@ export const ExtensionOptions: React.FC<ExtensionOptionsProps> = ({ onSave, onCa
 
       // Validate imported config
       if (validateConfig(importedConfig)) {
-        setFormConfig(prev => ({ ...prev, ...importedConfig }));
+        setFormConfig((prev) => ({ ...prev, ...importedConfig }));
       } else {
-        dispatch({ type: 'ERROR', payload: 'Invalid configuration file' });
+        dispatch({ type: "ERROR", payload: "Invalid configuration file" });
       }
     } catch (error) {
-      console.error('Failed to import configuration:', error);
-      dispatch({ type: 'ERROR', payload: error.message });
+      console.error("Failed to import configuration:", error);
+      dispatch({ type: "ERROR", payload: error.message });
     }
   };
 
@@ -186,7 +193,9 @@ export const ExtensionOptions: React.FC<ExtensionOptionsProps> = ({ onSave, onCa
           <h2>Integration Settings</h2>
 
           <div className="form-group">
-            <label htmlFor="pageIntegrationEnabled">Enable Page Integration</label>
+            <label htmlFor="pageIntegrationEnabled">
+              Enable Page Integration
+            </label>
             <input
               type="checkbox"
               id="pageIntegrationEnabled"
@@ -225,9 +234,9 @@ export const ExtensionOptions: React.FC<ExtensionOptionsProps> = ({ onSave, onCa
               value={formConfig.syncInterval / 60000} // Convert ms to minutes
               onChange={(e) => {
                 const minutes = parseInt(e.target.value) || 5;
-                setFormConfig(prev => ({
+                setFormConfig((prev) => ({
                   ...prev,
-                  syncInterval: minutes * 60000 // Convert back to ms
+                  syncInterval: minutes * 60000, // Convert back to ms
                 }));
               }}
               min="1"
@@ -253,7 +262,7 @@ export const ExtensionOptions: React.FC<ExtensionOptionsProps> = ({ onSave, onCa
                 type="file"
                 accept=".json"
                 onChange={handleImportConfig}
-                style={{ display: 'none' }}
+                style={{ display: "none" }}
               />
               Import Config
             </label>
@@ -281,18 +290,18 @@ export const ExtensionOptions: React.FC<ExtensionOptionsProps> = ({ onSave, onCa
               className="button-primary"
               disabled={isSaving}
             >
-              {isSaving ? 'Saving...' : 'Save Settings'}
+              {isSaving ? "Saving..." : "Save Settings"}
             </button>
           </div>
         </div>
 
-        {saveStatus === 'success' && (
+        {saveStatus === "success" && (
           <div className="save-success">
             <span className="success-icon">✓</span> Settings saved successfully!
           </div>
         )}
 
-        {saveStatus === 'error' && (
+        {saveStatus === "error" && (
           <div className="save-error">
             <span className="error-icon">⚠</span> Failed to save settings
           </div>

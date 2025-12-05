@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useAITaskSuggestions } from '../../../hooks/useAITaskSuggestions';
-import { Task } from '../../../types/taskTypes';
+import React, { useState, useEffect } from "react";
+import { useAITaskSuggestions } from "../../../hooks/useAITaskSuggestions";
 
 interface AITaskSuggestionsProps {
   taskId: string;
@@ -11,9 +10,10 @@ interface AITaskSuggestionsProps {
 export const AITaskSuggestions: React.FC<AITaskSuggestionsProps> = ({
   taskId,
   onSuggestionSelect,
-  maxSuggestions = 5
+  maxSuggestions = 5,
 }) => {
-  const { suggestions, loading, error, generateSuggestions } = useAITaskSuggestions();
+  const { suggestions, loading, error, generateSuggestions } =
+    useAITaskSuggestions();
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
@@ -28,7 +28,9 @@ export const AITaskSuggestions: React.FC<AITaskSuggestionsProps> = ({
     }
   };
 
-  const visibleSuggestions = expanded ? suggestions : suggestions.slice(0, maxSuggestions);
+  const visibleSuggestions = expanded
+    ? suggestions
+    : suggestions.slice(0, maxSuggestions);
 
   return (
     <div className="ai-task-suggestions">
@@ -39,7 +41,9 @@ export const AITaskSuggestions: React.FC<AITaskSuggestionsProps> = ({
       ) : error ? (
         <div className="error-message">{error}</div>
       ) : suggestions.length === 0 ? (
-        <div className="no-suggestions">No suggestions available for this task</div>
+        <div className="no-suggestions">
+          No suggestions available for this task
+        </div>
       ) : (
         <>
           <ul className="suggestions-list">
@@ -68,7 +72,9 @@ export const AITaskSuggestions: React.FC<AITaskSuggestionsProps> = ({
               className="show-more-button"
               onClick={() => setExpanded(!expanded)}
             >
-              {expanded ? 'Show Less' : `Show ${suggestions.length - maxSuggestions} More`}
+              {expanded
+                ? "Show Less"
+                : `Show ${suggestions.length - maxSuggestions} More`}
             </button>
           )}
         </>

@@ -1,5 +1,5 @@
-import { Label, LabelModel } from '../types/models';
-import { Result, AsyncResult } from '../types/common';
+import { Label, LabelModel } from "../types/models";
+import { Result, AsyncResult } from "../types/common";
 
 /**
  * Label Service
@@ -7,7 +7,7 @@ import { Result, AsyncResult } from '../types/common';
  */
 class LabelService {
   private labels: Label[] = [];
-  private storageKey = 'todone_labels';
+  private storageKey = "todone_labels";
 
   constructor() {
     this.loadLabels();
@@ -24,7 +24,7 @@ class LabelService {
         this.labels = parsedLabels.map((label: any) => new LabelModel(label));
       }
     } catch (error) {
-      console.error('Failed to load labels:', error);
+      console.error("Failed to load labels:", error);
     }
   }
 
@@ -35,7 +35,7 @@ class LabelService {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(this.labels));
     } catch (error) {
-      console.error('Failed to save labels:', error);
+      console.error("Failed to save labels:", error);
     }
   }
 
@@ -45,7 +45,7 @@ class LabelService {
   getAllLabels(): AsyncResult<Label[]> {
     return Promise.resolve({
       success: true,
-      data: [...this.labels]
+      data: [...this.labels],
     });
   }
 
@@ -53,10 +53,10 @@ class LabelService {
    * Get label by ID
    */
   getLabelById(id: string): AsyncResult<Label | null> {
-    const label = this.labels.find(l => l.id === id);
+    const label = this.labels.find((l) => l.id === id);
     return Promise.resolve({
       success: true,
-      data: label ? { ...label } : null
+      data: label ? { ...label } : null,
     });
   }
 
@@ -70,12 +70,13 @@ class LabelService {
       this.saveLabels();
       return Promise.resolve({
         success: true,
-        data: { ...newLabel }
+        data: { ...newLabel },
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to create label')
+        error:
+          error instanceof Error ? error : new Error("Failed to create label"),
       });
     }
   }
@@ -85,14 +86,14 @@ class LabelService {
    */
   updateLabel(id: string, labelData: Partial<Label>): AsyncResult<Label> {
     try {
-      const index = this.labels.findIndex(l => l.id === id);
+      const index = this.labels.findIndex((l) => l.id === id);
       if (index === -1) {
-        throw new Error('Label not found');
+        throw new Error("Label not found");
       }
 
       const updatedLabel = new LabelModel({
         ...this.labels[index],
-        ...labelData
+        ...labelData,
       });
 
       this.labels[index] = updatedLabel;
@@ -100,12 +101,13 @@ class LabelService {
 
       return Promise.resolve({
         success: true,
-        data: { ...updatedLabel }
+        data: { ...updatedLabel },
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to update label')
+        error:
+          error instanceof Error ? error : new Error("Failed to update label"),
       });
     }
   }
@@ -116,21 +118,22 @@ class LabelService {
   deleteLabel(id: string): AsyncResult<boolean> {
     try {
       const initialLength = this.labels.length;
-      this.labels = this.labels.filter(l => l.id !== id);
+      this.labels = this.labels.filter((l) => l.id !== id);
 
       if (this.labels.length === initialLength) {
-        throw new Error('Label not found');
+        throw new Error("Label not found");
       }
 
       this.saveLabels();
       return Promise.resolve({
         success: true,
-        data: true
+        data: true,
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to delete label')
+        error:
+          error instanceof Error ? error : new Error("Failed to delete label"),
       });
     }
   }
@@ -140,18 +143,19 @@ class LabelService {
    */
   searchLabels(query: string): AsyncResult<Label[]> {
     try {
-      const results = this.labels.filter(label =>
-        label.name.toLowerCase().includes(query.toLowerCase())
+      const results = this.labels.filter((label) =>
+        label.name.toLowerCase().includes(query.toLowerCase()),
       );
 
       return Promise.resolve({
         success: true,
-        data: [...results]
+        data: [...results],
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to search labels')
+        error:
+          error instanceof Error ? error : new Error("Failed to search labels"),
       });
     }
   }
@@ -161,15 +165,18 @@ class LabelService {
    */
   getPersonalLabels(): AsyncResult<Label[]> {
     try {
-      const personalLabels = this.labels.filter(label => label.isPersonal);
+      const personalLabels = this.labels.filter((label) => label.isPersonal);
       return Promise.resolve({
         success: true,
-        data: [...personalLabels]
+        data: [...personalLabels],
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to get personal labels')
+        error:
+          error instanceof Error
+            ? error
+            : new Error("Failed to get personal labels"),
       });
     }
   }
@@ -179,15 +186,18 @@ class LabelService {
    */
   getSharedLabels(): AsyncResult<Label[]> {
     try {
-      const sharedLabels = this.labels.filter(label => !label.isPersonal);
+      const sharedLabels = this.labels.filter((label) => !label.isPersonal);
       return Promise.resolve({
         success: true,
-        data: [...sharedLabels]
+        data: [...sharedLabels],
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to get shared labels')
+        error:
+          error instanceof Error
+            ? error
+            : new Error("Failed to get shared labels"),
       });
     }
   }
@@ -201,12 +211,13 @@ class LabelService {
       this.saveLabels();
       return Promise.resolve({
         success: true,
-        data: true
+        data: true,
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to clear labels')
+        error:
+          error instanceof Error ? error : new Error("Failed to clear labels"),
       });
     }
   }

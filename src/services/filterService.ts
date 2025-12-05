@@ -1,5 +1,5 @@
-import { Filter, FilterModel } from '../types/models';
-import { Result, AsyncResult } from '../types/common';
+import { Filter, FilterModel } from "../types/models";
+import { Result, AsyncResult } from "../types/common";
 
 /**
  * Filter Service
@@ -7,7 +7,7 @@ import { Result, AsyncResult } from '../types/common';
  */
 class FilterService {
   private filters: Filter[] = [];
-  private storageKey = 'todone_filters';
+  private storageKey = "todone_filters";
 
   constructor() {
     this.loadFilters();
@@ -21,10 +21,12 @@ class FilterService {
       const savedFilters = localStorage.getItem(this.storageKey);
       if (savedFilters) {
         const parsedFilters = JSON.parse(savedFilters);
-        this.filters = parsedFilters.map((filter: any) => new FilterModel(filter));
+        this.filters = parsedFilters.map(
+          (filter: any) => new FilterModel(filter),
+        );
       }
     } catch (error) {
-      console.error('Failed to load filters:', error);
+      console.error("Failed to load filters:", error);
     }
   }
 
@@ -35,7 +37,7 @@ class FilterService {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(this.filters));
     } catch (error) {
-      console.error('Failed to save filters:', error);
+      console.error("Failed to save filters:", error);
     }
   }
 
@@ -45,7 +47,7 @@ class FilterService {
   getAllFilters(): AsyncResult<Filter[]> {
     return Promise.resolve({
       success: true,
-      data: [...this.filters]
+      data: [...this.filters],
     });
   }
 
@@ -53,10 +55,10 @@ class FilterService {
    * Get filter by ID
    */
   getFilterById(id: string): AsyncResult<Filter | null> {
-    const filter = this.filters.find(f => f.id === id);
+    const filter = this.filters.find((f) => f.id === id);
     return Promise.resolve({
       success: true,
-      data: filter ? { ...filter } : null
+      data: filter ? { ...filter } : null,
     });
   }
 
@@ -70,12 +72,13 @@ class FilterService {
       this.saveFilters();
       return Promise.resolve({
         success: true,
-        data: { ...newFilter }
+        data: { ...newFilter },
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to create filter')
+        error:
+          error instanceof Error ? error : new Error("Failed to create filter"),
       });
     }
   }
@@ -85,14 +88,14 @@ class FilterService {
    */
   updateFilter(id: string, filterData: Partial<Filter>): AsyncResult<Filter> {
     try {
-      const index = this.filters.findIndex(f => f.id === id);
+      const index = this.filters.findIndex((f) => f.id === id);
       if (index === -1) {
-        throw new Error('Filter not found');
+        throw new Error("Filter not found");
       }
 
       const updatedFilter = new FilterModel({
         ...this.filters[index],
-        ...filterData
+        ...filterData,
       });
 
       this.filters[index] = updatedFilter;
@@ -100,12 +103,13 @@ class FilterService {
 
       return Promise.resolve({
         success: true,
-        data: { ...updatedFilter }
+        data: { ...updatedFilter },
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to update filter')
+        error:
+          error instanceof Error ? error : new Error("Failed to update filter"),
       });
     }
   }
@@ -116,21 +120,22 @@ class FilterService {
   deleteFilter(id: string): AsyncResult<boolean> {
     try {
       const initialLength = this.filters.length;
-      this.filters = this.filters.filter(f => f.id !== id);
+      this.filters = this.filters.filter((f) => f.id !== id);
 
       if (this.filters.length === initialLength) {
-        throw new Error('Filter not found');
+        throw new Error("Filter not found");
       }
 
       this.saveFilters();
       return Promise.resolve({
         success: true,
-        data: true
+        data: true,
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to delete filter')
+        error:
+          error instanceof Error ? error : new Error("Failed to delete filter"),
       });
     }
   }
@@ -140,9 +145,9 @@ class FilterService {
    */
   toggleFavorite(id: string): AsyncResult<Filter> {
     try {
-      const filter = this.filters.find(f => f.id === id);
+      const filter = this.filters.find((f) => f.id === id);
       if (!filter) {
-        throw new Error('Filter not found');
+        throw new Error("Filter not found");
       }
 
       filter.toggleFavorite();
@@ -150,12 +155,15 @@ class FilterService {
 
       return Promise.resolve({
         success: true,
-        data: { ...filter }
+        data: { ...filter },
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to toggle favorite')
+        error:
+          error instanceof Error
+            ? error
+            : new Error("Failed to toggle favorite"),
       });
     }
   }
@@ -165,18 +173,21 @@ class FilterService {
    */
   searchFilters(query: string): AsyncResult<Filter[]> {
     try {
-      const results = this.filters.filter(filter =>
-        filter.name.toLowerCase().includes(query.toLowerCase())
+      const results = this.filters.filter((filter) =>
+        filter.name.toLowerCase().includes(query.toLowerCase()),
       );
 
       return Promise.resolve({
         success: true,
-        data: [...results]
+        data: [...results],
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to search filters')
+        error:
+          error instanceof Error
+            ? error
+            : new Error("Failed to search filters"),
       });
     }
   }
@@ -186,15 +197,18 @@ class FilterService {
    */
   getFavoriteFilters(): AsyncResult<Filter[]> {
     try {
-      const favorites = this.filters.filter(filter => filter.favorite);
+      const favorites = this.filters.filter((filter) => filter.favorite);
       return Promise.resolve({
         success: true,
-        data: [...favorites]
+        data: [...favorites],
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to get favorite filters')
+        error:
+          error instanceof Error
+            ? error
+            : new Error("Failed to get favorite filters"),
       });
     }
   }
@@ -208,12 +222,13 @@ class FilterService {
       this.saveFilters();
       return Promise.resolve({
         success: true,
-        data: true
+        data: true,
       });
     } catch (error) {
       return Promise.resolve({
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to clear filters')
+        error:
+          error instanceof Error ? error : new Error("Failed to clear filters"),
       });
     }
   }

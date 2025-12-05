@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { useOffline } from '../../hooks/useOffline';
-import { useOfflineSync } from '../../hooks/useOfflineSync';
-import { useOfflineSettings } from '../../hooks/useOfflineSettings';
-import { OfflineQueueItem } from '../../types/offlineTypes';
+import React, { useState, useEffect } from "react";
+import { useOffline } from "../../hooks/useOffline";
+import { useOfflineSync } from "../../hooks/useOfflineSync";
+import { useOfflineSettings } from "../../hooks/useOfflineSettings";
+import { OfflineQueueItem } from "../../types/offlineTypes";
 
 /**
  * Demo component showing integration of offline hooks with existing services
@@ -18,7 +18,7 @@ export const OfflineHooksDemo: React.FC = () => {
     processOfflineQueue,
     retryFailedItems,
     getQueueStats,
-    simulateNetworkChange
+    simulateNetworkChange,
   } = useOffline();
 
   const {
@@ -28,18 +28,16 @@ export const OfflineHooksDemo: React.FC = () => {
     error: syncError,
     syncQueue,
     getSyncStatus,
-    isSyncNeeded
+    isSyncNeeded,
   } = useOfflineSync();
 
-  const {
-    settings,
-    getSettings,
-    updateSettings
-  } = useOfflineSettings();
+  const { settings, getSettings, updateSettings } = useOfflineSettings();
 
-  const [demoOperation, setDemoOperation] = useState<string>('');
-  const [demoData, setDemoData] = useState<string>('');
-  const [operationType, setOperationType] = useState<'create' | 'update' | 'delete' | 'sync'>('create');
+  const [demoOperation, setDemoOperation] = useState<string>("");
+  const [demoData, setDemoData] = useState<string>("");
+  const [operationType, setOperationType] = useState<
+    "create" | "update" | "delete" | "sync"
+  >("create");
 
   // Demo: Simulate network changes
   const toggleNetwork = () => {
@@ -51,21 +49,21 @@ export const OfflineHooksDemo: React.FC = () => {
     if (!demoOperation.trim()) return;
 
     try {
-      const result = await enqueueOperation(
-        demoOperation,
-        operationType,
-        { data: demoData }
-      );
+      const result = await enqueueOperation(demoOperation, operationType, {
+        data: demoData,
+      });
 
       if (result.success) {
         alert(`Operation "${demoOperation}" added to queue!`);
-        setDemoOperation('');
-        setDemoData('');
+        setDemoOperation("");
+        setDemoData("");
       } else {
         alert(`Failed to add operation: ${result.error?.message}`);
       }
     } catch (error) {
-      alert(`Error adding operation: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(
+        `Error adding operation: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 
@@ -74,12 +72,16 @@ export const OfflineHooksDemo: React.FC = () => {
     try {
       const result = await processOfflineQueue();
       if (result.success) {
-        alert(`Queue processed successfully! Processed ${result.processedItems?.length || 0} items.`);
+        alert(
+          `Queue processed successfully! Processed ${result.processedItems?.length || 0} items.`,
+        );
       } else {
         alert(`Failed to process queue: ${result.error?.message}`);
       }
     } catch (error) {
-      alert(`Error processing queue: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(
+        `Error processing queue: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 
@@ -93,7 +95,9 @@ export const OfflineHooksDemo: React.FC = () => {
         alert(`Failed to retry items: ${result.error?.message}`);
       }
     } catch (error) {
-      alert(`Error retrying items: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(
+        `Error retrying items: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 
@@ -101,9 +105,11 @@ export const OfflineHooksDemo: React.FC = () => {
   const handleSyncQueue = async () => {
     try {
       await syncQueue();
-      alert('Sync initiated!');
+      alert("Sync initiated!");
     } catch (error) {
-      alert(`Sync error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(
+        `Sync error: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 
@@ -112,16 +118,18 @@ export const OfflineHooksDemo: React.FC = () => {
     try {
       const result = await updateSettings({
         autoSyncEnabled: !settings.autoSyncEnabled,
-        syncInterval: settings.syncInterval + 5000
+        syncInterval: settings.syncInterval + 5000,
       });
 
       if (result.success) {
-        alert('Settings updated successfully!');
+        alert("Settings updated successfully!");
       } else {
         alert(`Failed to update settings: ${result.error?.message}`);
       }
     } catch (error) {
-      alert(`Error updating settings: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(
+        `Error updating settings: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 
@@ -132,11 +140,13 @@ export const OfflineHooksDemo: React.FC = () => {
       <div className="offline-demo-section">
         <h3>Network Status</h3>
         <div className="offline-status-display">
-          <span className={`offline-status-badge ${isOffline ? 'offline' : 'online'}`}>
-            {isOffline ? 'OFFLINE' : 'ONLINE'}
+          <span
+            className={`offline-status-badge ${isOffline ? "offline" : "online"}`}
+          >
+            {isOffline ? "OFFLINE" : "ONLINE"}
           </span>
           <button onClick={toggleNetwork} className="offline-toggle-button">
-            Toggle Network ({isOffline ? 'Go Online' : 'Go Offline'})
+            Toggle Network ({isOffline ? "Go Online" : "Go Offline"})
           </button>
         </div>
       </div>
@@ -147,7 +157,10 @@ export const OfflineHooksDemo: React.FC = () => {
           <p>Status: {status}</p>
           <p>Pending Changes: {pendingChanges}</p>
           <p>Queue Length: {queue.length}</p>
-          <p>Last Sync: {lastSynced ? new Date(lastSynced).toLocaleString() : 'Never'}</p>
+          <p>
+            Last Sync:{" "}
+            {lastSynced ? new Date(lastSynced).toLocaleString() : "Never"}
+          </p>
           <p>Sync Status: {syncStatus}</p>
           <p>Sync Progress: {progress}%</p>
         </div>
@@ -182,7 +195,11 @@ export const OfflineHooksDemo: React.FC = () => {
             <label>Operation Type:</label>
             <select
               value={operationType}
-              onChange={(e) => setOperationType(e.target.value as 'create' | 'update' | 'delete' | 'sync')}
+              onChange={(e) =>
+                setOperationType(
+                  e.target.value as "create" | "update" | "delete" | "sync",
+                )
+              }
             >
               <option value="create">Create</option>
               <option value="update">Update</option>
@@ -203,7 +220,7 @@ export const OfflineHooksDemo: React.FC = () => {
 
           <button
             onClick={handleAddOperation}
-            disabled={!isOffline && operationType !== 'sync'}
+            disabled={!isOffline && operationType !== "sync"}
             className="offline-add-operation-button"
           >
             Add Operation
@@ -224,7 +241,9 @@ export const OfflineHooksDemo: React.FC = () => {
 
           <button
             onClick={handleRetryFailed}
-            disabled={queue.filter(item => item.status === 'failed').length === 0}
+            disabled={
+              queue.filter((item) => item.status === "failed").length === 0
+            }
             className="offline-retry-button"
           >
             Retry Failed Items
@@ -243,12 +262,15 @@ export const OfflineHooksDemo: React.FC = () => {
       <div className="offline-demo-section">
         <h3>Settings Management</h3>
         <div className="offline-settings-info">
-          <p>Auto Sync: {settings.autoSyncEnabled ? 'Enabled' : 'Disabled'}</p>
+          <p>Auto Sync: {settings.autoSyncEnabled ? "Enabled" : "Disabled"}</p>
           <p>Sync Interval: {settings.syncInterval / 1000}s</p>
           <p>Max Queue Size: {settings.maxQueueSize}</p>
           <p>Conflict Resolution: {settings.conflictResolution}</p>
 
-          <button onClick={handleUpdateSettings} className="offline-update-settings-button">
+          <button
+            onClick={handleUpdateSettings}
+            className="offline-update-settings-button"
+          >
             Update Settings
           </button>
         </div>
@@ -263,9 +285,13 @@ export const OfflineHooksDemo: React.FC = () => {
             {queue.map((item) => (
               <div key={item.id} className="offline-queue-item">
                 <div className="offline-item-info">
-                  <span className="offline-item-operation">{item.operation}</span>
+                  <span className="offline-item-operation">
+                    {item.operation}
+                  </span>
                   <span className="offline-item-type">{item.type}</span>
-                  <span className={`offline-item-status ${item.status}`}>{item.status}</span>
+                  <span className={`offline-item-status ${item.status}`}>
+                    {item.status}
+                  </span>
                 </div>
                 <div className="offline-item-data">
                   <pre>{JSON.stringify(item.data, null, 2)}</pre>

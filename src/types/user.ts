@@ -3,9 +3,9 @@
  * Contains comprehensive user management interfaces and types
  */
 
-import { PriorityLevel, ViewType } from './enums';
-import { ProjectListItem, TaskListItem } from './project';
-import { DateTimeRange } from './common';
+import { PriorityLevel, ViewType } from "./enums";
+import { ProjectListItem, TaskListItem } from "./project";
+import { DateTimeRange } from "./common";
 
 /**
  * Base user interface
@@ -99,17 +99,17 @@ export interface User extends BaseUser {
   /**
    * User status
    */
-  status?: 'active' | 'inactive' | 'suspended' | 'deleted';
+  status?: "active" | "inactive" | "suspended" | "deleted";
 
   /**
    * User role
    */
-  role?: 'user' | 'admin' | 'superadmin';
+  role?: "user" | "admin" | "superadmin";
 
   /**
    * Authentication provider
    */
-  authProvider?: 'email' | 'google' | 'github' | 'apple' | 'microsoft';
+  authProvider?: "email" | "google" | "github" | "apple" | "microsoft";
 
   /**
    * Email verification status
@@ -139,7 +139,7 @@ export interface UserSettings {
   /**
    * Theme preference
    */
-  theme: 'light' | 'dark' | 'system';
+  theme: "light" | "dark" | "system";
 
   /**
    * Language preference
@@ -153,15 +153,15 @@ export interface UserSettings {
     emailEnabled: boolean;
     pushEnabled: boolean;
     desktopEnabled: boolean;
-    emailFrequency: 'daily' | 'weekly' | 'monthly' | 'never';
+    emailFrequency: "daily" | "weekly" | "monthly" | "never";
   };
 
   /**
    * Privacy settings
    */
   privacy: {
-    profileVisibility: 'public' | 'contacts' | 'private';
-    activityVisibility: 'public' | 'contacts' | 'private';
+    profileVisibility: "public" | "contacts" | "private";
+    activityVisibility: "public" | "contacts" | "private";
     searchVisibility: boolean;
   };
 
@@ -193,16 +193,16 @@ export interface UserPreferences {
    * Task sorting preference
    */
   taskSorting: {
-    field: 'dueDate' | 'priority' | 'createdAt' | 'updatedAt';
-    direction: 'asc' | 'desc';
+    field: "dueDate" | "priority" | "createdAt" | "updatedAt";
+    direction: "asc" | "desc";
   };
 
   /**
    * Project sorting preference
    */
   projectSorting: {
-    field: 'name' | 'createdAt' | 'updatedAt' | 'taskCount';
-    direction: 'asc' | 'desc';
+    field: "name" | "createdAt" | "updatedAt" | "taskCount";
+    direction: "asc" | "desc";
   };
 
   /**
@@ -211,7 +211,7 @@ export interface UserPreferences {
   dateTime: {
     dateFormat: string;
     timeFormat: string;
-    weekStartsOn: 'sunday' | 'monday';
+    weekStartsOn: "sunday" | "monday";
     timeZone: string;
   };
 
@@ -219,8 +219,8 @@ export interface UserPreferences {
    * UI preferences
    */
   ui: {
-    density: 'comfortable' | 'compact' | 'cozy';
-    animation: 'full' | 'reduced' | 'none';
+    density: "comfortable" | "compact" | "cozy";
+    animation: "full" | "reduced" | "none";
     sidebarWidth: number;
     showCompletedTasks: boolean;
     showArchivedProjects: boolean;
@@ -394,7 +394,7 @@ export interface UserProfile {
   /**
    * Profile visibility
    */
-  visibility: 'public' | 'contacts' | 'private';
+  visibility: "public" | "contacts" | "private";
 
   /**
    * Profile bio
@@ -459,7 +459,7 @@ export interface UserAuth {
   /**
    * Authentication provider
    */
-  provider: 'email' | 'google' | 'github' | 'apple' | 'microsoft';
+  provider: "email" | "google" | "github" | "apple" | "microsoft";
 
   /**
    * Authentication scopes
@@ -472,7 +472,7 @@ export interface UserAuth {
   device?: {
     id: string;
     name: string;
-    type: 'desktop' | 'mobile' | 'tablet';
+    type: "desktop" | "mobile" | "tablet";
     os: string;
     browser: string;
   };
@@ -518,7 +518,7 @@ export interface UserSession {
   device?: {
     id: string;
     name: string;
-    type: 'desktop' | 'mobile' | 'tablet';
+    type: "desktop" | "mobile" | "tablet";
   };
 
   /**
@@ -533,7 +533,7 @@ export interface UserSession {
   /**
    * Session status
    */
-  status: 'active' | 'expired' | 'revoked';
+  status: "active" | "expired" | "revoked";
 }
 
 /**
@@ -553,7 +553,14 @@ export interface UserActivityEvent {
   /**
    * Event type
    */
-  type: 'login' | 'logout' | 'task_created' | 'task_completed' | 'project_created' | 'comment_added' | 'profile_updated';
+  type:
+    | "login"
+    | "logout"
+    | "task_created"
+    | "task_completed"
+    | "project_created"
+    | "comment_added"
+    | "profile_updated";
 
   /**
    * Event timestamp
@@ -582,12 +589,17 @@ export interface UserFilterCriteria {
   /**
    * Filter by status
    */
-  status?: 'active' | 'inactive' | 'suspended' | 'deleted' | ('active' | 'inactive' | 'suspended' | 'deleted')[];
+  status?:
+    | "active"
+    | "inactive"
+    | "suspended"
+    | "deleted"
+    | ("active" | "inactive" | "suspended" | "deleted")[];
 
   /**
    * Filter by role
    */
-  role?: 'user' | 'admin' | 'superadmin' | ('user' | 'admin' | 'superadmin')[];
+  role?: "user" | "admin" | "superadmin" | ("user" | "admin" | "superadmin")[];
 
   /**
    * Filter by email verification status
@@ -622,12 +634,19 @@ export interface UserSortOptions {
   /**
    * Field to sort by
    */
-  field: 'name' | 'email' | 'createdAt' | 'updatedAt' | 'lastLogin' | 'taskCount' | 'projectCount';
+  field:
+    | "name"
+    | "email"
+    | "createdAt"
+    | "updatedAt"
+    | "lastLogin"
+    | "taskCount"
+    | "projectCount";
 
   /**
    * Sort direction
    */
-  direction: 'asc' | 'desc';
+  direction: "asc" | "desc";
 }
 
 /**
@@ -749,7 +768,7 @@ export interface UserPasswordReset {
   /**
    * Reset status
    */
-  status: 'pending' | 'completed' | 'expired';
+  status: "pending" | "completed" | "expired";
 }
 
 /**
@@ -779,5 +798,5 @@ export interface UserEmailVerification {
   /**
    * Verification status
    */
-  status: 'pending' | 'completed' | 'expired';
+  status: "pending" | "completed" | "expired";
 }

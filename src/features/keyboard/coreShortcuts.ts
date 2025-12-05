@@ -1,8 +1,8 @@
-import { KeyboardShortcut } from '../../types/keyboard';
-import { useTasks } from '../../hooks/useTasks';
-import { useSearchStore } from '../../store/useSearchStore';
-import { useCommandPalette } from '../../hooks/useCommandPalette';
-import { useNavigate } from 'react-router-dom';
+import { KeyboardShortcut } from "../../types/keyboard";
+import { useTasks } from "../../hooks/useTasks";
+import { useSearchStore } from "../../store/useSearchStore";
+import { useCommandPalette } from "../../hooks/useCommandPalette";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Core keyboard shortcuts for Todone application
@@ -16,139 +16,139 @@ export const setupCoreKeyboardShortcuts = () => {
   const coreShortcuts: KeyboardShortcut[] = [
     // Navigation shortcuts
     {
-      key: 'k',
-      modifiers: ['ctrl'],
-      description: 'Open command palette',
-      category: 'Navigation',
+      key: "k",
+      modifiers: ["ctrl"],
+      description: "Open command palette",
+      category: "Navigation",
       action: (event) => {
         event.preventDefault();
         openCommandPalette();
-      }
+      },
     },
     {
-      key: 'f',
-      modifiers: ['ctrl'],
-      description: 'Open search',
-      category: 'Navigation',
+      key: "f",
+      modifiers: ["ctrl"],
+      description: "Open search",
+      category: "Navigation",
       action: (event) => {
         event.preventDefault();
         openSearchModal();
-      }
+      },
     },
     {
-      key: 'Escape',
+      key: "Escape",
       modifiers: [],
-      description: 'Close modal/dialog',
-      category: 'Navigation',
+      description: "Close modal/dialog",
+      category: "Navigation",
       action: (event) => {
         event.preventDefault();
         closeSearchModal();
-      }
+      },
     },
     {
-      key: 'p',
-      modifiers: ['ctrl'],
-      description: 'Go to projects',
-      category: 'Navigation',
+      key: "p",
+      modifiers: ["ctrl"],
+      description: "Go to projects",
+      category: "Navigation",
       action: (event) => {
         event.preventDefault();
-        navigate('/projects');
-      }
+        navigate("/projects");
+      },
     },
 
     // Task management shortcuts
     {
-      key: 'n',
-      modifiers: ['ctrl'],
-      description: 'Create new task',
-      category: 'Task Management',
+      key: "n",
+      modifiers: ["ctrl"],
+      description: "Create new task",
+      category: "Task Management",
       action: (event) => {
         event.preventDefault();
         createTask({
-          title: 'New Task',
-          description: '',
-          status: 'todo',
-          priority: 'medium'
+          title: "New Task",
+          description: "",
+          status: "todo",
+          priority: "medium",
         });
-      }
+      },
     },
     {
-      key: 't',
-      modifiers: ['ctrl'],
-      description: 'Toggle task completion',
-      category: 'Task Management',
+      key: "t",
+      modifiers: ["ctrl"],
+      description: "Toggle task completion",
+      category: "Task Management",
       action: (event) => {
         event.preventDefault();
         // This would need to be enhanced to work with the currently selected task
-        console.log('Toggle task completion');
-      }
+        console.log("Toggle task completion");
+      },
     },
     {
-      key: 'd',
-      modifiers: ['ctrl'],
-      description: 'Delete selected task',
-      category: 'Task Management',
+      key: "d",
+      modifiers: ["ctrl"],
+      description: "Delete selected task",
+      category: "Task Management",
       action: (event) => {
         event.preventDefault();
         // This would need to be enhanced to work with the currently selected task
-        console.log('Delete task');
-      }
+        console.log("Delete task");
+      },
     },
 
     // View switching shortcuts
     {
-      key: '1',
-      modifiers: ['ctrl'],
-      description: 'Switch to Inbox view',
-      category: 'View Switching',
+      key: "1",
+      modifiers: ["ctrl"],
+      description: "Switch to Inbox view",
+      category: "View Switching",
       action: (event) => {
         event.preventDefault();
-        navigate('/inbox');
-      }
+        navigate("/inbox");
+      },
     },
     {
-      key: '2',
-      modifiers: ['ctrl'],
-      description: 'Switch to Today view',
-      category: 'View Switching',
+      key: "2",
+      modifiers: ["ctrl"],
+      description: "Switch to Today view",
+      category: "View Switching",
       action: (event) => {
         event.preventDefault();
-        navigate('/today');
-      }
+        navigate("/today");
+      },
     },
     {
-      key: '3',
-      modifiers: ['ctrl'],
-      description: 'Switch to Upcoming view',
-      category: 'View Switching',
+      key: "3",
+      modifiers: ["ctrl"],
+      description: "Switch to Upcoming view",
+      category: "View Switching",
       action: (event) => {
         event.preventDefault();
-        navigate('/upcoming');
-      }
+        navigate("/upcoming");
+      },
     },
 
     // Global shortcuts
     {
-      key: '?',
-      modifiers: ['ctrl'],
-      description: 'Show keyboard shortcuts help',
-      category: 'Global',
+      key: "?",
+      modifiers: ["ctrl"],
+      description: "Show keyboard shortcuts help",
+      category: "Global",
       action: (event) => {
         event.preventDefault();
         // This would trigger the help modal
-        console.log('Show keyboard shortcuts help');
-      }
+        console.log("Show keyboard shortcuts help");
+      },
     },
     {
-      key: 's',
-      modifiers: ['ctrl'],
-      description: 'Save changes',
-      category: 'Global',
+      key: "s",
+      modifiers: ["ctrl"],
+      description: "Save changes",
+      category: "Global",
       action: (event) => {
         event.preventDefault();
-        console.log('Save changes');
-      }
-    }
+        console.log("Save changes");
+      },
+    },
   ];
 
   return coreShortcuts;

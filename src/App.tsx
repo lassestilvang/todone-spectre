@@ -4,7 +4,7 @@ import { AuthProvider } from "../features/auth/AuthProvider";
 import { KeyboardProvider } from "../features/keyboard/KeyboardProvider";
 import { KeyboardShortcuts } from "../features/keyboard/KeyboardShortcuts";
 import { KeyboardHelp } from "../features/keyboard/KeyboardHelp";
-import { Router as AppRouter } from "../router";
+import { default as AppRouter } from "../router";
 
 function App() {
   return (

@@ -1,28 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { useAIStore } from '../../store/useAIStore';
-import { useTaskStore } from '../../store/useTaskStore';
-import { AIAssistant } from './AIAssistant';
-import { AITaskSuggestions } from './AITaskSuggestions';
-import { AITaskBreakdown } from './AITaskBreakdown';
-import { AITaskActionable } from './AITaskActionable';
-import { Task } from '../../types/taskTypes';
+import React, { useState, useEffect } from "react";
+import { useAIStore } from "../../store/useAIStore";
+import { useTaskStore } from "../../store/useTaskStore";
+import { AIAssistant } from "./AIAssistant";
+import { AITaskSuggestions } from "./AITaskSuggestions";
+import { AITaskBreakdown } from "./AITaskBreakdown";
+import { AITaskActionable } from "./AITaskActionable";
 
 interface AIIntegrationProps {
   taskId: string;
-  mode?: 'full' | 'suggestions' | 'breakdown' | 'actionable';
+  mode?: "full" | "suggestions" | "breakdown" | "actionable";
   onAIAssistanceToggle?: (enabled: boolean) => void;
 }
 
 export const AIIntegration: React.FC<AIIntegrationProps> = ({
   taskId,
-  mode = 'full',
-  onAIAssistanceToggle
+  mode = "full",
+  onAIAssistanceToggle,
 }) => {
-  const { aiAssistantEnabled, enableAIAssistant, disableAIAssistant } = useAIStore();
+  const { aiAssistantEnabled, enableAIAssistant, disableAIAssistant } =
+    useAIStore();
   const { tasks } = useTaskStore();
   const [showAIAssistant, setShowAIAssistant] = useState(false);
 
-  const task = tasks.find(t => t.id === taskId);
+  const task = tasks.find((t) => t.id === taskId);
 
   useEffect(() => {
     if (onAIAssistanceToggle) {
@@ -46,7 +46,7 @@ export const AIIntegration: React.FC<AIIntegrationProps> = ({
     setShowAIAssistant(!showAIAssistant);
   };
 
-  if (mode === 'suggestions') {
+  if (mode === "suggestions") {
     return (
       <div className="ai-integration-suggestions">
         <AITaskSuggestions taskId={taskId} />
@@ -54,7 +54,7 @@ export const AIIntegration: React.FC<AIIntegrationProps> = ({
     );
   }
 
-  if (mode === 'breakdown') {
+  if (mode === "breakdown") {
     return (
       <div className="ai-integration-breakdown">
         <AITaskBreakdown
@@ -66,7 +66,7 @@ export const AIIntegration: React.FC<AIIntegrationProps> = ({
     );
   }
 
-  if (mode === 'actionable') {
+  if (mode === "actionable") {
     return (
       <div className="ai-integration-actionable">
         <AITaskActionable
@@ -84,17 +84,11 @@ export const AIIntegration: React.FC<AIIntegrationProps> = ({
       <div className="ai-integration-header">
         <h3>AI Task Assistance</h3>
         <div className="ai-controls">
-          <button
-            className="ai-toggle-button"
-            onClick={toggleAIAssistant}
-          >
-            {aiAssistantEnabled ? 'Disable AI' : 'Enable AI'}
+          <button className="ai-toggle-button" onClick={toggleAIAssistant}>
+            {aiAssistantEnabled ? "Disable AI" : "Enable AI"}
           </button>
-          <button
-            className="ai-show-button"
-            onClick={toggleShowAIAssistant}
-          >
-            {showAIAssistant ? 'Hide AI Assistant' : 'Show AI Assistant'}
+          <button className="ai-show-button" onClick={toggleShowAIAssistant}>
+            {showAIAssistant ? "Hide AI Assistant" : "Show AI Assistant"}
           </button>
         </div>
       </div>
@@ -129,7 +123,8 @@ export const AIIntegration: React.FC<AIIntegrationProps> = ({
 
       {!aiAssistantEnabled && (
         <div className="ai-disabled-message">
-          AI assistance is currently disabled. Enable it to get intelligent task suggestions and breakdowns.
+          AI assistance is currently disabled. Enable it to get intelligent task
+          suggestions and breakdowns.
         </div>
       )}
     </div>

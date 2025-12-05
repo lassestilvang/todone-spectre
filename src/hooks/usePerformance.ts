@@ -1,13 +1,21 @@
-import { useState, useEffect } from 'react';
-import { performanceService } from '../services/performanceService';
-import { performanceConfigService } from '../services/performanceConfigService';
-import { PerformanceMetrics, PerformanceStatus, PerformanceConfig } from '../types/performance';
+import { useState, useEffect } from "react";
+import { performanceService } from "../services/performanceService";
+import { performanceConfigService } from "../services/performanceConfigService";
+import {
+  PerformanceMetrics,
+  PerformanceStatus,
+  PerformanceConfig,
+} from "../types/performance";
 
 export const usePerformance = () => {
-  const [performanceMetrics, setPerformanceMetrics] = useState<PerformanceMetrics | null>(null);
-  const [performanceStatus, setPerformanceStatus] = useState<PerformanceStatus>('inactive');
+  const [performanceMetrics, setPerformanceMetrics] =
+    useState<PerformanceMetrics | null>(null);
+  const [performanceStatus, setPerformanceStatus] =
+    useState<PerformanceStatus>("inactive");
   const [isMonitoring, setIsMonitoring] = useState(false);
-  const [performanceConfig, setPerformanceConfig] = useState(performanceConfigService.getConfig());
+  const [performanceConfig, setPerformanceConfig] = useState(
+    performanceConfigService.getConfig(),
+  );
 
   useEffect(() => {
     const updateMetrics = () => {
@@ -53,6 +61,6 @@ export const usePerformance = () => {
     startMonitoring,
     stopMonitoring,
     updatePerformanceConfig,
-    resetToDefaults
+    resetToDefaults,
   };
 };

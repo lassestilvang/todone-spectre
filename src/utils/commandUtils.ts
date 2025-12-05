@@ -1,4 +1,4 @@
-import { Command } from '../types/command';
+import { Command } from "../types/command";
 
 export const createCommand = (
   id: string,
@@ -7,50 +7,52 @@ export const createCommand = (
   options?: {
     description?: string;
     shortcut?: string;
-  }
+  },
 ): Command => {
   return {
     id,
     name,
     description: options?.description,
     shortcut: options?.shortcut,
-    action
+    action,
   };
 };
 
 export const validateCommand = (command: Command): boolean => {
-  if (!command.id || typeof command.id !== 'string') {
+  if (!command.id || typeof command.id !== "string") {
     return false;
   }
 
-  if (!command.name || typeof command.name !== 'string') {
+  if (!command.name || typeof command.name !== "string") {
     return false;
   }
 
-  if (!command.action || typeof command.action !== 'function') {
+  if (!command.action || typeof command.action !== "function") {
     return false;
   }
 
   return true;
 };
 
-export const parseCommandShortcut = (shortcut?: string): { key: string; modifiers: string[] } | null => {
+export const parseCommandShortcut = (
+  shortcut?: string,
+): { key: string; modifiers: string[] } | null => {
   if (!shortcut) return null;
 
-  const parts = shortcut.split('+');
+  const parts = shortcut.split("+");
   if (parts.length === 1) {
     return {
       key: parts[0].trim(),
-      modifiers: []
+      modifiers: [],
     };
   }
 
-  const modifiers = parts.slice(0, -1).map(m => m.trim());
+  const modifiers = parts.slice(0, -1).map((m) => m.trim());
   const key = parts[parts.length - 1].trim();
 
   return {
     key,
-    modifiers
+    modifiers,
   };
 };
 
@@ -68,16 +70,22 @@ export const formatCommandForDisplay = (command: Command): string => {
   return display;
 };
 
-export const getCommandSuggestions = (commands: Command[], query: string, limit = 5): Command[] => {
-  if (!query || query.trim() === '') {
+export const getCommandSuggestions = (
+  commands: Command[],
+  query: string,
+  limit = 5,
+): Command[] => {
+  if (!query || query.trim() === "") {
     return commands.slice(0, limit);
   }
 
   const searchTerm = query.toLowerCase();
   return commands
-    .filter(command =>
-      command.name.toLowerCase().includes(searchTerm) ||
-      (command.description && command.description.toLowerCase().includes(searchTerm))
+    .filter(
+      (command) =>
+        command.name.toLowerCase().includes(searchTerm) ||
+        (command.description &&
+          command.description.toLowerCase().includes(searchTerm)),
     )
     .slice(0, limit);
 };

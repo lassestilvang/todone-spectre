@@ -1,11 +1,11 @@
 /**
  * Custom hook for offline data persistence integration
  */
-import { useState, useEffect, useCallback } from 'react';
-import { offlineDataPersistence } from '../services/offlineDataPersistence';
-import { useOfflineStore } from '../store/useOfflineStore';
-import { Task } from '../types/task';
-import { OfflineQueueItem } from '../types/offlineTypes';
+import { useState, useEffect, useCallback } from "react";
+import { offlineDataPersistence } from "../services/offlineDataPersistence";
+import { useOfflineStore } from "../store/useOfflineStore";
+import { Task } from "../types/task";
+import { OfflineQueueItem } from "../types/offlineTypes";
 
 export const useOfflineDataPersistence = () => {
   const [isInitialized, setIsInitialized] = useState<boolean>(false);
@@ -19,7 +19,7 @@ export const useOfflineDataPersistence = () => {
   }>({
     taskCount: 0,
     queueSize: 0,
-    storageUsage: 0
+    storageUsage: 0,
   });
 
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +37,11 @@ export const useOfflineDataPersistence = () => {
       // Load initial stats
       await loadStorageStats();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to initialize offline data persistence');
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to initialize offline data persistence",
+      );
       throw err;
     }
   }, []);
@@ -55,23 +59,30 @@ export const useOfflineDataPersistence = () => {
       setPendingOperations(syncStatus.pendingOperations);
       setLastSynced(syncStatus.lastSynced);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load storage stats');
+      setError(
+        err instanceof Error ? err.message : "Failed to load storage stats",
+      );
     }
   }, []);
 
   /**
    * Store tasks in offline storage
    */
-  const storeTasksOffline = useCallback(async (tasks: Task[]): Promise<void> => {
-    try {
-      setError(null);
-      await offlineDataPersistence.storeOfflineTasks(tasks);
-      await loadStorageStats();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to store tasks offline');
-      throw err;
-    }
-  }, [loadStorageStats]);
+  const storeTasksOffline = useCallback(
+    async (tasks: Task[]): Promise<void> => {
+      try {
+        setError(null);
+        await offlineDataPersistence.storeOfflineTasks(tasks);
+        await loadStorageStats();
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to store tasks offline",
+        );
+        throw err;
+      }
+    },
+    [loadStorageStats],
+  );
 
   /**
    * Get tasks from offline storage
@@ -81,7 +92,11 @@ export const useOfflineDataPersistence = () => {
       setError(null);
       return await offlineDataPersistence.getOfflineTasks();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to get tasks from offline storage');
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to get tasks from offline storage",
+      );
       throw err;
     }
   }, []);
@@ -89,16 +104,30 @@ export const useOfflineDataPersistence = () => {
   /**
    * Store offline operation
    */
-  const storeOfflineOperation = useCallback(async (operation: Omit<OfflineQueueItem, 'id' | 'timestamp' | 'status' | 'attempts'>): Promise<void> => {
-    try {
-      setError(null);
-      await offlineDataPersistence.storeOfflineOperation(operation as OfflineQueueItem);
-      await loadStorageStats();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to store offline operation');
-      throw err;
-    }
-  }, [loadStorageStats]);
+  const storeOfflineOperation = useCallback(
+    async (
+      operation: Omit<
+        OfflineQueueItem,
+        "id" | "timestamp" | "status" | "attempts"
+      >,
+    ): Promise<void> => {
+      try {
+        setError(null);
+        await offlineDataPersistence.storeOfflineOperation(
+          operation as OfflineQueueItem,
+        );
+        await loadStorageStats();
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to store offline operation",
+        );
+        throw err;
+      }
+    },
+    [loadStorageStats],
+  );
 
   /**
    * Process offline operations
@@ -110,7 +139,11 @@ export const useOfflineDataPersistence = () => {
       await offlineDataPersistence.processOfflineOperations();
       await loadStorageStats();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to process offline operations');
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Failed to process offline operations",
+      );
       throw err;
     } finally {
       setIsSyncing(false);
@@ -133,7 +166,9 @@ export const useOfflineDataPersistence = () => {
 
       await loadStorageStats();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to sync offline data');
+      setError(
+        err instanceof Error ? err.message : "Failed to sync offline data",
+      );
       throw err;
     } finally {
       setIsSyncing(false);
@@ -156,7 +191,9 @@ export const useOfflineDataPersistence = () => {
       await offlineDataPersistence.clearOfflineData();
       await loadStorageStats();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to clear offline data');
+      setError(
+        err instanceof Error ? err.message : "Failed to clear offline data",
+      );
       throw err;
     }
   }, [loadStorageStats]);
@@ -168,7 +205,9 @@ export const useOfflineDataPersistence = () => {
     try {
       offlineDataPersistence.setupAutoSync();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to setup auto-sync');
+      setError(
+        err instanceof Error ? err.message : "Failed to setup auto-sync",
+      );
     }
   }, []);
 
@@ -230,6 +269,6 @@ export const useOfflineDataPersistence = () => {
     setupAutoSync,
 
     // Utility
-    loadStorageStats
+    loadStorageStats,
   };
 };

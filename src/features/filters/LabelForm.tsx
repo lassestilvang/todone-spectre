@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Label } from '../../types/models';
+import React, { useState, useEffect } from "react";
+import { Label } from "../../types/models";
 
 interface LabelFormProps {
   label?: Label;
@@ -8,13 +8,13 @@ interface LabelFormProps {
 }
 
 const LabelForm: React.FC<LabelFormProps> = ({ label, onSubmit, onCancel }) => {
-  const [name, setName] = useState(label?.name || '');
-  const [color, setColor] = useState(label?.color || '#10B981');
+  const [name, setName] = useState(label?.name || "");
+  const [color, setColor] = useState(label?.color || "#10B981");
 
   useEffect(() => {
     if (label) {
       setName(label.name);
-      setColor(label.color || '#10B981');
+      setColor(label.color || "#10B981");
     }
   }, [label]);
 
@@ -25,7 +25,7 @@ const LabelForm: React.FC<LabelFormProps> = ({ label, onSubmit, onCancel }) => {
       name,
       color,
       createdAt: label?.createdAt || new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      updatedAt: new Date().toISOString(),
     };
     onSubmit(newLabel);
   };
@@ -33,7 +33,9 @@ const LabelForm: React.FC<LabelFormProps> = ({ label, onSubmit, onCancel }) => {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Name
+        </label>
         <input
           type="text"
           value={name}
@@ -44,7 +46,9 @@ const LabelForm: React.FC<LabelFormProps> = ({ label, onSubmit, onCancel }) => {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Color</label>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Color
+        </label>
         <input
           type="color"
           value={color}
@@ -65,7 +69,7 @@ const LabelForm: React.FC<LabelFormProps> = ({ label, onSubmit, onCancel }) => {
           type="submit"
           className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
         >
-          {label ? 'Update Label' : 'Create Label'}
+          {label ? "Update Label" : "Create Label"}
         </button>
       </div>
     </form>

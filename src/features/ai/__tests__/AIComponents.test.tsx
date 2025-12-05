@@ -5,7 +5,6 @@ import { AIAssistant } from "../AIAssistant";
 import { AITaskSuggestions } from "../AITaskSuggestions";
 import { AITaskBreakdown } from "../AITaskBreakdown";
 import { AITaskActionable } from "../AITaskActionable";
-import { AITestUtils } from "./aiTestUtils";
 
 // Mock the hooks
 jest.mock("../../../hooks/useAIAssistant");

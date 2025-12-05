@@ -1,8 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useAccessibilityContext } from './AccessibilityProvider';
-import { useAccessibilityConfig } from '../../hooks/useAccessibilityConfig';
-import { Button, Input, Switch, Select, SelectItem, Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../components/ui';
-import { Settings, Save, Reset, Accessibility as AccessibilityIcon } from '../../components/icons';
+import React, { useState, useEffect } from "react";
+import { useAccessibilityContext } from "./AccessibilityProvider";
+import { useAccessibilityConfig } from "../../hooks/useAccessibilityConfig";
+import {
+  Button,
+  Switch,
+  Select,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "../../components/ui";
+import {
+  Save,
+  Reset,
+  Accessibility as AccessibilityIcon,
+} from "../../components/icons";
 
 interface AccessibilitySettingsProps {
   onSave?: (config: any) => void;
@@ -15,7 +28,7 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
   onSave,
   onCancel,
   isOpen: controlledIsOpen,
-  onOpenChange
+  onOpenChange,
 }) => {
   const {
     isHighContrast,
@@ -27,10 +40,11 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
     toggleHighContrast,
     toggleReduceMotion,
     toggleScreenReader,
-    toggleKeyboardNavigation
+    toggleKeyboardNavigation,
   } = useAccessibilityContext();
 
-  const { accessibilityConfig, updateAccessibilityConfig } = useAccessibilityConfig();
+  const { accessibilityConfig, updateAccessibilityConfig } =
+    useAccessibilityConfig();
   const [isOpen, setIsOpen] = useState(controlledIsOpen || false);
   const [tempSettings, setTempSettings] = useState({
     highContrast: isHighContrast,
@@ -39,7 +53,7 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
     screenReader: screenReaderEnabled,
     keyboardNavigation: keyboardNavigation,
     autoApply: accessibilityConfig?.autoApply || false,
-    persistSettings: accessibilityConfig?.persistSettings || true
+    persistSettings: accessibilityConfig?.persistSettings || true,
   });
 
   useEffect(() => {
@@ -56,9 +70,16 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
       screenReader: screenReaderEnabled,
       keyboardNavigation: keyboardNavigation,
       autoApply: accessibilityConfig?.autoApply || false,
-      persistSettings: accessibilityConfig?.persistSettings || true
+      persistSettings: accessibilityConfig?.persistSettings || true,
     });
-  }, [isHighContrast, fontSize, reduceMotion, screenReaderEnabled, keyboardNavigation, accessibilityConfig]);
+  }, [
+    isHighContrast,
+    fontSize,
+    reduceMotion,
+    screenReaderEnabled,
+    keyboardNavigation,
+    accessibilityConfig,
+  ]);
 
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
@@ -69,19 +90,31 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
 
   const handleSave = () => {
     // Apply settings
-    if (tempSettings.highContrast !== isHighContrast && tempSettings.highContrast) {
+    if (
+      tempSettings.highContrast !== isHighContrast &&
+      tempSettings.highContrast
+    ) {
       toggleHighContrast();
     }
     if (tempSettings.fontSize !== fontSize) {
       setFontSize(tempSettings.fontSize);
     }
-    if (tempSettings.reduceMotion !== reduceMotion && tempSettings.reduceMotion) {
+    if (
+      tempSettings.reduceMotion !== reduceMotion &&
+      tempSettings.reduceMotion
+    ) {
       toggleReduceMotion();
     }
-    if (tempSettings.screenReader !== screenReaderEnabled && tempSettings.screenReader) {
+    if (
+      tempSettings.screenReader !== screenReaderEnabled &&
+      tempSettings.screenReader
+    ) {
       toggleScreenReader();
     }
-    if (tempSettings.keyboardNavigation !== keyboardNavigation && tempSettings.keyboardNavigation) {
+    if (
+      tempSettings.keyboardNavigation !== keyboardNavigation &&
+      tempSettings.keyboardNavigation
+    ) {
       toggleKeyboardNavigation();
     }
 
@@ -95,7 +128,7 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
         defaultFontSize: tempSettings.fontSize,
         defaultReduceMotion: tempSettings.reduceMotion,
         defaultScreenReader: tempSettings.screenReader,
-        defaultKeyboardNavigation: tempSettings.keyboardNavigation
+        defaultKeyboardNavigation: tempSettings.keyboardNavigation,
       });
     }
 
@@ -115,7 +148,7 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
       screenReader: screenReaderEnabled,
       keyboardNavigation: keyboardNavigation,
       autoApply: accessibilityConfig?.autoApply || false,
-      persistSettings: accessibilityConfig?.persistSettings || true
+      persistSettings: accessibilityConfig?.persistSettings || true,
     });
 
     if (onCancel) {
@@ -126,15 +159,18 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
   };
 
   const fontSizeOptions = [
-    { value: 'small', label: 'Small (0.8rem)' },
-    { value: 'medium', label: 'Medium (1rem)' },
-    { value: 'large', label: 'Large (1.2rem)' },
-    { value: 'xlarge', label: 'Extra Large (1.5rem)' }
+    { value: "small", label: "Small (0.8rem)" },
+    { value: "medium", label: "Medium (1rem)" },
+    { value: "large", label: "Large (1.2rem)" },
+    { value: "xlarge", label: "Extra Large (1.5rem)" },
   ];
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="accessibility-settings-dialog" aria-labelledby="accessibility-settings-title">
+      <DialogContent
+        className="accessibility-settings-dialog"
+        aria-labelledby="accessibility-settings-title"
+      >
         <DialogHeader>
           <DialogTitle id="accessibility-settings-title">
             <AccessibilityIcon className="settings-icon" />
@@ -152,7 +188,7 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
                 id="high-contrast-setting"
                 checked={tempSettings.highContrast}
                 onCheckedChange={(checked) =>
-                  setTempSettings({...tempSettings, highContrast: checked})
+                  setTempSettings({ ...tempSettings, highContrast: checked })
                 }
                 aria-label="Enable high contrast mode"
               />
@@ -166,12 +202,17 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
               <Select
                 value={tempSettings.fontSize}
                 onValueChange={(value) =>
-                  setTempSettings({...tempSettings, fontSize: value})
+                  setTempSettings({ ...tempSettings, fontSize: value })
                 }
                 aria-label="Select text size"
               >
-                <button className="select-trigger" aria-label="Text size options">
-                  {fontSizeOptions.find(opt => opt.value === tempSettings.fontSize)?.label || 'Medium'}
+                <button
+                  className="select-trigger"
+                  aria-label="Text size options"
+                >
+                  {fontSizeOptions.find(
+                    (opt) => opt.value === tempSettings.fontSize,
+                  )?.label || "Medium"}
                 </button>
                 {fontSizeOptions.map((option) => (
                   <SelectItem key={option.value} value={option.value}>
@@ -194,7 +235,7 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
                 id="reduce-motion-setting"
                 checked={tempSettings.reduceMotion}
                 onCheckedChange={(checked) =>
-                  setTempSettings({...tempSettings, reduceMotion: checked})
+                  setTempSettings({ ...tempSettings, reduceMotion: checked })
                 }
                 aria-label="Reduce animations and motion"
               />
@@ -208,12 +249,14 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
             <h3>Assistive Technology</h3>
 
             <div className="setting-item">
-              <label htmlFor="screen-reader-setting">Screen Reader Support</label>
+              <label htmlFor="screen-reader-setting">
+                Screen Reader Support
+              </label>
               <Switch
                 id="screen-reader-setting"
                 checked={tempSettings.screenReader}
                 onCheckedChange={(checked) =>
-                  setTempSettings({...tempSettings, screenReader: checked})
+                  setTempSettings({ ...tempSettings, screenReader: checked })
                 }
                 aria-label="Enable screen reader support"
               />
@@ -228,7 +271,10 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
                 id="keyboard-nav-setting"
                 checked={tempSettings.keyboardNavigation}
                 onCheckedChange={(checked) =>
-                  setTempSettings({...tempSettings, keyboardNavigation: checked})
+                  setTempSettings({
+                    ...tempSettings,
+                    keyboardNavigation: checked,
+                  })
                 }
                 aria-label="Enable enhanced keyboard navigation"
               />
@@ -247,7 +293,7 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
                 id="auto-apply-setting"
                 checked={tempSettings.autoApply}
                 onCheckedChange={(checked) =>
-                  setTempSettings({...tempSettings, autoApply: checked})
+                  setTempSettings({ ...tempSettings, autoApply: checked })
                 }
                 aria-label="Automatically apply accessibility settings"
               />
@@ -262,7 +308,7 @@ export const AccessibilitySettings: React.FC<AccessibilitySettingsProps> = ({
                 id="persist-settings-setting"
                 checked={tempSettings.persistSettings}
                 onCheckedChange={(checked) =>
-                  setTempSettings({...tempSettings, persistSettings: checked})
+                  setTempSettings({ ...tempSettings, persistSettings: checked })
                 }
                 aria-label="Persist accessibility settings"
               />

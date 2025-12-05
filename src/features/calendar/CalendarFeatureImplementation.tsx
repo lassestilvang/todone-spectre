@@ -1,39 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { CalendarView } from './CalendarView';
-import { CalendarSync } from './CalendarSync';
-import { CalendarIntegration } from './CalendarIntegration';
-import { CalendarTaskIntegration } from './CalendarTaskIntegration';
-import { CalendarViewControls } from './CalendarViewControls';
-import { CalendarEventDisplay } from './CalendarEventDisplay';
-import { CalendarSyncControls } from './CalendarSyncControls';
-import { CalendarIntegrationSettings } from './CalendarIntegrationSettings';
-import { useCalendar } from '../../../hooks/useCalendar';
-import { useCalendarSync } from '../../../hooks/useCalendarSync';
-import { useTasks } from '../../../hooks/useTasks';
-import { CalendarEventType, CalendarViewState } from '../../../types/calendarTypes';
+import React, { useState, useEffect } from "react";
+import { CalendarView } from "./CalendarView";
+import { CalendarSync } from "./CalendarSync";
+import { CalendarIntegration } from "./CalendarIntegration";
+import { CalendarTaskIntegration } from "./CalendarTaskIntegration";
+import { CalendarViewControls } from "./CalendarViewControls";
+import { CalendarEventDisplay } from "./CalendarEventDisplay";
+import { CalendarSyncControls } from "./CalendarSyncControls";
+import { CalendarIntegrationSettings } from "./CalendarIntegrationSettings";
+import { useCalendar } from "../../../hooks/useCalendar";
+import { useCalendarSync } from "../../../hooks/useCalendarSync";
+import { useTasks } from "../../../hooks/useTasks";
+import {
+  CalendarEventType,
+  CalendarViewState,
+} from "../../../types/calendarTypes";
 
 interface CalendarFeatureImplementationProps {
-  initialView?: 'day' | 'week' | 'month' | 'agenda';
+  initialView?: "day" | "week" | "month" | "agenda";
   showSyncControls?: boolean;
   showIntegrationSettings?: boolean;
   taskId?: string;
 }
 
-export const CalendarFeatureImplementation: React.FC<CalendarFeatureImplementationProps> = ({
-  initialView = 'week',
+export const CalendarFeatureImplementation: React.FC<
+  CalendarFeatureImplementationProps
+> = ({
+  initialView = "week",
   showSyncControls = true,
   showIntegrationSettings = true,
-  taskId
+  taskId,
 }) => {
-  const { events, loading: eventsLoading, error: eventsError, fetchEvents } = useCalendar();
-  const { syncStatus, availableCalendars, syncCalendars, refreshCalendars } = useCalendarSync();
+  const {
+    events,
+    loading: eventsLoading,
+    error: eventsError,
+    fetchEvents,
+  } = useCalendar();
+  const { syncStatus, availableCalendars, syncCalendars, refreshCalendars } =
+    useCalendarSync();
   const { tasks } = useTasks();
 
   const [viewState, setViewState] = useState<CalendarViewState>({
     currentView: initialView,
     currentDate: new Date(),
     selectedDate: undefined,
-    selectedEventId: undefined
+    selectedEventId: undefined,
   });
 
   const [selectedCalendars, setSelectedCalendars] = useState<string[]>([]);
@@ -46,32 +57,32 @@ export const CalendarFeatureImplementation: React.FC<CalendarFeatureImplementati
     refreshCalendars();
   }, [fetchEvents, refreshCalendars]);
 
-  const handleViewChange = (view: CalendarViewState['currentView']) => {
-    setViewState(prev => ({ ...prev, currentView: view }));
+  const handleViewChange = (view: CalendarViewState["currentView"]) => {
+    setViewState((prev) => ({ ...prev, currentView: view }));
   };
 
-  const handleNavigate = (direction: 'prev' | 'next' | 'today') => {
-    setViewState(prev => {
+  const handleNavigate = (direction: "prev" | "next" | "today") => {
+    setViewState((prev) => {
       const currentDate = new Date(prev.currentDate);
 
-      if (direction === 'today') {
+      if (direction === "today") {
         return { ...prev, currentDate: new Date() };
       }
 
-      if (direction === 'prev') {
-        if (prev.currentView === 'day') {
+      if (direction === "prev") {
+        if (prev.currentView === "day") {
           currentDate.setDate(currentDate.getDate() - 1);
-        } else if (prev.currentView === 'week') {
+        } else if (prev.currentView === "week") {
           currentDate.setDate(currentDate.getDate() - 7);
-        } else if (prev.currentView === 'month') {
+        } else if (prev.currentView === "month") {
           currentDate.setMonth(currentDate.getMonth() - 1);
         }
-      } else if (direction === 'next') {
-        if (prev.currentView === 'day') {
+      } else if (direction === "next") {
+        if (prev.currentView === "day") {
           currentDate.setDate(currentDate.getDate() + 1);
-        } else if (prev.currentView === 'week') {
+        } else if (prev.currentView === "week") {
           currentDate.setDate(currentDate.getDate() + 7);
-        } else if (prev.currentView === 'month') {
+        } else if (prev.currentView === "month") {
           currentDate.setMonth(currentDate.getMonth() + 1);
         }
       }
@@ -81,19 +92,19 @@ export const CalendarFeatureImplementation: React.FC<CalendarFeatureImplementati
   };
 
   const handleDateChange = (date: Date) => {
-    setViewState(prev => ({ ...prev, currentDate: date }));
+    setViewState((prev) => ({ ...prev, currentDate: date }));
   };
 
   const handleEventClick = (eventId: string) => {
-    setViewState(prev => ({ ...prev, selectedEventId: eventId }));
+    setViewState((prev) => ({ ...prev, selectedEventId: eventId }));
     setShowEventDetails(true);
   };
 
   const handleCalendarToggle = (calendarId: string) => {
-    setSelectedCalendars(prev =>
+    setSelectedCalendars((prev) =>
       prev.includes(calendarId)
-        ? prev.filter(id => id !== calendarId)
-        : [...prev, calendarId]
+        ? prev.filter((id) => id !== calendarId)
+        : [...prev, calendarId],
     );
   };
 
@@ -103,7 +114,7 @@ export const CalendarFeatureImplementation: React.FC<CalendarFeatureImplementati
   };
 
   const getSelectedEvent = () => {
-    return events.find(event => event.id === viewState.selectedEventId);
+    return events.find((event) => event.id === viewState.selectedEventId);
   };
 
   const selectedEvent = getSelectedEvent();
@@ -144,7 +155,7 @@ export const CalendarFeatureImplementation: React.FC<CalendarFeatureImplementati
               selectedCalendars={selectedCalendars}
               onSync={handleSync}
               onCalendarToggle={handleCalendarToggle}
-              lastSynced={syncStatus === 'completed' ? new Date() : undefined}
+              lastSynced={syncStatus === "completed" ? new Date() : undefined}
             />
           </div>
         )}
@@ -161,8 +172,8 @@ export const CalendarFeatureImplementation: React.FC<CalendarFeatureImplementati
             </button>
             <CalendarEventDisplay
               event={selectedEvent}
-              onEdit={() => console.log('Edit event:', selectedEvent.id)}
-              onDelete={() => console.log('Delete event:', selectedEvent.id)}
+              onEdit={() => console.log("Edit event:", selectedEvent.id)}
+              onDelete={() => console.log("Delete event:", selectedEvent.id)}
               onLinkTask={() => {
                 setShowEventDetails(false);
                 setShowTaskIntegration(true);
@@ -197,7 +208,7 @@ export const CalendarFeatureImplementation: React.FC<CalendarFeatureImplementati
           <CalendarIntegrationSettings
             config={useCalendar().config}
             onConfigChange={useCalendar().updateConfig}
-            onSave={() => console.log('Settings saved')}
+            onSave={() => console.log("Settings saved")}
           />
         </div>
       )}

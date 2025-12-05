@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
-import { LabelState, Label } from '../types/store';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
+import { LabelState, Label } from "../types/store";
 
 export const useLabelStore = create<LabelState>()(
   devtools(
@@ -12,7 +12,9 @@ export const useLabelStore = create<LabelState>()(
         labelError: null,
 
         // CRUD Operations
-        addLabel: (labelData: Omit<Label, 'id' | 'createdAt' | 'updatedAt'>) => {
+        addLabel: (
+          labelData: Omit<Label, "id" | "createdAt" | "updatedAt">,
+        ) => {
           const newLabel: Label = {
             ...labelData,
             id: Math.random().toString(36).substr(2, 9),
@@ -24,7 +26,10 @@ export const useLabelStore = create<LabelState>()(
           }));
         },
 
-        updateLabel: (id: string, updates: Partial<Omit<Label, 'id' | 'createdAt'>>) => {
+        updateLabel: (
+          id: string,
+          updates: Partial<Omit<Label, "id" | "createdAt">>,
+        ) => {
           set((state) => ({
             labels: state.labels.map((label) =>
               label.id === id
@@ -33,7 +38,7 @@ export const useLabelStore = create<LabelState>()(
                     ...updates,
                     updatedAt: new Date(),
                   }
-                : label
+                : label,
             ),
           }));
         },
@@ -41,7 +46,8 @@ export const useLabelStore = create<LabelState>()(
         deleteLabel: (id: string) => {
           set((state) => ({
             labels: state.labels.filter((label) => label.id !== id),
-            currentLabelId: state.currentLabelId === id ? null : state.currentLabelId,
+            currentLabelId:
+              state.currentLabelId === id ? null : state.currentLabelId,
           }));
         },
 
@@ -59,33 +65,33 @@ export const useLabelStore = create<LabelState>()(
         initializeSampleLabels: () => {
           const sampleLabels: Label[] = [
             {
-              id: 'label-1',
-              name: 'Urgent',
-              color: '#EF4444',
+              id: "label-1",
+              name: "Urgent",
+              color: "#EF4444",
               isPersonal: false,
               createdAt: new Date(),
               updatedAt: new Date(),
             },
             {
-              id: 'label-2',
-              name: 'Work',
-              color: '#3B82F6',
+              id: "label-2",
+              name: "Work",
+              color: "#3B82F6",
               isPersonal: false,
               createdAt: new Date(),
               updatedAt: new Date(),
             },
             {
-              id: 'label-3',
-              name: 'Personal',
-              color: '#10B981',
+              id: "label-3",
+              name: "Personal",
+              color: "#10B981",
               isPersonal: true,
               createdAt: new Date(),
               updatedAt: new Date(),
             },
             {
-              id: 'label-4',
-              name: 'Important',
-              color: '#F59E0B',
+              id: "label-4",
+              name: "Important",
+              color: "#F59E0B",
               isPersonal: false,
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -97,7 +103,9 @@ export const useLabelStore = create<LabelState>()(
 
         // Label operations
         getLabelsByCategory: (isPersonal: boolean) => {
-          return get().labels.filter(label => label.isPersonal === isPersonal);
+          return get().labels.filter(
+            (label) => label.isPersonal === isPersonal,
+          );
         },
 
         // Clear all labels
@@ -106,11 +114,11 @@ export const useLabelStore = create<LabelState>()(
         },
       }),
       {
-        name: 'todone-labels-storage',
+        name: "todone-labels-storage",
         storage: createJSONStorage(() => localStorage),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
 
 // Helper function to create localStorage

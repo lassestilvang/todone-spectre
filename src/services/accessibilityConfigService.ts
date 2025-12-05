@@ -1,4 +1,4 @@
-import { accessibilityConfigUtils } from '../utils/accessibilityConfigUtils';
+import { accessibilityConfigUtils } from "../utils/accessibilityConfigUtils";
 
 interface AccessibilityConfig {
   defaultHighContrast: boolean;
@@ -30,7 +30,7 @@ class AccessibilityConfigService {
   private defaultConfig: AccessibilityConfig;
 
   constructor() {
-    this.storageKey = 'todone-accessibility-config';
+    this.storageKey = "todone-accessibility-config";
     this.defaultConfig = this.getDefaultConfig();
     this.config = this.loadConfig();
   }
@@ -38,27 +38,27 @@ class AccessibilityConfigService {
   private getDefaultConfig(): AccessibilityConfig {
     return {
       defaultHighContrast: false,
-      defaultFontSize: 'medium',
+      defaultFontSize: "medium",
       defaultReduceMotion: false,
       defaultScreenReader: false,
       defaultKeyboardNavigation: false,
       autoApply: true,
       persistSettings: true,
       featureDefaults: {
-        'high-contrast': false,
-        'custom-font-size': false,
-        'reduce-motion': false,
-        'screen-reader': false,
-        'keyboard-navigation': false
+        "high-contrast": false,
+        "custom-font-size": false,
+        "reduce-motion": false,
+        "screen-reader": false,
+        "keyboard-navigation": false,
       },
       themePreferences: {
         darkModeCompatible: true,
-        lightModeCompatible: true
+        lightModeCompatible: true,
       },
       notificationPreferences: {
         showAccessibilityTips: true,
-        showFeatureSuggestions: true
-      }
+        showFeatureSuggestions: true,
+      },
     };
   }
 
@@ -69,7 +69,7 @@ class AccessibilityConfigService {
         return { ...this.defaultConfig, ...JSON.parse(savedConfig) };
       }
     } catch (error) {
-      console.error('Failed to load accessibility config:', error);
+      console.error("Failed to load accessibility config:", error);
     }
     return { ...this.defaultConfig };
   }
@@ -78,7 +78,7 @@ class AccessibilityConfigService {
     try {
       localStorage.setItem(this.storageKey, JSON.stringify(config));
     } catch (error) {
-      console.error('Failed to save accessibility config:', error);
+      console.error("Failed to save accessibility config:", error);
     }
   }
 
@@ -86,7 +86,10 @@ class AccessibilityConfigService {
     return { ...this.config };
   }
 
-  updateConfig(newConfig: Partial<AccessibilityConfig>, options: AccessibilityConfigOptions = {}): void {
+  updateConfig(
+    newConfig: Partial<AccessibilityConfig>,
+    options: AccessibilityConfigOptions = {},
+  ): void {
     let updatedConfig: AccessibilityConfig;
 
     if (options.resetToDefaults) {
@@ -113,45 +116,53 @@ class AccessibilityConfigService {
   setFeatureDefault(featureId: string, value: boolean): void {
     const updatedFeatureDefaults = {
       ...this.config.featureDefaults,
-      [featureId]: value
+      [featureId]: value,
     };
 
     this.updateConfig({
-      featureDefaults: updatedFeatureDefaults
+      featureDefaults: updatedFeatureDefaults,
     });
   }
 
-  validateConfig(config: Partial<AccessibilityConfig>): { isValid: boolean; errors: string[] } {
+  validateConfig(config: Partial<AccessibilityConfig>): {
+    isValid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
-    const validFontSizes = ['small', 'medium', 'large', 'xlarge'];
+    const validFontSizes = ["small", "medium", "large", "xlarge"];
 
-    if (config.defaultFontSize && !validFontSizes.includes(config.defaultFontSize)) {
-      errors.push(`Invalid font size: ${config.defaultFontSize}. Must be one of: ${validFontSizes.join(', ')}`);
+    if (
+      config.defaultFontSize &&
+      !validFontSizes.includes(config.defaultFontSize)
+    ) {
+      errors.push(
+        `Invalid font size: ${config.defaultFontSize}. Must be one of: ${validFontSizes.join(", ")}`,
+      );
     }
 
     return {
       isValid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
   applyConfigToDOM(): void {
     // Apply config settings to the DOM
     if (this.config.defaultHighContrast) {
-      document.body.classList.add('high-contrast-mode');
+      document.body.classList.add("high-contrast-mode");
     }
 
     if (this.config.defaultReduceMotion) {
-      document.body.classList.add('reduce-motion');
+      document.body.classList.add("reduce-motion");
     }
 
     if (this.config.defaultScreenReader) {
-      document.body.setAttribute('aria-live', 'polite');
-      document.body.classList.add('screen-reader-enhanced');
+      document.body.setAttribute("aria-live", "polite");
+      document.body.classList.add("screen-reader-enhanced");
     }
 
     if (this.config.defaultKeyboardNavigation) {
-      document.body.classList.add('keyboard-navigation-enhanced');
+      document.body.classList.add("keyboard-navigation-enhanced");
     }
   }
 
@@ -160,9 +171,11 @@ class AccessibilityConfigService {
       .filter(([_, value]) => value)
       .map(([key]) => key);
 
-    return `Accessibility Config: ${enabledFeatures.length} features enabled, ` +
-           `auto-apply: ${this.config.autoApply}, ` +
-           `persist: ${this.config.persistSettings}`;
+    return (
+      `Accessibility Config: ${enabledFeatures.length} features enabled, ` +
+      `auto-apply: ${this.config.autoApply}, ` +
+      `persist: ${this.config.persistSettings}`
+    );
   }
 
   exportConfig(): string {
@@ -177,7 +190,7 @@ class AccessibilityConfigService {
       if (!validation.isValid) {
         return {
           success: false,
-          error: `Config validation failed: ${validation.errors.join(', ')}`
+          error: `Config validation failed: ${validation.errors.join(", ")}`,
         };
       }
 
@@ -186,7 +199,7 @@ class AccessibilityConfigService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error'
+        error: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }
@@ -194,7 +207,7 @@ class AccessibilityConfigService {
   getThemeCompatibility(): { darkMode: boolean; lightMode: boolean } {
     return {
       darkMode: this.config.themePreferences.darkModeCompatible,
-      lightMode: this.config.themePreferences.lightModeCompatible
+      lightMode: this.config.themePreferences.lightModeCompatible,
     };
   }
 
@@ -202,15 +215,15 @@ class AccessibilityConfigService {
     this.updateConfig({
       themePreferences: {
         darkModeCompatible: darkMode,
-        lightModeCompatible: lightMode
-      }
+        lightModeCompatible: lightMode,
+      },
     });
   }
 
   getNotificationPreferences(): { tips: boolean; suggestions: boolean } {
     return {
       tips: this.config.notificationPreferences.showAccessibilityTips,
-      suggestions: this.config.notificationPreferences.showFeatureSuggestions
+      suggestions: this.config.notificationPreferences.showFeatureSuggestions,
     };
   }
 
@@ -218,8 +231,8 @@ class AccessibilityConfigService {
     this.updateConfig({
       notificationPreferences: {
         showAccessibilityTips: tips,
-        showFeatureSuggestions: suggestions
-      }
+        showFeatureSuggestions: suggestions,
+      },
     });
   }
 }
@@ -235,7 +248,7 @@ export const accessibilityConfigService = {
   initialize: () => {
     accessibilityConfigServiceInstance.applyConfigToDOM();
     return accessibilityConfigServiceInstance;
-  }
+  },
 };
 
 export type { AccessibilityConfig, AccessibilityConfigOptions };

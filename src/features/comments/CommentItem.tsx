@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
-import { Comment } from '../../types/models';
-import { formatDistanceToNow } from 'date-fns';
-import { Button } from '../../components/ui/button';
-import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../components/ui/dropdown-menu';
-import { MoreHorizontal, Edit2, Trash2, Reply, ThumbsUp, ThumbsDown } from 'lucide-react';
+import React, { useState } from "react";
+import { Comment } from "../../types/models";
+import { formatDistanceToNow } from "date-fns";
+import { Button } from "../../components/ui/button";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../components/ui/dropdown-menu";
+import {
+  MoreHorizontal,
+  Edit2,
+  Trash2,
+  Reply,
+  ThumbsUp,
+  ThumbsDown,
+} from "lucide-react";
 
 interface CommentItemProps {
   comment: Comment;
@@ -13,9 +29,14 @@ interface CommentItemProps {
   onReply: (comment: Comment) => void;
 }
 
-const CommentItem: React.FC<CommentItemProps> = ({ comment, onEdit, onDelete, onReply }) => {
+const CommentItem: React.FC<CommentItemProps> = ({
+  comment,
+  onEdit,
+  onDelete,
+  onReply,
+}) => {
   const [showReplyForm, setShowReplyForm] = useState(false);
-  const [replyContent, setReplyContent] = useState('');
+  const [replyContent, setReplyContent] = useState("");
   const [likes, setLikes] = useState(comment.likes || 0);
   const [dislikes, setDislikes] = useState(comment.dislikes || 0);
   const [userLiked, setUserLiked] = useState(false);
@@ -53,9 +74,9 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, onEdit, onDelete, on
     e.preventDefault();
     if (replyContent.trim()) {
       // In a real implementation, this would call an API to create the reply
-      console.log('Reply submitted:', replyContent);
+      console.log("Reply submitted:", replyContent);
       setShowReplyForm(false);
-      setReplyContent('');
+      setReplyContent("");
     }
   };
 
@@ -63,15 +84,24 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, onEdit, onDelete, on
     <div className="border rounded-lg p-4 bg-white shadow-sm">
       <div className="flex items-start space-x-3">
         <Avatar className="w-8 h-8">
-          <AvatarImage src={comment.user?.avatar || ''} alt={comment.user?.name || 'User'} />
-          <AvatarFallback>{comment.user?.name?.charAt(0) || 'U'}</AvatarFallback>
+          <AvatarImage
+            src={comment.user?.avatar || ""}
+            alt={comment.user?.name || "User"}
+          />
+          <AvatarFallback>
+            {comment.user?.name?.charAt(0) || "U"}
+          </AvatarFallback>
         </Avatar>
 
         <div className="flex-1">
           <div className="flex items-center space-x-2 mb-1">
-            <span className="font-medium text-sm">{comment.user?.name || 'Anonymous'}</span>
+            <span className="font-medium text-sm">
+              {comment.user?.name || "Anonymous"}
+            </span>
             <span className="text-xs text-gray-500">
-              {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
+              {formatDistanceToNow(new Date(comment.createdAt), {
+                addSuffix: true,
+              })}
             </span>
           </div>
 
@@ -82,14 +112,14 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, onEdit, onDelete, on
           <div className="flex items-center space-x-4 text-xs text-gray-500 mb-2">
             <button
               onClick={handleLike}
-              className={`flex items-center space-x-1 hover:text-blue-600 ${userLiked ? 'text-blue-600' : ''}`}
+              className={`flex items-center space-x-1 hover:text-blue-600 ${userLiked ? "text-blue-600" : ""}`}
             >
               <ThumbsUp className="w-3 h-3" />
               <span>{likes}</span>
             </button>
             <button
               onClick={handleDislike}
-              className={`flex items-center space-x-1 hover:text-red-600 ${userDisliked ? 'text-red-600' : ''}`}
+              className={`flex items-center space-x-1 hover:text-red-600 ${userDisliked ? "text-red-600" : ""}`}
             >
               <ThumbsDown className="w-3 h-3" />
               <span>{dislikes}</span>

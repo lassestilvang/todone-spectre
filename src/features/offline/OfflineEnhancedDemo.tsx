@@ -1,53 +1,53 @@
-import React, { useState } from 'react';
-import { OfflineIndicatorEnhanced } from './OfflineIndicatorEnhanced';
-import { OfflineQueueEnhanced } from './OfflineQueueEnhanced';
-import { OfflineSyncEnhanced } from './OfflineSyncEnhanced';
-import { OfflineSettingsEnhanced } from './OfflineSettingsEnhanced';
-import { useOfflineStore } from '../../store/useOfflineStore';
-import { useOfflineSync } from '../../hooks/useOfflineSync';
-import { useOfflineSettings } from '../../hooks/useOfflineSettings';
+import React, { useState } from "react";
+import { OfflineIndicatorEnhanced } from "./OfflineIndicatorEnhanced";
+import { OfflineQueueEnhanced } from "./OfflineQueueEnhanced";
+import { OfflineSyncEnhanced } from "./OfflineSyncEnhanced";
+import { OfflineSettingsEnhanced } from "./OfflineSettingsEnhanced";
+import { useOfflineStore } from "../../store/useOfflineStore";
+import { useOfflineSync } from "../../hooks/useOfflineSync";
+import { useOfflineSettings } from "../../hooks/useOfflineSettings";
 
 export const OfflineEnhancedDemo: React.FC = () => {
   const offlineStore = useOfflineStore();
   const { syncAll, retryFailedOperations } = useOfflineSync();
   const { settings, updateSettings } = useOfflineSettings();
-  const [demoMode, setDemoMode] = useState<'basic' | 'advanced'>('basic');
+  const [demoMode, setDemoMode] = useState<"basic" | "advanced">("basic");
 
   // Demo: Add sample operations to queue
   const addDemoOperations = () => {
     const demoOperations = [
       {
-        operation: 'Create Task',
-        type: 'create',
-        data: { title: 'Demo Task 1', description: 'Created offline' },
-        priority: 'high'
+        operation: "Create Task",
+        type: "create",
+        data: { title: "Demo Task 1", description: "Created offline" },
+        priority: "high",
       },
       {
-        operation: 'Update Task',
-        type: 'update',
-        data: { id: 'task-123', title: 'Updated Task Title' },
-        priority: 'medium'
+        operation: "Update Task",
+        type: "update",
+        data: { id: "task-123", title: "Updated Task Title" },
+        priority: "medium",
       },
       {
-        operation: 'Delete Project',
-        type: 'delete',
-        data: { id: 'project-456' },
-        priority: 'low'
+        operation: "Delete Project",
+        type: "delete",
+        data: { id: "project-456" },
+        priority: "low",
       },
       {
-        operation: 'Sync Calendar',
-        type: 'sync',
-        data: { calendarId: 'main-calendar' },
-        priority: 'critical'
-      }
+        operation: "Sync Calendar",
+        type: "sync",
+        data: { calendarId: "main-calendar" },
+        priority: "critical",
+      },
     ];
 
-    demoOperations.forEach(op => {
+    demoOperations.forEach((op) => {
       offlineStore.addToQueue({
         operation: op.operation,
         type: op.type,
         data: op.data,
-        priority: op.priority
+        priority: op.priority,
       });
     });
   };
@@ -72,7 +72,7 @@ export const OfflineEnhancedDemo: React.FC = () => {
   const updateDemoSettings = async () => {
     await updateSettings({
       autoSyncEnabled: !settings.autoSyncEnabled,
-      syncInterval: settings.syncInterval === 30000 ? 60000 : 30000
+      syncInterval: settings.syncInterval === 30000 ? 60000 : 30000,
     });
   };
 
@@ -85,7 +85,9 @@ export const OfflineEnhancedDemo: React.FC = () => {
           <label>Demo Mode:</label>
           <select
             value={demoMode}
-            onChange={(e) => setDemoMode(e.target.value as 'basic' | 'advanced')}
+            onChange={(e) =>
+              setDemoMode(e.target.value as "basic" | "advanced")
+            }
           >
             <option value="basic">Basic Features</option>
             <option value="advanced">Advanced Features</option>
@@ -97,12 +99,21 @@ export const OfflineEnhancedDemo: React.FC = () => {
             Add Demo Operations
           </button>
           <button onClick={toggleNetworkStatus} className="demo-button">
-            Toggle Network ({offlineStore.status.isOffline ? 'Offline' : 'Online'})
+            Toggle Network (
+            {offlineStore.status.isOffline ? "Offline" : "Online"})
           </button>
-          <button onClick={processDemoQueue} className="demo-button" disabled={offlineStore.status.isOffline}>
+          <button
+            onClick={processDemoQueue}
+            className="demo-button"
+            disabled={offlineStore.status.isOffline}
+          >
             Process Queue
           </button>
-          <button onClick={clearDemoQueue} className="demo-button" disabled={offlineStore.queue.totalCount === 0}>
+          <button
+            onClick={clearDemoQueue}
+            className="demo-button"
+            disabled={offlineStore.queue.totalCount === 0}
+          >
             Clear Queue
           </button>
           <button onClick={updateDemoSettings} className="demo-button">
@@ -112,7 +123,7 @@ export const OfflineEnhancedDemo: React.FC = () => {
       </div>
 
       <div className="demo-content">
-        {demoMode === 'basic' ? (
+        {demoMode === "basic" ? (
           <>
             <div className="demo-section">
               <h2>Basic Offline Features</h2>
@@ -229,8 +240,10 @@ export const OfflineEnhancedDemo: React.FC = () => {
         <div className="summary-grid">
           <div className="summary-item">
             <span className="summary-label">Network Status:</span>
-            <span className={`summary-value ${offlineStore.status.isOffline ? 'offline' : 'online'}`}>
-              {offlineStore.status.isOffline ? 'Offline' : 'Online'}
+            <span
+              className={`summary-value ${offlineStore.status.isOffline ? "offline" : "online"}`}
+            >
+              {offlineStore.status.isOffline ? "Offline" : "Online"}
             </span>
           </div>
           <div className="summary-item">
@@ -239,7 +252,9 @@ export const OfflineEnhancedDemo: React.FC = () => {
           </div>
           <div className="summary-item">
             <span className="summary-label">Queue Length:</span>
-            <span className="summary-value">{offlineStore.queue.totalCount}</span>
+            <span className="summary-value">
+              {offlineStore.queue.totalCount}
+            </span>
           </div>
           <div className="summary-item">
             <span className="summary-label">Sync Status:</span>
@@ -248,13 +263,15 @@ export const OfflineEnhancedDemo: React.FC = () => {
           <div className="summary-item">
             <span className="summary-label">Last Sync:</span>
             <span className="summary-value">
-              {offlineStore.lastSync ? new Date(offlineStore.lastSync).toLocaleString() : 'Never'}
+              {offlineStore.lastSync
+                ? new Date(offlineStore.lastSync).toLocaleString()
+                : "Never"}
             </span>
           </div>
           <div className="summary-item">
             <span className="summary-label">Auto-Sync:</span>
             <span className="summary-value">
-              {settings.autoSyncEnabled ? 'Enabled' : 'Disabled'}
+              {settings.autoSyncEnabled ? "Enabled" : "Disabled"}
             </span>
           </div>
         </div>

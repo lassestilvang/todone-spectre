@@ -9,7 +9,7 @@ export interface SearchResult {
 export interface SearchOptions {
   limit?: number;
   types?: string[];
-  sortBy?: 'relevance' | 'title' | 'type';
+  sortBy?: "relevance" | "title" | "type";
 }
 
 export interface SearchState {

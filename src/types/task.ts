@@ -3,10 +3,10 @@
  * Contains comprehensive task management interfaces and types
  */
 
-import { PriorityLevel, TaskStatus, RecurringPattern } from './enums';
-import { User } from './user';
-import { Label } from './common';
-import { DateTimeRange } from './common';
+import { PriorityLevel, TaskStatus, RecurringPattern } from "./enums";
+import { User } from "./user";
+import { Label } from "./common";
+import { DateTimeRange } from "./common";
 
 /**
  * Base task interface
@@ -151,7 +151,10 @@ export interface Task extends BaseTask {
 /**
  * Task creation DTO (Data Transfer Object)
  */
-export interface CreateTaskDto extends Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'completedAt'> {
+export interface CreateTaskDto extends Omit<
+  Task,
+  "id" | "createdAt" | "updatedAt" | "completedAt"
+> {
   /**
    * Optional ID for client-side generation
    */
@@ -161,7 +164,9 @@ export interface CreateTaskDto extends Omit<Task, 'id' | 'createdAt' | 'updatedA
 /**
  * Task update DTO
  */
-export interface UpdateTaskDto extends Partial<Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'completedAt'>> {
+export interface UpdateTaskDto extends Partial<
+  Omit<Task, "id" | "createdAt" | "updatedAt" | "completedAt">
+> {
   /**
    * Task ID (required for updates)
    */
@@ -187,7 +192,7 @@ export interface CompleteTaskDto {
    */
   metadata?: {
     completedBy?: string;
-    completionMethod?: 'manual' | 'automatic' | 'recurring';
+    completionMethod?: "manual" | "automatic" | "recurring";
   };
 }
 
@@ -358,12 +363,19 @@ export interface TaskSortOptions {
   /**
    * Field to sort by
    */
-  field: 'title' | 'priority' | 'dueDate' | 'createdAt' | 'updatedAt' | 'completed' | 'status';
+  field:
+    | "title"
+    | "priority"
+    | "dueDate"
+    | "createdAt"
+    | "updatedAt"
+    | "completed"
+    | "status";
 
   /**
    * Sort direction
    */
-  direction: 'asc' | 'desc';
+  direction: "asc" | "desc";
 }
 
 /**
@@ -461,7 +473,14 @@ export interface TaskTimelineEvent {
   /**
    * Event type
    */
-  type: 'created' | 'updated' | 'completed' | 'reopened' | 'deleted' | 'comment_added' | 'attachment_added';
+  type:
+    | "created"
+    | "updated"
+    | "completed"
+    | "reopened"
+    | "deleted"
+    | "comment_added"
+    | "attachment_added";
 
   /**
    * Event timestamp
@@ -641,7 +660,7 @@ export interface RecurringTaskConfig {
   /**
    * Custom unit (optional)
    */
-  customUnit?: 'days' | 'weeks' | 'months' | 'years' | null;
+  customUnit?: "days" | "weeks" | "months" | "years" | null;
 }
 
 /**
@@ -691,12 +710,19 @@ export interface RecurringPatternConfig {
   /**
    * Custom month position
    */
-  customMonthPosition?: 'first' | 'second' | 'third' | 'fourth' | 'last';
+  customMonthPosition?: "first" | "second" | "third" | "fourth" | "last";
 
   /**
    * Custom month day
    */
-  customMonthDay?: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+  customMonthDay?:
+    | "monday"
+    | "tuesday"
+    | "wednesday"
+    | "thursday"
+    | "friday"
+    | "saturday"
+    | "sunday";
 }
 
 /**

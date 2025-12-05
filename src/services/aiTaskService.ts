@@ -1,5 +1,5 @@
-import { Task } from '../types/taskTypes';
-import { aiService } from './aiService';
+import { Task } from "../types/taskTypes";
+import { aiService } from "./aiService";
 
 interface TaskAnalysisResult {
   taskId: string;
@@ -16,7 +16,7 @@ interface TaskSuggestion {
   id: string;
   taskId: string;
   suggestion: string;
-  priority: 'low' | 'medium' | 'high';
+  priority: "low" | "medium" | "high";
   createdAt: Date;
 }
 
@@ -43,7 +43,7 @@ class AITaskService {
     const suggestions = await aiService.generateTaskSuggestions(
       task.id,
       task.title,
-      task.description
+      task.description,
     );
 
     // Generate task breakdown for estimated time and dependencies
@@ -57,7 +57,7 @@ class AITaskService {
       estimatedTime: breakdown.estimatedTime,
       dependencies: breakdown.dependencies,
       resources: breakdown.resources,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     // Cache the result
@@ -66,7 +66,10 @@ class AITaskService {
     return result;
   }
 
-  async getTaskSuggestions(taskId: string, limit: number = 5): Promise<TaskSuggestion[]> {
+  async getTaskSuggestions(
+    taskId: string,
+    limit: number = 5,
+  ): Promise<TaskSuggestion[]> {
     // Check cache first
     const cachedSuggestions = this.suggestionCache.get(taskId);
     if (cachedSuggestions) {
@@ -76,17 +79,19 @@ class AITaskService {
     // Generate new suggestions
     const suggestions = await aiService.generateTaskSuggestions(
       taskId,
-      '', // Would get actual task title in real implementation
-      ''
+      "", // Would get actual task title in real implementation
+      "",
     );
 
-    const taskSuggestions: TaskSuggestion[] = suggestions.map((suggestion, index) => ({
-      id: `${taskId}-suggestion-${index}`,
-      taskId,
-      suggestion,
-      priority: this.determineSuggestionPriority(index, suggestions.length),
-      createdAt: new Date()
-    }));
+    const taskSuggestions: TaskSuggestion[] = suggestions.map(
+      (suggestion, index) => ({
+        id: `${taskId}-suggestion-${index}`,
+        taskId,
+        suggestion,
+        priority: this.determineSuggestionPriority(index, suggestions.length),
+        createdAt: new Date(),
+      }),
+    );
 
     // Cache the suggestions
     this.suggestionCache.set(taskId, taskSuggestions);
@@ -94,8 +99,12 @@ class AITaskService {
     return taskSuggestions.slice(0, limit);
   }
 
-  async getActionableItems(taskId: string, taskTitle: string, taskDescription?: string): Promise<TaskSuggestion[]> {
-    const prompt = `Generate actionable items for task: ${taskTitle}\nDescription: ${taskDescription || 'No description'}`;
+  async getActionableItems(
+    taskId: string,
+    taskTitle: string,
+    taskDescription?: string,
+  ): Promise<TaskSuggestion[]> {
+    const prompt = `Generate actionable items for task: ${taskTitle}\nDescription: ${taskDescription || "No description"}`;
 
     try {
       const response = await aiService.generateAIResponse(prompt);
@@ -105,12 +114,16 @@ class AITaskService {
 
       return items;
     } catch (error) {
-      console.error('Error generating actionable items:', error);
+      console.error("Error generating actionable items:", error);
       return [];
     }
   }
 
-  async getTaskBreakdown(taskId: string, taskTitle: string, taskDescription?: string): Promise<{
+  async getTaskBreakdown(
+    taskId: string,
+    taskTitle: string,
+    taskDescription?: string,
+  ): Promise<{
     steps: string[];
     estimatedTime: string;
     dependencies: string[];
@@ -120,47 +133,58 @@ class AITaskService {
       const breakdown = await aiService.generateTaskBreakdown({
         id: taskId,
         title: taskTitle,
-        description: taskDescription || '',
+        description: taskDescription || "",
         // Other required task fields would be populated here
-        status: 'pending',
-        priority: 'medium',
+        status: "pending",
+        priority: "medium",
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
 
       return breakdown;
     } catch (error) {
-      console.error('Error generating task breakdown:', error);
+      console.error("Error generating task breakdown:", error);
       return {
-        steps: ['Research task requirements', 'Plan implementation', 'Execute task', 'Test and review'],
-        estimatedTime: '2-4 hours',
+        steps: [
+          "Research task requirements",
+          "Plan implementation",
+          "Execute task",
+          "Test and review",
+        ],
+        estimatedTime: "2-4 hours",
         dependencies: [],
-        resources: ['Documentation', 'Development tools']
+        resources: ["Documentation", "Development tools"],
       };
     }
   }
 
-  private determineSuggestionPriority(index: number, total: number): 'low' | 'medium' | 'high' {
-    if (index === 0) return 'high';
-    if (index < Math.ceil(total / 2)) return 'medium';
-    return 'low';
+  private determineSuggestionPriority(
+    index: number,
+    total: number,
+  ): "low" | "medium" | "high" {
+    if (index === 0) return "high";
+    if (index < Math.ceil(total / 2)) return "medium";
+    return "low";
   }
 
-  private parseActionableItems(response: string, taskId: string): TaskSuggestion[] {
+  private parseActionableItems(
+    response: string,
+    taskId: string,
+  ): TaskSuggestion[] {
     // Parse actionable items from AI response
-    const lines = response.split('\n');
+    const lines = response.split("\n");
     const items: TaskSuggestion[] = [];
 
     lines.forEach((line, index) => {
-      if (line.trim().startsWith('-') || line.trim().startsWith('•')) {
-        const itemText = line.replace(/^[-\\•]\s*/, '').trim();
+      if (line.trim().startsWith("-") || line.trim().startsWith("•")) {
+        const itemText = line.replace(/^[-\\•]\s*/, "").trim();
         if (itemText) {
           items.push({
             id: `${taskId}-action-${index}`,
             taskId,
             suggestion: itemText,
             priority: this.determineSuggestionPriority(index, lines.length),
-            createdAt: new Date()
+            createdAt: new Date(),
           });
         }
       }

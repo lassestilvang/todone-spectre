@@ -1,24 +1,27 @@
-import { useState, useEffect } from 'react';
-import { Task } from '../types/task';
-import { CalendarViewService } from '../services/calendarViewService';
-import { useTaskStore } from '../store/useTaskStore';
-import { useUiStore } from '../store/useUiStore';
-import { format, addDays, subDays } from 'date-fns';
+import { useState, useEffect } from "react";
+import { Task } from "../types/task";
+import { CalendarViewService } from "../services/calendarViewService";
+import { useTaskStore } from "../store/useTaskStore";
+import { useUiStore } from "../store/useUiStore";
+import { format, addDays, subDays } from "date-fns";
 
 export const useCalendarView = () => {
   const { tasks, loading, error } = useTaskStore();
   const { calendarViewConfig, setCalendarViewConfig } = useUiStore();
   const [tasksByDate, setTasksByDate] = useState<Record<string, Task[]>>({});
   const [currentDate, setCurrentDate] = useState<Date>(new Date());
-  const [viewMode, setViewMode] = useState<string>('week');
+  const [viewMode, setViewMode] = useState<string>("week");
   const [showWeekends, setShowWeekends] = useState<boolean>(true);
 
   // Initialize from stored config
   useEffect(() => {
     if (calendarViewConfig) {
-      setViewMode(calendarViewConfig.viewMode || 'week');
-      setShowWeekends(calendarViewConfig.showWeekends !== undefined ?
-        calendarViewConfig.showWeekends : true);
+      setViewMode(calendarViewConfig.viewMode || "week");
+      setShowWeekends(
+        calendarViewConfig.showWeekends !== undefined
+          ? calendarViewConfig.showWeekends
+          : true,
+      );
     }
   }, [calendarViewConfig]);
 
@@ -30,7 +33,8 @@ export const useCalendarView = () => {
     }
 
     // Transform tasks for calendar view
-    const transformedTasks = CalendarViewService.transformTasksForCalendarView(tasks);
+    const transformedTasks =
+      CalendarViewService.transformTasksForCalendarView(tasks);
 
     // Apply grouping by date
     const grouped = CalendarViewService.groupTasksByDate(transformedTasks);
@@ -40,18 +44,18 @@ export const useCalendarView = () => {
     // Update config
     setCalendarViewConfig({
       viewMode,
-      showWeekends
+      showWeekends,
     });
-
   }, [tasks, viewMode, showWeekends]);
 
   const goToPreviousPeriod = () => {
-    setCurrentDate(prevDate => {
-      if (viewMode === 'day') {
+    setCurrentDate((prevDate) => {
+      if (viewMode === "day") {
         return subDays(prevDate, 1);
-      } else if (viewMode === 'week') {
+      } else if (viewMode === "week") {
         return subDays(prevDate, 7);
-      } else { // month
+      } else {
+        // month
         // Simple month navigation - go back 30 days as approximation
         return subDays(prevDate, 30);
       }
@@ -59,12 +63,13 @@ export const useCalendarView = () => {
   };
 
   const goToNextPeriod = () => {
-    setCurrentDate(prevDate => {
-      if (viewMode === 'day') {
+    setCurrentDate((prevDate) => {
+      if (viewMode === "day") {
         return addDays(prevDate, 1);
-      } else if (viewMode === 'week') {
+      } else if (viewMode === "week") {
         return addDays(prevDate, 7);
-      } else { // month
+      } else {
+        // month
         // Simple month navigation - go forward 30 days as approximation
         return addDays(prevDate, 30);
       }
@@ -88,7 +93,7 @@ export const useCalendarView = () => {
   };
 
   const getTasksForDate = (date: Date): Task[] => {
-    const dateKey = format(date, 'yyyy-MM-dd');
+    const dateKey = format(date, "yyyy-MM-dd");
     return tasksByDate[dateKey] || [];
   };
 
@@ -109,6 +114,6 @@ export const useCalendarView = () => {
     getTasksForDate,
     setCurrentDate,
     setViewMode,
-    setShowWeekends
+    setShowWeekends,
   };
 };

@@ -3,7 +3,7 @@
  * Ensures proper integration with existing services and utilities
  */
 
-import { describe, expect, test, beforeAll } from '@jest/globals';
+import { describe, expect, test, beforeAll } from "@jest/globals";
 import {
   generateRecurringTaskInstances,
   calculateNextOccurrence,
@@ -20,8 +20,8 @@ import {
   updateRecurringConfigInTask,
   getDefaultRecurringConfig,
   isRecurringInstance,
-  getOriginalTaskId
-} from '../recurringUtils';
+  getOriginalTaskId,
+} from "../recurringUtils";
 import {
   normalizeRecurringPatternConfig,
   getPatternFrequencyDescription,
@@ -45,70 +45,98 @@ import {
   isDateInPositionalMonthlyPattern,
   getPatternConfigAsString,
   createPatternConfig,
-  getPatternComplexityScore
-} from '../recurringPatternUtils';
-import { RecurringPattern, TaskRepeatFrequency, TaskRepeatEnd } from '../../types/enums';
-import { Task, RecurringTaskConfig, RecurringPatternConfig } from '../../types/task';
-import { recurringPatternService } from '../../services/recurringPatternService';
+  getPatternComplexityScore,
+} from "../recurringPatternUtils";
+import {
+  RecurringPattern,
+  TaskRepeatFrequency,
+  TaskRepeatEnd,
+} from "../../types/enums";
+import {
+  Task,
+  RecurringTaskConfig,
+  RecurringPatternConfig,
+} from "../../types/task";
+import { recurringPatternService } from "../../services/recurringPatternService";
 
 // Mock task data
 const mockTask: Task = {
-  id: 'task-1',
-  title: 'Test Recurring Task',
-  description: 'This is a test recurring task',
-  status: 'active',
-  priority: 'P2',
-  dueDate: new Date('2023-01-15'),
-  createdAt: new Date('2023-01-01'),
-  updatedAt: new Date('2023-01-01'),
+  id: "task-1",
+  title: "Test Recurring Task",
+  description: "This is a test recurring task",
+  status: "active",
+  priority: "P2",
+  dueDate: new Date("2023-01-15"),
+  createdAt: new Date("2023-01-01"),
+  updatedAt: new Date("2023-01-01"),
   completed: false,
   order: 0,
-  projectId: 'project-1',
+  projectId: "project-1",
   customFields: {
-    recurringPattern: 'weekly',
+    recurringPattern: "weekly",
     recurringInterval: 1,
-    recurringEndCondition: 'never'
-  }
+    recurringEndCondition: "never",
+  },
 };
 
 // Mock recurring config
 const mockRecurringConfig: RecurringTaskConfig = {
-  pattern: 'weekly',
-  startDate: new Date('2023-01-15'),
+  pattern: "weekly",
+  startDate: new Date("2023-01-15"),
   endDate: null,
   maxOccurrences: null,
   customInterval: 1,
-  customUnit: null
+  customUnit: null,
 };
 
-describe('Recurring Utilities', () => {
-  describe('generateRecurringTaskInstances', () => {
-    test('should generate recurring task instances', () => {
-      const instances = generateRecurringTaskInstances(mockTask, mockRecurringConfig, 5);
+describe("Recurring Utilities", () => {
+  describe("generateRecurringTaskInstances", () => {
+    test("should generate recurring task instances", () => {
+      const instances = generateRecurringTaskInstances(
+        mockTask,
+        mockRecurringConfig,
+        5,
+      );
       expect(instances.length).toBeGreaterThan(0);
       expect(instances[0].taskId).toBe(mockTask.id);
       expect(instances[0].originalTaskId).toBe(mockTask.id);
     });
   });
 
-  describe('calculateNextOccurrence', () => {
-    test('should calculate next occurrence for weekly pattern', () => {
+  describe("calculateNextOccurrence", () => {
+    test("should calculate next occurrence for weekly pattern", () => {
       const patternConfig: RecurringPatternConfig = {
-        pattern: 'weekly',
-        interval: 1
+        pattern: "weekly",
+        interval: 1,
       };
-      const currentDate = new Date('2023-01-15');
+      const currentDate = new Date("2023-01-15");
       const nextDate = calculateNextOccurrence(currentDate, patternConfig);
       expect(nextDate).toBeInstanceOf(Date);
       expect(nextDate > currentDate).toBe(true);
     });
   });
 
-  describe('getRecurringTaskStatistics', () => {
-    test('should calculate statistics for recurring task', () => {
+  describe("getRecurringTaskStatistics", () => {
+    test("should calculate statistics for recurring task", () => {
       const instances = [
-        { id: '1', taskId: 'task-1', date: new Date('2023-01-15'), isGenerated: true, originalTaskId: 'task-1', status: 'active', completed: true },
-        { id: '2', taskId: 'task-1', date: new Date('2023-01-22'), isGenerated: true, originalTaskId: 'task-1', status: 'active', completed: false }
+        {
+          id: "1",
+          taskId: "task-1",
+          date: new Date("2023-01-15"),
+          isGenerated: true,
+          originalTaskId: "task-1",
+          status: "active",
+          completed: true,
+        },
+        {
+          id: "2",
+          taskId: "task-1",
+          date: new Date("2023-01-22"),
+          isGenerated: true,
+          originalTaskId: "task-1",
+          status: "active",
+          completed: false,
+        },
       ];
 
       const stats = getRecurringTaskStatistics(mockTask, instances);
@@ -118,17 +146,17 @@ describe('Recurring Utilities', () => {
     });
   });
 
-  describe('validateRecurringTaskConfig', () => {
-    test('should validate valid recurring config', () => {
+  describe("validateRecurringTaskConfig", () => {
+    test("should validate valid recurring config", () => {
       const validation = validateRecurringTaskConfig(mockRecurringConfig);
       expect(validation.valid).toBe(true);
       expect(validation.errors.length).toBe(0);
     });
 
-    test('should invalidate config with past start date', () => {
+    test("should invalidate config with past start date", () => {
       const invalidConfig = {
         ...mockRecurringConfig,
-        startDate: new Date('2020-01-01')
+        startDate: new Date("2020-01-01"),
       };
       const validation = validateRecurringTaskConfig(invalidConfig);
       expect(validation.valid).toBe(false);
@@ -137,86 +165,86 @@ describe('Recurring Utilities', () => {
   });
 });
 
-describe('Recurring Pattern Utilities', () => {
-  describe('normalizeRecurringPatternConfig', () => {
-    test('should normalize partial pattern config', () => {
+describe("Recurring Pattern Utilities", () => {
+  describe("normalizeRecurringPatternConfig", () => {
+    test("should normalize partial pattern config", () => {
       const partialConfig = {
-        pattern: 'daily'
+        pattern: "daily",
       };
       const normalized = normalizeRecurringPatternConfig(partialConfig);
-      expect(normalized.pattern).toBe('daily');
+      expect(normalized.pattern).toBe("daily");
       expect(normalized.interval).toBe(1);
-      expect(normalized.endCondition).toBe('never');
+      expect(normalized.endCondition).toBe("never");
     });
   });
 
-  describe('getPatternFrequencyDescription', () => {
-    test('should get frequency description for daily pattern', () => {
+  describe("getPatternFrequencyDescription", () => {
+    test("should get frequency description for daily pattern", () => {
       const config: RecurringPatternConfig = {
-        pattern: 'daily',
-        interval: 1
+        pattern: "daily",
+        interval: 1,
       };
       const description = getPatternFrequencyDescription(config);
-      expect(description).toBe('Daily');
+      expect(description).toBe("Daily");
     });
 
-    test('should get frequency description for custom pattern', () => {
+    test("should get frequency description for custom pattern", () => {
       const config: RecurringPatternConfig = {
-        pattern: 'custom',
-        frequency: 'weekdays'
+        pattern: "custom",
+        frequency: "weekdays",
       };
       const description = getPatternFrequencyDescription(config);
-      expect(description).toBe('Weekdays (Mon-Fri)');
+      expect(description).toBe("Weekdays (Mon-Fri)");
     });
   });
 
-  describe('getDayName and getDayNumber', () => {
-    test('should convert between day names and numbers', () => {
-      expect(getDayName(0)).toBe('Sunday');
-      expect(getDayNumber('Monday')).toBe(1);
-      expect(getDayNumber('monday')).toBe(1);
+  describe("getDayName and getDayNumber", () => {
+    test("should convert between day names and numbers", () => {
+      expect(getDayName(0)).toBe("Sunday");
+      expect(getDayNumber("Monday")).toBe(1);
+      expect(getDayNumber("monday")).toBe(1);
     });
   });
 
-  describe('isValidPatternConfig', () => {
-    test('should validate valid pattern config', () => {
+  describe("isValidPatternConfig", () => {
+    test("should validate valid pattern config", () => {
       const config: RecurringPatternConfig = {
-        pattern: 'weekly',
-        interval: 1
+        pattern: "weekly",
+        interval: 1,
       };
       expect(isValidPatternConfig(config)).toBe(true);
     });
   });
 
-  describe('createPatternConfig', () => {
-    test('should create pattern config from parameters', () => {
-      const config = createPatternConfig('daily', {
+  describe("createPatternConfig", () => {
+    test("should create pattern config from parameters", () => {
+      const config = createPatternConfig("daily", {
         interval: 2,
-        endCondition: 'after_occurrences',
-        maxOccurrences: 5
+        endCondition: "after_occurrences",
+        maxOccurrences: 5,
       });
 
-      expect(config.pattern).toBe('daily');
+      expect(config.pattern).toBe("daily");
       expect(config.interval).toBe(2);
-      expect(config.endCondition).toBe('after_occurrences');
+      expect(config.endCondition).toBe("after_occurrences");
       expect(config.maxOccurrences).toBe(5);
     });
   });
 
-  describe('getPatternComplexityScore', () => {
-    test('should calculate complexity score', () => {
+  describe("getPatternComplexityScore", () => {
+    test("should calculate complexity score", () => {
       const simpleConfig: RecurringPatternConfig = {
-        pattern: 'daily',
-        interval: 1
+        pattern: "daily",
+        interval: 1,
       };
 
       const complexConfig: RecurringPatternConfig = {
-        pattern: 'custom',
-        frequency: 'monthly',
+        pattern: "custom",
+        frequency: "monthly",
         customMonthDays: [1, 15],
-        endCondition: 'on_date',
-        endDate: new Date('2023-12-31'),
-        interval: 2
+        endCondition: "on_date",
+        endDate: new Date("2023-12-31"),
+        interval: 2,
       };
 
       const simpleScore = getPatternComplexityScore(simpleConfig);
@@ -228,16 +256,16 @@ describe('Recurring Pattern Utilities', () => {
   });
 });
 
-describe('Integration with Existing Services', () => {
-  test('should integrate with recurringPatternService', () => {
+describe("Integration with Existing Services", () => {
+  test("should integrate with recurringPatternService", () => {
     const config: RecurringPatternConfig = {
-      pattern: 'weekly',
-      interval: 1
+      pattern: "weekly",
+      interval: 1,
     };
 
     // Test that our utilities can use the service methods
     const formatted = recurringPatternService.formatRecurringPattern(config);
-    expect(formatted).toBe('Weekly');
+    expect(formatted).toBe("Weekly");
 
     const validation = recurringPatternService.validatePatternConfig(config);
     expect(validation.valid).toBe(true);

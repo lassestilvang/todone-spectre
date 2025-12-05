@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useOfflineStore } from '../../store/useOfflineStore';
-import { useOfflineSettings } from '../../hooks/useOfflineSettings';
+import React, { useState, useEffect } from "react";
+import { useOfflineStore } from "../../store/useOfflineStore";
+import { useOfflineSettings } from "../../hooks/useOfflineSettings";
 
 interface OfflineSettingsProps {
   onSettingsChange?: (settings: any) => void;
@@ -11,7 +11,7 @@ interface OfflineSettingsProps {
 export const OfflineSettings: React.FC<OfflineSettingsProps> = ({
   onSettingsChange,
   onSave,
-  onCancel
+  onCancel,
 }) => {
   const { settings, updateSettings } = useOfflineSettings();
   const { isOffline, pendingChanges } = useOfflineStore();
@@ -26,23 +26,26 @@ export const OfflineSettings: React.FC<OfflineSettingsProps> = ({
       conflictResolution: settings.conflictResolution,
       offlineDataRetention: settings.offlineDataRetention,
       showOfflineIndicator: settings.showOfflineIndicator,
-      syncOnReconnect: settings.syncOnReconnect
+      syncOnReconnect: settings.syncOnReconnect,
     });
   }, [settings]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value, type } = e.target;
-    const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+    const newValue =
+      type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
 
-    setFormSettings(prev => ({
+    setFormSettings((prev) => ({
       ...prev,
-      [name]: type === 'number' ? parseInt(newValue as string) : newValue
+      [name]: type === "number" ? parseInt(newValue as string) : newValue,
     }));
 
     if (onSettingsChange) {
       onSettingsChange({
         ...formSettings,
-        [name]: newValue
+        [name]: newValue,
       });
     }
   };
@@ -57,7 +60,7 @@ export const OfflineSettings: React.FC<OfflineSettingsProps> = ({
 
       setIsEditing(false);
     } catch (error) {
-      console.error('Failed to save offline settings:', error);
+      console.error("Failed to save offline settings:", error);
     }
   };
 
@@ -69,7 +72,7 @@ export const OfflineSettings: React.FC<OfflineSettingsProps> = ({
       conflictResolution: settings.conflictResolution,
       offlineDataRetention: settings.offlineDataRetention,
       showOfflineIndicator: settings.showOfflineIndicator,
-      syncOnReconnect: settings.syncOnReconnect
+      syncOnReconnect: settings.syncOnReconnect,
     });
 
     if (onCancel) {
@@ -81,16 +84,16 @@ export const OfflineSettings: React.FC<OfflineSettingsProps> = ({
 
   const getConflictResolutionLabel = (value: string) => {
     switch (value) {
-      case 'local-wins':
-        return 'Local Changes Win';
-      case 'remote-wins':
-        return 'Remote Changes Win';
-      case 'manual':
-        return 'Manual Resolution';
-      case 'timestamp':
-        return 'Newest Changes Win';
+      case "local-wins":
+        return "Local Changes Win";
+      case "remote-wins":
+        return "Remote Changes Win";
+      case "manual":
+        return "Manual Resolution";
+      case "timestamp":
+        return "Newest Changes Win";
       default:
-        return 'Unknown';
+        return "Unknown";
     }
   };
 
@@ -188,7 +191,7 @@ export const OfflineSettings: React.FC<OfflineSettingsProps> = ({
               <select
                 id="conflictResolution"
                 name="conflictResolution"
-                value={formSettings.conflictResolution || 'timestamp'}
+                value={formSettings.conflictResolution || "timestamp"}
                 onChange={handleInputChange}
                 disabled={!isEditing}
               >
@@ -251,13 +254,19 @@ export const OfflineSettings: React.FC<OfflineSettingsProps> = ({
         <div className="offline-settings-status">
           <h4>Current Status</h4>
           <div className="offline-settings-status-item">
-            <span className="offline-settings-status-label">Network Status:</span>
-            <span className={`offline-settings-status-value ${isOffline ? 'offline' : 'online'}`}>
-              {isOffline ? 'Offline' : 'Online'}
+            <span className="offline-settings-status-label">
+              Network Status:
+            </span>
+            <span
+              className={`offline-settings-status-value ${isOffline ? "offline" : "online"}`}
+            >
+              {isOffline ? "Offline" : "Online"}
             </span>
           </div>
           <div className="offline-settings-status-item">
-            <span className="offline-settings-status-label">Pending Changes:</span>
+            <span className="offline-settings-status-label">
+              Pending Changes:
+            </span>
             <span className="offline-settings-status-value">
               {pendingChanges}
             </span>

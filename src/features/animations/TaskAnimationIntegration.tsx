@@ -1,7 +1,7 @@
-import React from 'react';
-import { TaskAnimation } from './TaskAnimation';
-import { MicroInteraction } from './MicroInteraction';
-import { useAnimationContext } from './AnimationProvider';
+import React from "react";
+import { TaskAnimation } from "./TaskAnimation";
+import { MicroInteraction } from "./MicroInteraction";
+import { useAnimationContext } from "./AnimationProvider";
 
 interface TaskAnimationIntegrationProps {
   taskId: string;
@@ -11,24 +11,29 @@ interface TaskAnimationIntegrationProps {
   onComplete?: () => void;
 }
 
-export const TaskAnimationIntegration: React.FC<TaskAnimationIntegrationProps> = ({
+export const TaskAnimationIntegration: React.FC<
+  TaskAnimationIntegrationProps
+> = ({
   taskId,
   children,
   isCompleted = false,
   isDragging = false,
-  onComplete
+  onComplete,
 }) => {
   const { triggerMicroInteraction } = useAnimationContext();
 
   const handleCompleteWithAnimation = () => {
-    triggerMicroInteraction('success');
+    triggerMicroInteraction("success");
     if (onComplete) {
       setTimeout(onComplete, 300); // Allow animation to complete
     }
   };
 
   return (
-    <MicroInteraction type="click" onInteraction={() => triggerMicroInteraction('click')}>
+    <MicroInteraction
+      type="click"
+      onInteraction={() => triggerMicroInteraction("click")}
+    >
       <TaskAnimation
         taskId={taskId}
         isCompleted={isCompleted}

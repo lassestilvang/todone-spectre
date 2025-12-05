@@ -1,5 +1,5 @@
-import React from 'react';
-import { Filter } from '../../types/models';
+import React from "react";
+import { Filter } from "../../types/models";
 
 interface FilterItemProps {
   filter: Filter;
@@ -14,17 +14,19 @@ const FilterItem: React.FC<FilterItemProps> = ({
   onEdit,
   onDelete,
   onSelect,
-  isSelected
+  isSelected,
 }) => {
   return (
     <div
       className={`flex items-center justify-between p-3 rounded-lg cursor-pointer ${
-        isSelected ? 'bg-blue-100 border border-blue-300' : 'hover:bg-gray-50'
+        isSelected ? "bg-blue-100 border border-blue-300" : "hover:bg-gray-50"
       }`}
       onClick={() => onSelect(filter.id)}
     >
       <div className="flex items-center space-x-3">
-        <div className={`w-3 h-3 rounded-full ${filter.color || 'bg-gray-400'}`}></div>
+        <div
+          className={`w-3 h-3 rounded-full ${filter.color || "bg-gray-400"}`}
+        ></div>
         <span className="font-medium">{filter.name}</span>
       </div>
       <div className="flex space-x-2">

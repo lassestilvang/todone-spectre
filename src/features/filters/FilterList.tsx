@@ -1,6 +1,6 @@
-import React from 'react';
-import FilterItem from './FilterItem';
-import { Filter } from '../../types/models';
+import React from "react";
+import FilterItem from "./FilterItem";
+import { Filter } from "../../types/models";
 
 interface FilterListProps {
   filters: Filter[];
@@ -15,7 +15,7 @@ const FilterList: React.FC<FilterListProps> = ({
   onEdit,
   onDelete,
   onSelect,
-  selectedFilterId
+  selectedFilterId,
 }) => {
   return (
     <div className="space-y-2">

@@ -1,15 +1,16 @@
 /**
  * Custom hook for offline task management integration
  */
-import { useState, useEffect, useCallback } from 'react';
-import { useOfflineStore } from '../store/useOfflineStore';
-import { offlineTaskService } from '../services/offlineTaskService';
-import { Task } from '../types/task';
-import { useTasks } from './useTasks';
+import { useState, useEffect, useCallback } from "react";
+import { useOfflineStore } from "../store/useOfflineStore";
+import { offlineTaskService } from "../services/offlineTaskService";
+import { Task } from "../types/task";
+import { useTasks } from "./useTasks";
 
 export const useOfflineTasks = (projectId?: string) => {
   const [isOffline, setIsOffline] = useState<boolean>(false);
-  const [pendingOfflineOperations, setPendingOfflineOperations] = useState<number>(0);
+  const [pendingOfflineOperations, setPendingOfflineOperations] =
+    useState<number>(0);
   const [offlineError, setOfflineError] = useState<string | null>(null);
 
   // Get offline store state
@@ -24,7 +25,7 @@ export const useOfflineTasks = (projectId?: string) => {
     updateTask,
     deleteTask,
     toggleCompletion,
-    fetchTasks
+    fetchTasks,
   } = useTasks(projectId);
 
   /**
@@ -47,11 +48,14 @@ export const useOfflineTasks = (projectId?: string) => {
       (state) => state.status.isOffline,
       (isOffline) => {
         setIsOffline(isOffline);
-        if (!isOffline && offlineTaskService.hasPendingOfflineTaskOperations()) {
+        if (
+          !isOffline &&
+          offlineTaskService.hasPendingOfflineTaskOperations()
+        ) {
           // Automatically process queue when coming back online
           processOfflineQueue();
         }
-      }
+      },
     );
 
     return unsubscribe;
@@ -60,76 +64,108 @@ export const useOfflineTasks = (projectId?: string) => {
   /**
    * Create task with offline support
    */
-  const createTaskOffline = useCallback(async (taskData: Omit<Task, 'id'>): Promise<Task> => {
-    try {
-      setOfflineError(null);
-      const task = await offlineTaskService.createTaskOffline(taskData);
+  const createTaskOffline = useCallback(
+    async (taskData: Omit<Task, "id">): Promise<Task> => {
+      try {
+        setOfflineError(null);
+        const task = await offlineTaskService.createTaskOffline(taskData);
 
-      // Update pending operations count
-      const queueStatus = offlineTaskService.getOfflineTaskQueueStatus();
-      setPendingOfflineOperations(queueStatus.pendingTasks);
+        // Update pending operations count
+        const queueStatus = offlineTaskService.getOfflineTaskQueueStatus();
+        setPendingOfflineOperations(queueStatus.pendingTasks);
 
-      return task;
-    } catch (error) {
-      setOfflineError(error instanceof Error ? error.message : 'Failed to create task offline');
-      throw error;
-    }
-  }, []);
+        return task;
+      } catch (error) {
+        setOfflineError(
+          error instanceof Error
+            ? error.message
+            : "Failed to create task offline",
+        );
+        throw error;
+      }
+    },
+    [],
+  );
 
   /**
    * Update task with offline support
    */
-  const updateTaskOffline = useCallback(async (taskId: string, taskData: Partial<Task>): Promise<Task> => {
-    try {
-      setOfflineError(null);
-      const task = await offlineTaskService.updateTaskOffline(taskId, taskData);
+  const updateTaskOffline = useCallback(
+    async (taskId: string, taskData: Partial<Task>): Promise<Task> => {
+      try {
+        setOfflineError(null);
+        const task = await offlineTaskService.updateTaskOffline(
+          taskId,
+          taskData,
+        );
 
-      // Update pending operations count
-      const queueStatus = offlineTaskService.getOfflineTaskQueueStatus();
-      setPendingOfflineOperations(queueStatus.pendingTasks);
+        // Update pending operations count
+        const queueStatus = offlineTaskService.getOfflineTaskQueueStatus();
+        setPendingOfflineOperations(queueStatus.pendingTasks);
 
-      return task;
-    } catch (error) {
-      setOfflineError(error instanceof Error ? error.message : 'Failed to update task offline');
-      throw error;
-    }
-  }, []);
+        return task;
+      } catch (error) {
+        setOfflineError(
+          error instanceof Error
+            ? error.message
+            : "Failed to update task offline",
+        );
+        throw error;
+      }
+    },
+    [],
+  );
 
   /**
    * Delete task with offline support
    */
-  const deleteTaskOffline = useCallback(async (taskId: string): Promise<void> => {
-    try {
-      setOfflineError(null);
-      await offlineTaskService.deleteTaskOffline(taskId);
+  const deleteTaskOffline = useCallback(
+    async (taskId: string): Promise<void> => {
+      try {
+        setOfflineError(null);
+        await offlineTaskService.deleteTaskOffline(taskId);
 
-      // Update pending operations count
-      const queueStatus = offlineTaskService.getOfflineTaskQueueStatus();
-      setPendingOfflineOperations(queueStatus.pendingTasks);
-    } catch (error) {
-      setOfflineError(error instanceof Error ? error.message : 'Failed to delete task offline');
-      throw error;
-    }
-  }, []);
+        // Update pending operations count
+        const queueStatus = offlineTaskService.getOfflineTaskQueueStatus();
+        setPendingOfflineOperations(queueStatus.pendingTasks);
+      } catch (error) {
+        setOfflineError(
+          error instanceof Error
+            ? error.message
+            : "Failed to delete task offline",
+        );
+        throw error;
+      }
+    },
+    [],
+  );
 
   /**
    * Toggle task completion with offline support
    */
-  const toggleCompletionOffline = useCallback(async (taskId: string): Promise<Task> => {
-    try {
-      setOfflineError(null);
-      const task = await offlineTaskService.toggleTaskCompletionOffline(taskId);
+  const toggleCompletionOffline = useCallback(
+    async (taskId: string): Promise<Task> => {
+      try {
+        setOfflineError(null);
+        const task =
+          await offlineTaskService.toggleTaskCompletionOffline(taskId);
 
-      // Update pending operations count
-      const queueStatus = offlineTaskService.getOfflineTaskQueueStatus();
-      setPendingOfflineOperations(queueStatus.pendingTasks);
+        // Update pending operations count
+        const queueStatus = offlineTaskService.getOfflineTaskQueueStatus();
+        setPendingOfflineOperations(queueStatus.pendingTasks);
 
-      return task;
-    } catch (error) {
-      setOfflineError(error instanceof Error ? error.message : 'Failed to toggle task completion offline');
-      throw error;
-    }
-  }, []);
+        return task;
+      } catch (error) {
+        setOfflineError(
+          error instanceof Error
+            ? error.message
+            : "Failed to toggle task completion offline",
+        );
+        throw error;
+      }
+    },
+    [],
+  );
 
   /**
    * Process offline task queue
@@ -143,7 +179,11 @@ export const useOfflineTasks = (projectId?: string) => {
       const queueStatus = offlineTaskService.getOfflineTaskQueueStatus();
       setPendingOfflineOperations(queueStatus.pendingTasks);
     } catch (error) {
-      setOfflineError(error instanceof Error ? error.message : 'Failed to process offline queue');
+      setOfflineError(
+        error instanceof Error
+          ? error.message
+          : "Failed to process offline queue",
+      );
       throw error;
     }
   }, []);
@@ -211,6 +251,6 @@ export const useOfflineTasks = (projectId?: string) => {
 
     // Utility methods
     checkOfflineStatus,
-    initializeOfflineTasks
+    initializeOfflineTasks,
   };
 };

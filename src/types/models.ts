@@ -16,8 +16,8 @@ import {
   ProjectVisibility,
   TaskDependencyType,
   TaskRepeatFrequency,
-  TaskRepeatEnd
-} from './enums';
+  TaskRepeatEnd,
+} from "./enums";
 
 import {
   User,
@@ -27,8 +27,8 @@ import {
   Filter,
   Comment,
   Attachment,
-  Section
-} from './common';
+  Section,
+} from "./common";
 
 /**
  * User Model Implementation
@@ -47,8 +47,8 @@ export class UserModel implements User {
 
   constructor(data: Partial<User> = {}) {
     this.id = data.id || this.generateId();
-    this.email = data.email || '';
-    this.name = data.name || '';
+    this.email = data.email || "";
+    this.name = data.name || "";
     this.avatar = data.avatar || null;
     this.settings = data.settings || {};
     this.preferences = data.preferences || {};
@@ -61,7 +61,7 @@ export class UserModel implements User {
    * Generate unique ID
    */
   private generateId(): string {
-    return 'user_' + Math.random().toString(36).substr(2, 9);
+    return "user_" + Math.random().toString(36).substr(2, 9);
   }
 
   /**
@@ -76,14 +76,14 @@ export class UserModel implements User {
    * Get user display name
    */
   getDisplayName(): string {
-    return this.name || this.email.split('@')[0];
+    return this.name || this.email.split("@")[0];
   }
 
   /**
    * Get user initials
    */
   getInitials(): string {
-    const names = this.name.split(' ');
+    const names = this.name.split(" ");
     if (names.length > 1) {
       return (names[0][0] + names[names.length - 1][0]).toUpperCase();
     }
@@ -110,7 +110,7 @@ export class UserModel implements User {
       preferences: this.preferences,
       stats: this.stats,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
+      updatedAt: this.updatedAt,
     };
   }
 }
@@ -138,7 +138,7 @@ export class ProjectModel implements Project {
   labelIds?: string[];
   memberIds?: string[];
   ownerId?: string;
-  status?: 'active' | 'archived' | 'completed';
+  status?: "active" | "archived" | "completed";
   visibility?: ProjectVisibility;
   settings?: {
     allowComments: boolean;
@@ -156,9 +156,9 @@ export class ProjectModel implements Project {
 
   constructor(data: Partial<Project> = {}) {
     this.id = data.id || this.generateId();
-    this.name = data.name || 'Untitled Project';
-    this.description = data.description || '';
-    this.color = data.color || 'blue';
+    this.name = data.name || "Untitled Project";
+    this.description = data.description || "";
+    this.color = data.color || "blue";
     this.viewType = data.viewType || ViewType.LIST;
     this.favorite = data.favorite || false;
     this.shared = data.shared || false;
@@ -169,13 +169,13 @@ export class ProjectModel implements Project {
     this.labelIds = data.labelIds || [];
     this.memberIds = data.memberIds || [];
     this.ownerId = data.ownerId;
-    this.status = data.status || 'active';
+    this.status = data.status || "active";
     this.visibility = data.visibility || ProjectVisibility.PRIVATE;
     this.settings = data.settings || {
       allowComments: true,
       allowAttachments: true,
       taskCreationRestricted: false,
-      maxTaskSize: 100
+      maxTaskSize: 100,
     };
     this.customFields = data.customFields || {};
     this.metadata = data.metadata || {};
@@ -187,7 +187,7 @@ export class ProjectModel implements Project {
    * Generate unique ID
    */
   private generateId(): string {
-    return 'project_' + Math.random().toString(36).substr(2, 9);
+    return "project_" + Math.random().toString(36).substr(2, 9);
   }
 
   /**
@@ -212,7 +212,9 @@ export class ProjectModel implements Project {
    * Remove child project
    */
   removeChildProject(projectId: string): void {
-    this.childProjectIds = this.childProjectIds.filter(id => id !== projectId);
+    this.childProjectIds = this.childProjectIds.filter(
+      (id) => id !== projectId,
+    );
     this.updatedAt = new Date();
   }
 
@@ -230,7 +232,7 @@ export class ProjectModel implements Project {
    * Remove section
    */
   removeSection(sectionId: string): void {
-    this.sectionIds = this.sectionIds.filter(id => id !== sectionId);
+    this.sectionIds = this.sectionIds.filter((id) => id !== sectionId);
     this.updatedAt = new Date();
   }
 
@@ -248,7 +250,7 @@ export class ProjectModel implements Project {
    * Remove task
    */
   removeTask(taskId: string): void {
-    this.taskIds = this.taskIds.filter(id => id !== taskId);
+    this.taskIds = this.taskIds.filter((id) => id !== taskId);
     this.updatedAt = new Date();
   }
 
@@ -266,7 +268,7 @@ export class ProjectModel implements Project {
    * Remove label
    */
   removeLabel(labelId: string): void {
-    this.labelIds = this.labelIds.filter(id => id !== labelId);
+    this.labelIds = this.labelIds.filter((id) => id !== labelId);
     this.updatedAt = new Date();
   }
 
@@ -284,7 +286,7 @@ export class ProjectModel implements Project {
    * Remove member
    */
   removeMember(userId: string): void {
-    this.memberIds = this.memberIds.filter(id => id !== userId);
+    this.memberIds = this.memberIds.filter((id) => id !== userId);
     this.updatedAt = new Date();
   }
 
@@ -328,7 +330,7 @@ export class ProjectModel implements Project {
       customFields: this.customFields,
       metadata: this.metadata,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
+      updatedAt: this.updatedAt,
     };
   }
 }
@@ -351,8 +353,8 @@ export class SectionModel implements Section {
 
   constructor(data: Partial<Section> = {}) {
     this.id = data.id || this.generateId();
-    this.name = data.name || 'Untitled Section';
-    this.projectId = data.projectId || '';
+    this.name = data.name || "Untitled Section";
+    this.projectId = data.projectId || "";
     this.order = data.order || 0;
     this.taskIds = data.taskIds || [];
     this.collapsed = data.collapsed || false;
@@ -366,7 +368,7 @@ export class SectionModel implements Section {
    * Generate unique ID
    */
   private generateId(): string {
-    return 'section_' + Math.random().toString(36).substr(2, 9);
+    return "section_" + Math.random().toString(36).substr(2, 9);
   }
 
   /**
@@ -391,7 +393,7 @@ export class SectionModel implements Section {
    * Remove task from section
    */
   removeTask(taskId: string): void {
-    this.taskIds = this.taskIds.filter(id => id !== taskId);
+    this.taskIds = this.taskIds.filter((id) => id !== taskId);
     this.updatedAt = new Date();
   }
 
@@ -424,7 +426,7 @@ export class SectionModel implements Section {
       color: this.color,
       description: this.description,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
+      updatedAt: this.updatedAt,
     };
   }
 }
@@ -482,8 +484,8 @@ export class TaskModel implements Task {
 
   constructor(data: Partial<Task> = {}) {
     this.id = data.id || this.generateId();
-    this.title = data.title || 'Untitled Task';
-    this.description = data.description || '';
+    this.title = data.title || "Untitled Task";
+    this.description = data.description || "";
     this.status = data.status || TaskStatus.ACTIVE;
     this.priority = data.priority || PriorityLevel.P3;
     this.dueDate = data.dueDate || null;
@@ -511,7 +513,7 @@ export class TaskModel implements Task {
    * Generate unique ID
    */
   private generateId(): string {
-    return 'task_' + Math.random().toString(36).substr(2, 9);
+    return "task_" + Math.random().toString(36).substr(2, 9);
   }
 
   /**
@@ -564,7 +566,7 @@ export class TaskModel implements Task {
    * Remove label
    */
   removeLabel(labelId: string): void {
-    this.labelIds = this.labelIds.filter(id => id !== labelId);
+    this.labelIds = this.labelIds.filter((id) => id !== labelId);
     this.updatedAt = new Date();
   }
 
@@ -582,7 +584,7 @@ export class TaskModel implements Task {
    * Remove attachment
    */
   removeAttachment(attachmentId: string): void {
-    this.attachmentIds = this.attachmentIds.filter(id => id !== attachmentId);
+    this.attachmentIds = this.attachmentIds.filter((id) => id !== attachmentId);
     this.updatedAt = new Date();
   }
 
@@ -600,14 +602,14 @@ export class TaskModel implements Task {
    * Remove comment
    */
   removeComment(commentId: string): void {
-    this.commentIds = this.commentIds.filter(id => id !== commentId);
+    this.commentIds = this.commentIds.filter((id) => id !== commentId);
     this.updatedAt = new Date();
   }
 
   /**
    * Add dependency
    */
-  addDependency(taskId: string, type: TaskDependencyType = 'depends_on'): void {
+  addDependency(taskId: string, type: TaskDependencyType = "depends_on"): void {
     if (!this.dependencies.includes(taskId)) {
       this.dependencies.push(taskId);
       this.updatedAt = new Date();
@@ -618,7 +620,7 @@ export class TaskModel implements Task {
    * Remove dependency
    */
   removeDependency(taskId: string): void {
-    this.dependencies = this.dependencies.filter(id => id !== taskId);
+    this.dependencies = this.dependencies.filter((id) => id !== taskId);
     this.updatedAt = new Date();
   }
 
@@ -636,7 +638,7 @@ export class TaskModel implements Task {
    * Remove tag
    */
   removeTag(tag: string): void {
-    this.tags = this.tags.filter(t => t !== tag);
+    this.tags = this.tags.filter((t) => t !== tag);
     this.updatedAt = new Date();
   }
 
@@ -708,7 +710,7 @@ export class TaskModel implements Task {
       tags: this.tags,
       customFields: this.customFields,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
+      updatedAt: this.updatedAt,
     };
   }
 }
@@ -727,8 +729,8 @@ export class LabelModel implements Label {
 
   constructor(data: Partial<Label> = {}) {
     this.id = data.id || this.generateId();
-    this.name = data.name || 'Untitled Label';
-    this.color = data.color || 'blue-500';
+    this.name = data.name || "Untitled Label";
+    this.color = data.color || "blue-500";
     this.isPersonal = data.isPersonal || false;
     this.createdAt = data.createdAt || new Date();
     this.updatedAt = data.updatedAt || new Date();
@@ -738,7 +740,7 @@ export class LabelModel implements Label {
    * Generate unique ID
    */
   private generateId(): string {
-    return 'label_' + Math.random().toString(36).substr(2, 9);
+    return "label_" + Math.random().toString(36).substr(2, 9);
   }
 
   /**
@@ -766,7 +768,7 @@ export class LabelModel implements Label {
       color: this.color,
       isPersonal: this.isPersonal,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
+      updatedAt: this.updatedAt,
     };
   }
 }
@@ -786,9 +788,9 @@ export class FilterModel implements Filter {
 
   constructor(data: Partial<Filter> = {}) {
     this.id = data.id || this.generateId();
-    this.name = data.name || 'Untitled Filter';
+    this.name = data.name || "Untitled Filter";
     this.criteria = data.criteria || {};
-    this.color = data.color || 'gray-500';
+    this.color = data.color || "gray-500";
     this.favorite = data.favorite || false;
     this.createdAt = data.createdAt || new Date();
     this.updatedAt = data.updatedAt || new Date();
@@ -798,7 +800,7 @@ export class FilterModel implements Filter {
    * Generate unique ID
    */
   private generateId(): string {
-    return 'filter_' + Math.random().toString(36).substr(2, 9);
+    return "filter_" + Math.random().toString(36).substr(2, 9);
   }
 
   /**
@@ -835,7 +837,7 @@ export class FilterModel implements Filter {
       color: this.color,
       favorite: this.favorite,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
+      updatedAt: this.updatedAt,
     };
   }
 }
@@ -854,9 +856,9 @@ export class CommentModel implements Comment {
 
   constructor(data: Partial<Comment> = {}) {
     this.id = data.id || this.generateId();
-    this.taskId = data.taskId || '';
-    this.user = data.user || '';
-    this.content = data.content || '';
+    this.taskId = data.taskId || "";
+    this.user = data.user || "";
+    this.content = data.content || "";
     this.attachments = data.attachments || [];
     this.timestamp = data.timestamp || new Date();
   }
@@ -865,7 +867,7 @@ export class CommentModel implements Comment {
    * Generate unique ID
    */
   private generateId(): string {
-    return 'comment_' + Math.random().toString(36).substr(2, 9);
+    return "comment_" + Math.random().toString(36).substr(2, 9);
   }
 
   /**
@@ -888,7 +890,7 @@ export class CommentModel implements Comment {
    * Remove attachment
    */
   removeAttachment(attachmentId: string): void {
-    this.attachments = this.attachments.filter(id => id !== attachmentId);
+    this.attachments = this.attachments.filter((id) => id !== attachmentId);
   }
 
   /**
@@ -908,7 +910,7 @@ export class CommentModel implements Comment {
       user: this.user,
       content: this.content,
       attachments: this.attachments,
-      timestamp: this.timestamp
+      timestamp: this.timestamp,
     };
   }
 }
@@ -934,12 +936,12 @@ export class AttachmentModel implements Attachment {
 
   constructor(data: Partial<Attachment> = {}) {
     this.id = data.id || this.generateId();
-    this.fileName = data.fileName || 'Untitled';
-    this.url = data.url || '';
-    this.type = data.type || 'file';
+    this.fileName = data.fileName || "Untitled";
+    this.url = data.url || "";
+    this.type = data.type || "file";
     this.metadata = data.metadata || {
       size: 0,
-      mimeType: 'application/octet-stream'
+      mimeType: "application/octet-stream",
     };
     this.createdAt = data.createdAt || new Date();
     this.updatedAt = data.updatedAt || new Date();
@@ -949,7 +951,7 @@ export class AttachmentModel implements Attachment {
    * Generate unique ID
    */
   private generateId(): string {
-    return 'attachment_' + Math.random().toString(36).substr(2, 9);
+    return "attachment_" + Math.random().toString(36).substr(2, 9);
   }
 
   /**
@@ -963,7 +965,7 @@ export class AttachmentModel implements Attachment {
   /**
    * Set metadata
    */
-  setMetadata(metadata: Partial<Attachment['metadata']>): void {
+  setMetadata(metadata: Partial<Attachment["metadata"]>): void {
     this.metadata = { ...this.metadata, ...metadata };
   }
 
@@ -985,7 +987,7 @@ export class AttachmentModel implements Attachment {
       type: this.type,
       metadata: this.metadata,
       createdAt: this.createdAt,
-      updatedAt: this.updatedAt
+      updatedAt: this.updatedAt,
     };
   }
 }
@@ -1053,11 +1055,18 @@ export class ModelFactory {
   /**
    * Create models from array data
    */
-  static createFromArray<T extends User | Project | Section | Task | Label | Filter | Comment | Attachment>(
-    ModelClass: new (data: Partial<T>) => any,
-    dataArray: Partial<T>[]
-  ): any[] {
-    return dataArray.map(data => new ModelClass(data));
+  static createFromArray<
+    T extends
+      | User
+      | Project
+      | Section
+      | Task
+      | Label
+      | Filter
+      | Comment
+      | Attachment,
+  >(ModelClass: new (data: Partial<T>) => any, dataArray: Partial<T>[]): any[] {
+    return dataArray.map((data) => new ModelClass(data));
   }
 }
 
@@ -1069,7 +1078,7 @@ export class ModelValidator {
    * Validate user model
    */
   static validateUser(user: User): boolean {
-    return !!user.email && !!user.name && user.email.includes('@');
+    return !!user.email && !!user.name && user.email.includes("@");
   }
 
   /**
@@ -1139,7 +1148,7 @@ export class ModelTransformer {
       preferences: apiUser.preferences,
       stats: apiUser.statistics,
       createdAt: new Date(apiUser.createdAt || apiUser.createdDate),
-      updatedAt: new Date(apiUser.updatedAt || apiUser.updatedDate)
+      updatedAt: new Date(apiUser.updatedAt || apiUser.updatedDate),
     });
   }
 
@@ -1151,7 +1160,7 @@ export class ModelTransformer {
       id: apiProject.id || apiProject.projectId,
       name: apiProject.name,
       description: apiProject.description,
-      color: apiProject.color || 'blue',
+      color: apiProject.color || "blue",
       viewType: apiProject.viewType || ViewType.LIST,
       favorite: apiProject.favorite || false,
       shared: apiProject.shared || false,
@@ -1162,13 +1171,13 @@ export class ModelTransformer {
       labelIds: apiProject.labelIds || [],
       memberIds: apiProject.memberIds || [],
       ownerId: apiProject.ownerId,
-      status: apiProject.status || 'active',
+      status: apiProject.status || "active",
       visibility: apiProject.visibility || ProjectVisibility.PRIVATE,
       settings: apiProject.settings,
       customFields: apiProject.customFields,
       metadata: apiProject.metadata,
       createdAt: new Date(apiProject.createdAt || apiProject.createdDate),
-      updatedAt: new Date(apiProject.updatedAt || apiProject.updatedDate)
+      updatedAt: new Date(apiProject.updatedAt || apiProject.updatedDate),
     });
   }
 
@@ -1200,7 +1209,7 @@ export class ModelTransformer {
       tags: apiTask.tags || [],
       customFields: apiTask.customFields,
       createdAt: new Date(apiTask.createdAt || apiTask.createdDate),
-      updatedAt: new Date(apiTask.updatedAt || apiTask.updatedDate)
+      updatedAt: new Date(apiTask.updatedAt || apiTask.updatedDate),
     });
   }
 }

@@ -2,9 +2,23 @@
  * Recurring Pattern Manager Service
  * Advanced pattern management with validation, generation, and optimization
  */
-import { RecurringPatternConfig, RecurringInstance } from '../types/task';
-import { RecurringPattern, TaskRepeatFrequency, TaskRepeatEnd } from '../types/enums';
-import { addDays, addWeeks, addMonths, addYears, isBefore, isAfter, getDay, setDay, format } from 'date-fns';
+import { RecurringPatternConfig, RecurringInstance } from "../types/task";
+import {
+  RecurringPattern,
+  TaskRepeatFrequency,
+  TaskRepeatEnd,
+} from "../types/enums";
+import {
+  addDays,
+  addWeeks,
+  addMonths,
+  addYears,
+  isBefore,
+  isAfter,
+  getDay,
+  setDay,
+  format,
+} from "date-fns";
 
 /**
  * Advanced Recurring Pattern Manager
@@ -32,7 +46,7 @@ export class RecurringPatternManager {
   generateRecurringDatesAdvanced(
     startDate: Date,
     config: RecurringPatternConfig,
-    maxInstances: number = 50
+    maxInstances: number = 50,
   ): RecurringInstance[] {
     const instances: RecurringInstance[] = [];
     let currentDate = new Date(startDate);
@@ -40,18 +54,20 @@ export class RecurringPatternManager {
 
     // Add the original instance
     instances.push({
-      id: 'original',
+      id: "original",
       date: new Date(currentDate),
       isGenerated: false,
       originalDate: new Date(currentDate),
-      occurrenceNumber: 0
+      occurrenceNumber: 0,
     });
 
     while (instances.length <= maxInstances) {
       const nextDate = this.getNextDateAdvanced(currentDate, config);
 
       // Check end conditions
-      if (this.shouldStopGeneratingAdvanced(nextDate, config, instances.length)) {
+      if (
+        this.shouldStopGeneratingAdvanced(nextDate, config, instances.length)
+      ) {
         break;
       }
 
@@ -60,7 +76,7 @@ export class RecurringPatternManager {
         date: nextDate,
         isGenerated: true,
         originalDate: new Date(startDate),
-        occurrenceNumber
+        occurrenceNumber,
       });
 
       currentDate = nextDate;
@@ -73,17 +89,20 @@ export class RecurringPatternManager {
   /**
    * Get next date with advanced pattern handling
    */
-  private getNextDateAdvanced(currentDate: Date, config: RecurringPatternConfig): Date {
+  private getNextDateAdvanced(
+    currentDate: Date,
+    config: RecurringPatternConfig,
+  ): Date {
     switch (config.pattern) {
-      case 'daily':
+      case "daily":
         return this.getNextDailyDateAdvanced(currentDate, config);
-      case 'weekly':
+      case "weekly":
         return this.getNextWeeklyDateAdvanced(currentDate, config);
-      case 'monthly':
+      case "monthly":
         return this.getNextMonthlyDateAdvanced(currentDate, config);
-      case 'yearly':
+      case "yearly":
         return this.getNextYearlyDateAdvanced(currentDate, config);
-      case 'custom':
+      case "custom":
         return this.getNextCustomDateAdvanced(currentDate, config);
       default:
         return addWeeks(currentDate, config.interval || 1);
@@ -93,11 +112,14 @@ export class RecurringPatternManager {
   /**
    * Advanced daily date calculation
    */
-  private getNextDailyDateAdvanced(currentDate: Date, config: RecurringPatternConfig): Date {
+  private getNextDailyDateAdvanced(
+    currentDate: Date,
+    config: RecurringPatternConfig,
+  ): Date {
     const interval = config.interval || 1;
 
     // Handle weekdays-only pattern
-    if (config.frequency === 'weekdays') {
+    if (config.frequency === "weekdays") {
       let nextDate = addDays(currentDate, 1);
       while (getDay(nextDate) === 0 || getDay(nextDate) === 6) {
         nextDate = addDays(nextDate, 1);
@@ -111,7 +133,10 @@ export class RecurringPatternManager {
   /**
    * Advanced weekly date calculation with custom day handling
    */
-  private getNextWeeklyDateAdvanced(currentDate: Date, config: RecurringPatternConfig): Date {
+  private getNextWeeklyDateAdvanced(
+    currentDate: Date,
+    config: RecurringPatternConfig,
+  ): Date {
     if (config.customDays && config.customDays.length > 0) {
       // Custom weekly pattern (specific days of week)
       const currentDay = getDay(currentDate);
@@ -119,20 +144,20 @@ export class RecurringPatternManager {
 
       // Find the next day in customDays that comes after current day
       const sortedDays = [...config.customDays].sort((a, b) => a - b);
-      const nextDayIndex = sortedDays.findIndex(day => day > currentDay);
+      const nextDayIndex = sortedDays.findIndex((day) => day > currentDay);
 
       if (nextDayIndex >= 0) {
         daysToAdd = sortedDays[nextDayIndex] - currentDay;
       } else {
         // Wrap around to next week
-        daysToAdd = (7 - currentDay) + sortedDays[0];
+        daysToAdd = 7 - currentDay + sortedDays[0];
       }
 
       return addDays(currentDate, daysToAdd);
     }
 
     // Handle bi-weekly pattern
-    if (config.frequency === 'biweekly') {
+    if (config.frequency === "biweekly") {
       return addWeeks(currentDate, 2);
     }
 
@@ -142,7 +167,10 @@ export class RecurringPatternManager {
   /**
    * Advanced monthly date calculation with complex patterns
    */
-  private getNextMonthlyDateAdvanced(currentDate: Date, config: RecurringPatternConfig): Date {
+  private getNextMonthlyDateAdvanced(
+    currentDate: Date,
+    config: RecurringPatternConfig,
+  ): Date {
     if (config.customMonthDays && config.customMonthDays.length > 0) {
       // Custom monthly pattern (specific days of month)
       const currentDay = currentDate.getDate();
@@ -150,7 +178,7 @@ export class RecurringPatternManager {
 
       // Find the next day in customMonthDays that comes after current day
       const sortedDays = [...config.customMonthDays].sort((a, b) => a - b);
-      const nextDayIndex = sortedDays.findIndex(day => day > currentDay);
+      const nextDayIndex = sortedDays.findIndex((day) => day > currentDay);
 
       if (nextDayIndex >= 0) {
         // Next occurrence is in the same month
@@ -172,7 +200,7 @@ export class RecurringPatternManager {
     }
 
     // Handle quarterly pattern
-    if (config.frequency === 'quarterly') {
+    if (config.frequency === "quarterly") {
       return addMonths(currentDate, 3);
     }
 
@@ -182,7 +210,10 @@ export class RecurringPatternManager {
   /**
    * Advanced positional monthly date calculation
    */
-  private getNextPositionalMonthlyDateAdvanced(currentDate: Date, config: RecurringPatternConfig): Date {
+  private getNextPositionalMonthlyDateAdvanced(
+    currentDate: Date,
+    config: RecurringPatternConfig,
+  ): Date {
     const targetDay = this.getDayNumber(config.customMonthDay!);
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
@@ -198,14 +229,23 @@ export class RecurringPatternManager {
     // Adjust for position (first, second, third, fourth, last)
     let weekOffset = 0;
     switch (config.customMonthPosition) {
-      case 'second': weekOffset = 1; break;
-      case 'third': weekOffset = 2; break;
-      case 'fourth': weekOffset = 3; break;
-      case 'last':
+      case "second":
+        weekOffset = 1;
+        break;
+      case "third":
+        weekOffset = 2;
+        break;
+      case "fourth":
+        weekOffset = 3;
+        break;
+      case "last":
         // For "last", find the last occurrence in the month
         const lastDayOfMonth = new Date(currentYear, currentMonth + 1, 0);
         targetDate = lastDayOfMonth;
-        while (getDay(targetDate) !== targetDay && targetDate > lastDayOfMonth) {
+        while (
+          getDay(targetDate) !== targetDay &&
+          targetDate > lastDayOfMonth
+        ) {
           targetDate = addDays(targetDate, -1);
         }
         return targetDate;
@@ -216,7 +256,10 @@ export class RecurringPatternManager {
     targetDate = addDays(targetDate, weekOffset * 7);
 
     // If the calculated date is before or equal to current date, move to next month
-    if (isBefore(targetDate, currentDate) || targetDate.getTime() === currentDate.getTime()) {
+    if (
+      isBefore(targetDate, currentDate) ||
+      targetDate.getTime() === currentDate.getTime()
+    ) {
       return addMonths(targetDate, 1);
     }
 
@@ -226,35 +269,41 @@ export class RecurringPatternManager {
   /**
    * Advanced yearly date calculation
    */
-  private getNextYearlyDateAdvanced(currentDate: Date, config: RecurringPatternConfig): Date {
+  private getNextYearlyDateAdvanced(
+    currentDate: Date,
+    config: RecurringPatternConfig,
+  ): Date {
     return addYears(currentDate, config.interval || 1);
   }
 
   /**
    * Advanced custom date calculation
    */
-  private getNextCustomDateAdvanced(currentDate: Date, config: RecurringPatternConfig): Date {
+  private getNextCustomDateAdvanced(
+    currentDate: Date,
+    config: RecurringPatternConfig,
+  ): Date {
     if (!config.frequency) {
       return addWeeks(currentDate, config.interval || 1);
     }
 
     switch (config.frequency) {
-      case 'daily':
+      case "daily":
         return this.getNextDailyDateAdvanced(currentDate, config);
-      case 'weekdays':
+      case "weekdays":
         return this.getNextDailyDateAdvanced(currentDate, {
           ...config,
-          frequency: 'weekdays'
+          frequency: "weekdays",
         });
-      case 'weekly':
+      case "weekly":
         return this.getNextWeeklyDateAdvanced(currentDate, config);
-      case 'biweekly':
+      case "biweekly":
         return addWeeks(currentDate, 2);
-      case 'monthly':
+      case "monthly":
         return this.getNextMonthlyDateAdvanced(currentDate, config);
-      case 'quarterly':
+      case "quarterly":
         return addMonths(currentDate, 3);
-      case 'yearly':
+      case "yearly":
         return this.getNextYearlyDateAdvanced(currentDate, config);
       default:
         return addWeeks(currentDate, config.interval || 1);
@@ -267,7 +316,7 @@ export class RecurringPatternManager {
   private shouldStopGeneratingAdvanced(
     nextDate: Date,
     config: RecurringPatternConfig,
-    currentCount: number
+    currentCount: number,
   ): boolean {
     // Check max occurrences
     if (config.maxOccurrences && currentCount >= config.maxOccurrences) {
@@ -291,7 +340,9 @@ export class RecurringPatternManager {
   /**
    * Optimize recurring pattern configuration
    */
-  optimizePatternConfig(config: RecurringPatternConfig): RecurringPatternConfig {
+  optimizePatternConfig(
+    config: RecurringPatternConfig,
+  ): RecurringPatternConfig {
     // Validate and optimize interval
     const interval = Math.max(1, config.interval || 1);
 
@@ -309,13 +360,13 @@ export class RecurringPatternManager {
 
     // Validate custom days
     let customDays = config.customDays;
-    if (customDays && customDays.some(day => day < 0 || day > 6)) {
+    if (customDays && customDays.some((day) => day < 0 || day > 6)) {
       customDays = null;
     }
 
     // Validate custom month days
     let customMonthDays = config.customMonthDays;
-    if (customMonthDays && customMonthDays.some(day => day < 1 || day > 31)) {
+    if (customMonthDays && customMonthDays.some((day) => day < 1 || day > 31)) {
       customMonthDays = null;
     }
 
@@ -325,64 +376,76 @@ export class RecurringPatternManager {
       maxOccurrences,
       endDate,
       customDays,
-      customMonthDays
+      customMonthDays,
     };
   }
 
   /**
    * Validate pattern configuration with advanced checks
    */
-  validatePatternConfigAdvanced(config: RecurringPatternConfig): { valid: boolean; errors: string[]; warnings: string[] } {
+  validatePatternConfigAdvanced(config: RecurringPatternConfig): {
+    valid: boolean;
+    errors: string[];
+    warnings: string[];
+  } {
     const errors: string[] = [];
     const warnings: string[] = [];
 
     if (!config.pattern) {
-      errors.push('Pattern is required');
+      errors.push("Pattern is required");
     }
 
     if (config.interval && config.interval < 1) {
-      errors.push('Interval must be at least 1');
+      errors.push("Interval must be at least 1");
     }
 
     if (config.maxOccurrences && config.maxOccurrences < 1) {
-      errors.push('Maximum occurrences must be at least 1');
+      errors.push("Maximum occurrences must be at least 1");
     }
 
     if (config.endDate && isBefore(new Date(config.endDate), new Date())) {
-      errors.push('End date cannot be in the past');
+      errors.push("End date cannot be in the past");
     }
 
-    if (config.customDays && config.customDays.some(day => day < 0 || day > 6)) {
-      errors.push('Custom days must be between 0 (Sunday) and 6 (Saturday)');
+    if (
+      config.customDays &&
+      config.customDays.some((day) => day < 0 || day > 6)
+    ) {
+      errors.push("Custom days must be between 0 (Sunday) and 6 (Saturday)");
     }
 
-    if (config.customMonthDays && config.customMonthDays.some(day => day < 1 || day > 31)) {
-      errors.push('Custom month days must be between 1 and 31');
+    if (
+      config.customMonthDays &&
+      config.customMonthDays.some((day) => day < 1 || day > 31)
+    ) {
+      errors.push("Custom month days must be between 1 and 31");
     }
 
     // Advanced validation for positional monthly patterns
     if (config.customMonthPosition && !config.customMonthDay) {
-      errors.push('Month position requires a day of week');
+      errors.push("Month position requires a day of week");
     }
 
     if (!config.customMonthPosition && config.customMonthDay) {
-      warnings.push('Month day specified without position - will be ignored');
+      warnings.push("Month day specified without position - will be ignored");
     }
 
     // Check for unreasonable intervals
     if (config.interval && config.interval > 365) {
-      warnings.push('Very large interval may cause performance issues');
+      warnings.push("Very large interval may cause performance issues");
     }
 
     // Check for too many occurrences
     if (config.maxOccurrences && config.maxOccurrences > 1000) {
-      warnings.push('Very large number of occurrences may cause performance issues');
+      warnings.push(
+        "Very large number of occurrences may cause performance issues",
+      );
     }
 
     return {
       valid: errors.length === 0,
       errors,
-      warnings
+      warnings,
     };
   }
 
@@ -397,7 +460,7 @@ export class RecurringPatternManager {
       wednesday: 3,
       thursday: 4,
       friday: 5,
-      saturday: 6
+      saturday: 6,
     };
     return days[dayName.toLowerCase()] || 0;
   }
@@ -406,8 +469,16 @@ export class RecurringPatternManager {
    * Get day name from day number
    */
   getDayName(dayNumber: number): string {
-    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-    return days[dayNumber] || 'Sunday';
+    const days = [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ];
+    return days[dayNumber] || "Sunday";
   }
 
   /**
@@ -415,32 +486,34 @@ export class RecurringPatternManager {
    */
   formatPatternAdvanced(config: RecurringPatternConfig): string {
     switch (config.pattern) {
-      case 'daily':
-        if (config.frequency === 'weekdays') return 'Weekdays (Mon-Fri)';
-        if (config.interval === 1) return 'Daily';
+      case "daily":
+        if (config.frequency === "weekdays") return "Weekdays (Mon-Fri)";
+        if (config.interval === 1) return "Daily";
         return `Every ${config.interval} days`;
-      case 'weekly':
+      case "weekly":
         if (config.customDays) {
-          const dayNames = config.customDays.map(day => this.getDayName(day).substring(0, 3));
-          return `Weekly on ${dayNames.join(', ')}`;
+          const dayNames = config.customDays.map((day) =>
+            this.getDayName(day).substring(0, 3),
+          );
+          return `Weekly on ${dayNames.join(", ")}`;
         }
-        if (config.frequency === 'biweekly') return 'Bi-weekly';
-        if (config.interval === 1) return 'Weekly';
+        if (config.frequency === "biweekly") return "Bi-weekly";
+        if (config.interval === 1) return "Weekly";
         return `Every ${config.interval} weeks`;
-      case 'monthly':
+      case "monthly":
         if (config.customMonthDays) {
-          return `Monthly on day ${config.customMonthDays.join(', ')}`;
+          return `Monthly on day ${config.customMonthDays.join(", ")}`;
         }
         if (config.customMonthPosition && config.customMonthDay) {
           return `Monthly on the ${config.customMonthPosition} ${config.customMonthDay}`;
         }
-        if (config.frequency === 'quarterly') return 'Quarterly';
-        if (config.interval === 1) return 'Monthly';
+        if (config.frequency === "quarterly") return "Quarterly";
+        if (config.interval === 1) return "Monthly";
         return `Every ${config.interval} months`;
-      case 'yearly':
-        if (config.interval === 1) return 'Yearly';
+      case "yearly":
+        if (config.interval === 1) return "Yearly";
         return `Every ${config.interval} years`;
-      case 'custom':
+      case "custom":
         return this.formatCustomPatternAdvanced(config);
       default:
         return config.pattern;
@@ -451,35 +524,45 @@ export class RecurringPatternManager {
    * Format custom pattern with advanced formatting
    */
   private formatCustomPatternAdvanced(config: RecurringPatternConfig): string {
-    if (!config.frequency) return 'Custom pattern';
+    if (!config.frequency) return "Custom pattern";
 
     switch (config.frequency) {
-      case 'daily':
-        return config.interval === 1 ? 'Daily' : `Every ${config.interval} days`;
-      case 'weekdays':
-        return 'Weekdays (Mon-Fri)';
-      case 'weekly':
+      case "daily":
+        return config.interval === 1
+          ? "Daily"
+          : `Every ${config.interval} days`;
+      case "weekdays":
+        return "Weekdays (Mon-Fri)";
+      case "weekly":
         if (config.customDays) {
-          const dayNames = config.customDays.map(day => this.getDayName(day).substring(0, 3));
-          return `Weekly on ${dayNames.join(', ')}`;
+          const dayNames = config.customDays.map((day) =>
+            this.getDayName(day).substring(0, 3),
+          );
+          return `Weekly on ${dayNames.join(", ")}`;
         }
-        return config.interval === 1 ? 'Weekly' : `Every ${config.interval} weeks`;
-      case 'biweekly':
-        return 'Bi-weekly';
-      case 'monthly':
+        return config.interval === 1
+          ? "Weekly"
+          : `Every ${config.interval} weeks`;
+      case "biweekly":
+        return "Bi-weekly";
+      case "monthly":
         if (config.customMonthDays) {
-          return `Monthly on day ${config.customMonthDays.join(', ')}`;
+          return `Monthly on day ${config.customMonthDays.join(", ")}`;
         }
         if (config.customMonthPosition && config.customMonthDay) {
           return `Monthly on the ${config.customMonthPosition} ${config.customMonthDay}`;
         }
-        return config.interval === 1 ? 'Monthly' : `Every ${config.interval} months`;
-      case 'quarterly':
-        return 'Quarterly';
-      case 'yearly':
-        return config.interval === 1 ? 'Yearly' : `Every ${config.interval} years`;
+        return config.interval === 1
+          ? "Monthly"
+          : `Every ${config.interval} months`;
+      case "quarterly":
+        return "Quarterly";
+      case "yearly":
+        return config.interval === 1
+          ? "Yearly"
+          : `Every ${config.interval} years`;
       default:
-        return 'Custom pattern';
+        return "Custom pattern";
     }
   }
 
@@ -487,25 +570,28 @@ export class RecurringPatternManager {
    * Get end condition description with advanced formatting
    */
   getEndConditionDescriptionAdvanced(config: RecurringPatternConfig): string {
-    if (!config.endCondition || config.endCondition === 'never') {
-      return 'Never ends';
+    if (!config.endCondition || config.endCondition === "never") {
+      return "Never ends";
     }
 
-    if (config.endCondition === 'on_date' && config.endDate) {
-      return `Ends on ${format(new Date(config.endDate), 'PPP')}`;
+    if (config.endCondition === "on_date" && config.endDate) {
+      return `Ends on ${format(new Date(config.endDate), "PPP")}`;
     }
 
-    if (config.endCondition === 'after_occurrences' && config.maxOccurrences) {
+    if (config.endCondition === "after_occurrences" && config.maxOccurrences) {
       return `Ends after ${config.maxOccurrences} occurrences`;
     }
 
-    return 'Custom end condition';
+    return "Custom end condition";
   }
 
   /**
    * Calculate next occurrence date from current date
    */
-  calculateNextOccurrence(currentDate: Date, config: RecurringPatternConfig): Date {
+  calculateNextOccurrence(
+    currentDate: Date,
+    config: RecurringPatternConfig,
+  ): Date {
     return this.getNextDateAdvanced(currentDate, config);
   }
 
@@ -515,7 +601,7 @@ export class RecurringPatternManager {
   calculateFutureOccurrences(
     startDate: Date,
     config: RecurringPatternConfig,
-    limit: number = 10
+    limit: number = 10,
   ): Date[] {
     const occurrences: Date[] = [];
     let currentDate = new Date(startDate);
@@ -541,11 +627,21 @@ export class RecurringPatternManager {
 
     // Base score by pattern type
     switch (config.pattern) {
-      case 'daily': score += 1; break;
-      case 'weekly': score += 2; break;
-      case 'monthly': score += 3; break;
-      case 'yearly': score += 4; break;
-      case 'custom': score += 5; break;
+      case "daily":
+        score += 1;
+        break;
+      case "weekly":
+        score += 2;
+        break;
+      case "monthly":
+        score += 3;
+        break;
+      case "yearly":
+        score += 4;
+        break;
+      case "custom":
+        score += 5;
+        break;
     }
 
     // Add complexity for custom configurations
@@ -565,115 +661,120 @@ export class RecurringPatternManager {
   /**
    * Get pattern presets with advanced configurations
    */
-  getAdvancedPatternPresets(): Array<{ id: string; name: string; config: RecurringPatternConfig; complexity: number }> {
+  getAdvancedPatternPresets(): Array<{
+    id: string;
+    name: string;
+    config: RecurringPatternConfig;
+    complexity: number;
+  }> {
     const presets = [
       {
-        id: 'daily',
-        name: 'Daily',
+        id: "daily",
+        name: "Daily",
         config: {
-          pattern: 'daily',
-          frequency: 'daily',
-          endCondition: 'never',
-          interval: 1
-        },
-        complexity: 1
-      },
-      {
-        id: 'weekdays',
-        name: 'Weekdays (Mon-Fri)',
-        config: {
-          pattern: 'custom',
-          frequency: 'weekdays',
-          endCondition: 'never',
-          interval: 1
-        },
-        complexity: 2
-      },
-      {
-        id: 'weekly',
-        name: 'Weekly',
-        config: {
-          pattern: 'weekly',
-          frequency: 'weekly',
-          endCondition: 'never',
-          interval: 1
-        },
-        complexity: 2
-      },
-      {
-        id: 'biweekly',
-        name: 'Bi-weekly',
-        config: {
-          pattern: 'custom',
-          frequency: 'biweekly',
-          endCondition: 'never',
-          interval: 2
-        },
-        complexity: 3
-      },
-      {
-        id: 'monthly',
-        name: 'Monthly',
-        config: {
-          pattern: 'monthly',
-          frequency: 'monthly',
-          endCondition: 'never',
-          interval: 1
-        },
-        complexity: 3
-      },
-      {
-        id: 'quarterly',
-        name: 'Quarterly',
-        config: {
-          pattern: 'custom',
-          frequency: 'quarterly',
-          endCondition: 'never',
-          interval: 3
-        },
-        complexity: 4
-      },
-      {
-        id: 'yearly',
-        name: 'Yearly',
-        config: {
-          pattern: 'yearly',
-          frequency: 'yearly',
-          endCondition: 'never',
-          interval: 1
-        },
-        complexity: 4
-      },
-      {
-        id: 'custom-weekly',
-        name: 'Custom Weekly (Mon, Wed, Fri)',
-        config: {
-          pattern: 'custom',
-          frequency: 'weekly',
-          endCondition: 'never',
+          pattern: "daily",
+          frequency: "daily",
+          endCondition: "never",
           interval: 1,
-          customDays: [1, 3, 5] // Monday, Wednesday, Friday
         },
-        complexity: 5
+        complexity: 1,
       },
       {
-        id: 'custom-monthly',
-        name: 'Custom Monthly (1st & 15th)',
+        id: "weekdays",
+        name: "Weekdays (Mon-Fri)",
         config: {
-          pattern: 'custom',
-          frequency: 'monthly',
-          endCondition: 'never',
+          pattern: "custom",
+          frequency: "weekdays",
+          endCondition: "never",
           interval: 1,
-          customMonthDays: [1, 15]
         },
-        complexity: 6
-      }
+        complexity: 2,
+      },
+      {
+        id: "weekly",
+        name: "Weekly",
+        config: {
+          pattern: "weekly",
+          frequency: "weekly",
+          endCondition: "never",
+          interval: 1,
+        },
+        complexity: 2,
+      },
+      {
+        id: "biweekly",
+        name: "Bi-weekly",
+        config: {
+          pattern: "custom",
+          frequency: "biweekly",
+          endCondition: "never",
+          interval: 2,
+        },
+        complexity: 3,
+      },
+      {
+        id: "monthly",
+        name: "Monthly",
+        config: {
+          pattern: "monthly",
+          frequency: "monthly",
+          endCondition: "never",
+          interval: 1,
+        },
+        complexity: 3,
+      },
+      {
+        id: "quarterly",
+        name: "Quarterly",
+        config: {
+          pattern: "custom",
+          frequency: "quarterly",
+          endCondition: "never",
+          interval: 3,
+        },
+        complexity: 4,
+      },
+      {
+        id: "yearly",
+        name: "Yearly",
+        config: {
+          pattern: "yearly",
+          frequency: "yearly",
+          endCondition: "never",
+          interval: 1,
+        },
+        complexity: 4,
+      },
+      {
+        id: "custom-weekly",
+        name: "Custom Weekly (Mon, Wed, Fri)",
+        config: {
+          pattern: "custom",
+          frequency: "weekly",
+          endCondition: "never",
+          interval: 1,
+          customDays: [1, 3, 5], // Monday, Wednesday, Friday
+        },
+        complexity: 5,
+      },
+      {
+        id: "custom-monthly",
+        name: "Custom Monthly (1st & 15th)",
+        config: {
+          pattern: "custom",
+          frequency: "monthly",
+          endCondition: "never",
+          interval: 1,
+          customMonthDays: [1, 15],
+        },
+        complexity: 6,
+      },
     ];
 
     // Add complexity scores
-    return presets.map(preset => ({
+    return presets.map((preset) => ({
       ...preset,
-      complexity: this.getPatternComplexityScore(preset.config)
+      complexity: this.getPatternComplexityScore(preset.config),
     }));
   }
 }

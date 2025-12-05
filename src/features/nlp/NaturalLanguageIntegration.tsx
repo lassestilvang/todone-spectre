@@ -1,7 +1,7 @@
-import React from 'react';
-import { useNlpParser } from '../../hooks/useNlpParser';
-import { useTaskService } from '../../services/taskService';
-import { Button, Box, Text, useToast } from '@chakra-ui/react';
+import React from "react";
+import { useNlpParser } from "../../hooks/useNlpParser";
+import { useTaskService } from "../../services/taskService";
+import { Button, Box, Text, useToast } from "@chakra-ui/react";
 
 interface NaturalLanguageIntegrationProps {
   onTaskCreated?: (task: any) => void;
@@ -9,11 +9,9 @@ interface NaturalLanguageIntegrationProps {
   debug?: boolean;
 }
 
-export const NaturalLanguageIntegration: React.FC<NaturalLanguageIntegrationProps> = ({
-  onTaskCreated,
-  defaultProject,
-  debug = false
-}) => {
+export const NaturalLanguageIntegration: React.FC<
+  NaturalLanguageIntegrationProps
+> = ({ onTaskCreated, defaultProject, debug = false }) => {
   const { parseWithContext } = useNlpParser({ debug });
   const { createTask } = useTaskService();
   const toast = useToast();
@@ -21,48 +19,49 @@ export const NaturalLanguageIntegration: React.FC<NaturalLanguageIntegrationProp
   const handleCreateTaskFromText = async (text: string) => {
     try {
       const parsedResult = await parseWithContext(text, {
-        defaultProject
+        defaultProject,
       });
 
       if (!parsedResult.title) {
-        throw new Error('No task title could be extracted');
+        throw new Error("No task title could be extracted");
       }
 
       const taskData = {
         title: parsedResult.title,
-        description: parsedResult.description || '',
+        description: parsedResult.description || "",
         dueDate: parsedResult.dueDate,
-        priority: parsedResult.priority || 'medium',
+        priority: parsedResult.priority || "medium",
         labels: parsedResult.labels || [],
         project: parsedResult.project || defaultProject,
-        status: 'pending'
+        status: "pending",
       };
 
       const createdTask = await createTask(taskData);
 
       if (debug) {
-        console.log('Created task from NLP:', createdTask);
+        console.log("Created task from NLP:", createdTask);
       }
 
       onTaskCreated?.(createdTask);
 
       toast({
-        title: 'Task created',
+        title: "Task created",
         description: `Successfully created task: ${createdTask.title}`,
-        status: 'success',
+        status: "success",
         duration: 3000,
-        isClosable: true
+        isClosable: true,
       });
 
       return createdTask;
     } catch (error) {
-      console.error('Failed to create task from NLP:', error);
+      console.error("Failed to create task from NLP:", error);
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to create task',
-        status: 'error',
+        title: "Error",
+        description:
+          error instanceof Error ? error.message : "Failed to create task",
+        status: "error",
         duration: 3000,
-        isClosable: true
+        isClosable: true,
       });
       throw error;
     }
@@ -76,7 +75,9 @@ export const NaturalLanguageIntegration: React.FC<NaturalLanguageIntegrationProp
       <Button
         size="sm"
         colorScheme="blue"
-        onClick={() => handleCreateTaskFromText('Sample task created via NLP integration')}
+        onClick={() =>
+          handleCreateTaskFromText("Sample task created via NLP integration")
+        }
       >
         Test Integration
       </Button>

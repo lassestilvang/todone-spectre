@@ -1,4 +1,4 @@
-import { User } from './user';
+import { User } from "./user";
 
 /**
  * Collaboration Team Interface
@@ -22,7 +22,7 @@ export interface CollaborationTeam {
   /**
    * Team privacy setting
    */
-  privacySetting: 'public' | 'private' | 'team-only';
+  privacySetting: "public" | "private" | "team-only";
 
   /**
    * Team owner ID
@@ -92,12 +92,12 @@ export interface CollaborationMember {
   /**
    * Member role in the team
    */
-  role: 'admin' | 'member' | 'guest';
+  role: "admin" | "member" | "guest";
 
   /**
    * Member status
    */
-  status: 'active' | 'inactive' | 'pending';
+  status: "active" | "inactive" | "pending";
 
   /**
    * Date when member joined the team
@@ -195,7 +195,14 @@ export interface CollaborationActivity {
   /**
    * Activity type
    */
-  type: 'message' | 'file' | 'task' | 'other' | 'member_added' | 'member_removed' | 'settings_updated';
+  type:
+    | "message"
+    | "file"
+    | "task"
+    | "other"
+    | "member_added"
+    | "member_removed"
+    | "settings_updated";
 
   /**
    * Activity timestamp
@@ -221,17 +228,25 @@ export interface CollaborationActivity {
 /**
  * Create Team DTO
  */
-export interface CreateTeamDto extends Omit<CollaborationTeam, 'id' | 'createdAt' | 'updatedAt' | 'memberCount' | 'activityCount' | 'members'> {
+export interface CreateTeamDto extends Omit<
+  CollaborationTeam,
+  "id" | "createdAt" | "updatedAt" | "memberCount" | "activityCount" | "members"
+> {
   /**
    * Initial team members
    */
-  initialMembers?: Omit<CollaborationMember, 'id' | 'teamId' | 'joinedAt'>[];
+  initialMembers?: Omit<CollaborationMember, "id" | "teamId" | "joinedAt">[];
 }
 
 /**
  * Update Team DTO
  */
-export interface UpdateTeamDto extends Partial<Omit<CollaborationTeam, 'id' | 'createdAt' | 'updatedAt' | 'memberCount' | 'activityCount'>> {}
+export interface UpdateTeamDto extends Partial<
+  Omit<
+    CollaborationTeam,
+    "id" | "createdAt" | "updatedAt" | "memberCount" | "activityCount"
+  >
+> {}
 
 /**
  * Team Member Statistics
@@ -259,14 +274,14 @@ export interface TeamActivityStatistics {
  * Collaboration Event Types
  */
 export type CollaborationEventType =
-  | 'team_created'
-  | 'team_updated'
-  | 'team_deleted'
-  | 'member_added'
-  | 'member_removed'
-  | 'member_role_updated'
-  | 'activity_created'
-  | 'settings_updated';
+  | "team_created"
+  | "team_updated"
+  | "team_deleted"
+  | "member_added"
+  | "member_removed"
+  | "member_role_updated"
+  | "activity_created"
+  | "settings_updated";
 
 /**
  * Collaboration Event Interface

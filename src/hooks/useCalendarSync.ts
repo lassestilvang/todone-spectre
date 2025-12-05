@@ -1,11 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
-import { CalendarSyncService } from '../services/calendarSyncService';
-import { CalendarType, CalendarSyncStatus } from '../types/calendarTypes';
+import { useState, useEffect, useCallback } from "react";
+import { CalendarSyncService } from "../services/calendarSyncService";
+import { CalendarType, CalendarSyncStatus } from "../types/calendarTypes";
 
 export const useCalendarSync = () => {
-  const [syncStatus, setSyncStatus] = useState<CalendarSyncStatus>('idle');
+  const [syncStatus, setSyncStatus] = useState<CalendarSyncStatus>("idle");
   const [lastSynced, setLastSynced] = useState<Date | undefined>(undefined);
-  const [availableCalendars, setAvailableCalendars] = useState<CalendarType[]>([]);
+  const [availableCalendars, setAvailableCalendars] = useState<CalendarType[]>(
+    [],
+  );
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -19,7 +21,11 @@ export const useCalendarSync = () => {
       const calendars = await CalendarSyncService.getAvailableCalendars();
       setAvailableCalendars(calendars);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to initialize calendars'));
+      setError(
+        err instanceof Error
+          ? err
+          : new Error("Failed to initialize calendars"),
+      );
     } finally {
       setIsLoading(false);
     }
@@ -32,34 +38,34 @@ export const useCalendarSync = () => {
     try {
       setIsLoading(true);
       setError(null);
-      setSyncStatus('syncing');
+      setSyncStatus("syncing");
 
       const result = await CalendarSyncService.syncCalendars(calendarIds);
 
       if (result.success) {
-        setSyncStatus('completed');
+        setSyncStatus("completed");
         setLastSynced(new Date());
         setError(null);
         return {
           success: true,
-          syncedEvents: result.syncedEvents
+          syncedEvents: result.syncedEvents,
         };
       } else {
-        setSyncStatus('error');
+        setSyncStatus("error");
         if (result.error) {
           setError(result.error);
         }
         return {
           success: false,
-          syncedEvents: []
+          syncedEvents: [],
         };
       }
     } catch (err) {
-      setSyncStatus('error');
-      setError(err instanceof Error ? err : new Error('Sync failed'));
+      setSyncStatus("error");
+      setError(err instanceof Error ? err : new Error("Sync failed"));
       return {
         success: false,
-        syncedEvents: []
+        syncedEvents: [],
       };
     } finally {
       setIsLoading(false);
@@ -101,6 +107,6 @@ export const useCalendarSync = () => {
     isLoading,
     syncCalendars,
     getSyncStatus,
-    refreshCalendars
+    refreshCalendars,
   };
 };

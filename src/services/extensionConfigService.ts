@@ -1,4 +1,4 @@
-import { ExtensionConfig } from '../types/extensionTypes';
+import { ExtensionConfig } from "../types/extensionTypes";
 
 /**
  * Extension Config Service - Service for managing extension configuration
@@ -27,7 +27,7 @@ class ExtensionConfigService {
         await this.saveConfig(this.config);
       }
     } catch (error) {
-      console.error('Failed to initialize config service:', error);
+      console.error("Failed to initialize config service:", error);
       // Use default config if initialization fails
       this.config = this.getDefaultConfig();
     }
@@ -38,10 +38,10 @@ class ExtensionConfigService {
    */
   private async loadConfig(): Promise<ExtensionConfig | null> {
     try {
-      const result = await chrome.storage.sync.get('extensionConfig');
+      const result = await chrome.storage.sync.get("extensionConfig");
       return result.extensionConfig || null;
     } catch (error) {
-      console.error('Failed to load config:', error);
+      console.error("Failed to load config:", error);
       return null;
     }
   }
@@ -53,7 +53,7 @@ class ExtensionConfigService {
     try {
       await chrome.storage.sync.set({ extensionConfig: config });
     } catch (error) {
-      console.error('Failed to save config:', error);
+      console.error("Failed to save config:", error);
       throw error;
     }
   }
@@ -71,7 +71,10 @@ class ExtensionConfigService {
   public async updateConfig(config: Partial<ExtensionConfig>): Promise<void> {
     try {
       // Validate the new configuration
-      const validatedConfig = this.validateConfig({ ...this.config, ...config });
+      const validatedConfig = this.validateConfig({
+        ...this.config,
+        ...config,
+      });
 
       // Update and save
       this.config = validatedConfig;
@@ -80,7 +83,7 @@ class ExtensionConfigService {
       // Notify listeners
       this.notifyConfigListeners(validatedConfig);
     } catch (error) {
-      console.error('Failed to update config:', error);
+      console.error("Failed to update config:", error);
       throw error;
     }
   }
@@ -94,7 +97,7 @@ class ExtensionConfigService {
       await this.saveConfig(this.config);
       this.notifyConfigListeners(this.config);
     } catch (error) {
-      console.error('Failed to reset config:', error);
+      console.error("Failed to reset config:", error);
       throw error;
     }
   }
@@ -104,13 +107,13 @@ class ExtensionConfigService {
    */
   private validateConfig(config: ExtensionConfig): ExtensionConfig {
     // Ensure sync interval is valid
-    if (typeof config.syncInterval !== 'number' || config.syncInterval <= 0) {
+    if (typeof config.syncInterval !== "number" || config.syncInterval <= 0) {
       config.syncInterval = 300000; // Default: 5 minutes
     }
 
     // Ensure theme is valid
-    if (!['system', 'light', 'dark'].includes(config.theme)) {
-      config.theme = 'system';
+    if (!["system", "light", "dark"].includes(config.theme)) {
+      config.theme = "system";
     }
 
     return config;
@@ -125,13 +128,13 @@ class ExtensionConfigService {
       autoSyncEnabled: true,
       syncInterval: 300000, // 5 minutes
       showNotifications: true,
-      theme: 'system',
+      theme: "system",
       quickActions: [
-        { id: 'create-task', label: 'Create Task', icon: 'plus' },
-        { id: 'view-tasks', label: 'View Tasks', icon: 'list' },
-        { id: 'sync-data', label: 'Sync Data', icon: 'sync' },
-        { id: 'settings', label: 'Settings', icon: 'cog' }
-      ]
+        { id: "create-task", label: "Create Task", icon: "plus" },
+        { id: "view-tasks", label: "View Tasks", icon: "list" },
+        { id: "sync-data", label: "Sync Data", icon: "sync" },
+        { id: "settings", label: "Settings", icon: "cog" },
+      ],
     };
   }
 
@@ -145,9 +148,11 @@ class ExtensionConfigService {
   /**
    * Remove config listener
    */
-  public removeConfigListener(callback: (config: ExtensionConfig) => void): void {
+  public removeConfigListener(
+    callback: (config: ExtensionConfig) => void,
+  ): void {
     this.configListeners = this.configListeners.filter(
-      listener => listener !== callback
+      (listener) => listener !== callback,
     );
   }
 
@@ -155,11 +160,11 @@ class ExtensionConfigService {
    * Notify all config listeners
    */
   private notifyConfigListeners(config: ExtensionConfig): void {
-    this.configListeners.forEach(listener => {
+    this.configListeners.forEach((listener) => {
       try {
         listener(config);
       } catch (error) {
-        console.error('Config listener error:', error);
+        console.error("Config listener error:", error);
       }
     });
   }
@@ -171,7 +176,7 @@ class ExtensionConfigService {
     try {
       return JSON.stringify(this.config, null, 2);
     } catch (error) {
-      console.error('Failed to export config:', error);
+      console.error("Failed to export config:", error);
       throw error;
     }
   }
@@ -188,7 +193,7 @@ class ExtensionConfigService {
       await this.saveConfig(validatedConfig);
       this.notifyConfigListeners(validatedConfig);
     } catch (error) {
-      console.error('Failed to import config:', error);
+      console.error("Failed to import config:", error);
       throw error;
     }
   }
@@ -196,7 +201,9 @@ class ExtensionConfigService {
   /**
    * Get configuration value by key
    */
-  public getConfigValue<K extends keyof ExtensionConfig>(key: K): ExtensionConfig[K] {
+  public getConfigValue<K extends keyof ExtensionConfig>(
+    key: K,
+  ): ExtensionConfig[K] {
     return this.config[key];
   }
 
@@ -205,7 +212,7 @@ class ExtensionConfigService {
    */
   public async setConfigValue<K extends keyof ExtensionConfig>(
     key: K,
-    value: ExtensionConfig[K]
+    value: ExtensionConfig[K],
   ): Promise<void> {
     try {
       const updatedConfig = { ...this.config, [key]: value };
@@ -244,7 +251,7 @@ class ExtensionConfigService {
   /**
    * Get theme setting
    */
-  public getTheme(): ExtensionConfig['theme'] {
+  public getTheme(): ExtensionConfig["theme"] {
     return this.config.theme;
   }
 

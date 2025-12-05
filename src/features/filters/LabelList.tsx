@@ -1,6 +1,6 @@
-import React from 'react';
-import LabelItem from './LabelItem';
-import { Label } from '../../types/models';
+import React from "react";
+import LabelItem from "./LabelItem";
+import { Label } from "../../types/models";
 
 interface LabelListProps {
   labels: Label[];
@@ -15,7 +15,7 @@ const LabelList: React.FC<LabelListProps> = ({
   onEdit,
   onDelete,
   onSelect,
-  selectedLabelId
+  selectedLabelId,
 }) => {
   return (
     <div className="space-y-2">

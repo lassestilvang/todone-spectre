@@ -1,5 +1,5 @@
-import React from 'react';
-import { CalendarEventType } from '../../../types/calendarTypes';
+import React from "react";
+import { CalendarEventType } from "../../../types/calendarTypes";
 
 interface CalendarEventDisplayProps {
   event: CalendarEventType;
@@ -14,40 +14,51 @@ export const CalendarEventDisplay: React.FC<CalendarEventDisplayProps> = ({
   onEdit,
   onDelete,
   onLinkTask,
-  showActions = true
+  showActions = true,
 }) => {
   const getPriorityColor = () => {
     switch (event.priority) {
-      case 'high': return '#ff6b6b';
-      case 'medium': return '#ffd93d';
-      case 'low': return '#6bcf7f';
-      default: return '#4dabf7';
+      case "high":
+        return "#ff6b6b";
+      case "medium":
+        return "#ffd93d";
+      case "low":
+        return "#6bcf7f";
+      default:
+        return "#4dabf7";
     }
   };
 
   const formatDateTime = (dateString: string | Date) => {
     const date = new Date(dateString);
     return date.toLocaleString([], {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   return (
-    <div className="calendar-event-display" style={{ borderLeft: `4px solid ${getPriorityColor()}` }}>
+    <div
+      className="calendar-event-display"
+      style={{ borderLeft: `4px solid ${getPriorityColor()}` }}
+    >
       <div className="event-header">
         <h4 className="event-title">{event.title}</h4>
-        <span className="event-priority" style={{ backgroundColor: getPriorityColor() }}>
+        <span
+          className="event-priority"
+          style={{ backgroundColor: getPriorityColor() }}
+        >
           {event.priority}
         </span>
       </div>
 
       <div className="event-details">
         <div className="event-time">
-          {formatDateTime(event.startDate)} - {event.endDate ? formatDateTime(event.endDate) : 'No end time'}
+          {formatDateTime(event.startDate)} -{" "}
+          {event.endDate ? formatDateTime(event.endDate) : "No end time"}
         </div>
 
         {event.location && (

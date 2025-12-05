@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Comment } from '../../types/common';
-import { Button } from '../../components/ui/button';
-import { Textarea } from '../../components/ui/textarea';
-import { useCommentForm } from '../../hooks/useCommentForm';
+import React, { useState, useEffect } from "react";
+import { Comment } from "../../types/common";
+import { Button } from "../../components/ui/button";
+import { Textarea } from "../../components/ui/textarea";
+import { useCommentForm } from "../../hooks/useCommentForm";
 
 interface CommentEditorProps {
   taskId: string;
@@ -15,9 +15,9 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
   taskId,
   comment,
   onSave,
-  onCancel
+  onCancel,
 }) => {
-  const [content, setContent] = useState(comment?.content || '');
+  const [content, setContent] = useState(comment?.content || "");
   const { validateComment, errors } = useCommentForm();
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
 
       <div className="flex items-center space-x-2">
         <Button type="submit" variant="primary">
-          {comment ? 'Update Comment' : 'Post Comment'}
+          {comment ? "Update Comment" : "Post Comment"}
         </Button>
         {onCancel && (
           <Button type="button" variant="secondary" onClick={onCancel}>

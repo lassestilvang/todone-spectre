@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useOfflineStore } from '../../../store/useOfflineStore';
-import { useOfflineSync } from '../../../hooks/useOfflineSync';
-import { OfflineSyncStatus } from '../../types/offlineTypes';
+import React, { useState, useEffect } from "react";
+import { useOfflineStore } from "../../../store/useOfflineStore";
+import { useOfflineSync } from "../../../hooks/useOfflineSync";
+import { OfflineSyncStatus } from "../../types/offlineTypes";
 
 interface OfflineSyncEnhancedProps {
   autoSync?: boolean;
@@ -24,7 +24,7 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
   showSyncHistory = true,
   onSyncComplete,
   onSyncError,
-  onConflictDetected
+  onConflictDetected,
 }) => {
   const {
     isOffline,
@@ -41,9 +41,9 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
       syncDuration,
       isSyncing,
       isPaused,
-      syncStatistics
+      syncStatistics,
     },
-    settings: { conflictResolution }
+    settings: { conflictResolution },
   } = useOfflineStore();
 
   const {
@@ -52,7 +52,7 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
     pauseSync,
     resumeSync,
     clearSyncQueue,
-    getQueueStatistics
+    getQueueStatistics,
   } = useOfflineSync();
 
   const [progress, setProgress] = useState<number>(0);
@@ -62,20 +62,23 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
   const [showConflictDetails, setShowConflictDetails] = useState(false);
 
   useEffect(() => {
-    if (syncStatus === 'syncing') {
+    if (syncStatus === "syncing") {
       // Simulate progress for demo purposes
       const startTime = Date.now();
       const totalTime = 5000; // 5 seconds for demo
 
       const progressInterval = setInterval(() => {
         const elapsed = Date.now() - startTime;
-        const newProgress = Math.min(90, Math.floor((elapsed / totalTime) * 100));
+        const newProgress = Math.min(
+          90,
+          Math.floor((elapsed / totalTime) * 100),
+        );
         setProgress(newProgress);
         setTimeRemaining(Math.max(0, Math.floor((totalTime - elapsed) / 1000)));
       }, 200);
 
       return () => clearInterval(progressInterval);
-    } else if (syncStatus === 'completed') {
+    } else if (syncStatus === "completed") {
       setProgress(100);
       setTimeout(() => setProgress(0), 1000);
     }
@@ -88,9 +91,9 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
   }, [syncError, onSyncError]);
 
   useEffect(() => {
-    if (syncStatus === 'completed' && onSyncComplete) {
+    if (syncStatus === "completed" && onSyncComplete) {
       onSyncComplete(true);
-    } else if (syncStatus === 'error' && onSyncComplete) {
+    } else if (syncStatus === "error" && onSyncComplete) {
       onSyncComplete(false);
     }
   }, [syncStatus, onSyncComplete]);
@@ -117,59 +120,59 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
 
   const getStatusText = () => {
     switch (syncStatus) {
-      case 'idle':
-        return 'Ready to sync';
-      case 'syncing':
-        return 'Syncing...';
-      case 'completed':
-        return 'Sync completed';
-      case 'error':
-        return 'Sync failed';
-      case 'paused':
-        return 'Sync paused';
-      case 'queued':
-        return 'Sync queued';
+      case "idle":
+        return "Ready to sync";
+      case "syncing":
+        return "Syncing...";
+      case "completed":
+        return "Sync completed";
+      case "error":
+        return "Sync failed";
+      case "paused":
+        return "Sync paused";
+      case "queued":
+        return "Sync queued";
       default:
-        return 'Unknown status';
+        return "Unknown status";
     }
   };
 
   const getStatusClass = () => {
     switch (syncStatus) {
-      case 'idle':
-        return 'offline-sync-idle';
-      case 'syncing':
-        return 'offline-sync-syncing';
-      case 'completed':
-        return 'offline-sync-completed';
-      case 'error':
-        return 'offline-sync-error';
-      case 'paused':
-        return 'offline-sync-paused';
-      case 'queued':
-        return 'offline-sync-queued';
+      case "idle":
+        return "offline-sync-idle";
+      case "syncing":
+        return "offline-sync-syncing";
+      case "completed":
+        return "offline-sync-completed";
+      case "error":
+        return "offline-sync-error";
+      case "paused":
+        return "offline-sync-paused";
+      case "queued":
+        return "offline-sync-queued";
       default:
-        return 'offline-sync-unknown';
+        return "offline-sync-unknown";
     }
   };
 
   const getConflictResolutionText = () => {
     switch (conflictResolution) {
-      case 'local-wins':
-        return 'Local Changes Win';
-      case 'remote-wins':
-        return 'Remote Changes Win';
-      case 'manual':
-        return 'Manual Resolution';
-      case 'timestamp':
-        return 'Newest Changes Win';
+      case "local-wins":
+        return "Local Changes Win";
+      case "remote-wins":
+        return "Remote Changes Win";
+      case "manual":
+        return "Manual Resolution";
+      case "timestamp":
+        return "Newest Changes Win";
       default:
-        return 'Unknown';
+        return "Unknown";
     }
   };
 
   const formatDuration = (milliseconds: number | null) => {
-    if (!milliseconds) return 'N/A';
+    if (!milliseconds) return "N/A";
     const seconds = Math.floor(milliseconds / 1000);
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
@@ -183,35 +186,40 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
   const simulateConflictDetection = () => {
     const demoConflicts = [
       {
-        id: 'conflict-1',
-        type: 'task',
-        taskId: 'task-123',
-        localVersion: 'Updated task title offline',
-        remoteVersion: 'Updated task title online',
+        id: "conflict-1",
+        type: "task",
+        taskId: "task-123",
+        localVersion: "Updated task title offline",
+        remoteVersion: "Updated task title online",
         timestamp: new Date(Date.now() - 3600000),
-        resolution: 'pending'
+        resolution: "pending",
       },
       {
-        id: 'conflict-2',
-        type: 'project',
-        projectId: 'project-456',
-        localVersion: 'Project renamed offline',
-        remoteVersion: 'Project renamed online',
+        id: "conflict-2",
+        type: "project",
+        projectId: "project-456",
+        localVersion: "Project renamed offline",
+        remoteVersion: "Project renamed online",
         timestamp: new Date(Date.now() - 1800000),
-        resolution: 'pending'
-      }
+        resolution: "pending",
+      },
     ];
 
     setConflicts(demoConflicts);
     if (onConflictDetected) {
-      demoConflicts.forEach(conflict => onConflictDetected(conflict));
+      demoConflicts.forEach((conflict) => onConflictDetected(conflict));
     }
   };
 
-  const resolveConflict = (conflictId: string, resolution: 'local' | 'remote' | 'manual') => {
-    setConflicts(prev => prev.map(conflict =>
-      conflict.id === conflictId ? { ...conflict, resolution } : conflict
-    ));
+  const resolveConflict = (
+    conflictId: string,
+    resolution: "local" | "remote" | "manual",
+  ) => {
+    setConflicts((prev) =>
+      prev.map((conflict) =>
+        conflict.id === conflictId ? { ...conflict, resolution } : conflict,
+      ),
+    );
   };
 
   return (
@@ -233,9 +241,11 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
           <h4>Conflict Resolution Strategy</h4>
           <div className="conflict-strategy">
             <span className="strategy-label">Current Strategy:</span>
-            <span className="strategy-value">{getConflictResolutionText()}</span>
+            <span className="strategy-value">
+              {getConflictResolutionText()}
+            </span>
 
-            {conflictResolution === 'manual' && (
+            {conflictResolution === "manual" && (
               <button
                 className="detect-conflicts-button"
                 onClick={simulateConflictDetection}
@@ -253,16 +263,21 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
                 className="toggle-conflict-details"
                 onClick={() => setShowConflictDetails(!showConflictDetails)}
               >
-                {showConflictDetails ? 'Hide' : 'Show'} Conflict Details ({conflicts.length})
+                {showConflictDetails ? "Hide" : "Show"} Conflict Details (
+                {conflicts.length})
               </button>
 
               {showConflictDetails && (
                 <div className="conflict-list">
-                  {conflicts.map(conflict => (
+                  {conflicts.map((conflict) => (
                     <div key={conflict.id} className="conflict-item">
                       <div className="conflict-header">
-                        <span className="conflict-type">{conflict.type} conflict</span>
-                        <span className="conflict-id">ID: {conflict.taskId || conflict.projectId}</span>
+                        <span className="conflict-type">
+                          {conflict.type} conflict
+                        </span>
+                        <span className="conflict-id">
+                          ID: {conflict.taskId || conflict.projectId}
+                        </span>
                       </div>
 
                       <div className="conflict-versions">
@@ -284,22 +299,28 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
                       </div>
 
                       <div className="conflict-resolution-controls">
-                        {conflict.resolution === 'pending' ? (
+                        {conflict.resolution === "pending" ? (
                           <>
                             <button
-                              onClick={() => resolveConflict(conflict.id, 'local')}
+                              onClick={() =>
+                                resolveConflict(conflict.id, "local")
+                              }
                               className="resolve-local"
                             >
                               Keep Local
                             </button>
                             <button
-                              onClick={() => resolveConflict(conflict.id, 'remote')}
+                              onClick={() =>
+                                resolveConflict(conflict.id, "remote")
+                              }
                               className="resolve-remote"
                             >
                               Keep Remote
                             </button>
                             <button
-                              onClick={() => resolveConflict(conflict.id, 'manual')}
+                              onClick={() =>
+                                resolveConflict(conflict.id, "manual")
+                              }
                               className="resolve-manual"
                             >
                               Manual Merge
@@ -320,22 +341,21 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
         </div>
       )}
 
-      {showProgress && syncStatus === 'syncing' && (
+      {showProgress && syncStatus === "syncing" && (
         <div className="offline-sync-progress">
           <div
             className="offline-sync-progress-bar"
             style={{ width: `${progress}%` }}
           />
           <span className="offline-sync-progress-text">
-            {progress}% {timeRemaining !== null && `(${timeRemaining}s remaining)`}
+            {progress}%{" "}
+            {timeRemaining !== null && `(${timeRemaining}s remaining)`}
           </span>
         </div>
       )}
 
       {syncError && (
-        <div className="offline-sync-error">
-          Error: {syncError.message}
-        </div>
+        <div className="offline-sync-error">Error: {syncError.message}</div>
       )}
 
       {/* Advanced Statistics */}
@@ -370,13 +390,17 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
             <div className="stat-item">
               <span className="stat-label">Success Rate:</span>
               <span className="stat-value">
-                {syncStatistics.successRate ? `${Math.round(syncStatistics.successRate * 100)}%` : 'N/A'}
+                {syncStatistics.successRate
+                  ? `${Math.round(syncStatistics.successRate * 100)}%`
+                  : "N/A"}
               </span>
             </div>
             <div className="stat-item">
               <span className="stat-label">Avg Duration:</span>
               <span className="stat-value">
-                {syncStatistics.averageDuration ? `${Math.round(syncStatistics.averageDuration)}ms` : 'N/A'}
+                {syncStatistics.averageDuration
+                  ? `${Math.round(syncStatistics.averageDuration)}ms`
+                  : "N/A"}
               </span>
             </div>
           </div>
@@ -388,7 +412,10 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
         <div className="sync-history-section">
           <h4>Sync History</h4>
           <div className="sync-history-controls">
-            <button onClick={() => setSyncHistory([])} disabled={syncHistory.length === 0}>
+            <button
+              onClick={() => setSyncHistory([])}
+              disabled={syncHistory.length === 0}
+            >
               Clear History
             </button>
           </div>
@@ -399,10 +426,13 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
             <div className="sync-history-list">
               {syncHistory.map((entry, index) => (
                 <div key={index} className="sync-history-item">
-                  <div className="sync-history-time">{entry.timestamp.toLocaleString()}</div>
+                  <div className="sync-history-time">
+                    {entry.timestamp.toLocaleString()}
+                  </div>
                   <div className="sync-history-status">{entry.status}</div>
                   <div className="sync-history-details">
-                    {entry.processedItems} items processed, {entry.failedItems} failed
+                    {entry.processedItems} items processed, {entry.failedItems}{" "}
+                    failed
                   </div>
                 </div>
               ))}
@@ -415,26 +445,26 @@ export const OfflineSyncEnhanced: React.FC<OfflineSyncEnhancedProps> = ({
         <button
           className="offline-sync-button"
           onClick={handleManualSync}
-          disabled={syncStatus === 'syncing' || (pendingChanges === 0 && queue.totalCount === 0)}
+          disabled={
+            syncStatus === "syncing" ||
+            (pendingChanges === 0 && queue.totalCount === 0)
+          }
         >
-          {syncStatus === 'syncing' ? 'Syncing...' : 'Sync Now'}
+          {syncStatus === "syncing" ? "Syncing..." : "Sync Now"}
         </button>
 
         {failedItems > 0 && (
           <button
             className="offline-sync-retry-failed"
             onClick={handleRetryFailed}
-            disabled={syncStatus === 'syncing'}
+            disabled={syncStatus === "syncing"}
           >
             Retry Failed ({failedItems})
           </button>
         )}
 
         {isPaused ? (
-          <button
-            className="offline-sync-resume"
-            onClick={handleResumeSync}
-          >
+          <button className="offline-sync-resume" onClick={handleResumeSync}>
             Resume Sync
           </button>
         ) : (

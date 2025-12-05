@@ -1,4 +1,4 @@
-import { Task } from '../types/task';
+import { Task } from "../types/task";
 
 /**
  * Task hierarchy utility functions
@@ -12,12 +12,12 @@ export const buildCompleteTaskHierarchy = (tasks: Task[]): Task[] => {
   const rootTasks: Task[] = [];
 
   // Create a map of all tasks and initialize children arrays
-  tasks.forEach(task => {
+  tasks.forEach((task) => {
     taskMap.set(task.id, { ...task, children: [] });
   });
 
   // Build parent-child relationships
-  tasks.forEach(task => {
+  tasks.forEach((task) => {
     if (task.parentTaskId) {
       const parent = taskMap.get(task.parentTaskId);
       if (parent) {
@@ -28,7 +28,7 @@ export const buildCompleteTaskHierarchy = (tasks: Task[]): Task[] => {
   });
 
   // Find root tasks (tasks with no parent or parent not in the list)
-  tasks.forEach(task => {
+  tasks.forEach((task) => {
     if (!task.parentTaskId || !taskMap.has(task.parentTaskId)) {
       rootTasks.push(taskMap.get(task.id)!);
     }
@@ -44,7 +44,7 @@ export const calculateHierarchyCompletion = (hierarchy: Task[]): number => {
   const allTasks = flattenHierarchy(hierarchy);
   if (allTasks.length === 0) return 0;
 
-  const completedTasks = allTasks.filter(task => task.completed).length;
+  const completedTasks = allTasks.filter((task) => task.completed).length;
   return Math.round((completedTasks / allTasks.length) * 100);
 };
 
@@ -55,7 +55,7 @@ export const flattenHierarchy = (hierarchy: Task[]): Task[] => {
   const flatTasks: Task[] = [];
 
   const traverse = (tasks: Task[]) => {
-    tasks.forEach(task => {
+    tasks.forEach((task) => {
       flatTasks.push(task);
       if (task.children && task.children.length > 0) {
         traverse(task.children);
@@ -70,11 +70,14 @@ export const flattenHierarchy = (hierarchy: Task[]): Task[] => {
 /**
  * Find all descendants of a task in hierarchy
  */
-export const findAllDescendants = (taskId: string, hierarchy: Task[]): Task[] => {
+export const findAllDescendants = (
+  taskId: string,
+  hierarchy: Task[],
+): Task[] => {
   const descendants: Task[] = [];
 
   const findDescendants = (tasks: Task[]) => {
-    tasks.forEach(task => {
+    tasks.forEach((task) => {
       if (task.id === taskId) {
         if (task.children) {
           descendants.push(...task.children);
@@ -93,9 +96,12 @@ export const findAllDescendants = (taskId: string, hierarchy: Task[]): Task[] =>
 /**
  * Find task by ID in hierarchy
  */
-export const findTaskInHierarchy = (taskId: string, hierarchy: Task[]): Task | undefined => {
+export const findTaskInHierarchy = (
+  taskId: string,
+  hierarchy: Task[],
+): Task | undefined => {
   // Check current level
-  const found = hierarchy.find(task => task.id === taskId);
+  const found = hierarchy.find((task) => task.id === taskId);
   if (found) return found;
 
   // Check children recursively
@@ -112,7 +118,10 @@ export const findTaskInHierarchy = (taskId: string, hierarchy: Task[]): Task | u
 /**
  * Get task path from root to task
  */
-export const getTaskPathInHierarchy = (taskId: string, hierarchy: Task[]): Task[] | null => {
+export const getTaskPathInHierarchy = (
+  taskId: string,
+  hierarchy: Task[],
+): Task[] | null => {
   // Find the task first
   const task = findTaskInHierarchy(taskId, hierarchy);
   if (!task) return null;
@@ -152,36 +161,49 @@ export const getTaskPathInHierarchy = (taskId: string, hierarchy: Task[]): Task[
  */
 export const sortHierarchy = (
   hierarchy: Task[],
-  sortBy: 'priority' | 'dueDate' | 'createdAt' | 'title' = 'priority',
-  sortDirection: 'asc' | 'desc' = 'asc'
+  sortBy: "priority" | "dueDate" | "createdAt" | "title" = "priority",
+  sortDirection: "asc" | "desc" = "asc",
 ): Task[] => {
-  const priorityOrder: Record<Task['priority'], number> = {
-    'critical': 1,
-    'high': 2,
-    'medium': 3,
-    'low': 4
+  const priorityOrder: Record<Task["priority"], number> = {
+    critical: 1,
+    high: 2,
+    medium: 3,
+    low: 4,
   };
 
   // Sort the current level
   const sortedHierarchy = [...hierarchy].sort((a, b) => {
     switch (sortBy) {
-      case 'priority':
-        return (priorityOrder[a.priority] - priorityOrder[b.priority]) * (sortDirection === 'asc' ? 1 : -1);
-      case 'dueDate':
-        return ((a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0)) * (sortDirection === 'asc' ? 1 : -1);
-      case 'createdAt':
-        return (a.createdAt.getTime() - b.createdAt.getTime()) * (sortDirection === 'asc' ? 1 : -1);
-      case 'title':
-        return a.title.localeCompare(b.title) * (sortDirection === 'asc' ? 1 : -1);
+      case "priority":
+        return (
+          (priorityOrder[a.priority] - priorityOrder[b.priority]) *
+          (sortDirection === "asc" ? 1 : -1)
+        );
+      case "dueDate":
+        return (
+          ((a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0)) *
+          (sortDirection === "asc" ? 1 : -1)
+        );
+      case "createdAt":
+        return (
+          (a.createdAt.getTime() - b.createdAt.getTime()) *
+          (sortDirection === "asc" ? 1 : -1)
+        );
+      case "title":
+        return (
+          a.title.localeCompare(b.title) * (sortDirection === "asc" ? 1 : -1)
+        );
       default:
         return 0;
     }
   });
 
   // Recursively sort children
-  return sortedHierarchy.map(task => ({
+  return sortedHierarchy.map((task) => ({
     ...task,
-    children: task.children ? sortHierarchy(task.children, sortBy, sortDirection) : []
+    children: task.children
+      ? sortHierarchy(task.children, sortBy, sortDirection)
+      : [],
   }));
 };
 
@@ -190,17 +212,19 @@ export const sortHierarchy = (
  */
 export const filterHierarchy = (
   hierarchy: Task[],
-  filterFn: (task: Task) => boolean
+  filterFn: (task: Task) => boolean,
 ): Task[] => {
   return hierarchy
-    .map(task => {
-      const filteredChildren = task.children ? filterHierarchy(task.children, filterFn) : [];
+    .map((task) => {
+      const filteredChildren = task.children
+        ? filterHierarchy(task.children, filterFn)
+        : [];
 
       // Include task if it matches filter or has matching children
       if (filterFn(task) || filteredChildren.length > 0) {
         return {
           ...task,
-          children: filteredChildren
+          children: filteredChildren,
         };
       }
 
@@ -217,34 +241,45 @@ export const getHierarchyStatistics = (hierarchy: Task[]) => {
 
   return {
     totalTasks: allTasks.length,
-    completedTasks: allTasks.filter(task => task.completed).length,
-    incompleteTasks: allTasks.filter(task => !task.completed).length,
-    completionPercentage: allTasks.length > 0
-      ? Math.round((allTasks.filter(task => task.completed).length / allTasks.length) * 100)
-      : 0,
+    completedTasks: allTasks.filter((task) => task.completed).length,
+    incompleteTasks: allTasks.filter((task) => !task.completed).length,
+    completionPercentage:
+      allTasks.length > 0
+        ? Math.round(
+            (allTasks.filter((task) => task.completed).length /
+              allTasks.length) *
+              100,
+          )
+        : 0,
     byPriority: {
-      critical: allTasks.filter(task => task.priority === 'critical').length,
-      high: allTasks.filter(task => task.priority === 'high').length,
-      medium: allTasks.filter(task => task.priority === 'medium').length,
-      low: allTasks.filter(task => task.priority === 'low').length
+      critical: allTasks.filter((task) => task.priority === "critical").length,
+      high: allTasks.filter((task) => task.priority === "high").length,
+      medium: allTasks.filter((task) => task.priority === "medium").length,
+      low: allTasks.filter((task) => task.priority === "low").length,
     },
     byStatus: {
-      todo: allTasks.filter(task => task.status === 'todo').length,
-      'in-progress': allTasks.filter(task => task.status === 'in-progress').length,
-      completed: allTasks.filter(task => task.status === 'completed').length,
-      archived: allTasks.filter(task => task.status === 'archived').length
-    }
+      todo: allTasks.filter((task) => task.status === "todo").length,
+      "in-progress": allTasks.filter((task) => task.status === "in-progress")
+        .length,
+      completed: allTasks.filter((task) => task.status === "completed").length,
+      archived: allTasks.filter((task) => task.status === "archived").length,
+    },
   };
 };
 
 /**
  * Validate hierarchy (check for circular references, etc.)
  */
-export const validateHierarchy = (hierarchy: Task[]): { isValid: boolean; errors: string[] } => {
+export const validateHierarchy = (
+  hierarchy: Task[],
+): { isValid: boolean; errors: string[] } => {
   const errors: string[] = [];
   const taskIds = new Set<string>();
 
-  const checkCircularReferences = (task: Task, parentIds: string[] = []): boolean => {
+  const checkCircularReferences = (
+    task: Task,
+    parentIds: string[] = [],
+  ): boolean => {
     if (parentIds.includes(task.id)) {
       return true; // Circular reference found
     }
@@ -265,7 +300,7 @@ export const validateHierarchy = (hierarchy: Task[]): { isValid: boolean; errors
   const checkDuplicateIds = (tasks: Task[]): boolean => {
     let hasDuplicates = false;
 
-    tasks.forEach(task => {
+    tasks.forEach((task) => {
       if (taskIds.has(task.id)) {
         errors.push(`Duplicate task ID found: ${task.id}`);
         hasDuplicates = true;
@@ -282,7 +317,7 @@ export const validateHierarchy = (hierarchy: Task[]): { isValid: boolean; errors
   };
 
   // Check for circular references
-  hierarchy.forEach(task => {
+  hierarchy.forEach((task) => {
     checkCircularReferences(task);
   });
 
@@ -291,7 +326,7 @@ export const validateHierarchy = (hierarchy: Task[]): { isValid: boolean; errors
 
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 };
 
@@ -299,25 +334,30 @@ export const validateHierarchy = (hierarchy: Task[]): { isValid: boolean; errors
  * Convert hierarchy to nested structure for tree views
  */
 export const convertHierarchyToTree = (hierarchy: Task[]): any[] => {
-  return hierarchy.map(task => ({
+  return hierarchy.map((task) => ({
     id: task.id,
     title: task.title,
     completed: task.completed,
     priority: task.priority,
     status: task.status,
-    children: task.children ? convertHierarchyToTree(task.children) : []
+    children: task.children ? convertHierarchyToTree(task.children) : [],
   }));
 };
 
 /**
  * Find common ancestor of multiple tasks
  */
-export const findCommonAncestor = (taskIds: string[], hierarchy: Task[]): Task | null => {
+export const findCommonAncestor = (
+  taskIds: string[],
+  hierarchy: Task[],
+): Task | null => {
   if (taskIds.length === 0) return null;
 
-  const paths = taskIds.map(taskId => getTaskPathInHierarchy(taskId, hierarchy));
+  const paths = taskIds.map((taskId) =>
+    getTaskPathInHierarchy(taskId, hierarchy),
+  );
 
-  if (paths.some(path => !path)) return null;
+  if (paths.some((path) => !path)) return null;
 
   // Find the longest common prefix
   let commonAncestor: Task | null = null;
@@ -326,7 +366,9 @@ export const findCommonAncestor = (taskIds: string[], hierarchy: Task[]): Task |
   for (let i = 0; i < firstPath.length; i++) {
     const currentTask = firstPath[i];
 
-    if (paths.every(path => path && path[i] && path[i].id === currentTask.id)) {
+    if (
+      paths.every((path) => path && path[i] && path[i].id === currentTask.id)
+    ) {
       commonAncestor = currentTask;
     } else {
       break;

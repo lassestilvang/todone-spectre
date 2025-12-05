@@ -1,12 +1,13 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import RecurringTaskList from '../../features/recurring/RecurringTaskList';
-import { useRecurringTaskIntegration } from '../../hooks/useRecurringTaskIntegration';
-import { ArrowLeftIcon, PlusIcon } from '@heroicons/react/outline';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import RecurringTaskList from "../../features/recurring/RecurringTaskList";
+import { useRecurringTaskIntegration } from "../../hooks/useRecurringTaskIntegration";
+import { ArrowLeftIcon, PlusIcon } from "@heroicons/react/outline";
 
 const RecurringTasksPage: React.FC = () => {
   const navigate = useNavigate();
-  const { getRecurringTasks, deleteRecurringTaskIntegrated } = useRecurringTaskIntegration();
+  const { getRecurringTasks, deleteRecurringTaskIntegrated } =
+    useRecurringTaskIntegration();
 
   const recurringTasks = getRecurringTasks();
 
@@ -18,7 +19,7 @@ const RecurringTasksPage: React.FC = () => {
     try {
       await deleteRecurringTaskIntegrated(taskId);
     } catch (error) {
-      console.error('Failed to delete recurring task:', error);
+      console.error("Failed to delete recurring task:", error);
     }
   };
 
@@ -27,7 +28,7 @@ const RecurringTasksPage: React.FC = () => {
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center space-x-4">
           <button
-            onClick={() => navigate('/tasks')}
+            onClick={() => navigate("/tasks")}
             className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
           >
             <ArrowLeftIcon className="w-5 h-5" />
@@ -37,7 +38,7 @@ const RecurringTasksPage: React.FC = () => {
         </div>
 
         <button
-          onClick={() => navigate('/tasks/create')}
+          onClick={() => navigate("/tasks/create")}
           className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           <PlusIcon className="w-5 h-5" />
@@ -49,9 +50,11 @@ const RecurringTasksPage: React.FC = () => {
         {recurringTasks.length === 0 ? (
           <div className="p-6 text-center text-gray-500 border border-gray-200 rounded-lg">
             <p className="mb-2">No recurring tasks found.</p>
-            <p className="text-sm">Create a new recurring task to get started.</p>
+            <p className="text-sm">
+              Create a new recurring task to get started.
+            </p>
             <button
-              onClick={() => navigate('/tasks/create')}
+              onClick={() => navigate("/tasks/create")}
               className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Create Recurring Task

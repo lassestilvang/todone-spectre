@@ -1,6 +1,6 @@
-import { Comment } from '../types/common';
-import { ApiResponse } from '../types/api';
-import { API_BASE_URL } from '../config/app.config';
+import { Comment } from "../types/common";
+import { ApiResponse } from "../types/api";
+import { API_BASE_URL } from "../config/app.config";
 
 /**
  * Comment API Service - Handles all API communication for comment CRUD operations
@@ -35,14 +35,16 @@ export class CommentApi {
       user: responseData.user,
       content: responseData.content,
       attachments: responseData.attachments || [],
-      timestamp: new Date(responseData.timestamp)
+      timestamp: new Date(responseData.timestamp),
     };
   }
 
   /**
    * Handle API errors with retry logic
    */
-  private async handleApiRequest<T>(requestFn: () => Promise<Response>): Promise<ApiResponse<T>> {
+  private async handleApiRequest<T>(
+    requestFn: () => Promise<Response>,
+  ): Promise<ApiResponse<T>> {
     const MAX_RETRIES = 3;
     let retryCount = 0;
 
@@ -54,58 +56,61 @@ export class CommentApi {
           const errorData = await response.json().catch(() => ({}));
           return {
             success: false,
-            message: errorData.message || `HTTP error! status: ${response.status}`,
-            data: null
+            message:
+              errorData.message || `HTTP error! status: ${response.status}`,
+            data: null,
           };
         }
 
         const data = await response.json();
         return {
           success: true,
-          message: 'Success',
-          data: data
+          message: "Success",
+          data: data,
         };
       } catch (error) {
         retryCount++;
         if (retryCount >= MAX_RETRIES) {
           return {
             success: false,
-            message: error instanceof Error ? error.message : 'Unknown error',
-            data: null
+            message: error instanceof Error ? error.message : "Unknown error",
+            data: null,
           };
         }
         // Exponential backoff
-        await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+        await new Promise((resolve) => setTimeout(resolve, 1000 * retryCount));
       }
     }
 
     return {
       success: false,
-      message: 'Max retries exceeded',
-      data: null
+      message: "Max retries exceeded",
+      data: null,
     };
   }
 
   /**
    * Create a new comment
    */
-  async createComment(commentData: Omit<Comment, 'id'>): Promise<ApiResponse<Comment>> {
+  async createComment(
+    commentData: Omit<Comment, "id">,
+  ): Promise<ApiResponse<Comment>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(this.transformRequest(commentData))
+          body: JSON.stringify(this.transformRequest(commentData)),
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -113,8 +118,9 @@ export class CommentApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to create comment',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to create comment",
+        data: null,
       };
     }
   }
@@ -126,17 +132,19 @@ export class CommentApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}?taskId=${taskId}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((comment: any) => this.transformResponse(comment))
+          data: response.data.map((comment: any) =>
+            this.transformResponse(comment),
+          ),
         };
       }
 
@@ -144,8 +152,9 @@ export class CommentApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch comments',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to fetch comments",
+        data: null,
       };
     }
   }
@@ -157,17 +166,17 @@ export class CommentApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${commentId}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -175,8 +184,9 @@ export class CommentApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch comment',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to fetch comment",
+        data: null,
       };
     }
   }
@@ -184,23 +194,26 @@ export class CommentApi {
   /**
    * Update a comment
    */
-  async updateComment(commentId: string, commentData: Partial<Comment>): Promise<ApiResponse<Comment>> {
+  async updateComment(
+    commentId: string,
+    commentData: Partial<Comment>,
+  ): Promise<ApiResponse<Comment>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${commentId}`, {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(this.transformRequest(commentData))
+          body: JSON.stringify(this.transformRequest(commentData)),
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -208,8 +221,9 @@ export class CommentApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to update comment',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to update comment",
+        data: null,
       };
     }
   }
@@ -221,23 +235,24 @@ export class CommentApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${commentId}`, {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       return {
         success: response.success,
         message: response.message,
-        data: undefined
+        data: undefined,
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to delete comment',
-        data: undefined
+        message:
+          error instanceof Error ? error.message : "Failed to delete comment",
+        data: undefined,
       };
     }
   }
@@ -249,17 +264,17 @@ export class CommentApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${commentId}/like`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -267,8 +282,9 @@ export class CommentApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to like comment',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to like comment",
+        data: null,
       };
     }
   }
@@ -280,17 +296,17 @@ export class CommentApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${commentId}/like`, {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -298,8 +314,9 @@ export class CommentApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to unlike comment',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to unlike comment",
+        data: null,
       };
     }
   }

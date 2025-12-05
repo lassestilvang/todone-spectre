@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { accessibilityService } from '../services/accessibilityService';
-import { useAccessibilityContext } from '../features/accessibility/AccessibilityProvider';
+import { useState, useEffect, useCallback } from "react";
+import { accessibilityService } from "../services/accessibilityService";
+import { useAccessibilityContext } from "../features/accessibility/AccessibilityProvider";
 
 interface UseAccessibilityReturn {
   accessibilityState: {
@@ -19,21 +19,25 @@ interface UseAccessibilityReturn {
     preferredScreenReader: boolean;
     preferredKeyboardNavigation: boolean;
   };
-  updateAccessibilityState: (stateUpdate: Partial<{
-    isHighContrast?: boolean;
-    fontSize?: string;
-    reduceMotion?: boolean;
-    screenReaderEnabled?: boolean;
-    keyboardNavigation?: boolean;
-    features?: string[];
-  }>) => void;
-  updateAccessibilityPreferences: (preferencesUpdate: Partial<{
-    preferredContrast?: string;
-    preferredFontSize?: string;
-    preferredMotion?: string;
-    preferredScreenReader?: boolean;
-    preferredKeyboardNavigation?: boolean;
-  }>) => void;
+  updateAccessibilityState: (
+    stateUpdate: Partial<{
+      isHighContrast?: boolean;
+      fontSize?: string;
+      reduceMotion?: boolean;
+      screenReaderEnabled?: boolean;
+      keyboardNavigation?: boolean;
+      features?: string[];
+    }>,
+  ) => void;
+  updateAccessibilityPreferences: (
+    preferencesUpdate: Partial<{
+      preferredContrast?: string;
+      preferredFontSize?: string;
+      preferredMotion?: string;
+      preferredScreenReader?: boolean;
+      preferredKeyboardNavigation?: boolean;
+    }>,
+  ) => void;
   toggleHighContrast: () => void;
   setFontSize: (size: string) => void;
   toggleReduceMotion: () => void;
@@ -42,14 +46,22 @@ interface UseAccessibilityReturn {
   addFeature: (featureId: string) => void;
   removeFeature: (featureId: string) => void;
   resetToDefaults: () => void;
-  getAccessibilityStatus: () => { level: string; message: string; score: number };
+  getAccessibilityStatus: () => {
+    level: string;
+    message: string;
+    score: number;
+  };
   applySystemPreferences: () => void;
 }
 
 export const useAccessibility = (): UseAccessibilityReturn => {
   const context = useAccessibilityContext();
-  const [accessibilityState, setAccessibilityState] = useState(accessibilityService.getCurrentState());
-  const [accessibilityPreferences, setAccessibilityPreferences] = useState(accessibilityService.getCurrentPreferences());
+  const [accessibilityState, setAccessibilityState] = useState(
+    accessibilityService.getCurrentState(),
+  );
+  const [accessibilityPreferences, setAccessibilityPreferences] = useState(
+    accessibilityService.getCurrentPreferences(),
+  );
 
   useEffect(() => {
     // Sync with service state
@@ -61,13 +73,15 @@ export const useAccessibility = (): UseAccessibilityReturn => {
     updateState();
 
     // Set up event listeners for system preference changes
-    const mediaQueryList = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mediaQueryList = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
     const handleMediaChange = () => updateState();
 
-    mediaQueryList.addEventListener('change', handleMediaChange);
+    mediaQueryList.addEventListener("change", handleMediaChange);
 
     return () => {
-      mediaQueryList.removeEventListener('change', handleMediaChange);
+      mediaQueryList.removeEventListener("change", handleMediaChange);
     };
   }, []);
 
@@ -85,10 +99,14 @@ export const useAccessibility = (): UseAccessibilityReturn => {
         if (context.reduceMotion !== accessibilityState.reduceMotion) {
           context.toggleReduceMotion();
         }
-        if (context.screenReaderEnabled !== accessibilityState.screenReaderEnabled) {
+        if (
+          context.screenReaderEnabled !== accessibilityState.screenReaderEnabled
+        ) {
           context.toggleScreenReader();
         }
-        if (context.keyboardNavigation !== accessibilityState.keyboardNavigation) {
+        if (
+          context.keyboardNavigation !== accessibilityState.keyboardNavigation
+        ) {
           context.toggleKeyboardNavigation();
         }
       };
@@ -97,28 +115,38 @@ export const useAccessibility = (): UseAccessibilityReturn => {
     }
   }, [accessibilityState, context]);
 
-  const updateAccessibilityState = useCallback((stateUpdate: Partial<{
-    isHighContrast?: boolean;
-    fontSize?: string;
-    reduceMotion?: boolean;
-    screenReaderEnabled?: boolean;
-    keyboardNavigation?: boolean;
-    features?: string[];
-  }>) => {
-    accessibilityService.updateState(stateUpdate);
-    setAccessibilityState(accessibilityService.getCurrentState());
-  }, []);
+  const updateAccessibilityState = useCallback(
+    (
+      stateUpdate: Partial<{
+        isHighContrast?: boolean;
+        fontSize?: string;
+        reduceMotion?: boolean;
+        screenReaderEnabled?: boolean;
+        keyboardNavigation?: boolean;
+        features?: string[];
+      }>,
+    ) => {
+      accessibilityService.updateState(stateUpdate);
+      setAccessibilityState(accessibilityService.getCurrentState());
+    },
+    [],
+  );
 
-  const updateAccessibilityPreferences = useCallback((preferencesUpdate: Partial<{
-    preferredContrast?: string;
-    preferredFontSize?: string;
-    preferredMotion?: string;
-    preferredScreenReader?: boolean;
-    preferredKeyboardNavigation?: boolean;
-  }>) => {
-    accessibilityService.updatePreferences(preferencesUpdate);
-    setAccessibilityPreferences(accessibilityService.getCurrentPreferences());
-  }, []);
+  const updateAccessibilityPreferences = useCallback(
+    (
+      preferencesUpdate: Partial<{
+        preferredContrast?: string;
+        preferredFontSize?: string;
+        preferredMotion?: string;
+        preferredScreenReader?: boolean;
+        preferredKeyboardNavigation?: boolean;
+      }>,
+    ) => {
+      accessibilityService.updatePreferences(preferencesUpdate);
+      setAccessibilityPreferences(accessibilityService.getCurrentPreferences());
+    },
+    [],
+  );
 
   const toggleHighContrast = useCallback(() => {
     accessibilityService.toggleHighContrast();
@@ -135,23 +163,33 @@ export const useAccessibility = (): UseAccessibilityReturn => {
     setAccessibilityState(accessibilityService.getCurrentState());
   }, []);
 
-  const toggleScreenReader = useCallback((enabled?: boolean) => {
-    if (enabled !== undefined) {
-      accessibilityService.toggleScreenReaderSupport(enabled);
-    } else {
-      accessibilityService.toggleScreenReaderSupport(!accessibilityState.screenReaderEnabled);
-    }
-    setAccessibilityState(accessibilityService.getCurrentState());
-  }, [accessibilityState.screenReaderEnabled]);
+  const toggleScreenReader = useCallback(
+    (enabled?: boolean) => {
+      if (enabled !== undefined) {
+        accessibilityService.toggleScreenReaderSupport(enabled);
+      } else {
+        accessibilityService.toggleScreenReaderSupport(
+          !accessibilityState.screenReaderEnabled,
+        );
+      }
+      setAccessibilityState(accessibilityService.getCurrentState());
+    },
+    [accessibilityState.screenReaderEnabled],
+  );
 
-  const toggleKeyboardNavigation = useCallback((enabled?: boolean) => {
-    if (enabled !== undefined) {
-      accessibilityService.toggleKeyboardNavigation(enabled);
-    } else {
-      accessibilityService.toggleKeyboardNavigation(!accessibilityState.keyboardNavigation);
-    }
-    setAccessibilityState(accessibilityService.getCurrentState());
-  }, [accessibilityState.keyboardNavigation]);
+  const toggleKeyboardNavigation = useCallback(
+    (enabled?: boolean) => {
+      if (enabled !== undefined) {
+        accessibilityService.toggleKeyboardNavigation(enabled);
+      } else {
+        accessibilityService.toggleKeyboardNavigation(
+          !accessibilityState.keyboardNavigation,
+        );
+      }
+      setAccessibilityState(accessibilityService.getCurrentState());
+    },
+    [accessibilityState.keyboardNavigation],
+  );
 
   const addFeature = useCallback((featureId: string) => {
     accessibilityService.addFeature(featureId);
@@ -192,6 +230,6 @@ export const useAccessibility = (): UseAccessibilityReturn => {
     removeFeature,
     resetToDefaults,
     getAccessibilityStatus,
-    applySystemPreferences
+    applySystemPreferences,
   };
 };

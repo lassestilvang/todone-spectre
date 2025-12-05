@@ -1,4 +1,9 @@
-import { generateToken, validateToken, hashPassword, comparePasswords } from './auth';
+import {
+  generateToken,
+  validateToken,
+  hashPassword,
+  comparePasswords,
+} from "./auth";
 
 interface MockUser {
   id: string;
@@ -8,9 +13,9 @@ interface MockUser {
 
 export const createMockUser = (overrides: Partial<MockUser> = {}): MockUser => {
   return {
-    id: 'test-user-id',
-    email: 'test@example.com',
-    name: 'Test User',
+    id: "test-user-id",
+    email: "test@example.com",
+    name: "Test User",
     ...overrides,
   };
 };
@@ -24,9 +29,9 @@ export const createMockAuthState = (user: MockUser) => {
   const refreshToken = generateToken(user);
 
   // Mock localStorage
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('authToken', token);
-    localStorage.setItem('refreshToken', refreshToken);
+  if (typeof window !== "undefined") {
+    localStorage.setItem("authToken", token);
+    localStorage.setItem("refreshToken", refreshToken);
   }
 
   return {
@@ -37,9 +42,9 @@ export const createMockAuthState = (user: MockUser) => {
 };
 
 export const clearMockAuthState = () => {
-  if (typeof window !== 'undefined') {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('refreshToken');
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("refreshToken");
   }
 };
 
@@ -55,18 +60,21 @@ export const mockAuthApiResponse = (data: any, status: number = 200) => {
   return {
     data,
     status,
-    statusText: 'OK',
+    statusText: "OK",
     headers: {},
     config: {},
   };
 };
 
-export const mockAuthApiError = (message: string = 'API Error', status: number = 400) => {
+export const mockAuthApiError = (
+  message: string = "API Error",
+  status: number = 400,
+) => {
   return {
     response: {
       data: { message },
       status,
-      statusText: 'Bad Request',
+      statusText: "Bad Request",
       headers: {},
       config: {},
     },
@@ -74,12 +82,14 @@ export const mockAuthApiError = (message: string = 'API Error', status: number =
   };
 };
 
-export const createTestUserWithPassword = async (password: string = 'password123') => {
+export const createTestUserWithPassword = async (
+  password: string = "password123",
+) => {
   const hashedPassword = await hashPassword(password);
   return {
-    id: 'test-user-id',
-    email: 'test@example.com',
-    name: 'Test User',
+    id: "test-user-id",
+    email: "test@example.com",
+    name: "Test User",
     password: hashedPassword,
   };
 };
@@ -93,7 +103,10 @@ export const assertTokenValid = (token: string, user: MockUser) => {
   }
 };
 
-export const assertPasswordMatch = async (password: string, hashedPassword: string) => {
+export const assertPasswordMatch = async (
+  password: string,
+  hashedPassword: string,
+) => {
   const isMatch = await comparePasswords(password, hashedPassword);
   expect(isMatch).toBe(true);
 };

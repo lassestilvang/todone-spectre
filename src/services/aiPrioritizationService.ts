@@ -1,11 +1,11 @@
-import { Task } from '../types/taskTypes';
-import { useTaskStore } from '../store/useTaskStore';
-import { useAIStore } from '../store/useAIStore';
+import { Task } from "../types/taskTypes";
+import { useTaskStore } from "../store/useTaskStore";
+import { useAIStore } from "../store/useAIStore";
 
 interface PrioritizationResult {
   taskId: string;
   priorityScore: number;
-  recommendedPriority: 'low' | 'medium' | 'high' | 'urgent';
+  recommendedPriority: "low" | "medium" | "high" | "urgent";
   priorityFactors: {
     dueDateFactor: number;
     complexityFactor: number;
@@ -26,10 +26,10 @@ interface UserPatternData {
 }
 
 interface TaskContext {
-  projectImportance?: 'low' | 'medium' | 'high';
+  projectImportance?: "low" | "medium" | "high";
   teamDependencies?: number;
-  businessImpact?: 'low' | 'medium' | 'high';
-  timeSensitivity?: 'low' | 'medium' | 'high';
+  businessImpact?: "low" | "medium" | "high";
+  timeSensitivity?: "low" | "medium" | "high";
 }
 
 export class AIPrioritizationService {
@@ -42,14 +42,14 @@ export class AIPrioritizationService {
     this.userPatterns = {
       taskCompletionRate: 0.85, // 85% completion rate
       averageTaskDuration: 1.5, // 1.5 hours average
-      preferredWorkingHours: ['9-12', '13-17'], // 9AM-12PM, 1PM-5PM
-      productivityPeaks: ['10-12', '15-17'], // 10AM-12PM, 3PM-5PM
+      preferredWorkingHours: ["9-12", "13-17"], // 9AM-12PM, 1PM-5PM
+      productivityPeaks: ["10-12", "15-17"], // 10AM-12PM, 3PM-5PM
       taskTypePreferences: {
-        'development': 0.9,
-        'meeting': 0.6,
-        'documentation': 0.7,
-        'research': 0.8
-      }
+        development: 0.9,
+        meeting: 0.6,
+        documentation: 0.7,
+        research: 0.8,
+      },
     };
   }
 
@@ -65,10 +65,10 @@ export class AIPrioritizationService {
   public async prioritizeTask(
     task: Task,
     context: TaskContext = {},
-    userPatternsOverride?: Partial<UserPatternData>
+    userPatternsOverride?: Partial<UserPatternData>,
   ): Promise<PrioritizationResult> {
     if (!task || !task.id) {
-      throw new Error('Invalid task provided for prioritization');
+      throw new Error("Invalid task provided for prioritization");
     }
 
     // Merge user patterns
@@ -80,7 +80,10 @@ export class AIPrioritizationService {
     const dueDateFactor = this.calculateDueDateFactor(task);
     const complexityFactor = await this.calculateComplexityFactor(task);
     const dependencyFactor = this.calculateDependencyFactor(task);
-    const userPatternFactor = this.calculateUserPatternFactor(task, userPatterns);
+    const userPatternFactor = this.calculateUserPatternFactor(
+      task,
+      userPatterns,
+    );
     const contextFactor = this.calculateContextFactor(context);
 
     // Calculate overall priority score (weighted average)
@@ -89,7 +92,7 @@ export class AIPrioritizationService {
       complexityFactor,
       dependencyFactor,
       userPatternFactor,
-      contextFactor
+      contextFactor,
     });
 
     // Determine recommended priority
@@ -104,9 +107,9 @@ export class AIPrioritizationService {
         complexityFactor,
         dependencyFactor,
         userPatternFactor,
-        contextFactor
+        contextFactor,
       },
-      recommendedPriority
+      recommendedPriority,
     });
 
     return {
@@ -118,30 +121,30 @@ export class AIPrioritizationService {
         complexityFactor,
         dependencyFactor,
         userPatternFactor,
-        contextFactor
+        contextFactor,
       },
       confidence: this.calculateConfidence(priorityScore),
-      reasoning
+      reasoning,
     };
   }
 
   public async prioritizeMultipleTasks(
     tasks: Task[],
     contextMap: Record<string, TaskContext> = {},
-    userPatternsOverride?: Partial<UserPatternData>
+    userPatternsOverride?: Partial<UserPatternData>,
   ): Promise<PrioritizationResult[]> {
     if (!tasks || tasks.length === 0) {
       return [];
     }
 
     return Promise.all(
-      tasks.map(task =>
+      tasks.map((task) =>
         this.prioritizeTask(
           task,
           contextMap[task.id] || {},
-          userPatternsOverride
-        )
-      )
+          userPatternsOverride,
+        ),
+      ),
     );
   }
 
@@ -178,9 +181,12 @@ export class AIPrioritizationService {
       complexity += 0.2; // Long description indicates complexity
     }
 
-    if (task.title && (task.title.includes('complex') ||
-                       task.title.includes('advanced') ||
-                       task.title.includes('comprehensive'))) {
+    if (
+      task.title &&
+      (task.title.includes("complex") ||
+        task.title.includes("advanced") ||
+        task.title.includes("comprehensive"))
+    ) {
       complexity += 0.1;
     }
 
@@ -192,7 +198,7 @@ export class AIPrioritizationService {
         complexity = aiAnalysis.complexityScore / 100;
       }
     } catch (error) {
-      console.warn('Could not get AI complexity analysis, using fallback');
+      console.warn("Could not get AI complexity analysis, using fallback");
     }
 
     return Math.min(1.0, Math.max(0.1, complexity));
@@ -204,23 +210,29 @@ export class AIPrioritizationService {
 
     // If task is blocked by other tasks
     if (task.dependencies && task.dependencies.length > 0) {
-      dependencyFactor = 0.7 + (0.2 * Math.min(3, task.dependencies.length / 2));
+      dependencyFactor = 0.7 + 0.2 * Math.min(3, task.dependencies.length / 2);
     }
 
     // If other tasks depend on this task
     if (this.taskStore && this.taskStore.tasks) {
       const dependentTasks = this.taskStore.tasks.filter(
-        (t: Task) => t.dependencies && t.dependencies.includes(task.id)
+        (t: Task) => t.dependencies && t.dependencies.includes(task.id),
       );
       if (dependentTasks.length > 0) {
-        dependencyFactor = Math.min(1.0, dependencyFactor + 0.2 + (0.1 * dependentTasks.length));
+        dependencyFactor = Math.min(
+          1.0,
+          dependencyFactor + 0.2 + 0.1 * dependentTasks.length,
+        );
       }
     }
 
     return Math.min(1.0, dependencyFactor);
   }
 
-  private calculateUserPatternFactor(task: Task, userPatterns: UserPatternData): number {
+  private calculateUserPatternFactor(
+    task: Task,
+    userPatterns: UserPatternData,
+  ): number {
     let patternFactor = 0.5; // Default
 
     // Adjust based on task type preferences
@@ -234,7 +246,8 @@ export class AIPrioritizationService {
 
     // Adjust based on estimated duration vs user's average
     if (task.estimatedDuration) {
-      const durationRatio = task.estimatedDuration / userPatterns.averageTaskDuration;
+      const durationRatio =
+        task.estimatedDuration / userPatterns.averageTaskDuration;
       if (durationRatio > 2) {
         patternFactor *= 0.8; // User might avoid long tasks
       } else if (durationRatio < 0.5) {
@@ -249,25 +262,25 @@ export class AIPrioritizationService {
     let contextFactor = 0.5; // Default
 
     // Adjust based on project importance
-    if (context.projectImportance === 'high') {
+    if (context.projectImportance === "high") {
       contextFactor += 0.3;
-    } else if (context.projectImportance === 'medium') {
+    } else if (context.projectImportance === "medium") {
       contextFactor += 0.1;
-    } else if (context.projectImportance === 'low') {
+    } else if (context.projectImportance === "low") {
       contextFactor -= 0.1;
     }
 
     // Adjust based on business impact
-    if (context.businessImpact === 'high') {
+    if (context.businessImpact === "high") {
       contextFactor += 0.2;
-    } else if (context.businessImpact === 'medium') {
+    } else if (context.businessImpact === "medium") {
       contextFactor += 0.1;
     }
 
     // Adjust based on time sensitivity
-    if (context.timeSensitivity === 'high') {
+    if (context.timeSensitivity === "high") {
       contextFactor += 0.2;
-    } else if (context.timeSensitivity === 'medium') {
+    } else if (context.timeSensitivity === "medium") {
       contextFactor += 0.1;
     }
 
@@ -292,28 +305,30 @@ export class AIPrioritizationService {
       complexity: 0.2,
       dependency: 0.2,
       userPattern: 0.15,
-      context: 0.15
+      context: 0.15,
     };
 
     const weightedScore =
-      (factors.dueDateFactor * weights.dueDate) +
-      (factors.complexityFactor * weights.complexity) +
-      (factors.dependencyFactor * weights.dependency) +
-      (factors.userPatternFactor * weights.userPattern) +
-      (factors.contextFactor * weights.context);
+      factors.dueDateFactor * weights.dueDate +
+      factors.complexityFactor * weights.complexity +
+      factors.dependencyFactor * weights.dependency +
+      factors.userPatternFactor * weights.userPattern +
+      factors.contextFactor * weights.context;
 
     return Math.min(1.0, Math.max(0.0, weightedScore));
   }
 
-  private determinePriorityLevel(score: number): 'low' | 'medium' | 'high' | 'urgent' {
+  private determinePriorityLevel(
+    score: number,
+  ): "low" | "medium" | "high" | "urgent" {
     if (score >= 0.85) {
-      return 'urgent';
+      return "urgent";
     } else if (score >= 0.65) {
-      return 'high';
+      return "high";
     } else if (score >= 0.4) {
-      return 'medium';
+      return "medium";
     } else {
-      return 'low';
+      return "low";
     }
   }
 
@@ -344,77 +359,114 @@ export class AIPrioritizationService {
     const { task, context, factors, recommendedPriority } = params;
     const lines: string[] = [];
 
-    lines.push(`Task "${task.title}" has been prioritized as "${recommendedPriority}" based on:`);
+    lines.push(
+      `Task "${task.title}" has been prioritized as "${recommendedPriority}" based on:`,
+    );
 
     // Due date reasoning
     if (factors.dueDateFactor > 0.7) {
-      lines.push(`- ⏰ Urgent deadline (due date factor: ${(factors.dueDateFactor * 100).toFixed(0)}%)`);
+      lines.push(
+        `- ⏰ Urgent deadline (due date factor: ${(factors.dueDateFactor * 100).toFixed(0)}%)`,
+      );
     } else if (factors.dueDateFactor > 0.4) {
-      lines.push(`- ⏳ Approaching deadline (due date factor: ${(factors.dueDateFactor * 100).toFixed(0)}%)`);
+      lines.push(
+        `- ⏳ Approaching deadline (due date factor: ${(factors.dueDateFactor * 100).toFixed(0)}%)`,
+      );
     }
 
     // Complexity reasoning
     if (factors.complexityFactor > 0.7) {
-      lines.push(`- 🧠 High complexity task (complexity factor: ${(factors.complexityFactor * 100).toFixed(0)}%)`);
+      lines.push(
+        `- 🧠 High complexity task (complexity factor: ${(factors.complexityFactor * 100).toFixed(0)}%)`,
+      );
     } else if (factors.complexityFactor > 0.4) {
-      lines.push(`- 📚 Moderate complexity (complexity factor: ${(factors.complexityFactor * 100).toFixed(0)}%)`);
+      lines.push(
+        `- 📚 Moderate complexity (complexity factor: ${(factors.complexityFactor * 100).toFixed(0)}%)`,
+      );
     }
 
     // Dependency reasoning
     if (factors.dependencyFactor > 0.7) {
-      lines.push(`- 🔗 Critical dependencies (dependency factor: ${(factors.dependencyFactor * 100).toFixed(0)}%)`);
+      lines.push(
+        `- 🔗 Critical dependencies (dependency factor: ${(factors.dependencyFactor * 100).toFixed(0)}%)`,
+      );
     } else if (factors.dependencyFactor > 0.4) {
-      lines.push(`- 🔄 Some dependencies (dependency factor: ${(factors.dependencyFactor * 100).toFixed(0)}%)`);
+      lines.push(
+        `- 🔄 Some dependencies (dependency factor: ${(factors.dependencyFactor * 100).toFixed(0)}%)`,
+      );
     }
 
     // User pattern reasoning
     if (factors.userPatternFactor > 0.7) {
-      lines.push(`- 👤 Aligns well with your work patterns (user pattern factor: ${(factors.userPatternFactor * 100).toFixed(0)}%)`);
+      lines.push(
+        `- 👤 Aligns well with your work patterns (user pattern factor: ${(factors.userPatternFactor * 100).toFixed(0)}%)`,
+      );
     } else if (factors.userPatternFactor < 0.4) {
-      lines.push(`- 😕 Doesn't match your typical work patterns (user pattern factor: ${(factors.userPatternFactor * 100).toFixed(0)}%)`);
+      lines.push(
+        `- 😕 Doesn't match your typical work patterns (user pattern factor: ${(factors.userPatternFactor * 100).toFixed(0)}%)`,
+      );
     }
 
     // Context reasoning
-    if (context.projectImportance === 'high') {
+    if (context.projectImportance === "high") {
       lines.push(`- 🚀 High importance project context`);
     }
-    if (context.businessImpact === 'high') {
+    if (context.businessImpact === "high") {
       lines.push(`- 💼 High business impact`);
     }
-    if (context.timeSensitivity === 'high') {
+    if (context.timeSensitivity === "high") {
       lines.push(`- ⏱️ Time-sensitive task`);
     }
 
-    lines.push(`\nOverall priority score: ${(factors.dueDateFactor * 0.3 +
-      factors.complexityFactor * 0.2 +
-      factors.dependencyFactor * 0.2 +
-      factors.userPatternFactor * 0.15 +
-      factors.contextFactor * 0.15).toFixed(2)}`);
+    lines.push(
+      `\nOverall priority score: ${(
+        factors.dueDateFactor * 0.3 +
+        factors.complexityFactor * 0.2 +
+        factors.dependencyFactor * 0.2 +
+        factors.userPatternFactor * 0.15 +
+        factors.contextFactor * 0.15
+      ).toFixed(2)}`,
+    );
 
-    return lines.join('\n');
+    return lines.join("\n");
   }
 
   private inferTaskType(task: Task): string {
     const title = task.title.toLowerCase();
-    const description = task.description ? task.description.toLowerCase() : '';
+    const description = task.description ? task.description.toLowerCase() : "";
 
-    if (title.includes('meeting') || description.includes('meeting')) {
-      return 'meeting';
-    } else if (title.includes('develop') || title.includes('code') ||
-             title.includes('implement') || description.includes('development')) {
-      return 'development';
-    } else if (title.includes('document') || title.includes('write') ||
-             title.includes('report') || description.includes('documentation')) {
-      return 'documentation';
-    } else if (title.includes('research') || title.includes('investigate') ||
-             title.includes('study') || description.includes('research')) {
-      return 'research';
+    if (title.includes("meeting") || description.includes("meeting")) {
+      return "meeting";
+    } else if (
+      title.includes("develop") ||
+      title.includes("code") ||
+      title.includes("implement") ||
+      description.includes("development")
+    ) {
+      return "development";
+    } else if (
+      title.includes("document") ||
+      title.includes("write") ||
+      title.includes("report") ||
+      description.includes("documentation")
+    ) {
+      return "documentation";
+    } else if (
+      title.includes("research") ||
+      title.includes("investigate") ||
+      title.includes("study") ||
+      description.includes("research")
+    ) {
+      return "research";
     } else {
-      return 'general';
+      return "general";
     }
   }
 
-  public async learnFromUserPatterns(taskId: string, userAction: 'accepted' | 'rejected' | 'modified') {
+  public async learnFromUserPatterns(
+    taskId: string,
+    userAction: "accepted" | "rejected" | "modified",
+  ) {
     // This would be implemented to learn from user behavior
     // For now, it's a placeholder for the learning capability
     console.log(`Learning from user action: ${userAction} for task ${taskId}`);
@@ -425,7 +477,7 @@ export class AIPrioritizationService {
     // 3. Learn user preferences for task types, timing, etc.
     // 4. Store this data in userPatterns for future use
 
-    return { success: true, message: 'User pattern learning recorded' };
+    return { success: true, message: "User pattern learning recorded" };
   }
 }
 

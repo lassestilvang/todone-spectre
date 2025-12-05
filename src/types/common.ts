@@ -3,7 +3,7 @@
  * Contains shared interfaces and utility types used across the application
  */
 
-import { PriorityLevel, TaskStatus, ViewType, RecurringPattern } from './enums';
+import { PriorityLevel, TaskStatus, ViewType, RecurringPattern } from "./enums";
 
 /**
  * Base entity interface
@@ -461,12 +461,16 @@ export type AsyncResult<T, E = Error> = Promise<Result<T, E>>;
 /**
  * Function type
  */
-export type Func<Args extends any[] = any[], Return = any> = (...args: Args) => Return;
+export type Func<Args extends any[] = any[], Return = any> = (
+  ...args: Args
+) => Return;
 
 /**
  * Async function type
  */
-export type AsyncFunc<Args extends any[] = any[], Return = any> = (...args: Args) => Promise<Return>;
+export type AsyncFunc<Args extends any[] = any[], Return = any> = (
+  ...args: Args
+) => Promise<Return>;
 
 /**
  * Predicate function type
@@ -553,14 +557,24 @@ export type RequiredKeys<T> = {
  * Writable keys of an object
  */
 export type WritableKeys<T> = {
-  [P in keyof T]-?: IfEquals<{ [Q in P]: T[P] }, { -readonly [Q in P]: T[P] }, P, never>;
+  [P in keyof T]-?: IfEquals<
+    { [Q in P]: T[P] },
+    { -readonly [Q in P]: T[P] },
+    P,
+    never
+  >;
 }[keyof T];
 
 /**
  * Readonly keys of an object
  */
 export type ReadonlyKeys<T> = {
-  [P in keyof T]-?: IfEquals<{ [Q in P]: T[Q] }, { -readonly [Q in P]: T[Q] }, never, P>;
+  [P in keyof T]-?: IfEquals<
+    { [Q in P]: T[Q] },
+    { -readonly [Q in P]: T[Q] },
+    never,
+    P
+  >;
 }[keyof T];
 
 /**
@@ -1054,7 +1068,7 @@ export interface SortOptions {
   /**
    * Sort direction
    */
-  direction: 'asc' | 'desc';
+  direction: "asc" | "desc";
 }
 
 /**
@@ -1074,7 +1088,7 @@ export interface FilterOptions {
   /**
    * Filter operator
    */
-  operator?: 'eq' | 'ne' | 'gt' | 'lt' | 'contains' | 'startsWith' | 'endsWith';
+  operator?: "eq" | "ne" | "gt" | "lt" | "contains" | "startsWith" | "endsWith";
 }
 
 /**

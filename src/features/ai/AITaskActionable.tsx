@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useAIAssistant } from '../../../hooks/useAIAssistant';
-import { Task } from '../../../types/taskTypes';
+import React, { useState, useEffect } from "react";
+import { useAIAssistant } from "../../../hooks/useAIAssistant";
 
 interface AITaskActionableProps {
   taskId: string;
@@ -13,15 +12,15 @@ interface ActionableItem {
   id: string;
   title: string;
   description: string;
-  priority: 'high' | 'medium' | 'low';
+  priority: "high" | "medium" | "low";
   estimatedTime: string;
 }
 
 export const AITaskActionable: React.FC<AITaskActionableProps> = ({
   taskId,
   taskTitle,
-  taskDescription = '',
-  onActionSelect
+  taskDescription = "",
+  onActionSelect,
 }) => {
   const { aiResponse, isLoading, error, generateAIResponse } = useAIAssistant();
   const [actionableItems, setActionableItems] = useState<ActionableItem[]>([]);
@@ -40,30 +39,32 @@ export const AITaskActionable: React.FC<AITaskActionableProps> = ({
         // Parse AI response into actionable items
         const items: ActionableItem[] = [
           {
-            id: '1',
-            title: 'Research required tools',
-            description: 'Identify and document all tools needed for task completion',
-            priority: 'high',
-            estimatedTime: '1 hour'
+            id: "1",
+            title: "Research required tools",
+            description:
+              "Identify and document all tools needed for task completion",
+            priority: "high",
+            estimatedTime: "1 hour",
           },
           {
-            id: '2',
-            title: 'Create implementation plan',
-            description: 'Develop step-by-step plan for task execution',
-            priority: 'medium',
-            estimatedTime: '2 hours'
+            id: "2",
+            title: "Create implementation plan",
+            description: "Develop step-by-step plan for task execution",
+            priority: "medium",
+            estimatedTime: "2 hours",
           },
           {
-            id: '3',
-            title: 'Set up development environment',
-            description: 'Configure all necessary development tools and dependencies',
-            priority: 'high',
-            estimatedTime: '1.5 hours'
-          }
+            id: "3",
+            title: "Set up development environment",
+            description:
+              "Configure all necessary development tools and dependencies",
+            priority: "high",
+            estimatedTime: "1.5 hours",
+          },
         ];
         setActionableItems(items);
       } catch (e) {
-        console.error('Failed to parse actionable items:', e);
+        console.error("Failed to parse actionable items:", e);
       }
     }
   }, [aiResponse]);
@@ -77,19 +78,31 @@ export const AITaskActionable: React.FC<AITaskActionableProps> = ({
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case 'high': return '#ff4444';
-      case 'medium': return '#ffbb33';
-      case 'low': return '#00C851';
-      default: return '#cccccc';
+      case "high":
+        return "#ff4444";
+      case "medium":
+        return "#ffbb33";
+      case "low":
+        return "#00C851";
+      default:
+        return "#cccccc";
     }
   };
 
   if (isLoading && actionableItems.length === 0) {
-    return <div className="ai-actionable-loading">Generating actionable items...</div>;
+    return (
+      <div className="ai-actionable-loading">
+        Generating actionable items...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="ai-actionable-error">Error generating actionable items: {error}</div>;
+    return (
+      <div className="ai-actionable-error">
+        Error generating actionable items: {error}
+      </div>
+    );
   }
 
   return (
@@ -97,13 +110,15 @@ export const AITaskActionable: React.FC<AITaskActionableProps> = ({
       <h3 className="actionable-title">Actionable Items</h3>
 
       {actionableItems.length === 0 ? (
-        <div className="no-actionable-items">No actionable items generated yet</div>
+        <div className="no-actionable-items">
+          No actionable items generated yet
+        </div>
       ) : (
         <div className="actionable-items-container">
           {actionableItems.map((item) => (
             <div
               key={item.id}
-              className={`actionable-item ${selectedItem === item.id ? 'selected' : ''}`}
+              className={`actionable-item ${selectedItem === item.id ? "selected" : ""}`}
               onClick={() => handleItemSelect(item)}
             >
               <div className="actionable-header">
@@ -114,7 +129,9 @@ export const AITaskActionable: React.FC<AITaskActionableProps> = ({
                 <h4 className="actionable-item-title">{item.title}</h4>
               </div>
 
-              <div className="actionable-item-description">{item.description}</div>
+              <div className="actionable-item-description">
+                {item.description}
+              </div>
 
               <div className="actionable-item-footer">
                 <span className="estimated-time">{item.estimatedTime}</span>

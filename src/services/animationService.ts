@@ -1,10 +1,10 @@
-import { animationUtils } from '../utils/animationUtils';
+import { animationUtils } from "../utils/animationUtils";
 
 interface AnimationConfig {
   duration: number;
   easing: string;
   delay?: number;
-  type: 'fade' | 'slide' | 'scale' | 'bounce' | 'flip' | 'zoom' | 'rotate';
+  type: "fade" | "slide" | "scale" | "bounce" | "flip" | "zoom" | "rotate";
 }
 
 interface AnimationState {
@@ -25,9 +25,9 @@ class AnimationService {
       animationQueue: [],
       config: {
         duration: 300,
-        easing: 'easeInOut',
-        type: 'fade'
-      }
+        easing: "easeInOut",
+        type: "fade",
+      },
     };
     this.subscribers = [];
   }
@@ -70,12 +70,13 @@ class AnimationService {
   public subscribe(callback: (state: AnimationState) => void): () => void {
     this.subscribers.push(callback);
     return () => {
-      this.subscribers = this.subscribers.filter(sub => sub !== callback);
+      this.subscribers = this.subscribers.filter((sub) => sub !== callback);
     };
   }
 
   private processQueue(): void {
-    if (!this.state.isAnimating || this.state.animationQueue.length === 0) return;
+    if (!this.state.isAnimating || this.state.animationQueue.length === 0)
+      return;
 
     const nextAnimation = this.state.animationQueue.shift();
     if (nextAnimation) {
@@ -104,7 +105,7 @@ class AnimationService {
   }
 
   private notifySubscribers(): void {
-    this.subscribers.forEach(callback => callback({ ...this.state }));
+    this.subscribers.forEach((callback) => callback({ ...this.state }));
   }
 }
 

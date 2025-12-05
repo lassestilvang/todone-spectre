@@ -1,11 +1,11 @@
-import { microInteractionUtils } from '../utils/microInteractionUtils';
+import { microInteractionUtils } from "../utils/microInteractionUtils";
 
 interface MicroInteractionConfig {
-  feedbackType: 'visual' | 'haptic' | 'sound' | 'combined';
+  feedbackType: "visual" | "haptic" | "sound" | "combined";
   intensity: number;
   duration: number;
   enabled: boolean;
-  hapticPattern?: 'light' | 'medium' | 'heavy';
+  hapticPattern?: "light" | "medium" | "heavy";
   soundFeedback?: boolean;
 }
 
@@ -23,12 +23,12 @@ class MicroInteractionService {
     this.state = {
       activeInteractions: [],
       config: {
-        feedbackType: 'visual',
+        feedbackType: "visual",
         intensity: 1,
         duration: 200,
-        enabled: true
+        enabled: true,
       },
-      isProcessing: false
+      isProcessing: false,
     };
     this.subscribers = [];
   }
@@ -50,12 +50,12 @@ class MicroInteractionService {
     this.executeInteraction(type)
       .then(() => {
         this.state.activeInteractions = this.state.activeInteractions.filter(
-          interaction => interaction !== type
+          (interaction) => interaction !== type,
         );
         this.state.isProcessing = false;
         this.notifySubscribers();
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(`Failed to execute micro-interaction ${type}:`, error);
         this.state.isProcessing = false;
         this.notifySubscribers();
@@ -76,10 +76,12 @@ class MicroInteractionService {
     return { ...this.state };
   }
 
-  public subscribe(callback: (state: MicroInteractionState) => void): () => void {
+  public subscribe(
+    callback: (state: MicroInteractionState) => void,
+  ): () => void {
     this.subscribers.push(callback);
     return () => {
-      this.subscribers = this.subscribers.filter(sub => sub !== callback);
+      this.subscribers = this.subscribers.filter((sub) => sub !== callback);
     };
   }
 
@@ -89,7 +91,7 @@ class MicroInteractionService {
       if (interactionFn) {
         await interactionFn({
           type,
-          config: this.state.config
+          config: this.state.config,
         });
       }
     } catch (error) {
@@ -99,7 +101,7 @@ class MicroInteractionService {
   }
 
   private notifySubscribers(): void {
-    this.subscribers.forEach(callback => callback({ ...this.state }));
+    this.subscribers.forEach((callback) => callback({ ...this.state }));
   }
 }
 

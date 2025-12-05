@@ -1,8 +1,8 @@
-import React from 'react';
-import { PerformanceMonitor } from './PerformanceMonitor';
-import { PerformanceControls } from './PerformanceControls';
-import { PerformanceStatus } from './PerformanceStatus';
-import { usePerformance } from '../../hooks/usePerformance';
+import React from "react";
+import { PerformanceMonitor } from "./PerformanceMonitor";
+import { PerformanceControls } from "./PerformanceControls";
+import { PerformanceStatus } from "./PerformanceStatus";
+import { usePerformance } from "../../hooks/usePerformance";
 
 interface PerformanceIntegrationProps {
   showControls?: boolean;
@@ -13,12 +13,12 @@ interface PerformanceIntegrationProps {
 export const PerformanceIntegration: React.FC<PerformanceIntegrationProps> = ({
   showControls = true,
   showStatus = true,
-  compact = false
+  compact = false,
 }) => {
   const { performanceStatus, isMonitoring } = usePerformance();
 
   return (
-    <div className={`performance-integration ${compact ? 'compact' : ''}`}>
+    <div className={`performance-integration ${compact ? "compact" : ""}`}>
       <PerformanceMonitor />
 
       {showControls && (

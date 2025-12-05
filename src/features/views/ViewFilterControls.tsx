@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface ViewFilterControlsProps {
   filters: {
@@ -12,7 +12,7 @@ interface ViewFilterControlsProps {
   onTimeRangeChange?: (timeRange: string) => void;
   onSearchChange?: (query: string) => void;
   onReset?: () => void;
-  viewType: 'inbox' | 'today' | 'upcoming';
+  viewType: "inbox" | "today" | "upcoming";
 }
 
 export const ViewFilterControls: React.FC<ViewFilterControlsProps> = ({
@@ -22,41 +22,43 @@ export const ViewFilterControls: React.FC<ViewFilterControlsProps> = ({
   onTimeRangeChange,
   onSearchChange,
   onReset,
-  viewType
+  viewType,
 }) => {
   const priorityOptions = [
-    { value: 'all', label: 'All Priorities' },
-    { value: 'critical', label: 'Critical' },
-    { value: 'high', label: 'High' },
-    { value: 'medium', label: 'Medium' },
-    { value: 'low', label: 'Low' }
+    { value: "all", label: "All Priorities" },
+    { value: "critical", label: "Critical" },
+    { value: "high", label: "High" },
+    { value: "medium", label: "Medium" },
+    { value: "low", label: "Low" },
   ];
 
   const statusOptions = [
-    { value: 'all', label: 'All Statuses' },
-    { value: 'todo', label: 'To Do' },
-    { value: 'in-progress', label: 'In Progress' },
-    { value: 'completed', label: 'Completed' }
+    { value: "all", label: "All Statuses" },
+    { value: "todo", label: "To Do" },
+    { value: "in-progress", label: "In Progress" },
+    { value: "completed", label: "Completed" },
   ];
 
   const timeRangeOptions = [
-    { value: 'all', label: 'All Time' },
-    { value: 'next-week', label: 'Next Week' },
-    { value: 'next-month', label: 'Next Month' },
-    { value: 'next-3-months', label: 'Next 3 Months' }
+    { value: "all", label: "All Time" },
+    { value: "next-week", label: "Next Week" },
+    { value: "next-month", label: "Next Month" },
+    { value: "next-3-months", label: "Next 3 Months" },
   ];
 
   return (
     <div className="flex flex-wrap items-center gap-3">
       {/* Status Filter (Inbox only) */}
-      {viewType === 'inbox' && onStatusChange && (
+      {viewType === "inbox" && onStatusChange && (
         <select
-          value={filters.status || 'all'}
+          value={filters.status || "all"}
           onChange={(e) => onStatusChange(e.target.value)}
           className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          {statusOptions.map(option => (
-            <option key={option.value} value={option.value}>{option.label}</option>
+          {statusOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
           ))}
         </select>
       )}
@@ -64,25 +66,29 @@ export const ViewFilterControls: React.FC<ViewFilterControlsProps> = ({
       {/* Priority Filter */}
       {onPriorityChange && (
         <select
-          value={filters.priority || 'all'}
+          value={filters.priority || "all"}
           onChange={(e) => onPriorityChange(e.target.value)}
           className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          {priorityOptions.map(option => (
-            <option key={option.value} value={option.value}>{option.label}</option>
+          {priorityOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
           ))}
         </select>
       )}
 
       {/* Time Range Filter (Upcoming only) */}
-      {viewType === 'upcoming' && onTimeRangeChange && (
+      {viewType === "upcoming" && onTimeRangeChange && (
         <select
-          value={filters.timeRange || 'all'}
+          value={filters.timeRange || "all"}
           onChange={(e) => onTimeRangeChange(e.target.value)}
           className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          {timeRangeOptions.map(option => (
-            <option key={option.value} value={option.value}>{option.label}</option>
+          {timeRangeOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
           ))}
         </select>
       )}
@@ -92,7 +98,7 @@ export const ViewFilterControls: React.FC<ViewFilterControlsProps> = ({
         <input
           type="text"
           placeholder="Search tasks..."
-          value={filters.searchQuery || ''}
+          value={filters.searchQuery || ""}
           onChange={(e) => onSearchChange(e.target.value)}
           className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white flex-1 min-w-[200px]"
         />

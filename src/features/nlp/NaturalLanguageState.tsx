@@ -1,5 +1,11 @@
-import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
-import { useNlpParser } from '../../hooks/useNlpParser';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  ReactNode,
+} from "react";
+import { useNlpParser } from "../../hooks/useNlpParser";
 
 interface NlpState {
   inputText: string;
@@ -17,15 +23,20 @@ interface NlpStateContextType extends NlpState {
   clearHistory: () => void;
 }
 
-const NlpStateContext = createContext<NlpStateContextType | undefined>(undefined);
+const NlpStateContext = createContext<NlpStateContextType | undefined>(
+  undefined,
+);
 
 interface NlpStateProviderProps {
   children: ReactNode;
   debug?: boolean;
 }
 
-export const NlpStateProvider: React.FC<NlpStateProviderProps> = ({ children, debug = false }) => {
-  const [inputText, setInputText] = useState('');
+export const NlpStateProvider: React.FC<NlpStateProviderProps> = ({
+  children,
+  debug = false,
+}) => {
+  const [inputText, setInputText] = useState("");
   const [parsedResult, setParsedResult] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -36,7 +47,7 @@ export const NlpStateProvider: React.FC<NlpStateProviderProps> = ({ children, de
   const parseText = useCallback(async () => {
     try {
       if (!inputText.trim()) {
-        throw new Error('Empty input text');
+        throw new Error("Empty input text");
       }
 
       setIsLoading(true);
@@ -44,15 +55,16 @@ export const NlpStateProvider: React.FC<NlpStateProviderProps> = ({ children, de
 
       const result = await parseNlp(inputText);
       setParsedResult(result);
-      setParseHistory(prev => [...prev, result]);
+      setParseHistory((prev) => [...prev, result]);
 
       if (debug) {
-        console.log('NLP State - Parse result:', result);
+        console.log("NLP State - Parse result:", result);
       }
     } catch (err) {
-      const error = err instanceof Error ? err : new Error('Unknown parsing error');
+      const error =
+        err instanceof Error ? err : new Error("Unknown parsing error");
       setError(error);
-      console.error('NLP State - Parse error:', error);
+      console.error("NLP State - Parse error:", error);
     } finally {
       setIsLoading(false);
     }
@@ -63,7 +75,7 @@ export const NlpStateProvider: React.FC<NlpStateProviderProps> = ({ children, de
   }, []);
 
   const resetState = useCallback(() => {
-    setInputText('');
+    setInputText("");
     setParsedResult(null);
     setIsLoading(false);
     setError(null);
@@ -83,7 +95,7 @@ export const NlpStateProvider: React.FC<NlpStateProviderProps> = ({ children, de
     parseText,
     clearError,
     resetState,
-    clearHistory
+    clearHistory,
   };
 
   return (
@@ -96,7 +108,7 @@ export const NlpStateProvider: React.FC<NlpStateProviderProps> = ({ children, de
 export const useNlpState = () => {
   const context = useContext(NlpStateContext);
   if (context === undefined) {
-    throw new Error('useNlpState must be used within a NlpStateProvider');
+    throw new Error("useNlpState must be used within a NlpStateProvider");
   }
   return context;
 };

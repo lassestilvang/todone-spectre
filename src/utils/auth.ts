@@ -1,9 +1,9 @@
-import jwt from 'jsonwebtoken';
-import bcrypt from 'bcryptjs';
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 
-const JWT_SECRET = import.meta.env.VITE_JWT_SECRET || 'default-secret-key';
-const JWT_EXPIRES_IN = '1h';
-const REFRESH_TOKEN_EXPIRES_IN = '7d';
+const JWT_SECRET = import.meta.env.VITE_JWT_SECRET || "default-secret-key";
+const JWT_EXPIRES_IN = "1h";
+const REFRESH_TOKEN_EXPIRES_IN = "7d";
 
 interface UserPayload {
   id: string;
@@ -19,7 +19,7 @@ export const generateToken = (user: UserPayload): string => {
       name: user.name,
     },
     JWT_SECRET,
-    { expiresIn: JWT_EXPIRES_IN }
+    { expiresIn: JWT_EXPIRES_IN },
   );
 };
 
@@ -30,7 +30,7 @@ export const generateRefreshToken = (user: UserPayload): string => {
       email: user.email,
     },
     JWT_SECRET,
-    { expiresIn: REFRESH_TOKEN_EXPIRES_IN }
+    { expiresIn: REFRESH_TOKEN_EXPIRES_IN },
   );
 };
 
@@ -39,7 +39,7 @@ export const validateToken = (token: string): UserPayload => {
     const decoded = jwt.verify(token, JWT_SECRET) as UserPayload;
     return decoded;
   } catch (error) {
-    throw new Error('Invalid or expired token');
+    throw new Error("Invalid or expired token");
   }
 };
 
@@ -58,7 +58,7 @@ export const hashPassword = async (password: string): Promise<string> => {
 
 export const comparePasswords = async (
   password: string,
-  hashedPassword: string
+  hashedPassword: string,
 ): Promise<boolean> => {
   return bcrypt.compare(password, hashedPassword);
 };
@@ -66,38 +66,41 @@ export const comparePasswords = async (
 export class AuthError extends Error {
   constructor(message: string) {
     super(message);
-    this.name = 'AuthError';
+    this.name = "AuthError";
   }
 }
 
 export class AuthenticationError extends AuthError {
-  constructor(message: string = 'Authentication failed') {
+  constructor(message: string = "Authentication failed") {
     super(message);
-    this.name = 'AuthenticationError';
+    this.name = "AuthenticationError";
   }
 }
 
 export class AuthorizationError extends AuthError {
-  constructor(message: string = 'Authorization failed') {
+  constructor(message: string = "Authorization failed") {
     super(message);
-    this.name = 'AuthorizationError';
+    this.name = "AuthorizationError";
   }
 }
 
 export class TokenExpiredError extends AuthError {
-  constructor(message: string = 'Token expired') {
+  constructor(message: string = "Token expired") {
     super(message);
-    this.name = 'TokenExpiredError';
+    this.name = "TokenExpiredError";
   }
 }
 
-export const getSession = (): { token: string | null; refreshToken: string | null } => {
-  if (typeof window === 'undefined') {
+export const getSession = (): {
+  token: string | null;
+  refreshToken: string | null;
+} => {
+  if (typeof window === "undefined") {
     return { token: null, refreshToken: null };
   }
 
-  const token = localStorage.getItem('authToken');
-  const refreshToken = localStorage.getItem('refreshToken');
+  const token = localStorage.getItem("authToken");
+  const refreshToken = localStorage.getItem("refreshToken");
 
   return {
     token,
@@ -106,17 +109,17 @@ export const getSession = (): { token: string | null; refreshToken: string | nul
 };
 
 export const setSession = (token: string, refreshToken: string): void => {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
-  localStorage.setItem('authToken', token);
-  localStorage.setItem('refreshToken', refreshToken);
+  localStorage.setItem("authToken", token);
+  localStorage.setItem("refreshToken", refreshToken);
 };
 
 export const clearSession = (): void => {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
-  localStorage.removeItem('authToken');
-  localStorage.removeItem('refreshToken');
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("refreshToken");
 };
 
 export const isAuthenticated = (): boolean => {

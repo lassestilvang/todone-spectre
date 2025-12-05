@@ -1,5 +1,10 @@
-import { TodoneDatabase } from './db';
-import { DatabaseError, QueryOptions, QueryResult, TransactionOptions } from '../types/database';
+import { TodoneDatabase } from "./db";
+import {
+  DatabaseError,
+  QueryOptions,
+  QueryResult,
+  TransactionOptions,
+} from "../types/database";
 
 export class DatabaseUtils {
   private db: TodoneDatabase;
@@ -12,27 +17,34 @@ export class DatabaseUtils {
   static handleDatabaseError(error: unknown): DatabaseError {
     if (error instanceof Error) {
       return {
-        type: 'database_error',
+        type: "database_error",
         message: error.message,
         code: error.name,
-        details: error.stack
+        details: error.stack,
       };
     }
 
     return {
-      type: 'database_error',
-      message: 'Unknown database error',
-      details: error
+      type: "database_error",
+      message: "Unknown database error",
+      details: error,
     };
   }
 
   // Transaction management
-  async withTransaction<T>(options: TransactionOptions, callback: () => Promise<T>): Promise<T> {
+  async withTransaction<T>(
+    options: TransactionOptions,
+    callback: () => Promise<T>,
+  ): Promise<T> {
     try {
-      return await this.db.transaction(options.mode, this.getTablesForTransaction(options), callback);
+      return await this.db.transaction(
+        options.mode,
+        this.getTablesForTransaction(options),
+        callback,
+      );
     } catch (error) {
       const dbError = DatabaseUtils.handleDatabaseError(error);
-      console.error('Transaction failed:', dbError);
+      console.error("Transaction failed:", dbError);
       throw dbError;
     }
   }
@@ -48,28 +60,40 @@ export class DatabaseUtils {
         this.db.labels,
         this.db.filters,
         this.db.comments,
-        this.db.attachments
+        this.db.attachments,
       ];
     }
 
     // Return only the specified tables
-    return options.tables.map(tableName => {
+    return options.tables.map((tableName) => {
       switch (tableName.toLowerCase()) {
-        case 'users': return this.db.users;
-        case 'projects': return this.db.projects;
-        case 'sections': return this.db.sections;
-        case 'tasks': return this.db.tasks;
-        case 'labels': return this.db.labels;
-        case 'filters': return this.db.filters;
-        case 'comments': return this.db.comments;
-        case 'attachments': return this.db.attachments;
-        default: throw new Error(`Unknown table: ${tableName}`);
+        case "users":
+          return this.db.users;
+        case "projects":
+          return this.db.projects;
+        case "sections":
+          return this.db.sections;
+        case "tasks":
+          return this.db.tasks;
+        case "labels":
+          return this.db.labels;
+        case "filters":
+          return this.db.filters;
+        case "comments":
+          return this.db.comments;
+        case "attachments":
+          return this.db.attachments;
+        default:
+          throw new Error(`Unknown table: ${tableName}`);
       }
     });
   }
 
   // Query builders
-  async query<T>(tableName: string, options: QueryOptions = {}): Promise<QueryResult<T>> {
+  async query<T>(
+    tableName: string,
+    options: QueryOptions = {},
+  ): Promise<QueryResult<T>> {
     const table = this.getTable(tableName);
     let query = table;
 
@@ -87,7 +111,7 @@ export class DatabaseUtils {
 
     // Apply sorting
     if (options.sortBy) {
-      const sortDirection = options.sortDirection || 'asc';
+      const sortDirection = options.sortDirection || "asc";
       query = query.sortBy(options.sortBy);
     }
 
@@ -109,21 +133,30 @@ export class DatabaseUtils {
       data,
       total,
       limit: options.limit || total,
-      offset: options.offset || 0
+      offset: options.offset || 0,
     };
   }
 
   private getTable(tableName: string): any {
     switch (tableName.toLowerCase()) {
-      case 'users': return this.db.users;
-      case 'projects': return this.db.projects;
-      case 'sections': return this.db.sections;
-      case 'tasks': return this.db.tasks;
-      case 'labels': return this.db.labels;
-      case 'filters': return this.db.filters;
-      case 'comments': return this.db.comments;
-      case 'attachments': return this.db.attachments;
-      default: throw new Error(`Unknown table: ${tableName}`);
+      case "users":
+        return this.db.users;
+      case "projects":
+        return this.db.projects;
+      case "sections":
+        return this.db.sections;
+      case "tasks":
+        return this.db.tasks;
+      case "labels":
+        return this.db.labels;
+      case "filters":
+        return this.db.filters;
+      case "comments":
+        return this.db.comments;
+      case "attachments":
+        return this.db.attachments;
+      default:
+        throw new Error(`Unknown table: ${tableName}`);
     }
   }
 
@@ -141,15 +174,20 @@ export class DatabaseUtils {
       keyPath: index.keyPath,
       options: {
         unique: index.unique,
-        multiEntry: index.multiEntry
-      }
+        multiEntry: index.multiEntry,
+      },
     }));
   }
 
-  async createIndex(tableName: string, indexDefinition: IndexDefinition): Promise<void> {
+  async createIndex(
+    tableName: string,
+    indexDefinition: IndexDefinition,
+  ): Promise<void> {
     // Note: In Dexie, indexes are defined in the schema and cannot be added dynamically
     // This method is a placeholder for potential future implementation
-    console.warn('Dexie does not support dynamic index creation. Indexes must be defined in the schema.');
+    console.warn(
+      "Dexie does not support dynamic index creation. Indexes must be defined in the schema.",
+    );
   }
 
   // Database health check
@@ -165,7 +203,7 @@ export class DatabaseUtils {
         isHealthy: isOpen,
         lastChecked: new Date(),
         storageUsage: storageInfo.usage || 0,
-        storageQuota: storageInfo.quota || 0
+        storageQuota: storageInfo.quota || 0,
       };
     } catch (error) {
       const dbError = DatabaseUtils.handleDatabaseError(error);
@@ -174,7 +212,7 @@ export class DatabaseUtils {
         lastError: dbError.message,
         lastChecked: new Date(),
         storageUsage: 0,
-        storageQuota: 0
+        storageQuota: 0,
       };
     }
   }
@@ -184,28 +222,31 @@ export class DatabaseUtils {
     // In a real app, you would use navigator.storage.estimate() or similar
     return {
       usage: 1024 * 1024, // 1MB (simulated)
-      quota: 50 * 1024 * 1024 // 50MB (simulated)
+      quota: 50 * 1024 * 1024, // 50MB (simulated)
     };
   }
 
   // Data validation
-  async validateDataBeforeInsert(tableName: string, data: any): Promise<boolean> {
+  async validateDataBeforeInsert(
+    tableName: string,
+    data: any,
+  ): Promise<boolean> {
     // Basic validation - can be extended per table
     if (!data) {
-      throw new Error('Data cannot be null or undefined');
+      throw new Error("Data cannot be null or undefined");
     }
 
     // Table-specific validation
     switch (tableName.toLowerCase()) {
-      case 'users':
+      case "users":
         if (!data.email) {
-          throw new Error('User email is required');
+          throw new Error("User email is required");
         }
         break;
 
-      case 'tasks':
+      case "tasks":
         if (!data.content) {
-          throw new Error('Task content is required');
+          throw new Error("Task content is required");
         }
         break;
 

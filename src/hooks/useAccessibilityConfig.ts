@@ -1,14 +1,23 @@
-import { useState, useEffect, useCallback } from 'react';
-import { accessibilityConfigService } from '../services/accessibilityConfigService';
-import { AccessibilityConfig, AccessibilityConfigOptions } from '../services/accessibilityConfigService';
+import { useState, useEffect, useCallback } from "react";
+import { accessibilityConfigService } from "../services/accessibilityConfigService";
+import {
+  AccessibilityConfig,
+  AccessibilityConfigOptions,
+} from "../services/accessibilityConfigService";
 
 interface UseAccessibilityConfigReturn {
   accessibilityConfig: AccessibilityConfig;
-  updateAccessibilityConfig: (configUpdate: Partial<AccessibilityConfig>, options?: AccessibilityConfigOptions) => void;
+  updateAccessibilityConfig: (
+    configUpdate: Partial<AccessibilityConfig>,
+    options?: AccessibilityConfigOptions,
+  ) => void;
   resetConfigToDefaults: () => void;
   getFeatureDefault: (featureId: string) => boolean;
   setFeatureDefault: (featureId: string, value: boolean) => void;
-  validateConfig: (config: Partial<AccessibilityConfig>) => { isValid: boolean; errors: string[] };
+  validateConfig: (config: Partial<AccessibilityConfig>) => {
+    isValid: boolean;
+    errors: string[];
+  };
   getConfigSummary: () => string;
   exportConfig: () => string;
   importConfig: (configString: string) => { success: boolean; error?: string };
@@ -20,7 +29,9 @@ interface UseAccessibilityConfigReturn {
 }
 
 export const useAccessibilityConfig = (): UseAccessibilityConfigReturn => {
-  const [accessibilityConfig, setAccessibilityConfig] = useState(accessibilityConfigService.getConfig());
+  const [accessibilityConfig, setAccessibilityConfig] = useState(
+    accessibilityConfigService.getConfig(),
+  );
 
   useEffect(() => {
     // Sync with service config
@@ -31,10 +42,16 @@ export const useAccessibilityConfig = (): UseAccessibilityConfigReturn => {
     updateConfig();
   }, []);
 
-  const updateAccessibilityConfig = useCallback((configUpdate: Partial<AccessibilityConfig>, options?: AccessibilityConfigOptions) => {
-    accessibilityConfigService.updateConfig(configUpdate, options);
-    setAccessibilityConfig(accessibilityConfigService.getConfig());
-  }, []);
+  const updateAccessibilityConfig = useCallback(
+    (
+      configUpdate: Partial<AccessibilityConfig>,
+      options?: AccessibilityConfigOptions,
+    ) => {
+      accessibilityConfigService.updateConfig(configUpdate, options);
+      setAccessibilityConfig(accessibilityConfigService.getConfig());
+    },
+    [],
+  );
 
   const resetConfigToDefaults = useCallback(() => {
     accessibilityConfigService.resetToDefaults();
@@ -70,19 +87,25 @@ export const useAccessibilityConfig = (): UseAccessibilityConfigReturn => {
     return accessibilityConfigService.getThemeCompatibility();
   }, []);
 
-  const setThemeCompatibility = useCallback((darkMode: boolean, lightMode: boolean) => {
-    accessibilityConfigService.setThemeCompatibility(darkMode, lightMode);
-    setAccessibilityConfig(accessibilityConfigService.getConfig());
-  }, []);
+  const setThemeCompatibility = useCallback(
+    (darkMode: boolean, lightMode: boolean) => {
+      accessibilityConfigService.setThemeCompatibility(darkMode, lightMode);
+      setAccessibilityConfig(accessibilityConfigService.getConfig());
+    },
+    [],
+  );
 
   const getNotificationPreferences = useCallback(() => {
     return accessibilityConfigService.getNotificationPreferences();
   }, []);
 
-  const setNotificationPreferences = useCallback((tips: boolean, suggestions: boolean) => {
-    accessibilityConfigService.setNotificationPreferences(tips, suggestions);
-    setAccessibilityConfig(accessibilityConfigService.getConfig());
-  }, []);
+  const setNotificationPreferences = useCallback(
+    (tips: boolean, suggestions: boolean) => {
+      accessibilityConfigService.setNotificationPreferences(tips, suggestions);
+      setAccessibilityConfig(accessibilityConfigService.getConfig());
+    },
+    [],
+  );
 
   const applyConfigToDOM = useCallback(() => {
     accessibilityConfigService.applyConfigToDOM();
@@ -102,6 +125,6 @@ export const useAccessibilityConfig = (): UseAccessibilityConfigReturn => {
     setThemeCompatibility,
     getNotificationPreferences,
     setNotificationPreferences,
-    applyConfigToDOM
+    applyConfigToDOM,
   };
 };

@@ -5,56 +5,56 @@
  * This script validates that the offline hooks are properly created and integrated
  */
 
-import { readFileSync, existsSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import { readFileSync, existsSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-console.log('🔍 Validating Offline Hooks Implementation...\\n');
+console.log("🔍 Validating Offline Hooks Implementation...\\n");
 
 const filesToCheck = [
   {
-    path: join(__dirname, 'src', 'hooks', 'useOffline.ts'),
-    name: 'useOffline.ts',
+    path: join(__dirname, "src", "hooks", "useOffline.ts"),
+    name: "useOffline.ts",
     requiredExports: [
-      'useOffline',
-      'initialize',
-      'getOfflineStatus',
-      'getOfflineState',
-      'enqueueOperation',
-      'processOfflineQueue',
-      'retryFailedItems',
-      'getQueueStats',
-      'simulateNetworkChange',
+      "useOffline",
+      "initialize",
+      "getOfflineStatus",
+      "getOfflineState",
+      "enqueueOperation",
+      "processOfflineQueue",
+      "retryFailedItems",
+      "getQueueStats",
+      "simulateNetworkChange",
     ],
   },
   {
-    path: join(__dirname, 'src', 'hooks', 'useOfflineSync.ts'),
-    name: 'useOfflineSync.ts',
+    path: join(__dirname, "src", "hooks", "useOfflineSync.ts"),
+    name: "useOfflineSync.ts",
     requiredExports: [
-      'useOfflineSync',
-      'syncQueue',
-      'getSyncStatus',
-      'isSyncNeeded',
-      'initialize',
+      "useOfflineSync",
+      "syncQueue",
+      "getSyncStatus",
+      "isSyncNeeded",
+      "initialize",
     ],
   },
   {
-    path: join(__dirname, 'src', 'hooks', 'index.ts'),
-    name: 'hooks index.ts',
-    requiredExports: ['useOffline', 'useOfflineSync', 'useOfflineSettings'],
+    path: join(__dirname, "src", "hooks", "index.ts"),
+    name: "hooks index.ts",
+    requiredExports: ["useOffline", "useOfflineSync", "useOfflineSettings"],
   },
   {
-    path: join(__dirname, 'src', 'hooks', '__tests__', 'useOffline.test.ts'),
-    name: 'useOffline.test.ts',
+    path: join(__dirname, "src", "hooks", "__tests__", "useOffline.test.ts"),
+    name: "useOffline.test.ts",
     requiredContent: [
-      'useOffline',
-      'initialize',
-      'enqueueOperation',
-      'processOfflineQueue',
-      'getQueueStats',
+      "useOffline",
+      "initialize",
+      "enqueueOperation",
+      "processOfflineQueue",
+      "getQueueStats",
     ],
   },
 ];
@@ -71,7 +71,7 @@ filesToCheck.forEach((file) => {
   }
 
   try {
-    const content = readFileSync(file.path, 'utf8');
+    const content = readFileSync(file.path, "utf8");
 
     if (file.requiredExports) {
       file.requiredExports.forEach((exportName) => {
@@ -111,15 +111,15 @@ filesToCheck.forEach((file) => {
 });
 
 // Check integration with existing components
-console.log('\\n🔧 Checking integration with existing components...');
+console.log("\\n🔧 Checking integration with existing components...");
 
 const integrationFiles = [
-  join(__dirname, 'src', 'features', 'offline', 'OfflineHooksDemo.tsx'),
-  join(__dirname, 'src', 'features', 'offline', 'index.ts'),
+  join(__dirname, "src", "features", "offline", "OfflineHooksDemo.tsx"),
+  join(__dirname, "src", "features", "offline", "index.ts"),
 ];
 
 integrationFiles.forEach((filePath) => {
-  const fileName = filePath.split('/').pop();
+  const fileName = filePath.split("/").pop();
   console.log(`📁 Checking integration file ${fileName}...`);
 
   if (!existsSync(filePath)) {
@@ -129,13 +129,13 @@ integrationFiles.forEach((filePath) => {
   }
 
   try {
-    const content = readFileSync(filePath, 'utf8');
+    const content = readFileSync(filePath, "utf8");
 
-    if (fileName === 'OfflineHooksDemo.tsx') {
+    if (fileName === "OfflineHooksDemo.tsx") {
       const requiredImports = [
-        'useOffline',
-        'useOfflineSync',
-        'useOfflineSettings',
+        "useOffline",
+        "useOfflineSync",
+        "useOfflineSettings",
       ];
       requiredImports.forEach((importName) => {
         if (!content.includes(importName)) {
@@ -145,10 +145,10 @@ integrationFiles.forEach((filePath) => {
       });
     }
 
-    if (fileName === 'index.ts') {
-      if (!content.includes('OfflineHooksDemo')) {
+    if (fileName === "index.ts") {
+      if (!content.includes("OfflineHooksDemo")) {
         console.error(
-          '❌ Demo component not exported in offline feature index',
+          "❌ Demo component not exported in offline feature index",
         );
         allValid = false;
       } else {
@@ -164,23 +164,23 @@ integrationFiles.forEach((filePath) => {
   }
 });
 
-console.log('\\n📊 Validation Summary:');
+console.log("\\n📊 Validation Summary:");
 if (allValid) {
   console.log(
-    '✅ All offline hooks have been successfully created and integrated!',
+    "✅ All offline hooks have been successfully created and integrated!",
   );
-  console.log('\\n🎉 Implementation Summary:');
+  console.log("\\n🎉 Implementation Summary:");
   console.log(
-    '• useOffline.ts - Offline status monitoring and queue management',
+    "• useOffline.ts - Offline status monitoring and queue management",
   );
-  console.log('• useOfflineSync.ts - Offline sync functionality');
-  console.log('• useOfflineSettings.ts - Offline settings management');
-  console.log('• OfflineHooksDemo.tsx - Integration demo component');
-  console.log('• Comprehensive test coverage');
-  console.log('• Proper exports and integration');
+  console.log("• useOfflineSync.ts - Offline sync functionality");
+  console.log("• useOfflineSettings.ts - Offline settings management");
+  console.log("• OfflineHooksDemo.tsx - Integration demo component");
+  console.log("• Comprehensive test coverage");
+  console.log("• Proper exports and integration");
 } else {
   console.log(
-    '❌ Some validation checks failed. Please review the errors above.',
+    "❌ Some validation checks failed. Please review the errors above.",
   );
   process.exit(1);
 }

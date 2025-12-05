@@ -1,6 +1,10 @@
-import { MobileConfig, MobilePreferences, MobileThemeConfig } from '../types/mobileTypes';
-import { mobileConfigService } from '../services/mobileConfigService';
-import { Platform, Appearance } from 'react-native';
+import {
+  MobileConfig,
+  MobilePreferences,
+  MobileThemeConfig,
+} from "../types/mobileTypes";
+import { mobileConfigService } from "../services/mobileConfigService";
+import { Platform, Appearance } from "react-native";
 
 export class MobileConfigUtils {
   private static instance: MobileConfigUtils;
@@ -19,18 +23,27 @@ export class MobileConfigUtils {
   /**
    * Configuration merging and management
    */
-  public mergeConfigs(baseConfig: MobileConfig, newConfig: Partial<MobileConfig>): MobileConfig {
+  public mergeConfigs(
+    baseConfig: MobileConfig,
+    newConfig: Partial<MobileConfig>,
+  ): MobileConfig {
     return {
       ...baseConfig,
       ...newConfig,
       // Handle nested objects specially
       notificationPreferences: newConfig.notificationPreferences
-        ? { ...baseConfig.notificationPreferences, ...newConfig.notificationPreferences }
+        ? {
+            ...baseConfig.notificationPreferences,
+            ...newConfig.notificationPreferences,
+          }
         : baseConfig.notificationPreferences,
     };
   }
 
-  public mergePreferences(basePreferences: MobilePreferences, newPreferences: Partial<MobilePreferences>): MobilePreferences {
+  public mergePreferences(
+    basePreferences: MobilePreferences,
+    newPreferences: Partial<MobilePreferences>,
+  ): MobilePreferences {
     return {
       ...basePreferences,
       ...newPreferences,
@@ -52,31 +65,32 @@ export class MobileConfigUtils {
    */
   public getDefaultThemeConfig(): MobileThemeConfig {
     return {
-      primaryColor: '#6200EE',
-      secondaryColor: '#03DAC6',
-      accentColor: '#FFC107',
-      backgroundColor: Appearance.getColorScheme() === 'dark' ? '#121212' : '#FFFFFF',
-      textColor: Appearance.getColorScheme() === 'dark' ? '#FFFFFF' : '#333333',
+      primaryColor: "#6200EE",
+      secondaryColor: "#03DAC6",
+      accentColor: "#FFC107",
+      backgroundColor:
+        Appearance.getColorScheme() === "dark" ? "#121212" : "#FFFFFF",
+      textColor: Appearance.getColorScheme() === "dark" ? "#FFFFFF" : "#333333",
     };
   }
 
   public getThemeConfigForDarkMode(): MobileThemeConfig {
     return {
-      primaryColor: '#BB86FC',
-      secondaryColor: '#03DAC6',
-      accentColor: '#FFC107',
-      backgroundColor: '#121212',
-      textColor: '#FFFFFF',
+      primaryColor: "#BB86FC",
+      secondaryColor: "#03DAC6",
+      accentColor: "#FFC107",
+      backgroundColor: "#121212",
+      textColor: "#FFFFFF",
     };
   }
 
   public getThemeConfigForLightMode(): MobileThemeConfig {
     return {
-      primaryColor: '#6200EE',
-      secondaryColor: '#03DAC6',
-      accentColor: '#FFC107',
-      backgroundColor: '#FFFFFF',
-      textColor: '#333333',
+      primaryColor: "#6200EE",
+      secondaryColor: "#03DAC6",
+      accentColor: "#FFC107",
+      backgroundColor: "#FFFFFF",
+      textColor: "#333333",
     };
   }
 
@@ -91,12 +105,12 @@ export class MobileConfigUtils {
   /**
    * Animation quality management
    */
-  public setAnimationQuality(quality: 'low' | 'medium' | 'high'): void {
+  public setAnimationQuality(quality: "low" | "medium" | "high"): void {
     const currentConfig = mobileConfigService.getConfig();
     mobileConfigService.updateConfig({ animationQuality: quality });
   }
 
-  public getCurrentAnimationQuality(): 'low' | 'medium' | 'high' {
+  public getCurrentAnimationQuality(): "low" | "medium" | "high" {
     const config = mobileConfigService.getConfig();
     return config.animationQuality;
   }
@@ -106,7 +120,7 @@ export class MobileConfigUtils {
     const state = mobileConfigService.getMobileState();
 
     return (
-      config.animationQuality === 'low' ||
+      config.animationQuality === "low" ||
       state.batteryLevel < 0.2 ||
       state.isLowPowerMode
     );
@@ -115,18 +129,22 @@ export class MobileConfigUtils {
   /**
    * Performance mode management
    */
-  public async setPerformanceMode(mode: 'high' | 'balanced' | 'battery_saver'): Promise<void> {
+  public async setPerformanceMode(
+    mode: "high" | "balanced" | "battery_saver",
+  ): Promise<void> {
     await mobileConfigService.setPerformanceMode(mode);
   }
 
-  public getCurrentPerformanceMode(): 'high' | 'balanced' | 'battery_saver' {
+  public getCurrentPerformanceMode(): "high" | "balanced" | "battery_saver" {
     const config = mobileConfigService.getConfig();
     return config.performanceMode;
   }
 
   public isBatterySaverMode(): boolean {
     const config = mobileConfigService.getConfig();
-    return config.performanceMode === 'battery_saver' || config.batterySaverMode;
+    return (
+      config.performanceMode === "battery_saver" || config.batterySaverMode
+    );
   }
 
   /**
@@ -168,7 +186,7 @@ export class MobileConfigUtils {
     reducedMotion?: boolean;
     highContrast?: boolean;
     screenReaderEnabled?: boolean;
-    fontSizeAdjustment?: 'small' | 'normal' | 'large' | 'extra_large';
+    fontSizeAdjustment?: "small" | "normal" | "large" | "extra_large";
   }): void {
     const currentPreferences = mobileConfigService.getPreferences();
     const updatedAccessibility = {
@@ -185,7 +203,7 @@ export class MobileConfigUtils {
     reducedMotion: boolean;
     highContrast: boolean;
     screenReaderEnabled: boolean;
-    fontSizeAdjustment: 'small' | 'normal' | 'large' | 'extra_large';
+    fontSizeAdjustment: "small" | "normal" | "large" | "extra_large";
   } {
     const preferences = mobileConfigService.getPreferences();
     return preferences.accessibility;
@@ -196,7 +214,7 @@ export class MobileConfigUtils {
    */
   public updateCacheSettings(settings: {
     cacheEnabled?: boolean;
-    cacheSize?: 'small' | 'medium' | 'large';
+    cacheSize?: "small" | "medium" | "large";
     clearCacheOnExit?: boolean;
   }): void {
     const currentPreferences = mobileConfigService.getPreferences();
@@ -212,7 +230,7 @@ export class MobileConfigUtils {
 
   public getCacheSettings(): {
     cacheEnabled: boolean;
-    cacheSize: 'small' | 'medium' | 'large';
+    cacheSize: "small" | "medium" | "large";
     clearCacheOnExit: boolean;
   } {
     const preferences = mobileConfigService.getPreferences();
@@ -270,35 +288,50 @@ export class MobileConfigUtils {
   /**
    * Configuration validation and utilities
    */
-  public validateConfig(config: MobileConfig): { valid: boolean; errors: string[] } {
+  public validateConfig(config: MobileConfig): {
+    valid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
     if (!config.primaryColor || !this.isValidColor(config.primaryColor)) {
-      errors.push('Invalid primary color');
+      errors.push("Invalid primary color");
     }
 
     if (!config.secondaryColor || !this.isValidColor(config.secondaryColor)) {
-      errors.push('Invalid secondary color');
+      errors.push("Invalid secondary color");
     }
 
     if (!config.accentColor || !this.isValidColor(config.accentColor)) {
-      errors.push('Invalid accent color');
+      errors.push("Invalid accent color");
     }
 
-    if (config.fontSize && !['small', 'medium', 'large', 'extra_large'].includes(config.fontSize)) {
-      errors.push('Invalid font size');
+    if (
+      config.fontSize &&
+      !["small", "medium", "large", "extra_large"].includes(config.fontSize)
+    ) {
+      errors.push("Invalid font size");
     }
 
-    if (config.animationQuality && !['low', 'medium', 'high'].includes(config.animationQuality)) {
-      errors.push('Invalid animation quality');
+    if (
+      config.animationQuality &&
+      !["low", "medium", "high"].includes(config.animationQuality)
+    ) {
+      errors.push("Invalid animation quality");
     }
 
-    if (config.syncFrequency && !['automatic', 'manual', 'hourly', 'daily'].includes(config.syncFrequency)) {
-      errors.push('Invalid sync frequency');
+    if (
+      config.syncFrequency &&
+      !["automatic", "manual", "hourly", "daily"].includes(config.syncFrequency)
+    ) {
+      errors.push("Invalid sync frequency");
     }
 
-    if (config.defaultView && !['list', 'board', 'calendar', 'timeline'].includes(config.defaultView)) {
-      errors.push('Invalid default view');
+    if (
+      config.defaultView &&
+      !["list", "board", "calendar", "timeline"].includes(config.defaultView)
+    ) {
+      errors.push("Invalid default view");
     }
 
     return {
@@ -309,9 +342,11 @@ export class MobileConfigUtils {
 
   private isValidColor(color: string): boolean {
     // Simple color validation
-    return /^#([0-9A-F]{3}){1,2}$/i.test(color) ||
-           /^rgb\((\d{1,3},\s*){2}\d{1,3}\)$/.test(color) ||
-           /^rgba\((\d{1,3},\s*){3}\d?\.?\d*\)$/.test(color);
+    return (
+      /^#([0-9A-F]{3}){1,2}$/i.test(color) ||
+      /^rgb\((\d{1,3},\s*){2}\d{1,3}\)$/.test(color) ||
+      /^rgba\((\d{1,3},\s*){3}\d?\.?\d*\)$/.test(color)
+    );
   }
 
   /**
@@ -323,7 +358,7 @@ export class MobileConfigUtils {
       const preferences = mobileConfigService.getPreferences();
 
       const exportData = {
-        version: '1.0',
+        version: "1.0",
         timestamp: new Date().toISOString(),
         config,
         preferences,
@@ -331,8 +366,8 @@ export class MobileConfigUtils {
 
       return JSON.stringify(exportData, null, 2);
     } catch (error) {
-      console.error('Failed to export config:', error);
-      throw new Error('Failed to export configuration');
+      console.error("Failed to export config:", error);
+      throw new Error("Failed to export configuration");
     }
   }
 
@@ -348,8 +383,8 @@ export class MobileConfigUtils {
         await mobileConfigService.updatePreferences(parsedData.preferences);
       }
     } catch (error) {
-      console.error('Failed to import config:', error);
-      throw new Error('Failed to import configuration');
+      console.error("Failed to import config:", error);
+      throw new Error("Failed to import configuration");
     }
   }
 
@@ -360,17 +395,17 @@ export class MobileConfigUtils {
     const config = mobileConfigService.getConfig();
     const platformConfig: Record<string, any> = {};
 
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === "ios") {
       platformConfig.iosSpecific = {
         useNativeComponents: true,
-        enableICloudSync: config.syncFrequency === 'automatic',
+        enableICloudSync: config.syncFrequency === "automatic",
       };
-    } else if (Platform.OS === 'android') {
+    } else if (Platform.OS === "android") {
       platformConfig.androidSpecific = {
         useMaterialDesign: true,
-        enableGoogleDriveSync: config.syncFrequency === 'automatic',
+        enableGoogleDriveSync: config.syncFrequency === "automatic",
       };
-    } else if (Platform.OS === 'web') {
+    } else if (Platform.OS === "web") {
       platformConfig.webSpecific = {
         useWebComponents: true,
         enableLocalStorage: true,
@@ -388,7 +423,7 @@ export class MobileConfigUtils {
     const preferences = mobileConfigService.getPreferences();
 
     return `Mobile Config Summary:
-- Theme: ${config.darkMode ? 'Dark' : 'Light'}
+- Theme: ${config.darkMode ? "Dark" : "Light"}
 - Performance: ${config.performanceMode}
 - Animation Quality: ${config.animationQuality}
 - Font Size: ${config.fontSize}

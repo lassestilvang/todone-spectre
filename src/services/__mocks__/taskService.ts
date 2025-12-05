@@ -1,4 +1,4 @@
-import { Task } from '../../types';
+import { Task } from "../../types";
 
 export class MockTaskService {
   private tasks: Task[] = [];
@@ -18,14 +18,14 @@ export class MockTaskService {
   }
 
   async updateTask(taskId: string, updates: Partial<Task>): Promise<Task> {
-    const index = this.tasks.findIndex(t => t.id === taskId);
-    if (index === -1) throw new Error('Task not found');
+    const index = this.tasks.findIndex((t) => t.id === taskId);
+    if (index === -1) throw new Error("Task not found");
     this.tasks[index] = { ...this.tasks[index], ...updates };
     return this.tasks[index];
   }
 
   async deleteTask(taskId: string): Promise<void> {
-    this.tasks = this.tasks.filter(t => t.id !== taskId);
+    this.tasks = this.tasks.filter((t) => t.id !== taskId);
   }
 
   async clear(): Promise<void> {

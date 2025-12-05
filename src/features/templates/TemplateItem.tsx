@@ -1,7 +1,7 @@
-import React from 'react';
-import { Template } from '../../types/template';
-import { useTemplateCategories } from '../../hooks/useTemplateCategories';
-import { Star, Eye, Tag, Download } from 'lucide-react';
+import React from "react";
+import { Template } from "../../types/template";
+import { useTemplateCategories } from "../../hooks/useTemplateCategories";
+import { Star, Eye, Tag, Download } from "lucide-react";
 
 interface TemplateItemProps {
   template: Template;
@@ -12,10 +12,10 @@ interface TemplateItemProps {
 const TemplateItem: React.FC<TemplateItemProps> = ({
   template,
   onClick,
-  showActions = true
+  showActions = true,
 }) => {
   const { categories } = useTemplateCategories();
-  const category = categories.find(c => c.id === template.categoryId);
+  const category = categories.find((c) => c.id === template.categoryId);
 
   const handleClick = () => {
     if (onClick) {
@@ -26,7 +26,9 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
   return (
     <div
       className={`p-4 border rounded-lg shadow-sm hover:shadow-md transition-shadow cursor-pointer ${
-        template.isPublic ? 'bg-white border-gray-100' : 'bg-gray-50 border-gray-200'
+        template.isPublic
+          ? "bg-white border-gray-100"
+          : "bg-gray-50 border-gray-200"
       }`}
       onClick={handleClick}
     >
@@ -53,7 +55,10 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
             <div className="flex items-center space-x-4 text-xs text-gray-500 mt-3">
               {category && (
                 <span className="flex items-center">
-                  <span className="w-2 h-2 rounded-full mr-1" style={{ backgroundColor: category.color }}></span>
+                  <span
+                    className="w-2 h-2 rounded-full mr-1"
+                    style={{ backgroundColor: category.color }}
+                  ></span>
                   {category.name}
                 </span>
               )}
@@ -61,14 +66,16 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
               {template.tags && template.tags.length > 0 && (
                 <span className="flex items-center">
                   <Tag className="w-3 h-3 mr-1" />
-                  {template.tags.length} tag{template.tags.length > 1 ? 's' : ''}
+                  {template.tags.length} tag
+                  {template.tags.length > 1 ? "s" : ""}
                 </span>
               )}
 
               {template.usageCount !== undefined && (
                 <span className="flex items-center">
                   <Eye className="w-3 h-3 mr-1" />
-                  {template.usageCount} use{template.usageCount !== 1 ? 's' : ''}
+                  {template.usageCount} use
+                  {template.usageCount !== 1 ? "s" : ""}
                 </span>
               )}
 

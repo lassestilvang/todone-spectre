@@ -1,29 +1,27 @@
-import React from 'react';
-import { ViewLayout } from './ViewLayout';
-import { Task } from '../../types/task';
-import { TaskList } from '../tasks/TaskList';
-import { useTasks } from '../../hooks/useTasks';
-import { isToday } from '../../utils/dateUtils';
+import React from "react";
+import { ViewLayout } from "./ViewLayout";
+import { Task } from "../../types/task";
+import { TaskList } from "../tasks/TaskList";
+import { useTasks } from "../../hooks/useTasks";
+import { isToday } from "../../utils/dateUtils";
 
 interface TodayViewProps {
   projectId?: string;
   onTaskClick?: (taskId: string) => void;
 }
 
-export const TodayView: React.FC<TodayViewProps> = ({ projectId, onTaskClick }) => {
-  const {
-    tasks,
-    isLoading,
-    error,
-    getProcessedTasks
-  } = useTasks(projectId);
+export const TodayView: React.FC<TodayViewProps> = ({
+  projectId,
+  onTaskClick,
+}) => {
+  const { tasks, isLoading, error, getProcessedTasks } = useTasks(projectId);
 
   // Get today's date for comparison
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
   // Filter tasks for today view (due today or overdue)
-  const todayTasks = getProcessedTasks().filter(task => {
+  const todayTasks = getProcessedTasks().filter((task) => {
     if (!task.dueDate) return false;
 
     const taskDueDate = new Date(task.dueDate);
@@ -36,13 +34,14 @@ export const TodayView: React.FC<TodayViewProps> = ({ projectId, onTaskClick }) 
   const sortedTasks = [...todayTasks].sort((a, b) => {
     // First by priority (critical, high, medium, low)
     const priorityOrder: Record<string, number> = {
-      'critical': 1,
-      'high': 2,
-      'medium': 3,
-      'low': 4
+      critical: 1,
+      high: 2,
+      medium: 3,
+      low: 4,
     };
 
-    const priorityCompare = (priorityOrder[a.priority] || 5) - (priorityOrder[b.priority] || 5);
+    const priorityCompare =
+      (priorityOrder[a.priority] || 5) - (priorityOrder[b.priority] || 5);
     if (priorityCompare !== 0) return priorityCompare;
 
     // Then by due date (earlier dates first)
@@ -57,7 +56,7 @@ export const TodayView: React.FC<TodayViewProps> = ({ projectId, onTaskClick }) 
 
   const now = new Date();
 
-  sortedTasks.forEach(task => {
+  sortedTasks.forEach((task) => {
     if (task.dueDate) {
       const taskDueDate = new Date(task.dueDate);
       taskDueDate.setHours(0, 0, 0, 0);
@@ -131,12 +130,26 @@ export const TodayView: React.FC<TodayViewProps> = ({ projectId, onTaskClick }) 
         {sortedTasks.length === 0 && !isLoading && !error && (
           <div className="text-center py-12">
             <div className="mx-auto w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-8 h-8 text-gray-400 dark:text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <svg
+                className="w-8 h-8 text-gray-400 dark:text-gray-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
               </svg>
             </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No tasks due today</h3>
-            <p className="text-gray-600 dark:text-gray-300 mb-4">Great job! You're all caught up.</p>
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+              No tasks due today
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              Great job! You're all caught up.
+            </p>
             <button className="px-4 py-2 bg-primary-500 text-white rounded-md hover:bg-primary-600">
               View Upcoming Tasks
             </button>

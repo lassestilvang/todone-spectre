@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
-import { animationService } from '../services/animationService';
-import { animationUtils } from '../utils/animationUtils';
+import { useState, useEffect, useCallback } from "react";
+import { animationService } from "../services/animationService";
+import { animationUtils } from "../utils/animationUtils";
 
 export const useAnimation = () => {
-  const [animationState, setAnimationState] = useState(animationService.getState());
+  const [animationState, setAnimationState] = useState(
+    animationService.getState(),
+  );
 
   const triggerAnimation = useCallback((animationName: string) => {
     animationService.startAnimation(animationName);
@@ -36,6 +38,6 @@ export const useAnimation = () => {
     stopAnimation,
     resumeAnimation,
     setAnimationConfig,
-    getAnimationConfig
+    getAnimationConfig,
   };
 };

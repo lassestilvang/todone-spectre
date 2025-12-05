@@ -1,31 +1,27 @@
-import React, { useEffect } from 'react';
-import { useSearchStore } from '../../store/useSearchStore';
-import { useSearch } from '../../hooks/useSearch';
-import { useCommandPalette } from '../../hooks/useCommandPalette';
-import { getCommandService } from '../../services/commandService';
-import { getSearchService } from '../../services/searchService';
-import { useTaskStore } from '../../store/useTaskStore';
-import { useProjectStore } from '../../store/useProjectStore';
-import { useLabelStore } from '../../store/useLabelStore';
+import React, { useEffect } from "react";
+import { useSearchStore } from "../../store/useSearchStore";
+import { useSearch } from "../../hooks/useSearch";
+import { useCommandPalette } from "../../hooks/useCommandPalette";
+import { getCommandService } from "../../services/commandService";
+import { getSearchService } from "../../services/searchService";
+import { useTaskStore } from "../../store/useTaskStore";
+import { useProjectStore } from "../../store/useProjectStore";
+import { useLabelStore } from "../../store/useLabelStore";
 
 interface SearchProviderProps {
   children: React.ReactNode;
 }
 
 export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
-  const {
-    setCommands,
-    setSearchResults,
-    setSearchQuery,
-    clearSearch
-  } = useSearchStore();
+  const { setCommands, setSearchResults, setSearchQuery, clearSearch } =
+    useSearchStore();
 
   const { search } = useSearch();
   const { commands, filteredCommands, searchCommands } = useCommandPalette();
 
-  const tasks = useTaskStore(state => state.tasks);
-  const projects = useProjectStore(state => state.projects);
-  const labels = useLabelStore(state => state.labels);
+  const tasks = useTaskStore((state) => state.tasks);
+  const projects = useProjectStore((state) => state.projects);
+  const labels = useLabelStore((state) => state.labels);
 
   // Initialize services with data
   useEffect(() => {
@@ -50,9 +46,5 @@ export const SearchProvider: React.FC<SearchProviderProps> = ({ children }) => {
     useSearchStore.getState().setFilteredCommands(filtered);
   };
 
-  return (
-    <div className="search-provider">
-      {children}
-    </div>
-  );
+  return <div className="search-provider">{children}</div>;
 };

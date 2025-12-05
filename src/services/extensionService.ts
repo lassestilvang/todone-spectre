@@ -1,4 +1,9 @@
-import { ExtensionState, ExtensionMessage, ExtensionAction, ExtensionConfig } from '../types/extensionTypes';
+import {
+  ExtensionState,
+  ExtensionMessage,
+  ExtensionAction,
+  ExtensionConfig,
+} from "../types/extensionTypes";
 
 /**
  * Extension Service - Main service for browser extension functionality
@@ -11,9 +16,9 @@ class ExtensionService {
 
   constructor() {
     this.state = {
-      status: 'idle',
+      status: "idle",
       contentScriptsReady: false,
-      pageIntegrationStatus: 'idle'
+      pageIntegrationStatus: "idle",
     };
 
     this.messageListeners = [];
@@ -26,13 +31,15 @@ class ExtensionService {
   public async initialize(): Promise<void> {
     try {
       // Load saved state
-      const savedState = await this.getStorageItem<ExtensionState>('extensionState');
+      const savedState =
+        await this.getStorageItem<ExtensionState>("extensionState");
       if (savedState) {
         this.state = { ...this.state, ...savedState };
       }
 
       // Load configuration
-      const savedConfig = await this.getStorageItem<ExtensionConfig>('extensionConfig');
+      const savedConfig =
+        await this.getStorageItem<ExtensionConfig>("extensionConfig");
       if (savedConfig) {
         this.config = savedConfig;
       }
@@ -40,10 +47,10 @@ class ExtensionService {
       // Set up message listeners
       this.setupMessageListeners();
 
-      this.updateState({ status: 'ready' });
+      this.updateState({ status: "ready" });
     } catch (error) {
-      console.error('Extension service initialization failed:', error);
-      this.updateState({ status: 'error', error: error.message });
+      console.error("Extension service initialization failed:", error);
+      this.updateState({ status: "error", error: error.message });
     }
   }
 
@@ -52,11 +59,13 @@ class ExtensionService {
    */
   private setupMessageListeners(): void {
     // Listen for messages from other extension components
-    chrome.runtime.onMessage.addListener((message: ExtensionMessage, sender, sendResponse) => {
-      this.handleMessage(message);
-      sendResponse({ success: true });
-      return true;
-    });
+    chrome.runtime.onMessage.addListener(
+      (message: ExtensionMessage, sender, sendResponse) => {
+        this.handleMessage(message);
+        sendResponse({ success: true });
+        return true;
+      },
+    );
 
     // Listen for connection requests
     chrome.runtime.onConnect.addListener((port) => {
@@ -68,31 +77,31 @@ class ExtensionService {
    * Handle incoming messages
    */
   private handleMessage(message: ExtensionMessage): void {
-    console.log('ExtensionService received message:', message);
+    console.log("ExtensionService received message:", message);
 
     try {
       switch (message.type) {
-        case 'CONTENT_SCRIPT_READY':
+        case "CONTENT_SCRIPT_READY":
           this.handleContentScriptReady(message.payload);
           break;
-        case 'PAGE_INTEGRATION_COMPLETE':
+        case "PAGE_INTEGRATION_COMPLETE":
           this.handlePageIntegrationComplete(message.payload);
           break;
-        case 'SYNC_REQUEST':
+        case "SYNC_REQUEST":
           this.handleSyncRequest(message.payload);
           break;
-        case 'CONFIG_UPDATE':
+        case "CONFIG_UPDATE":
           this.handleConfigUpdate(message.payload);
           break;
         default:
-          console.warn('Unknown message type:', message.type);
+          console.warn("Unknown message type:", message.type);
       }
 
       // Notify all listeners
-      this.messageListeners.forEach(listener => listener(message));
+      this.messageListeners.forEach((listener) => listener(message));
     } catch (error) {
-      console.error('Error handling message:', error);
-      this.updateState({ status: 'error', error: error.message });
+      console.error("Error handling message:", error);
+      this.updateState({ status: "error", error: error.message });
     }
   }
 
@@ -100,14 +109,14 @@ class ExtensionService {
    * Handle port connections
    */
   private handlePortConnection(port: chrome.runtime.Port): void {
-    console.log('ExtensionService connected to port:', port.name);
+    console.log("ExtensionService connected to port:", port.name);
 
     port.onMessage.addListener((message: ExtensionMessage) => {
       this.handleMessage(message);
     });
 
     port.onDisconnect.addListener(() => {
-      console.log('Port disconnected:', port.name);
+      console.log("Port disconnected:", port.name);
     });
   }
 
@@ -115,20 +124,24 @@ class ExtensionService {
    * Handle content script ready message
    */
   private handleContentScriptReady(payload: { url: string }): void {
-    console.log('Content script ready for:', payload.url);
+    console.log("Content script ready for:", payload.url);
     this.updateState({
       contentScriptsReady: true,
-      activeTabUrl: payload.url
+      activeTabUrl: payload.url,
     });
   }
 
   /**
    * Handle page integration complete message
    */
-  private handlePageIntegrationComplete(payload: { url: string; title: string; domain: string }): void {
-    console.log('Page integration complete:', payload);
+  private handlePageIntegrationComplete(payload: {
+    url: string;
+    title: string;
+    domain: string;
+  }): void {
+    console.log("Page integration complete:", payload);
     this.updateState({
-      pageIntegrationStatus: 'complete'
+      pageIntegrationStatus: "complete",
     });
   }
 
@@ -137,20 +150,20 @@ class ExtensionService {
    */
   private async handleSyncRequest(payload: { force?: boolean }): Promise<void> {
     try {
-      this.updateState({ status: 'syncing' });
+      this.updateState({ status: "syncing" });
 
       // Simulate sync operation
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 2000));
 
       this.updateState({
-        status: 'ready',
-        lastSync: Date.now()
+        status: "ready",
+        lastSync: Date.now(),
       });
     } catch (error) {
-      console.error('Sync failed:', error);
+      console.error("Sync failed:", error);
       this.updateState({
-        status: 'error',
-        error: error.message
+        status: "error",
+        error: error.message,
       });
     }
   }
@@ -158,15 +171,17 @@ class ExtensionService {
   /**
    * Handle config update
    */
-  private async handleConfigUpdate(payload: Partial<ExtensionConfig>): Promise<void> {
+  private async handleConfigUpdate(
+    payload: Partial<ExtensionConfig>,
+  ): Promise<void> {
     try {
       this.config = { ...this.config, ...payload };
-      await this.setStorageItem('extensionConfig', this.config);
+      await this.setStorageItem("extensionConfig", this.config);
     } catch (error) {
-      console.error('Config update failed:', error);
+      console.error("Config update failed:", error);
       this.updateState({
-        status: 'error',
-        error: error.message
+        status: "error",
+        error: error.message,
       });
     }
   }
@@ -183,7 +198,7 @@ class ExtensionService {
    */
   public async updateState(state: Partial<ExtensionState>): Promise<void> {
     this.state = { ...this.state, ...state };
-    await this.setStorageItem('extensionState', this.state);
+    await this.setStorageItem("extensionState", this.state);
   }
 
   /**
@@ -198,7 +213,7 @@ class ExtensionService {
    */
   public async updateConfig(config: Partial<ExtensionConfig>): Promise<void> {
     this.config = { ...this.config, ...config };
-    await this.setStorageItem('extensionConfig', this.config);
+    await this.setStorageItem("extensionConfig", this.config);
   }
 
   /**
@@ -209,17 +224,17 @@ class ExtensionService {
       // Send to all tabs with content scripts
       const tabs = await chrome.tabs.query({});
       const results = await Promise.all(
-        tabs.map(tab => {
+        tabs.map((tab) => {
           if (tab.id) {
             return chrome.tabs.sendMessage(tab.id, message);
           }
           return Promise.resolve(null);
-        })
+        }),
       );
 
-      return results.filter(result => result !== null);
+      return results.filter((result) => result !== null);
     } catch (error) {
-      console.error('Failed to send message:', error);
+      console.error("Failed to send message:", error);
       throw error;
     }
   }
@@ -234,9 +249,11 @@ class ExtensionService {
   /**
    * Remove message listener
    */
-  public removeMessageListener(callback: (message: ExtensionMessage) => void): void {
+  public removeMessageListener(
+    callback: (message: ExtensionMessage) => void,
+  ): void {
     this.messageListeners = this.messageListeners.filter(
-      listener => listener !== callback
+      (listener) => listener !== callback,
     );
   }
 
@@ -245,61 +262,61 @@ class ExtensionService {
    */
   public dispatch(action: ExtensionAction): void {
     switch (action.type) {
-      case 'INITIALIZE':
+      case "INITIALIZE":
         this.initialize();
         break;
-      case 'STARTUP':
-        this.updateState({ status: 'ready' });
+      case "STARTUP":
+        this.updateState({ status: "ready" });
         break;
-      case 'SYNC_START':
-        this.updateState({ status: 'syncing' });
+      case "SYNC_START":
+        this.updateState({ status: "syncing" });
         break;
-      case 'SYNC_COMPLETE':
+      case "SYNC_COMPLETE":
         this.updateState({
-          status: 'ready',
-          lastSync: Date.now()
+          status: "ready",
+          lastSync: Date.now(),
         });
         break;
-      case 'ERROR':
+      case "ERROR":
         this.updateState({
-          status: 'error',
-          error: action.payload
+          status: "error",
+          error: action.payload,
         });
         break;
-      case 'CONTENT_SCRIPT_READY':
+      case "CONTENT_SCRIPT_READY":
         this.updateState({
           contentScriptsReady: true,
-          activeTabUrl: action.payload?.url
+          activeTabUrl: action.payload?.url,
         });
         break;
-      case 'PAGE_INTEGRATION_COMPLETE':
+      case "PAGE_INTEGRATION_COMPLETE":
         this.updateState({
-          pageIntegrationStatus: 'complete'
+          pageIntegrationStatus: "complete",
         });
         break;
-      case 'TAB_UPDATED':
+      case "TAB_UPDATED":
         this.updateState({
           activeTabId: action.payload?.tabId,
-          activeTabUrl: action.payload?.url
+          activeTabUrl: action.payload?.url,
         });
         break;
-      case 'TAB_ACTIVATED':
+      case "TAB_ACTIVATED":
         this.updateState({
-          activeTabId: action.payload?.tabId
+          activeTabId: action.payload?.tabId,
         });
         break;
-      case 'CONFIG_UPDATED':
+      case "CONFIG_UPDATED":
         this.updateConfig(action.payload);
         break;
-      case 'CONFIG_RESET':
+      case "CONFIG_RESET":
         this.config = this.getDefaultConfig();
-        this.setStorageItem('extensionConfig', this.config);
+        this.setStorageItem("extensionConfig", this.config);
         break;
-      case 'RESTORE_STATE':
+      case "RESTORE_STATE":
         this.state = { ...this.state, ...action.payload };
         break;
       default:
-        console.warn('Unknown action type:', action.type);
+        console.warn("Unknown action type:", action.type);
     }
   }
 
@@ -312,7 +329,7 @@ class ExtensionService {
       autoSyncEnabled: true,
       syncInterval: 300000, // 5 minutes
       showNotifications: true,
-      theme: 'system'
+      theme: "system",
     };
   }
 
@@ -349,13 +366,13 @@ class ExtensionService {
       await chrome.storage.sync.clear();
       await chrome.storage.local.clear();
       this.state = {
-        status: 'idle',
+        status: "idle",
         contentScriptsReady: false,
-        pageIntegrationStatus: 'idle'
+        pageIntegrationStatus: "idle",
       };
       this.config = this.getDefaultConfig();
     } catch (error) {
-      console.error('Failed to clear all data:', error);
+      console.error("Failed to clear all data:", error);
       throw error;
     }
   }

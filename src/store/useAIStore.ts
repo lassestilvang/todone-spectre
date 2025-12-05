@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
-import { AIState } from '../types/store';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
+import { AIState } from "../types/store";
 
 export const useAIStore = create<AIState>()(
   devtools(
@@ -18,7 +18,7 @@ export const useAIStore = create<AIState>()(
         aiUsageStatistics: {
           totalRequests: 0,
           successfulRequests: 0,
-          lastRequestTime: null
+          lastRequestTime: null,
         },
 
         // AI Assistant operations
@@ -37,9 +37,9 @@ export const useAIStore = create<AIState>()(
               ...state.aiTaskBreakdowns,
               [taskId]: {
                 ...state.aiTaskBreakdowns[taskId],
-                suggestions
-              }
-            }
+                suggestions,
+              },
+            },
           }));
         },
 
@@ -47,8 +47,8 @@ export const useAIStore = create<AIState>()(
           set((state) => ({
             aiTaskBreakdowns: {
               ...state.aiTaskBreakdowns,
-              [taskId]: breakdown
-            }
+              [taskId]: breakdown,
+            },
           }));
         },
 
@@ -56,8 +56,8 @@ export const useAIStore = create<AIState>()(
           set((state) => ({
             aiActionableItems: {
               ...state.aiActionableItems,
-              [taskId]: items
-            }
+              [taskId]: items,
+            },
           }));
         },
 
@@ -73,8 +73,8 @@ export const useAIStore = create<AIState>()(
           set((state) => ({
             aiResponseCache: {
               ...state.aiResponseCache,
-              [prompt]: response
-            }
+              [prompt]: response,
+            },
           }));
         },
 
@@ -85,8 +85,8 @@ export const useAIStore = create<AIState>()(
               successfulRequests: success
                 ? state.aiUsageStatistics.successfulRequests + 1
                 : state.aiUsageStatistics.successfulRequests,
-              lastRequestTime: new Date()
-            }
+              lastRequestTime: new Date(),
+            },
           }));
         },
 
@@ -94,7 +94,7 @@ export const useAIStore = create<AIState>()(
           set({
             aiResponseCache: {},
             aiTaskBreakdowns: {},
-            aiActionableItems: {}
+            aiActionableItems: {},
           });
         },
 
@@ -112,14 +112,14 @@ export const useAIStore = create<AIState>()(
 
         getCachedAIResponse: (prompt: string) => {
           return get().aiResponseCache[prompt] || null;
-        }
+        },
       }),
       {
-        name: 'todone-ai-storage',
+        name: "todone-ai-storage",
         storage: createJSONStorage(() => localStorage),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
 
 // Helper function to create localStorage

@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
-import { Task } from '../types/task';
-import { BoardViewService } from '../services/boardViewService';
-import { useTaskStore } from '../store/useTaskStore';
-import { useUiStore } from '../store/useUiStore';
+import { useState, useEffect } from "react";
+import { Task } from "../types/task";
+import { BoardViewService } from "../services/boardViewService";
+import { useTaskStore } from "../store/useTaskStore";
+import { useUiStore } from "../store/useUiStore";
 
 export const useBoardView = () => {
   const { tasks, loading, error } = useTaskStore();
@@ -13,7 +13,9 @@ export const useBoardView = () => {
   // Initialize from stored config
   useEffect(() => {
     if (boardViewConfig) {
-      setColumns(boardViewConfig.columns || BoardViewService.getDefaultColumns());
+      setColumns(
+        boardViewConfig.columns || BoardViewService.getDefaultColumns(),
+      );
     } else {
       setColumns(BoardViewService.getDefaultColumns());
     }
@@ -37,26 +39,32 @@ export const useBoardView = () => {
     // Update config
     setBoardViewConfig({
       columns,
-      showTaskCount: true
+      showTaskCount: true,
     });
-
   }, [tasks, columns]);
 
-  const handleTaskStatusUpdate = (taskId: string, newStatus: string): Task | undefined => {
-    const taskToUpdate = tasks?.find(task => task.id === taskId);
+  const handleTaskStatusUpdate = (
+    taskId: string,
+    newStatus: string,
+  ): Task | undefined => {
+    const taskToUpdate = tasks?.find((task) => task.id === taskId);
     if (!taskToUpdate) return undefined;
 
-    const updatedTask = BoardViewService.updateTaskStatus(taskToUpdate, newStatus);
+    const updatedTask = BoardViewService.updateTaskStatus(
+      taskToUpdate,
+      newStatus,
+    );
 
     // This would typically be handled by the task store
     // but we can trigger a re-process of tasks
     const currentTasks = tasks || [];
-    const updatedTasks = currentTasks.map(task =>
-      task.id === taskId ? updatedTask : task
+    const updatedTasks = currentTasks.map((task) =>
+      task.id === taskId ? updatedTask : task,
     );
 
     // Re-process with updated task
-    const transformedTasks = BoardViewService.transformTasksForBoardView(updatedTasks);
+    const transformedTasks =
+      BoardViewService.transformTasksForBoardView(updatedTasks);
     const grouped = BoardViewService.groupTasksByStatus(transformedTasks);
 
     setGroupedTasks(grouped);
@@ -82,6 +90,6 @@ export const useBoardView = () => {
     handleTaskStatusUpdate,
     handleColumnsChange,
     getTasksForColumn,
-    setColumns
+    setColumns,
   };
 };

@@ -5,7 +5,10 @@
  */
 
 // Test Data Generators
-export { RecurringTaskTestDataGenerator, recurringTaskTestDataGenerator } from './recurringTaskTestDataGenerators';
+export {
+  RecurringTaskTestDataGenerator,
+  recurringTaskTestDataGenerator,
+} from "./recurringTaskTestDataGenerators";
 
 // Service Mocks
 export {
@@ -14,14 +17,17 @@ export {
   MockRecurringTaskIntegration,
   mockRecurringTaskService,
   mockRecurringPatternService,
-  mockRecurringTaskIntegration
-} from './recurringTaskServiceMocks';
+  mockRecurringTaskIntegration,
+} from "./recurringTaskServiceMocks";
 
 // Testing Suite
-export { recurringTaskTestingSuite } from './recurringTaskTestingUtilities';
+export { recurringTaskTestingSuite } from "./recurringTaskTestingUtilities";
 
 // Comprehensive Test Runner
-export { RecurringTaskComprehensiveTestRunner, recurringTaskComprehensiveTestRunner } from './recurringTaskComprehensiveTestRunner';
+export {
+  RecurringTaskComprehensiveTestRunner,
+  recurringTaskComprehensiveTestRunner,
+} from "./recurringTaskComprehensiveTestRunner";
 
 // Existing Test Utilities
 export {
@@ -39,35 +45,31 @@ export {
   createRecurringTaskIntegrationTest,
   testRecurringTaskAnalytics,
   createMockRecurringTaskWithInstances,
-  createRecurringTaskAnalyticsTestData
-} from './recurringTestUtils';
+  createRecurringTaskAnalyticsTestData,
+} from "./recurringTestUtils";
 
 // Validation Utilities
-export { validateRecurringTaskConfiguration } from '../recurringValidationUtils';
+export { validateRecurringTaskConfiguration } from "../recurringValidationUtils";
 
 // Complete Test Suite
 export {
   runCompleteRecurringTaskTestSuite,
   runAndExportTestSuite,
-  exportTestResultsForAnalysis
-} from './recurringTaskCompleteTestSuite';
+  exportTestResultsForAnalysis,
+} from "./recurringTaskCompleteTestSuite";
 
 // System Validation
 export {
   validateCompleteRecurringTaskSystem,
   runCompleteValidationAndLogResults,
-  createValidationReport
-} from './recurringCompleteValidation';
+  createValidationReport,
+} from "./recurringCompleteValidation";
 
 // Integration Tests
-export {
-  runRecurringTaskIntegrationTest
-} from './recurringTaskIntegrationTest';
+export { runRecurringTaskIntegrationTest } from "./recurringTaskIntegrationTest";
 
 // System Validation
-export {
-  runCompleteRecurringTaskSystemValidation
-} from './recurringTaskSystemValidation';
+export { runCompleteRecurringTaskSystemValidation } from "./recurringTaskSystemValidation";
 
 /**
  * Comprehensive Testing Toolkit
@@ -83,7 +85,7 @@ export const RecurringTaskTestingToolkit = {
     generateTestRecurringInstances,
     createRecurringTaskTestScenarios,
     createMockRecurringTaskWithInstances,
-    createRecurringTaskAnalyticsTestData
+    createRecurringTaskAnalyticsTestData,
   },
 
   // Service Mocks
@@ -93,7 +95,7 @@ export const RecurringTaskTestingToolkit = {
     mockIntegration: mockRecurringTaskIntegration,
     MockRecurringTaskService,
     MockRecurringPatternService,
-    MockRecurringTaskIntegration
+    MockRecurringTaskIntegration,
   },
 
   // Testing Suite
@@ -106,21 +108,21 @@ export const RecurringTaskTestingToolkit = {
   validation: {
     validateRecurringTaskConfiguration,
     validateTestRecurringTask,
-    testRecurringPatternGeneration
+    testRecurringPatternGeneration,
   },
 
   // Service Testing
   serviceTesting: {
     testRecurringTaskServiceMethods,
     createRecurringTaskPerformanceTest,
-    testRecurringTaskAnalytics
+    testRecurringTaskAnalytics,
   },
 
   // Validation Testing
   validationTesting: {
     createRecurringTaskValidationTestSuite,
     runRecurringTaskValidationTests,
-    createRecurringTaskIntegrationTest
+    createRecurringTaskIntegrationTest,
   },
 
   // Complete Test Suites
@@ -132,8 +134,8 @@ export const RecurringTaskTestingToolkit = {
     runCompleteValidationAndLogResults,
     createValidationReport,
     runRecurringTaskIntegrationTest,
-    runCompleteRecurringTaskSystemValidation
-  }
+    runCompleteRecurringTaskSystemValidation,
+  },
 };
 
 /**
@@ -153,7 +155,7 @@ export const RecurringTaskQuickTests = {
     return {
       passed: results.passed,
       failed: results.failed,
-      passRate: (results.passed / results.results.length) * 100
+      passRate: (results.passed / results.results.length) * 100,
     };
   },
 
@@ -167,23 +169,24 @@ export const RecurringTaskQuickTests = {
     totalPassed: number;
     totalTests: number;
   }> {
-    const results = await recurringTaskTestingSuite.runServiceIntegrationTests();
+    const results =
+      await recurringTaskTestingSuite.runServiceIntegrationTests();
 
     const servicePassed = [
       results.serviceTests.createTest.success,
       results.serviceTests.updateTest.success,
       results.serviceTests.deleteTest.success,
-      results.serviceTests.instanceGenerationTest.success
+      results.serviceTests.instanceGenerationTest.success,
     ].filter(Boolean).length;
 
     const patternPassed = [
       results.patternTests.validationTest.success,
-      results.patternTests.dateGenerationTest.success
+      results.patternTests.dateGenerationTest.success,
     ].filter(Boolean).length;
 
     const integrationPassed = [
       results.integrationTests.fullWorkflowTest.success,
-      results.integrationTests.errorHandlingTest.success
+      results.integrationTests.errorHandlingTest.success,
     ].filter(Boolean).length;
 
     return {
@@ -191,7 +194,7 @@ export const RecurringTaskQuickTests = {
       patternPassed,
       integrationPassed,
       totalPassed: servicePassed + patternPassed + integrationPassed,
-      totalTests: 8
+      totalTests: 8,
     };
   },
 
@@ -204,12 +207,13 @@ export const RecurringTaskQuickTests = {
     generationTime: number;
     memoryUsage: number;
   }> {
-    const results = await recurringTaskTestingSuite.runPerformanceTests(taskCount);
+    const results =
+      await recurringTaskTestingSuite.runPerformanceTests(taskCount);
     return {
       success: results.success,
       creationTime: results.creationTime,
       generationTime: results.generationTime,
-      memoryUsage: results.memoryUsage
+      memoryUsage: results.memoryUsage,
     };
   },
 
@@ -217,7 +221,9 @@ export const RecurringTaskQuickTests = {
    * Generate test data for a specific pattern
    */
   generatePatternTestData(pattern: RecurringPattern): Task {
-    return recurringTaskTestDataGenerator.generateRealisticRecurringTask(pattern);
+    return recurringTaskTestDataGenerator.generateRealisticRecurringTask(
+      pattern,
+    );
   },
 
   /**
@@ -225,20 +231,21 @@ export const RecurringTaskQuickTests = {
    */
   createMockServiceWithTestData(): MockRecurringTaskService {
     const mockService = new MockRecurringTaskService();
-    const testData = recurringTaskTestDataGenerator.generateRecurringTaskScenarios();
+    const testData =
+      recurringTaskTestDataGenerator.generateRecurringTaskScenarios();
 
     // Add test data to mock service
     Object.values(testData).forEach(async (task) => {
       await mockService.createRecurringTask(
         task,
         task.customFields?.recurringConfig || {
-          pattern: 'weekly',
+          pattern: "weekly",
           startDate: new Date(),
-          maxOccurrences: 10
-        }
+          maxOccurrences: 10,
+        },
       );
     });
 
     return mockService;
-  }
+  },
 };

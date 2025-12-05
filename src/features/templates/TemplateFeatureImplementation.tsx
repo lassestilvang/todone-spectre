@@ -1,9 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Template, TemplateCategory } from '../../types/template';
-import { useTemplates } from '../../hooks/useTemplates';
-import { useTemplateCategories } from '../../hooks/useTemplateCategories';
-import { TemplateList, TemplateForm, TemplatePreview } from './';
-import { Plus, Search, Template as TemplateIcon, Folder, Star, Tag } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Template, TemplateCategory } from "../../types/template";
+import { useTemplates } from "../../hooks/useTemplates";
+import { useTemplateCategories } from "../../hooks/useTemplateCategories";
+import { TemplateList, TemplateForm, TemplatePreview } from "./";
+import {
+  Plus,
+  Search,
+  Template as TemplateIcon,
+  Folder,
+  Star,
+  Tag,
+} from "lucide-react";
 
 interface TemplateFeatureImplementationProps {
   showCategories?: boolean;
@@ -12,11 +19,13 @@ interface TemplateFeatureImplementationProps {
   onTemplateApplied?: (content: string) => void;
 }
 
-const TemplateFeatureImplementation: React.FC<TemplateFeatureImplementationProps> = ({
+const TemplateFeatureImplementation: React.FC<
+  TemplateFeatureImplementationProps
+> = ({
   showCategories = true,
   showPublicOnly = false,
   onTemplateSelected,
-  onTemplateApplied
+  onTemplateApplied,
 }) => {
   const {
     templates,
@@ -28,31 +37,39 @@ const TemplateFeatureImplementation: React.FC<TemplateFeatureImplementationProps
     updateTemplate,
     deleteTemplate,
     applyTemplate,
-    previewTemplate
+    previewTemplate,
   } = useTemplates();
 
   const {
     categories: templateCategories,
     isLoading: categoriesLoading,
-    error: categoriesError
+    error: categoriesError,
   } = useTemplateCategories();
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | 'all'>('all');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | "all">(
+    "all",
+  );
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
-  const [previewTemplateData, setPreviewTemplateData] = useState<Template | null>(null);
-  const [previewVariables, setPreviewVariables] = useState<Record<string, string>>({});
+  const [previewTemplateData, setPreviewTemplateData] =
+    useState<Template | null>(null);
+  const [previewVariables, setPreviewVariables] = useState<
+    Record<string, string>
+  >({});
   const [showPreview, setShowPreview] = useState(false);
 
   // Filter templates based on search and category
-  const filteredTemplates = templates.filter(template => {
-    const matchesSearch = template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         template.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         template.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredTemplates = templates.filter((template) => {
+    const matchesSearch =
+      template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.tags?.some((tag) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
 
-    const matchesCategory = selectedCategory === 'all' ||
-                           template.categoryId === selectedCategory;
+    const matchesCategory =
+      selectedCategory === "all" || template.categoryId === selectedCategory;
 
     const matchesPublic = !showPublicOnly || template.isPublic;
 
@@ -85,7 +102,9 @@ const TemplateFeatureImplementation: React.FC<TemplateFeatureImplementationProps
     setShowCreateForm(true);
   };
 
-  const handleSaveTemplate = async (templateData: Omit<Template, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleSaveTemplate = async (
+    templateData: Omit<Template, "id" | "createdAt" | "updatedAt">,
+  ) => {
     try {
       if (editingTemplate) {
         await updateTemplate(editingTemplate.id, templateData);
@@ -95,17 +114,17 @@ const TemplateFeatureImplementation: React.FC<TemplateFeatureImplementationProps
       setShowCreateForm(false);
       await fetchTemplates();
     } catch (error) {
-      console.error('Failed to save template:', error);
+      console.error("Failed to save template:", error);
     }
   };
 
   const handleDeleteTemplate = async (templateId: string) => {
-    if (window.confirm('Are you sure you want to delete this template?')) {
+    if (window.confirm("Are you sure you want to delete this template?")) {
       try {
         await deleteTemplate(templateId);
         await fetchTemplates();
       } catch (error) {
-        console.error('Failed to delete template:', error);
+        console.error("Failed to delete template:", error);
       }
     }
   };
@@ -165,7 +184,9 @@ const TemplateFeatureImplementation: React.FC<TemplateFeatureImplementationProps
           <div className="flex items-center">
             <TemplateIcon className="w-5 h-5 text-blue-600 mr-2" />
             <div>
-              <div className="text-2xl font-bold text-blue-800">{templates.length}</div>
+              <div className="text-2xl font-bold text-blue-800">
+                {templates.length}
+              </div>
               <div className="text-sm text-blue-600">Total Templates</div>
             </div>
           </div>
@@ -175,7 +196,9 @@ const TemplateFeatureImplementation: React.FC<TemplateFeatureImplementationProps
           <div className="flex items-center">
             <Folder className="w-5 h-5 text-green-600 mr-2" />
             <div>
-              <div className="text-2xl font-bold text-green-800">{templateCategories.length}</div>
+              <div className="text-2xl font-bold text-green-800">
+                {templateCategories.length}
+              </div>
               <div className="text-sm text-green-600">Categories</div>
             </div>
           </div>
@@ -223,7 +246,9 @@ const TemplateFeatureImplementation: React.FC<TemplateFeatureImplementationProps
         <div className="p-8 text-center text-gray-500">
           <TemplateIcon className="w-12 h-12 mx-auto mb-4 text-gray-400" />
           <h3 className="text-lg font-medium mb-2">No templates found</h3>
-          <p className="text-sm mb-4">Try adjusting your search or create a new template</p>
+          <p className="text-sm mb-4">
+            Try adjusting your search or create a new template
+          </p>
           <button
             onClick={handleCreateTemplate}
             className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"

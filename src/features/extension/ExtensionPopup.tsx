@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useExtension } from '../../../hooks/useExtension';
-import { useExtensionConfig } from '../../../hooks/useExtensionConfig';
-import { ExtensionState, QuickAction } from '../../../types/extensionTypes';
+import React, { useState, useEffect } from "react";
+import { useExtension } from "../../../hooks/useExtension";
+import { useExtensionConfig } from "../../../hooks/useExtensionConfig";
+import { ExtensionState, QuickAction } from "../../../types/extensionTypes";
 
 interface ExtensionPopupProps {
   onClose?: () => void;
@@ -17,20 +17,20 @@ export const ExtensionPopup: React.FC<ExtensionPopupProps> = ({ onClose }) => {
     const loadQuickActions = async () => {
       try {
         // Load quick actions from storage or API
-        const actions = await chrome.storage.sync.get('quickActions');
+        const actions = await chrome.storage.sync.get("quickActions");
         if (actions.quickActions) {
           setQuickActions(actions.quickActions);
         } else {
           // Default quick actions
           setQuickActions([
-            { id: 'create-task', label: 'Create Task', icon: 'plus' },
-            { id: 'view-tasks', label: 'View Tasks', icon: 'list' },
-            { id: 'sync-data', label: 'Sync Data', icon: 'sync' },
-            { id: 'settings', label: 'Settings', icon: 'cog' }
+            { id: "create-task", label: "Create Task", icon: "plus" },
+            { id: "view-tasks", label: "View Tasks", icon: "list" },
+            { id: "sync-data", label: "Sync Data", icon: "sync" },
+            { id: "settings", label: "Settings", icon: "cog" },
           ]);
         }
       } catch (error) {
-        console.error('Failed to load quick actions:', error);
+        console.error("Failed to load quick actions:", error);
       } finally {
         setIsLoading(false);
       }
@@ -42,18 +42,22 @@ export const ExtensionPopup: React.FC<ExtensionPopupProps> = ({ onClose }) => {
   const handleQuickAction = async (actionId: string) => {
     try {
       switch (actionId) {
-        case 'create-task':
-          await chrome.tabs.create({ url: chrome.runtime.getURL('create-task.html') });
+        case "create-task":
+          await chrome.tabs.create({
+            url: chrome.runtime.getURL("create-task.html"),
+          });
           break;
-        case 'view-tasks':
-          await chrome.tabs.create({ url: chrome.runtime.getURL('view-tasks.html') });
+        case "view-tasks":
+          await chrome.tabs.create({
+            url: chrome.runtime.getURL("view-tasks.html"),
+          });
           break;
-        case 'sync-data':
-          dispatch({ type: 'SYNC_START' });
+        case "sync-data":
+          dispatch({ type: "SYNC_START" });
           // Simulate sync operation
-          setTimeout(() => dispatch({ type: 'SYNC_COMPLETE' }), 2000);
+          setTimeout(() => dispatch({ type: "SYNC_COMPLETE" }), 2000);
           break;
-        case 'settings':
+        case "settings":
           await chrome.runtime.openOptionsPage();
           break;
         default:
@@ -61,7 +65,7 @@ export const ExtensionPopup: React.FC<ExtensionPopupProps> = ({ onClose }) => {
       }
     } catch (error) {
       console.error(`Failed to execute action ${actionId}:`, error);
-      dispatch({ type: 'ERROR', payload: error.message });
+      dispatch({ type: "ERROR", payload: error.message });
     }
   };
 
@@ -77,7 +81,9 @@ export const ExtensionPopup: React.FC<ExtensionPopupProps> = ({ onClose }) => {
     <div className="extension-popup">
       <header className="popup-header">
         <h1 className="popup-title">Todone Extension</h1>
-        <button className="close-button" onClick={onClose}>×</button>
+        <button className="close-button" onClick={onClose}>
+          ×
+        </button>
       </header>
 
       <div className="popup-content">
@@ -96,7 +102,7 @@ export const ExtensionPopup: React.FC<ExtensionPopupProps> = ({ onClose }) => {
         </div>
 
         <div className="popup-status">
-          {extensionState.status === 'syncing' && (
+          {extensionState.status === "syncing" && (
             <div className="sync-status">
               <span className="sync-icon">↻</span>
               <span>Syncing data...</span>

@@ -1,8 +1,19 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
-import { CollaborationState, CollaborationTeam, CollaborationMember, CollaborationActivity, CollaborationSettings } from '../types/store';
-import { CollaborationTeam as CollaborationTeamType, CollaborationMember as CollaborationMemberType, CollaborationActivity as CollaborationActivityType, CollaborationSettings as CollaborationSettingsType } from '../types/collaboration';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
+import {
+  CollaborationState,
+  CollaborationTeam,
+  CollaborationMember,
+  CollaborationActivity,
+  CollaborationSettings,
+} from "../types/store";
+import {
+  CollaborationTeam as CollaborationTeamType,
+  CollaborationMember as CollaborationMemberType,
+  CollaborationActivity as CollaborationActivityType,
+  CollaborationSettings as CollaborationSettingsType,
+} from "../types/collaboration";
 
 export const useCollaborationStore = create<CollaborationState>()(
   devtools(
@@ -14,22 +25,22 @@ export const useCollaborationStore = create<CollaborationState>()(
         settings: [],
         filteredTeams: [],
         currentFilter: {},
-        sortBy: 'name',
-        sortDirection: 'asc',
+        sortBy: "name",
+        sortDirection: "asc",
         collaborationError: null,
         selectedTeamIds: [],
         selectedMemberIds: [],
         selectedActivityIds: [],
 
         // CRUD Operations for Teams
-        addTeam: (teamData: Omit<CollaborationTeamType, 'id'>) => {
+        addTeam: (teamData: Omit<CollaborationTeamType, "id">) => {
           const newTeam: CollaborationTeam = {
             ...teamData,
             id: Math.random().toString(36).substr(2, 9),
             createdAt: new Date(),
             updatedAt: new Date(),
             memberCount: teamData.members?.length || 0,
-            activityCount: 0
+            activityCount: 0,
           };
           set((state) => ({
             teams: [...state.teams, newTeam],
@@ -37,7 +48,10 @@ export const useCollaborationStore = create<CollaborationState>()(
           get().applyFilters();
         },
 
-        updateTeam: (teamId: string, updates: Partial<CollaborationTeamType>) => {
+        updateTeam: (
+          teamId: string,
+          updates: Partial<CollaborationTeamType>,
+        ) => {
           set((state) => ({
             teams: state.teams.map((team) =>
               team.id === teamId
@@ -46,7 +60,7 @@ export const useCollaborationStore = create<CollaborationState>()(
                     ...updates,
                     updatedAt: new Date(),
                   }
-                : team
+                : team,
             ),
           }));
           get().applyFilters();
@@ -60,32 +74,35 @@ export const useCollaborationStore = create<CollaborationState>()(
         },
 
         // CRUD Operations for Members
-        addMember: (memberData: Omit<CollaborationMemberType, 'id'>) => {
+        addMember: (memberData: Omit<CollaborationMemberType, "id">) => {
           const newMember: CollaborationMember = {
             ...memberData,
             id: Math.random().toString(36).substr(2, 9),
             joinedAt: new Date(),
-            status: memberData.status || 'active',
-            role: memberData.role || 'member'
+            status: memberData.status || "active",
+            role: memberData.role || "member",
           };
           set((state) => ({
             members: [...state.members, newMember],
           }));
 
           // Update team member count
-          const team = state.teams.find(t => t.id === memberData.teamId);
+          const team = state.teams.find((t) => t.id === memberData.teamId);
           if (team) {
             set((state) => ({
-              teams: state.teams.map(t =>
+              teams: state.teams.map((t) =>
                 t.id === memberData.teamId
                   ? { ...t, memberCount: (t.memberCount || 0) + 1 }
-                  : t
-              )
+                  : t,
+              ),
             }));
           }
         },
 
-        updateMember: (memberId: string, updates: Partial<CollaborationMemberType>) => {
+        updateMember: (
+          memberId: string,
+          updates: Partial<CollaborationMemberType>,
+        ) => {
           set((state) => ({
             members: state.members.map((member) =>
               member.id === memberId
@@ -93,23 +110,26 @@ export const useCollaborationStore = create<CollaborationState>()(
                     ...member,
                     ...updates,
                   }
-                : member
+                : member,
             ),
           }));
         },
 
         deleteMember: (memberId: string) => {
-          const member = get().members.find(m => m.id === memberId);
+          const member = get().members.find((m) => m.id === memberId);
           if (member) {
             // Update team member count
-            const team = get().teams.find(t => t.id === member.teamId);
+            const team = get().teams.find((t) => t.id === member.teamId);
             if (team) {
               set((state) => ({
-                teams: state.teams.map(t =>
+                teams: state.teams.map((t) =>
                   t.id === member.teamId
-                    ? { ...t, memberCount: Math.max((t.memberCount || 0) - 1, 0) }
-                    : t
-                )
+                    ? {
+                        ...t,
+                        memberCount: Math.max((t.memberCount || 0) - 1, 0),
+                      }
+                    : t,
+                ),
               }));
             }
           }
@@ -120,30 +140,33 @@ export const useCollaborationStore = create<CollaborationState>()(
         },
 
         // CRUD Operations for Activities
-        addActivity: (activityData: Omit<CollaborationActivityType, 'id'>) => {
+        addActivity: (activityData: Omit<CollaborationActivityType, "id">) => {
           const newActivity: CollaborationActivity = {
             ...activityData,
             id: Math.random().toString(36).substr(2, 9),
-            timestamp: new Date()
+            timestamp: new Date(),
           };
           set((state) => ({
             activities: [...state.activities, newActivity],
           }));
 
           // Update team activity count
-          const team = state.teams.find(t => t.id === activityData.teamId);
+          const team = state.teams.find((t) => t.id === activityData.teamId);
           if (team) {
             set((state) => ({
-              teams: state.teams.map(t =>
+              teams: state.teams.map((t) =>
                 t.id === activityData.teamId
                   ? { ...t, activityCount: (t.activityCount || 0) + 1 }
-                  : t
-              )
+                  : t,
+              ),
             }));
           }
         },
 
-        updateActivity: (activityId: string, updates: Partial<CollaborationActivityType>) => {
+        updateActivity: (
+          activityId: string,
+          updates: Partial<CollaborationActivityType>,
+        ) => {
           set((state) => ({
             activities: state.activities.map((activity) =>
               activity.id === activityId
@@ -151,39 +174,47 @@ export const useCollaborationStore = create<CollaborationState>()(
                     ...activity,
                     ...updates,
                   }
-                : activity
+                : activity,
             ),
           }));
         },
 
         deleteActivity: (activityId: string) => {
           set((state) => ({
-            activities: state.activities.filter((activity) => activity.id !== activityId),
+            activities: state.activities.filter(
+              (activity) => activity.id !== activityId,
+            ),
           }));
         },
 
         // Settings operations
-        updateSettings: (teamId: string, settings: Partial<CollaborationSettingsType>) => {
+        updateSettings: (
+          teamId: string,
+          settings: Partial<CollaborationSettingsType>,
+        ) => {
           set((state) => ({
-            settings: state.settings.map(s =>
+            settings: state.settings.map((s) =>
               s.teamId === teamId
                 ? {
                     ...s,
                     ...settings,
-                    updatedAt: new Date()
+                    updatedAt: new Date(),
                   }
-                : s
-            )
+                : s,
+            ),
           }));
         },
 
         // Filtering and Sorting
-        setFilter: (filter: CollaborationState['currentFilter']) => {
+        setFilter: (filter: CollaborationState["currentFilter"]) => {
           set({ currentFilter: filter });
           get().applyFilters();
         },
 
-        setSort: (sortBy: CollaborationState['sortBy'], sortDirection: CollaborationState['sortDirection']) => {
+        setSort: (
+          sortBy: CollaborationState["sortBy"],
+          sortDirection: CollaborationState["sortDirection"],
+        ) => {
           set({ sortBy, sortDirection });
           get().applyFilters();
         },
@@ -194,7 +225,9 @@ export const useCollaborationStore = create<CollaborationState>()(
 
           // Apply team ID filter
           if (currentFilter.teamId) {
-            filtered = filtered.filter((team) => team.id === currentFilter.teamId);
+            filtered = filtered.filter(
+              (team) => team.id === currentFilter.teamId,
+            );
           }
 
           // Apply search query filter
@@ -203,32 +236,34 @@ export const useCollaborationStore = create<CollaborationState>()(
             filtered = filtered.filter(
               (team) =>
                 team.name.toLowerCase().includes(query) ||
-                team.description?.toLowerCase().includes(query)
+                team.description?.toLowerCase().includes(query),
             );
           }
 
           // Apply sorting
           filtered.sort((a, b) => {
-            let aValue: any = a[sortBy];
-            let bValue: any = b[sortBy];
+            const aValue: any = a[sortBy];
+            const bValue: any = b[sortBy];
 
             // Handle date sorting
             if (aValue instanceof Date && bValue instanceof Date) {
-              return sortDirection === 'asc'
+              return sortDirection === "asc"
                 ? aValue.getTime() - bValue.getTime()
                 : bValue.getTime() - aValue.getTime();
             }
 
             // Handle string sorting
-            if (typeof aValue === 'string' && typeof bValue === 'string') {
-              return sortDirection === 'asc'
+            if (typeof aValue === "string" && typeof bValue === "string") {
+              return sortDirection === "asc"
                 ? aValue.localeCompare(bValue)
                 : bValue.localeCompare(aValue);
             }
 
             // Handle number sorting
-            if (typeof aValue === 'number' && typeof bValue === 'number') {
-              return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+            if (typeof aValue === "number" && typeof bValue === "number") {
+              return sortDirection === "asc"
+                ? aValue - bValue
+                : bValue - aValue;
             }
 
             return 0;
@@ -252,13 +287,14 @@ export const useCollaborationStore = create<CollaborationState>()(
 
         // Statistics and utilities
         getTeamStatistics: (teamId: string) => {
-          const team = get().teams.find(t => t.id === teamId);
+          const team = get().teams.find((t) => t.id === teamId);
           if (!team) return { memberCount: 0, activityCount: 0, adminCount: 0 };
 
           return {
             memberCount: team.memberCount || 0,
             activityCount: team.activityCount || 0,
-            adminCount: team.members?.filter(m => m.role === 'admin').length || 0
+            adminCount:
+              team.members?.filter((m) => m.role === "admin").length || 0,
           };
         },
 
@@ -267,7 +303,7 @@ export const useCollaborationStore = create<CollaborationState>()(
           const byType: Record<string, number> = {};
           const byUser: Record<string, number> = {};
 
-          activities.forEach(activity => {
+          activities.forEach((activity) => {
             byType[activity.type] = (byType[activity.type] || 0) + 1;
             byUser[activity.userId] = (byUser[activity.userId] || 0) + 1;
           });
@@ -275,7 +311,7 @@ export const useCollaborationStore = create<CollaborationState>()(
           return {
             total: activities.length,
             byType,
-            byUser
+            byUser,
           };
         },
 
@@ -283,108 +319,108 @@ export const useCollaborationStore = create<CollaborationState>()(
         initializeWithSampleData: () => {
           const sampleTeams: CollaborationTeam[] = [
             {
-              id: 'team-1',
-              name: 'Development Team',
-              description: 'Core development team for Todone application',
-              privacySetting: 'team-only',
-              ownerId: 'user-1',
+              id: "team-1",
+              name: "Development Team",
+              description: "Core development team for Todone application",
+              privacySetting: "team-only",
+              ownerId: "user-1",
               createdAt: new Date(),
               updatedAt: new Date(),
               memberCount: 3,
               activityCount: 5,
               members: [
                 {
-                  id: 'member-1',
-                  teamId: 'team-1',
-                  userId: 'user-1',
-                  role: 'admin',
-                  status: 'active',
+                  id: "member-1",
+                  teamId: "team-1",
+                  userId: "user-1",
+                  role: "admin",
+                  status: "active",
                   joinedAt: new Date(),
-                  lastActive: new Date()
+                  lastActive: new Date(),
                 },
                 {
-                  id: 'member-2',
-                  teamId: 'team-1',
-                  userId: 'user-2',
-                  role: 'member',
-                  status: 'active',
+                  id: "member-2",
+                  teamId: "team-1",
+                  userId: "user-2",
+                  role: "member",
+                  status: "active",
                   joinedAt: new Date(),
-                  lastActive: new Date()
-                }
-              ]
+                  lastActive: new Date(),
+                },
+              ],
             },
             {
-              id: 'team-2',
-              name: 'Design Team',
-              description: 'UI/UX design team',
-              privacySetting: 'private',
-              ownerId: 'user-3',
+              id: "team-2",
+              name: "Design Team",
+              description: "UI/UX design team",
+              privacySetting: "private",
+              ownerId: "user-3",
               createdAt: new Date(),
               updatedAt: new Date(),
               memberCount: 2,
-              activityCount: 3
-            }
+              activityCount: 3,
+            },
           ];
 
           const sampleActivities: CollaborationActivity[] = [
             {
-              id: 'activity-1',
-              teamId: 'team-1',
-              userId: 'user-1',
-              action: 'created a new project',
-              type: 'task',
+              id: "activity-1",
+              teamId: "team-1",
+              userId: "user-1",
+              action: "created a new project",
+              type: "task",
               timestamp: new Date(),
-              details: 'Created Todone v2.0 project',
-              entityId: 'project-1',
-              entityType: 'project'
+              details: "Created Todone v2.0 project",
+              entityId: "project-1",
+              entityType: "project",
             },
             {
-              id: 'activity-2',
-              teamId: 'team-1',
-              userId: 'user-2',
-              action: 'completed task review',
-              type: 'task',
+              id: "activity-2",
+              teamId: "team-1",
+              userId: "user-2",
+              action: "completed task review",
+              type: "task",
               timestamp: new Date(Date.now() - 86400000), // Yesterday
-              details: 'Reviewed authentication module',
-              entityId: 'task-1',
-              entityType: 'task'
-            }
+              details: "Reviewed authentication module",
+              entityId: "task-1",
+              entityType: "task",
+            },
           ];
 
           const sampleSettings: CollaborationSettings[] = [
             {
-              teamId: 'team-1',
+              teamId: "team-1",
               notificationSettings: {
                 emailNotifications: true,
                 pushNotifications: true,
                 mentionNotifications: true,
-                dailyDigest: false
+                dailyDigest: false,
               },
               permissionSettings: {
                 allowGuestInvites: false,
                 allowPublicSharing: false,
                 requireAdminApproval: true,
-                allowMemberInvites: false
+                allowMemberInvites: false,
               },
               privacySettings: {
                 visibleToPublic: false,
                 searchable: false,
-                allowExternalAccess: false
+                allowExternalAccess: false,
               },
               integrationSettings: {
                 calendarIntegration: true,
                 taskIntegration: true,
-                fileIntegration: false
+                fileIntegration: false,
               },
-              updatedAt: new Date()
-            }
+              updatedAt: new Date(),
+            },
           ];
 
           set({
             teams: sampleTeams,
-            members: sampleTeams.flatMap(team => team.members || []),
+            members: sampleTeams.flatMap((team) => team.members || []),
             activities: sampleActivities,
-            settings: sampleSettings
+            settings: sampleSettings,
           });
 
           get().applyFilters();
@@ -393,14 +429,14 @@ export const useCollaborationStore = create<CollaborationState>()(
         // Error handling
         setCollaborationError: (error: string | null) => {
           set({ collaborationError: error });
-        }
+        },
       }),
       {
-        name: 'todone-collaboration-storage',
+        name: "todone-collaboration-storage",
         storage: createJSONStorage(() => localStorage),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
 
 // Helper function to create localStorage

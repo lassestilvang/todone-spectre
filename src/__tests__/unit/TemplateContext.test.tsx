@@ -1,47 +1,50 @@
-import React from 'react';
-import { render, screen, act } from '@testing-library/react';
-import { TemplateProvider, useTemplateContext } from '../../context/TemplateContext';
-import { Template, TemplateCategory } from '../../types/template';
+import React from "react";
+import { render, screen, act } from "@testing-library/react";
+import {
+  TemplateProvider,
+  useTemplateContext,
+} from "../../context/TemplateContext";
+import { Template, TemplateCategory } from "../../types/template";
 
-describe('TemplateContext', () => {
+describe("TemplateContext", () => {
   const mockTemplate: Template = {
-    id: 'template-1',
-    name: 'Test Template',
-    description: 'Test Description',
-    content: 'Test Content',
+    id: "template-1",
+    name: "Test Template",
+    description: "Test Description",
+    content: "Test Content",
     createdAt: new Date(),
     updatedAt: new Date(),
     usageCount: 0,
     rating: 0,
-    isPublic: false
+    isPublic: false,
   };
 
   const mockCategory: TemplateCategory = {
-    id: 'category-1',
-    name: 'Test Category',
-    description: 'Test Category Description',
+    id: "category-1",
+    name: "Test Category",
+    description: "Test Category Description",
     createdAt: new Date(),
-    updatedAt: new Date()
+    updatedAt: new Date(),
   };
 
-  describe('TemplateProvider', () => {
-    it('should provide template context to children', () => {
+  describe("TemplateProvider", () => {
+    it("should provide template context to children", () => {
       render(
         <TemplateProvider>
           <div>Test Content</div>
-        </TemplateProvider>
+        </TemplateProvider>,
       );
 
-      expect(screen.getByText('Test Content')).toBeInTheDocument();
+      expect(screen.getByText("Test Content")).toBeInTheDocument();
     });
 
-    it('should initialize with default values', () => {
+    it("should initialize with default values", () => {
       const TestComponent = () => {
         const context = useTemplateContext();
         return (
           <div>
-            {context.selectedTemplate ? 'Has template' : 'No template'}
-            {context.isTemplateModalOpen ? 'Modal open' : 'Modal closed'}
+            {context.selectedTemplate ? "Has template" : "No template"}
+            {context.isTemplateModalOpen ? "Modal open" : "Modal closed"}
           </div>
         );
       };
@@ -49,16 +52,16 @@ describe('TemplateContext', () => {
       render(
         <TemplateProvider>
           <TestComponent />
-        </TemplateProvider>
+        </TemplateProvider>,
       );
 
-      expect(screen.getByText('No template')).toBeInTheDocument();
-      expect(screen.getByText('Modal closed')).toBeInTheDocument();
+      expect(screen.getByText("No template")).toBeInTheDocument();
+      expect(screen.getByText("Modal closed")).toBeInTheDocument();
     });
   });
 
-  describe('useTemplateContext', () => {
-    it('should throw error when used outside TemplateProvider', () => {
+  describe("useTemplateContext", () => {
+    it("should throw error when used outside TemplateProvider", () => {
       const TestComponent = () => {
         useTemplateContext();
         return <div>Test</div>;
@@ -66,30 +69,36 @@ describe('TemplateContext', () => {
 
       expect(() => {
         render(<TestComponent />);
-      }).toThrow('useTemplateContext must be used within a TemplateProvider');
+      }).toThrow("useTemplateContext must be used within a TemplateProvider");
     });
   });
 
-  describe('Context Functions', () => {
+  describe("Context Functions", () => {
     const TestComponent = () => {
       const context = useTemplateContext();
       return (
         <div>
-          <button onClick={() => context.setSelectedTemplate(mockTemplate)}>Set Template</button>
-          <button onClick={() => context.setSelectedCategory(mockCategory)}>Set Category</button>
-          <button onClick={() => context.setIsTemplateModalOpen(true)}>Open Modal</button>
+          <button onClick={() => context.setSelectedTemplate(mockTemplate)}>
+            Set Template
+          </button>
+          <button onClick={() => context.setSelectedCategory(mockCategory)}>
+            Set Category
+          </button>
+          <button onClick={() => context.setIsTemplateModalOpen(true)}>
+            Open Modal
+          </button>
         </div>
       );
     };
 
-    it('should allow setting selected template', () => {
+    it("should allow setting selected template", () => {
       render(
         <TemplateProvider>
           <TestComponent />
-        </TemplateProvider>
+        </TemplateProvider>,
       );
 
-      const setTemplateButton = screen.getByText('Set Template');
+      const setTemplateButton = screen.getByText("Set Template");
       act(() => {
         setTemplateButton.click();
       });
@@ -99,14 +108,14 @@ describe('TemplateContext', () => {
       expect(context.selectedTemplate).toBe(mockTemplate);
     });
 
-    it('should allow setting selected category', () => {
+    it("should allow setting selected category", () => {
       render(
         <TemplateProvider>
           <TestComponent />
-        </TemplateProvider>
+        </TemplateProvider>,
       );
 
-      const setCategoryButton = screen.getByText('Set Category');
+      const setCategoryButton = screen.getByText("Set Category");
       act(() => {
         setCategoryButton.click();
       });
@@ -116,14 +125,14 @@ describe('TemplateContext', () => {
       expect(context.selectedCategory).toBe(mockCategory);
     });
 
-    it('should allow opening template modal', () => {
+    it("should allow opening template modal", () => {
       render(
         <TemplateProvider>
           <TestComponent />
-        </TemplateProvider>
+        </TemplateProvider>,
       );
 
-      const openModalButton = screen.getByText('Open Modal');
+      const openModalButton = screen.getByText("Open Modal");
       act(() => {
         openModalButton.click();
       });
@@ -134,12 +143,16 @@ describe('TemplateContext', () => {
     });
   });
 
-  describe('Template Functions', () => {
-    it('should apply template with variables', async () => {
+  describe("Template Functions", () => {
+    it("should apply template with variables", async () => {
       const TestComponent = () => {
         const context = useTemplateContext();
         return (
-          <button onClick={() => context.applyTemplate('template-1', { var1: 'value1' })}>
+          <button
+            onClick={() =>
+              context.applyTemplate("template-1", { var1: "value1" })
+            }
+          >
             Apply Template
           </button>
         );
@@ -148,24 +161,26 @@ describe('TemplateContext', () => {
       render(
         <TemplateProvider>
           <TestComponent />
-        </TemplateProvider>
+        </TemplateProvider>,
       );
 
-      const applyButton = screen.getByText('Apply Template');
+      const applyButton = screen.getByText("Apply Template");
       let result: string | undefined;
 
       act(async () => {
-        result = await context.applyTemplate('template-1', { var1: 'value1' });
+        result = await context.applyTemplate("template-1", { var1: "value1" });
       });
 
-      expect(result).toBe('Applied template template-1 content');
+      expect(result).toBe("Applied template template-1 content");
     });
 
-    it('should create template from task content', async () => {
+    it("should create template from task content", async () => {
       const TestComponent = () => {
         const context = useTemplateContext();
         return (
-          <button onClick={() => context.createTemplateFromTask('Test task content')}>
+          <button
+            onClick={() => context.createTemplateFromTask("Test task content")}
+          >
             Create Template
           </button>
         );
@@ -174,31 +189,39 @@ describe('TemplateContext', () => {
       render(
         <TemplateProvider>
           <TestComponent />
-        </TemplateProvider>
+        </TemplateProvider>,
       );
 
-      const createButton = screen.getByText('Create Template');
+      const createButton = screen.getByText("Create Template");
       let result: Template | undefined;
 
       act(async () => {
-        result = await context.createTemplateFromTask('Test task content');
+        result = await context.createTemplateFromTask("Test task content");
       });
 
       expect(result).toBeDefined();
-      expect(result?.content).toBe('Test task content');
-      expect(result?.name).toContain('Template from Task');
+      expect(result?.content).toBe("Test task content");
+      expect(result?.name).toContain("Template from Task");
     });
   });
 
-  describe('State Management', () => {
-    it('should manage preview state correctly', () => {
+  describe("State Management", () => {
+    it("should manage preview state correctly", () => {
       const TestComponent = () => {
         const context = useTemplateContext();
         return (
           <div>
-            <button onClick={() => context.setPreviewTemplate(mockTemplate)}>Set Preview</button>
-            <button onClick={() => context.setPreviewVariables({ var1: 'value1' })}>Set Variables</button>
-            <button onClick={() => context.setIsPreviewModalOpen(true)}>Open Preview</button>
+            <button onClick={() => context.setPreviewTemplate(mockTemplate)}>
+              Set Preview
+            </button>
+            <button
+              onClick={() => context.setPreviewVariables({ var1: "value1" })}
+            >
+              Set Variables
+            </button>
+            <button onClick={() => context.setIsPreviewModalOpen(true)}>
+              Open Preview
+            </button>
           </div>
         );
       };
@@ -206,7 +229,7 @@ describe('TemplateContext', () => {
       render(
         <TemplateProvider>
           <TestComponent />
-        </TemplateProvider>
+        </TemplateProvider>,
       );
 
       const context = useTemplateContext();
@@ -219,9 +242,9 @@ describe('TemplateContext', () => {
 
       // Test preview variables
       act(() => {
-        context.setPreviewVariables({ var1: 'value1' });
+        context.setPreviewVariables({ var1: "value1" });
       });
-      expect(context.previewVariables).toEqual({ var1: 'value1' });
+      expect(context.previewVariables).toEqual({ var1: "value1" });
 
       // Test preview modal
       act(() => {

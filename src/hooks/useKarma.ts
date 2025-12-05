@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
-import { KarmaService } from '../services/karmaService';
+import { useState, useEffect } from "react";
+import { KarmaService } from "../services/karmaService";
 
 export const useKarma = () => {
   const [karmaState, setKarmaState] = useState(
-    KarmaService.getInstance().getKarmaState()
+    KarmaService.getInstance().getKarmaState(),
   );
 
   useEffect(() => {

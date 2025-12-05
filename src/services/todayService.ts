@@ -1,6 +1,6 @@
-import { Task } from '../types/task';
-import { taskService } from './taskService';
-import { isToday } from '../utils/dateUtils';
+import { Task } from "../types/task";
+import { taskService } from "./taskService";
+import { isToday } from "../utils/dateUtils";
 
 /**
  * Today Service - Handles business logic for the Today view
@@ -35,7 +35,7 @@ export class TodayService {
       today.setHours(0, 0, 0, 0);
 
       // Filter for today: tasks due today or overdue
-      const todayTasks = allTasks.filter(task => {
+      const todayTasks = allTasks.filter((task) => {
         if (!task.dueDate || task.completed) return false;
 
         const taskDueDate = new Date(task.dueDate);
@@ -47,7 +47,7 @@ export class TodayService {
       // Sort by priority and due date
       return this.sortTodayTasks(todayTasks);
     } catch (error) {
-      console.error('Error fetching today tasks:', error);
+      console.error("Error fetching today tasks:", error);
       throw error;
     }
   }
@@ -59,15 +59,16 @@ export class TodayService {
    */
   private sortTodayTasks(tasks: Task[]): Task[] {
     const priorityOrder: Record<string, number> = {
-      'critical': 1,
-      'high': 2,
-      'medium': 3,
-      'low': 4
+      critical: 1,
+      high: 2,
+      medium: 3,
+      low: 4,
     };
 
     return [...tasks].sort((a, b) => {
       // First by priority
-      const priorityCompare = (priorityOrder[a.priority] || 5) - (priorityOrder[b.priority] || 5);
+      const priorityCompare =
+        (priorityOrder[a.priority] || 5) - (priorityOrder[b.priority] || 5);
       if (priorityCompare !== 0) return priorityCompare;
 
       // Then by due date (earlier dates first)
@@ -80,14 +81,17 @@ export class TodayService {
   /**
    * Separate tasks into overdue and due today
    */
-  separateOverdueAndTodayTasks(tasks: Task[]): { overdue: Task[]; today: Task[] } {
+  separateOverdueAndTodayTasks(tasks: Task[]): {
+    overdue: Task[];
+    today: Task[];
+  } {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
     const overdue: Task[] = [];
     const todayTasks: Task[] = [];
 
-    tasks.forEach(task => {
+    tasks.forEach((task) => {
       if (task.dueDate) {
         const taskDueDate = new Date(task.dueDate);
         taskDueDate.setHours(0, 0, 0, 0);
@@ -121,20 +125,20 @@ export class TodayService {
         overdue: overdue.length,
         dueToday: today.length,
         byPriority: {
-          'critical': 0,
-          'high': 0,
-          'medium': 0,
-          'low': 0
-        }
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
+        },
       };
 
-      tasks.forEach(task => {
+      tasks.forEach((task) => {
         statistics.byPriority[task.priority]++;
       });
 
       return statistics;
     } catch (error) {
-      console.error('Error getting today statistics:', error);
+      console.error("Error getting today statistics:", error);
       throw error;
     }
   }
@@ -167,10 +171,10 @@ export class TodayService {
 
     // Priority weights
     const priorityWeights: Record<string, number> = {
-      'critical': 4,
-      'high': 3,
-      'medium': 2,
-      'low': 1
+      critical: 4,
+      high: 3,
+      medium: 2,
+      low: 1,
     };
 
     // Calculate urgency score (higher = more urgent)

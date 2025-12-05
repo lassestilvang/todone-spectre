@@ -1,8 +1,20 @@
-import React, { useState } from 'react';
-import { Comment } from '../../types/common';
-import { Button } from '../../components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../components/ui/dropdown-menu';
-import { MoreHorizontal, Edit2, Trash2, Reply, ThumbsUp, ThumbsDown } from 'lucide-react';
+import React, { useState } from "react";
+import { Comment } from "../../types/common";
+import { Button } from "../../components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../components/ui/dropdown-menu";
+import {
+  MoreHorizontal,
+  Edit2,
+  Trash2,
+  Reply,
+  ThumbsUp,
+  ThumbsDown,
+} from "lucide-react";
 
 interface CommentManagementProps {
   comment: Comment;
@@ -27,13 +39,13 @@ const CommentManagement: React.FC<CommentManagementProps> = ({
   likes = 0,
   dislikes = 0,
   userLiked = false,
-  userDisliked = false
+  userDisliked = false,
 }) => {
   return (
     <div className="flex items-center space-x-4 text-xs text-gray-500 mt-2">
       <button
         onClick={onLike}
-        className={`flex items-center space-x-1 hover:text-blue-600 ${userLiked ? 'text-blue-600' : ''}`}
+        className={`flex items-center space-x-1 hover:text-blue-600 ${userLiked ? "text-blue-600" : ""}`}
         title="Like this comment"
       >
         <ThumbsUp className="w-3 h-3" />
@@ -41,7 +53,7 @@ const CommentManagement: React.FC<CommentManagementProps> = ({
       </button>
       <button
         onClick={onDislike}
-        className={`flex items-center space-x-1 hover:text-red-600 ${userDisliked ? 'text-red-600' : ''}`}
+        className={`flex items-center space-x-1 hover:text-red-600 ${userDisliked ? "text-red-600" : ""}`}
         title="Dislike this comment"
       >
         <ThumbsDown className="w-3 h-3" />

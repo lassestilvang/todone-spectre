@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useCalendarSync } from '../../../hooks/useCalendarSync';
-import { CalendarSyncStatus } from '../../../types/calendarTypes';
+import React, { useState, useEffect } from "react";
+import { useCalendarSync } from "../../../hooks/useCalendarSync";
+import { CalendarSyncStatus } from "../../../types/calendarTypes";
 
 interface CalendarSyncProps {
   onSyncComplete?: () => void;
 }
 
-export const CalendarSync: React.FC<CalendarSyncProps> = ({ onSyncComplete }) => {
-  const { syncStatus, lastSynced, syncCalendars, availableCalendars, error } = useCalendarSync();
+export const CalendarSync: React.FC<CalendarSyncProps> = ({
+  onSyncComplete,
+}) => {
+  const { syncStatus, lastSynced, syncCalendars, availableCalendars, error } =
+    useCalendarSync();
   const [selectedCalendars, setSelectedCalendars] = useState<string[]>([]);
 
   useEffect(() => {
-    if (syncStatus === 'completed' && onSyncComplete) {
+    if (syncStatus === "completed" && onSyncComplete) {
       onSyncComplete();
     }
   }, [syncStatus, onSyncComplete]);
@@ -21,20 +24,25 @@ export const CalendarSync: React.FC<CalendarSyncProps> = ({ onSyncComplete }) =>
   };
 
   const handleCalendarToggle = (calendarId: string) => {
-    setSelectedCalendars(prev =>
+    setSelectedCalendars((prev) =>
       prev.includes(calendarId)
-        ? prev.filter(id => id !== calendarId)
-        : [...prev, calendarId]
+        ? prev.filter((id) => id !== calendarId)
+        : [...prev, calendarId],
     );
   };
 
   const getStatusText = () => {
     switch (syncStatus) {
-      case 'idle': return 'Ready to sync';
-      case 'syncing': return 'Syncing...';
-      case 'completed': return 'Sync completed';
-      case 'error': return 'Sync failed';
-      default: return 'Unknown status';
+      case "idle":
+        return "Ready to sync";
+      case "syncing":
+        return "Syncing...";
+      case "completed":
+        return "Sync completed";
+      case "error":
+        return "Sync failed";
+      default:
+        return "Unknown status";
     }
   };
 
@@ -48,15 +56,11 @@ export const CalendarSync: React.FC<CalendarSyncProps> = ({ onSyncComplete }) =>
         )}
       </div>
 
-      {error && (
-        <div className="sync-error">
-          Error: {error.message}
-        </div>
-      )}
+      {error && <div className="sync-error">Error: {error.message}</div>}
 
       <div className="calendar-selection">
         <h4>Available Calendars</h4>
-        {availableCalendars.map(calendar => (
+        {availableCalendars.map((calendar) => (
           <div key={calendar.id} className="calendar-option">
             <input
               type="checkbox"
@@ -73,9 +77,9 @@ export const CalendarSync: React.FC<CalendarSyncProps> = ({ onSyncComplete }) =>
 
       <button
         onClick={handleSync}
-        disabled={syncStatus === 'syncing' || selectedCalendars.length === 0}
+        disabled={syncStatus === "syncing" || selectedCalendars.length === 0}
       >
-        {syncStatus === 'syncing' ? 'Syncing...' : 'Sync Calendars'}
+        {syncStatus === "syncing" ? "Syncing..." : "Sync Calendars"}
       </button>
     </div>
   );

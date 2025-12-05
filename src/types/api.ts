@@ -3,8 +3,16 @@
  * Contains comprehensive API response and request interfaces
  */
 
-import { User, Project, Task, Label, Filter, Comment, Attachment } from './common';
-import { PriorityLevel, TaskStatus, ViewType, RecurringPattern } from './enums';
+import {
+  User,
+  Project,
+  Task,
+  Label,
+  Filter,
+  Comment,
+  Attachment,
+} from "./common";
+import { PriorityLevel, TaskStatus, ViewType, RecurringPattern } from "./enums";
 
 /**
  * Base API response interface
@@ -102,7 +110,15 @@ export interface ErrorResponse {
   /**
    * Error type
    */
-  type: 'validation' | 'authentication' | 'authorization' | 'not_found' | 'server' | 'rate_limit' | 'network' | 'unknown';
+  type:
+    | "validation"
+    | "authentication"
+    | "authorization"
+    | "not_found"
+    | "server"
+    | "rate_limit"
+    | "network"
+    | "unknown";
 
   /**
    * Error timestamp
@@ -197,12 +213,12 @@ export interface SortingOptions {
   /**
    * Sort direction
    */
-  direction: 'asc' | 'desc';
+  direction: "asc" | "desc";
 
   /**
    * Null handling
    */
-  nullHandling?: 'natural' | 'nulls_first' | 'nulls_last';
+  nullHandling?: "natural" | "nulls_first" | "nulls_last";
 }
 
 /**
@@ -217,7 +233,19 @@ export interface FilteringOptions {
   /**
    * Filter operator
    */
-  operator: 'eq' | 'ne' | 'gt' | 'lt' | 'gte' | 'lte' | 'in' | 'nin' | 'contains' | 'startsWith' | 'endsWith' | 'regex';
+  operator:
+    | "eq"
+    | "ne"
+    | "gt"
+    | "lt"
+    | "gte"
+    | "lte"
+    | "in"
+    | "nin"
+    | "contains"
+    | "startsWith"
+    | "endsWith"
+    | "regex";
 
   /**
    * Filter value
@@ -227,7 +255,7 @@ export interface FilteringOptions {
   /**
    * Filter type
    */
-  type?: 'string' | 'number' | 'date' | 'boolean' | 'array';
+  type?: "string" | "number" | "date" | "boolean" | "array";
 }
 
 /**
@@ -295,7 +323,7 @@ export interface RateLimitInfo {
   /**
    * Rate limit window
    */
-  window: 'second' | 'minute' | 'hour' | 'day';
+  window: "second" | "minute" | "hour" | "day";
 }
 
 /**
@@ -332,13 +360,13 @@ export interface ApiRequestOptions {
   retry?: {
     maxAttempts: number;
     delay: number;
-    backoff: 'linear' | 'exponential';
+    backoff: "linear" | "exponential";
   };
 
   /**
    * Request priority
    */
-  priority?: 'low' | 'normal' | 'high' | 'critical';
+  priority?: "low" | "normal" | "high" | "critical";
 }
 
 /**
@@ -524,7 +552,7 @@ export interface CreateProjectRequest {
   /**
    * Project data
    */
-  project: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>;
+  project: Omit<Project, "id" | "createdAt" | "updatedAt">;
 
   /**
    * Parent project ID
@@ -586,7 +614,7 @@ export interface CreateTaskRequest {
   /**
    * Task data
    */
-  task: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'completedAt'>;
+  task: Omit<Task, "id" | "createdAt" | "updatedAt" | "completedAt">;
 
   /**
    * Project ID
@@ -646,7 +674,7 @@ export interface CompleteTaskRequest {
    */
   metadata?: {
     completedBy?: string;
-    completionMethod?: 'manual' | 'automatic' | 'recurring';
+    completionMethod?: "manual" | "automatic" | "recurring";
     notes?: string;
   };
 }
@@ -670,7 +698,7 @@ export interface CreateLabelRequest {
   /**
    * Label data
    */
-  label: Omit<Label, 'id'>;
+  label: Omit<Label, "id">;
 
   /**
    * Project ID (if project-specific)
@@ -716,7 +744,7 @@ export interface CreateFilterRequest {
   /**
    * Filter data
    */
-  filter: Omit<Filter, 'id'>;
+  filter: Omit<Filter, "id">;
 
   /**
    * User ID
@@ -762,7 +790,7 @@ export interface CreateCommentRequest {
   /**
    * Comment data
    */
-  comment: Omit<Comment, 'id' | 'timestamp'>;
+  comment: Omit<Comment, "id" | "timestamp">;
 
   /**
    * Task ID
@@ -828,7 +856,7 @@ export interface SearchRequest {
    * Search filters
    */
   filters?: {
-    types?: ('tasks' | 'projects' | 'users' | 'comments' | 'attachments')[];
+    types?: ("tasks" | "projects" | "users" | "comments" | "attachments")[];
     status?: TaskStatus[];
     priority?: PriorityLevel[];
     projectId?: string;
@@ -897,8 +925,8 @@ export interface SyncRequest {
    * Changes to sync
    */
   changes?: Array<{
-    type: 'create' | 'update' | 'delete';
-    entity: 'task' | 'project' | 'user' | 'label' | 'comment' | 'attachment';
+    type: "create" | "update" | "delete";
+    entity: "task" | "project" | "user" | "label" | "comment" | "attachment";
     data: any;
     timestamp: string;
   }>;
@@ -979,7 +1007,7 @@ export interface Webhook {
   /**
    * Webhook status
    */
-  status: 'active' | 'inactive' | 'failed';
+  status: "active" | "inactive" | "failed";
 
   /**
    * Webhook metadata
@@ -996,7 +1024,7 @@ export interface CreateWebhookRequest {
   /**
    * Webhook data
    */
-  webhook: Omit<Webhook, 'id' | 'metadata'>;
+  webhook: Omit<Webhook, "id" | "metadata">;
 
   /**
    * User ID
@@ -1052,7 +1080,7 @@ export interface TrackEventRequest {
   /**
    * Event data
    */
-  event: Omit<AnalyticsEvent, 'id' | 'timestamp'>;
+  event: Omit<AnalyticsEvent, "id" | "timestamp">;
 
   /**
    * Context
@@ -1071,7 +1099,7 @@ export interface ApiHealthCheckResponse {
   /**
    * Service status
    */
-  status: 'healthy' | 'degraded' | 'unhealthy';
+  status: "healthy" | "degraded" | "unhealthy";
 
   /**
    * Service version
@@ -1087,7 +1115,7 @@ export interface ApiHealthCheckResponse {
    * Database status
    */
   database: {
-    status: 'healthy' | 'degraded' | 'unhealthy';
+    status: "healthy" | "degraded" | "unhealthy";
     connection: boolean;
     lastError?: string;
   };
@@ -1096,17 +1124,20 @@ export interface ApiHealthCheckResponse {
    * Cache status
    */
   cache?: {
-    status: 'healthy' | 'degraded' | 'unhealthy';
+    status: "healthy" | "degraded" | "unhealthy";
     hitRate?: number;
   };
 
   /**
    * Dependencies status
    */
-  dependencies: Record<string, {
-    status: 'healthy' | 'degraded' | 'unhealthy';
-    responseTime?: number;
-  }>;
+  dependencies: Record<
+    string,
+    {
+      status: "healthy" | "degraded" | "unhealthy";
+      responseTime?: number;
+    }
+  >;
 
   /**
    * Timestamp
@@ -1126,12 +1157,15 @@ export interface ApiConfigResponse {
   /**
    * Available endpoints
    */
-  endpoints: Record<string, {
-    path: string;
-    methods: string[];
-    description: string;
-    authenticated: boolean;
-  }>;
+  endpoints: Record<
+    string,
+    {
+      path: string;
+      methods: string[];
+      description: string;
+      authenticated: boolean;
+    }
+  >;
 
   /**
    * Rate limits
@@ -1165,7 +1199,7 @@ export interface ApiBatchRequest {
    * Batch operations
    */
   operations: Array<{
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+    method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
     endpoint: string;
     data?: any;
     headers?: Record<string, string>;

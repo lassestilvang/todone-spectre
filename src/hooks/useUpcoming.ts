@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Task } from '../types/task';
-import { upcomingService } from '../services/upcomingService';
-import { useTaskStore } from '../store/useTaskStore';
+import { useState, useEffect, useCallback } from "react";
+import { Task } from "../types/task";
+import { upcomingService } from "../services/upcomingService";
+import { useTaskStore } from "../store/useTaskStore";
 
 /**
  * Custom hook for Upcoming view management
@@ -9,9 +9,11 @@ import { useTaskStore } from '../store/useTaskStore';
 export const useUpcoming = (projectId?: string) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [priorityFilter, setPriorityFilter] = useState<string | 'all'>('all');
-  const [timeRangeFilter, setTimeRangeFilter] = useState<'next-week' | 'next-month' | 'next-3-months' | 'all'>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [priorityFilter, setPriorityFilter] = useState<string | "all">("all");
+  const [timeRangeFilter, setTimeRangeFilter] = useState<
+    "next-week" | "next-month" | "next-3-months" | "all"
+  >("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const { tasks: allTasks, setTasks } = useTaskStore();
 
@@ -26,7 +28,9 @@ export const useUpcoming = (projectId?: string) => {
       const tasks = await upcomingService.getUpcomingTasks(projectId);
       setTasks(tasks);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch upcoming tasks');
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch upcoming tasks",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -41,15 +45,16 @@ export const useUpcoming = (projectId?: string) => {
     // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(task =>
-        task.title.toLowerCase().includes(query) ||
-        (task.description && task.description.toLowerCase().includes(query))
+      result = result.filter(
+        (task) =>
+          task.title.toLowerCase().includes(query) ||
+          (task.description && task.description.toLowerCase().includes(query)),
       );
     }
 
     // Apply priority filter
-    if (priorityFilter !== 'all') {
-      result = result.filter(task => task.priority === priorityFilter);
+    if (priorityFilter !== "all") {
+      result = result.filter((task) => task.priority === priorityFilter);
     }
 
     // Apply time range filter
@@ -76,7 +81,7 @@ export const useUpcoming = (projectId?: string) => {
     try {
       return await upcomingService.getUpcomingStatistics(projectId);
     } catch (err) {
-      console.error('Error getting upcoming statistics:', err);
+      console.error("Error getting upcoming statistics:", err);
       return null;
     }
   }, [projectId]);
@@ -84,16 +89,19 @@ export const useUpcoming = (projectId?: string) => {
   /**
    * Filter by priority
    */
-  const filterByPriority = useCallback((priority: string | 'all') => {
+  const filterByPriority = useCallback((priority: string | "all") => {
     setPriorityFilter(priority);
   }, []);
 
   /**
    * Filter by time range
    */
-  const filterByTimeRange = useCallback((range: 'next-week' | 'next-month' | 'next-3-months' | 'all') => {
-    setTimeRangeFilter(range);
-  }, []);
+  const filterByTimeRange = useCallback(
+    (range: "next-week" | "next-month" | "next-3-months" | "all") => {
+      setTimeRangeFilter(range);
+    },
+    [],
+  );
 
   /**
    * Search tasks
@@ -106,22 +114,29 @@ export const useUpcoming = (projectId?: string) => {
    * Reset all filters
    */
   const resetFilters = useCallback(() => {
-    setSearchQuery('');
-    setPriorityFilter('all');
-    setTimeRangeFilter('all');
+    setSearchQuery("");
+    setPriorityFilter("all");
+    setTimeRangeFilter("all");
   }, []);
 
   /**
    * Get tasks in specific date range
    */
-  const getTasksInDateRange = useCallback(async (startDate: Date, endDate: Date): Promise<Task[]> => {
-    try {
-      return await upcomingService.getTasksInDateRange(startDate, endDate, projectId);
-    } catch (err) {
-      console.error('Error getting tasks in date range:', err);
-      return [];
-    }
-  }, [projectId]);
+  const getTasksInDateRange = useCallback(
+    async (startDate: Date, endDate: Date): Promise<Task[]> => {
+      try {
+        return await upcomingService.getTasksInDateRange(
+          startDate,
+          endDate,
+          projectId,
+        );
+      } catch (err) {
+        console.error("Error getting tasks in date range:", err);
+        return [];
+      }
+    },
+    [projectId],
+  );
 
   /**
    * Initialize upcoming data on mount
@@ -166,6 +181,6 @@ export const useUpcoming = (projectId?: string) => {
     getProcessedTasks,
     getGroupedTasks,
     getStatistics,
-    getTasksInDateRange
+    getTasksInDateRange,
   };
 };

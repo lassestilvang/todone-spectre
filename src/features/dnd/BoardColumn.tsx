@@ -1,5 +1,5 @@
-import React from 'react';
-import { DroppableContainer } from './DroppableContainer';
+import React from "react";
+import { DroppableContainer } from "./DroppableContainer";
 
 interface BoardColumnProps {
   columnId: string;
@@ -13,8 +13,8 @@ export const BoardColumn: React.FC<BoardColumnProps> = ({
   columnId,
   title,
   children,
-  className = '',
-  onDrop
+  className = "",
+  onDrop,
 }) => {
   return (
     <DroppableContainer
@@ -28,9 +28,7 @@ export const BoardColumn: React.FC<BoardColumnProps> = ({
           {React.Children.count(children)} tasks
         </span>
       </div>
-      <div className="space-y-2">
-        {children}
-      </div>
+      <div className="space-y-2">{children}</div>
     </DroppableContainer>
   );
 };

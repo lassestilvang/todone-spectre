@@ -1,8 +1,8 @@
-import React, { useMemo } from 'react';
-import { Template } from '../../types/template';
-import TemplateItem from './TemplateItem';
-import { useTemplates } from '../../hooks/useTemplates';
-import { useTemplateCategories } from '../../hooks/useTemplateCategories';
+import React, { useMemo } from "react";
+import { Template } from "../../types/template";
+import TemplateItem from "./TemplateItem";
+import { useTemplates } from "../../hooks/useTemplates";
+import { useTemplateCategories } from "../../hooks/useTemplateCategories";
 
 interface TemplateListProps {
   categoryId?: string;
@@ -15,19 +15,15 @@ const TemplateList: React.FC<TemplateListProps> = ({
   categoryId,
   showPublicOnly = false,
   onTemplateClick,
-  showCategories = true
+  showCategories = true,
 }) => {
-  const {
-    getProcessedTemplates,
-    isLoading,
-    error,
-    fetchTemplates
-  } = useTemplates();
+  const { getProcessedTemplates, isLoading, error, fetchTemplates } =
+    useTemplates();
 
   const {
     categories,
     isLoading: categoriesLoading,
-    error: categoriesError
+    error: categoriesError,
   } = useTemplateCategories();
 
   const processedTemplates = useMemo(() => {
@@ -35,12 +31,12 @@ const TemplateList: React.FC<TemplateListProps> = ({
 
     // Apply category filter if provided
     if (categoryId) {
-      return templates.filter(template => template.categoryId === categoryId);
+      return templates.filter((template) => template.categoryId === categoryId);
     }
 
     // Apply public filter if requested
     if (showPublicOnly) {
-      return templates.filter(template => template.isPublic);
+      return templates.filter((template) => template.isPublic);
     }
 
     return templates;
@@ -50,8 +46,10 @@ const TemplateList: React.FC<TemplateListProps> = ({
     if (!showCategories) return [];
 
     // Get categories that have templates
-    const categoryIdsWithTemplates = new Set(processedTemplates.map(t => t.categoryId).filter(Boolean) as string[]);
-    return categories.filter(c => categoryIdsWithTemplates.has(c.id));
+    const categoryIdsWithTemplates = new Set(
+      processedTemplates.map((t) => t.categoryId).filter(Boolean) as string[],
+    );
+    return categories.filter((c) => categoryIdsWithTemplates.has(c.id));
   }, [categories, processedTemplates, showCategories]);
 
   if (isLoading || categoriesLoading) {
@@ -96,9 +94,9 @@ const TemplateList: React.FC<TemplateListProps> = ({
               key={category.id}
               className="px-3 py-1 text-sm rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
               style={{
-                backgroundColor: category.color + '20',
+                backgroundColor: category.color + "20",
                 color: category.color,
-                border: `1px solid ${category.color}`
+                border: `1px solid ${category.color}`,
               }}
             >
               {category.icon && <span className="mr-1">{category.icon}</span>}

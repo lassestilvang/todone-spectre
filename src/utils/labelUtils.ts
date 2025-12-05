@@ -1,4 +1,4 @@
-import { Label, Task } from '../types/models';
+import { Label, Task } from "../types/models";
 
 /**
  * Label Utilities
@@ -16,7 +16,7 @@ export class LabelUtils {
       return [];
     }
 
-    return allLabels.filter(label => task.labelIds?.includes(label.id));
+    return allLabels.filter((label) => task.labelIds?.includes(label.id));
   }
 
   /**
@@ -45,7 +45,7 @@ export class LabelUtils {
    */
   static removeLabelFromTask(task: Task, labelId: string): Task {
     if (task.labelIds) {
-      task.labelIds = task.labelIds.filter(id => id !== labelId);
+      task.labelIds = task.labelIds.filter((id) => id !== labelId);
     }
 
     return { ...task };
@@ -79,17 +79,17 @@ export class LabelUtils {
    */
   static getLabelColor(label: Label): string {
     // Handle different color formats
-    if (label.color.startsWith('#')) {
+    if (label.color.startsWith("#")) {
       return label.color;
     }
 
     // Handle Tailwind color classes
-    if (label.color.includes('-')) {
+    if (label.color.includes("-")) {
       return `bg-${label.color} text-white`;
     }
 
     // Default color
-    return 'bg-gray-500 text-white';
+    return "bg-gray-500 text-white";
   }
 
   /**
@@ -101,7 +101,7 @@ export class LabelUtils {
     return {
       name: text.trim(),
       color: this.getColorForText(text),
-      isPersonal: true
+      isPersonal: true,
     };
   }
 
@@ -119,14 +119,14 @@ export class LabelUtils {
 
     // Convert hash to color
     const colors = [
-      '#EF4444', // red-500
-      '#F59E0B', // yellow-500
-      '#10B981', // green-500
-      '#3B82F6', // blue-500
-      '#8B5CF6', // purple-500
-      '#EC4899', // pink-500
-      '#F97316', // orange-500
-      '#06B6D4'  // cyan-500
+      "#EF4444", // red-500
+      "#F59E0B", // yellow-500
+      "#10B981", // green-500
+      "#3B82F6", // blue-500
+      "#8B5CF6", // purple-500
+      "#EC4899", // pink-500
+      "#F97316", // orange-500
+      "#06B6D4", // cyan-500
     ];
 
     return colors[Math.abs(hash) % colors.length];
@@ -144,8 +144,8 @@ export class LabelUtils {
     }
 
     const searchTerm = query.toLowerCase();
-    return labels.filter(label =>
-      label.name.toLowerCase().includes(searchTerm)
+    return labels.filter((label) =>
+      label.name.toLowerCase().includes(searchTerm),
     );
   }
 
@@ -155,9 +155,12 @@ export class LabelUtils {
    * @param direction - Sort direction ('asc' or 'desc')
    * @returns Sorted array of labels
    */
-  static sortLabels(labels: Label[], direction: 'asc' | 'desc' = 'asc'): Label[] {
+  static sortLabels(
+    labels: Label[],
+    direction: "asc" | "desc" = "asc",
+  ): Label[] {
     return [...labels].sort((a, b) => {
-      if (direction === 'asc') {
+      if (direction === "asc") {
         return a.name.localeCompare(b.name);
       } else {
         return b.name.localeCompare(a.name);
@@ -175,8 +178,8 @@ export class LabelUtils {
     shared: Label[];
   } {
     return {
-      personal: labels.filter(label => label.isPersonal),
-      shared: labels.filter(label => !label.isPersonal)
+      personal: labels.filter((label) => label.isPersonal),
+      shared: labels.filter((label) => !label.isPersonal),
     };
   }
 }

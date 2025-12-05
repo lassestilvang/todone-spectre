@@ -1,29 +1,29 @@
-import { useState, useEffect } from 'react';
-import { Platform, Dimensions, Appearance } from 'react-native';
-import { useMobileConfig } from './useMobileConfig';
-import { mobileService } from '../services/mobileService';
-import { mobileUtils } from '../utils/mobileUtils';
+import { useState, useEffect } from "react";
+import { Platform, Dimensions, Appearance } from "react-native";
+import { useMobileConfig } from "./useMobileConfig";
+import { mobileService } from "../services/mobileService";
+import { mobileUtils } from "../utils/mobileUtils";
 
 export const useMobile = () => {
   const { mobileConfig } = useMobileConfig();
   const [mobileState, setMobileState] = useState({
-    isMobile: Platform.OS !== 'web',
-    deviceType: 'unknown' as 'phone' | 'tablet' | 'unknown',
-    orientation: 'portrait' as 'portrait' | 'landscape',
+    isMobile: Platform.OS !== "web",
+    deviceType: "unknown" as "phone" | "tablet" | "unknown",
+    orientation: "portrait" as "portrait" | "landscape",
     screenDimensions: { width: 0, height: 0, scale: 1 },
-    networkStatus: 'online' as 'online' | 'offline' | 'unknown',
+    networkStatus: "online" as "online" | "offline" | "unknown",
     batteryLevel: 1.0,
     isLowPowerMode: false,
     isTablet: false,
   });
 
   const [deviceInfo, setDeviceInfo] = useState({
-    deviceId: '',
-    deviceName: '',
-    systemName: '',
-    systemVersion: '',
-    appVersion: '',
-    buildNumber: '',
+    deviceId: "",
+    deviceName: "",
+    systemName: "",
+    systemVersion: "",
+    appVersion: "",
+    buildNumber: "",
     isEmulator: false,
     hasNotch: false,
   });
@@ -67,12 +67,12 @@ export const useMobile = () => {
           supportsTouch: capabilities.supportsTouch,
           supportsBiometrics: capabilities.supportsBiometrics,
           supportsHapticFeedback: capabilities.supportsHapticFeedback,
-          supportsCamera: Platform.OS !== 'web', // Simple check for camera support
-          supportsLocation: Platform.OS !== 'web', // Simple check for location support
+          supportsCamera: Platform.OS !== "web", // Simple check for camera support
+          supportsLocation: Platform.OS !== "web", // Simple check for location support
         });
 
         // Set up listeners
-        const dimensionListener = Dimensions.addEventListener('change', () => {
+        const dimensionListener = Dimensions.addEventListener("change", () => {
           const updatedState = mobileService.getMobileState();
           setMobileState(updatedState);
         });
@@ -81,7 +81,7 @@ export const useMobile = () => {
           dimensionListener.remove();
         };
       } catch (error) {
-        console.error('Failed to initialize mobile hook:', error);
+        console.error("Failed to initialize mobile hook:", error);
       }
     };
 
@@ -98,22 +98,29 @@ export const useMobile = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const checkNetworkStatus = async (): Promise<'online' | 'offline' | 'unknown'> => {
+  const checkNetworkStatus = async (): Promise<
+    "online" | "offline" | "unknown"
+  > => {
     return mobileService.checkNetworkStatus();
   };
 
-  const triggerHapticFeedback = async (type: 'selection' | 'impact' | 'notification' = 'selection') => {
-    if (mobileCapabilities.supportsHapticFeedback && mobileConfig.enableHapticFeedback) {
+  const triggerHapticFeedback = async (
+    type: "selection" | "impact" | "notification" = "selection",
+  ) => {
+    if (
+      mobileCapabilities.supportsHapticFeedback &&
+      mobileConfig.enableHapticFeedback
+    ) {
       await mobileService.triggerHapticFeedback(type);
     }
   };
 
   const isPortrait = (): boolean => {
-    return mobileState.orientation === 'portrait';
+    return mobileState.orientation === "portrait";
   };
 
   const isLandscape = (): boolean => {
-    return mobileState.orientation === 'landscape';
+    return mobileState.orientation === "landscape";
   };
 
   const getScreenWidth = (): number => {
@@ -148,7 +155,11 @@ export const useMobile = () => {
     return mobileState.batteryLevel < 0.1;
   };
 
-  const getBatteryStatus = (): { level: number; isLow: boolean; isCritical: boolean } => {
+  const getBatteryStatus = (): {
+    level: number;
+    isLow: boolean;
+    isCritical: boolean;
+  } => {
     return {
       level: mobileState.batteryLevel,
       isLow: mobileState.batteryLevel < 0.2,

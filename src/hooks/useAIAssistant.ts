@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { aiService } from '../services/aiService';
+import { useState, useCallback } from "react";
+import { aiService } from "../services/aiService";
 
 interface AIAssistantState {
   aiResponse: string | null;
@@ -21,16 +21,18 @@ export const useAIAssistant = (): AIAssistantState & {
       setError(null);
       setAIResponse(null);
 
-      if (!prompt || prompt.trim() === '') {
-        throw new Error('Prompt cannot be empty');
+      if (!prompt || prompt.trim() === "") {
+        throw new Error("Prompt cannot be empty");
       }
 
       const response = await aiService.generateAIResponse(prompt);
 
       setAIResponse(response.response);
     } catch (err) {
-      console.error('AI Assistant error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to generate AI response');
+      console.error("AI Assistant error:", err);
+      setError(
+        err instanceof Error ? err.message : "Failed to generate AI response",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -46,6 +48,6 @@ export const useAIAssistant = (): AIAssistantState & {
     isLoading,
     error,
     generateAIResponse,
-    clearResponse
+    clearResponse,
   };
 };

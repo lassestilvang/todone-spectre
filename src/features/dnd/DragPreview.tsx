@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { useDragAndDrop } from './DragAndDropProvider';
-import { Task } from '../../types/task';
+import React, { useEffect, useState } from "react";
+import { useDragAndDrop } from "./DragAndDropProvider";
+import { Task } from "../../types/task";
 
 interface DragPreviewProps {
   className?: string;
 }
 
-export const DragPreview: React.FC<DragPreviewProps> = ({ className = '' }) => {
+export const DragPreview: React.FC<DragPreviewProps> = ({ className = "" }) => {
   const { draggedTask, isDragging } = useDragAndDrop();
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isVisible, setIsVisible] = useState(false);
@@ -22,9 +22,9 @@ export const DragPreview: React.FC<DragPreviewProps> = ({ className = '' }) => {
       setIsVisible(true);
     };
 
-    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener("mousemove", handleMouseMove);
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener("mousemove", handleMouseMove);
     };
   }, [isDragging, draggedTask]);
 
@@ -34,18 +34,18 @@ export const DragPreview: React.FC<DragPreviewProps> = ({ className = '' }) => {
     <div
       className={`drag-preview ${className}`}
       style={{
-        position: 'fixed',
+        position: "fixed",
         left: `${position.x}px`,
         top: `${position.y}px`,
-        pointerEvents: 'none',
+        pointerEvents: "none",
         zIndex: 9999,
-        backgroundColor: 'white',
-        border: '1px solid #ddd',
-        borderRadius: '4px',
-        padding: '8px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-        minWidth: '200px',
-        maxWidth: '300px'
+        backgroundColor: "white",
+        border: "1px solid #ddd",
+        borderRadius: "4px",
+        padding: "8px",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+        minWidth: "200px",
+        maxWidth: "300px",
       }}
     >
       <div className="drag-preview-title">{draggedTask.title}</div>

@@ -4,10 +4,21 @@ import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
 import prettierConfig from "eslint-plugin-prettier";
 import prettierRecommended from "eslint-config-prettier";
+import tseslint from "typescript-eslint";
 
 export default [
   js.configs.recommended,
   prettierRecommended,
+  ...tseslint.configs.recommended,
+  {
+    ignores: [
+      "config/**",
+      "scripts/**",
+      "validate-*.js",
+      "vite.config.*",
+      "eslint.config.js",
+    ],
+  },
   {
     files: ["**/*.{js,jsx,ts,tsx}"],
     languageOptions: {
@@ -15,12 +26,14 @@ export default [
         ...globals.browser,
         ...globals.node,
       },
+      parser: tseslint.parser,
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
         ecmaFeatures: {
           jsx: true,
         },
+        project: true,
       },
     },
     settings: {
@@ -40,8 +53,6 @@ export default [
         { allowConstantExport: true },
       ],
       "prettier/prettier": "error",
-      "no-unused-vars": "warn",
-      "no-console": "warn",
       "no-debugger": "warn",
       "no-duplicate-imports": "error",
       "no-empty-pattern": "error",
@@ -51,12 +62,12 @@ export default [
       "no-trailing-spaces": "error",
       "no-var": "error",
       "prefer-const": "error",
-      quotes: ["error", "single"],
       semi: ["error", "always"],
-      indent: ["error", 2],
       "comma-dangle": ["error", "always-multiline"],
       "object-curly-spacing": ["error", "always"],
       "array-bracket-spacing": ["error", "never"],
+      "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
     },
   },
 ];

@@ -1,6 +1,12 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { useAccessibility } from '../../hooks/useAccessibility';
-import { useAccessibilityConfig } from '../../hooks/useAccessibilityConfig';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { useAccessibility } from "../../hooks/useAccessibility";
+import { useAccessibilityConfig } from "../../hooks/useAccessibilityConfig";
 
 interface AccessibilityContextType {
   isHighContrast: boolean;
@@ -18,39 +24,56 @@ interface AccessibilityContextType {
   removeAccessibilityFeature: (feature: string) => void;
 }
 
-const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
+const AccessibilityContext = createContext<
+  AccessibilityContextType | undefined
+>(undefined);
 
-export const AccessibilityProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AccessibilityProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   const { accessibilityState, updateAccessibilityState } = useAccessibility();
-  const { accessibilityConfig, updateAccessibilityConfig } = useAccessibilityConfig();
+  const { accessibilityConfig, updateAccessibilityConfig } =
+    useAccessibilityConfig();
 
   const [isHighContrast, setIsHighContrast] = useState(
-    accessibilityState?.isHighContrast || accessibilityConfig?.defaultHighContrast || false
+    accessibilityState?.isHighContrast ||
+      accessibilityConfig?.defaultHighContrast ||
+      false,
   );
   const [fontSize, setFontSize] = useState(
-    accessibilityState?.fontSize || accessibilityConfig?.defaultFontSize || 'medium'
+    accessibilityState?.fontSize ||
+      accessibilityConfig?.defaultFontSize ||
+      "medium",
   );
   const [reduceMotion, setReduceMotion] = useState(
-    accessibilityState?.reduceMotion || accessibilityConfig?.defaultReduceMotion || false
+    accessibilityState?.reduceMotion ||
+      accessibilityConfig?.defaultReduceMotion ||
+      false,
   );
   const [screenReaderEnabled, setScreenReaderEnabled] = useState(
-    accessibilityState?.screenReaderEnabled || accessibilityConfig?.defaultScreenReader || false
+    accessibilityState?.screenReaderEnabled ||
+      accessibilityConfig?.defaultScreenReader ||
+      false,
   );
   const [keyboardNavigation, setKeyboardNavigation] = useState(
-    accessibilityState?.keyboardNavigation || accessibilityConfig?.defaultKeyboardNavigation || false
+    accessibilityState?.keyboardNavigation ||
+      accessibilityConfig?.defaultKeyboardNavigation ||
+      false,
   );
   const [accessibilityFeatures, setAccessibilityFeatures] = useState<string[]>(
-    accessibilityState?.features || []
+    accessibilityState?.features || [],
   );
 
   useEffect(() => {
     // Update state when config changes
     if (accessibilityConfig) {
       setIsHighContrast(accessibilityConfig.defaultHighContrast || false);
-      setFontSize(accessibilityConfig.defaultFontSize || 'medium');
+      setFontSize(accessibilityConfig.defaultFontSize || "medium");
       setReduceMotion(accessibilityConfig.defaultReduceMotion || false);
       setScreenReaderEnabled(accessibilityConfig.defaultScreenReader || false);
-      setKeyboardNavigation(accessibilityConfig.defaultKeyboardNavigation || false);
+      setKeyboardNavigation(
+        accessibilityConfig.defaultKeyboardNavigation || false,
+      );
     }
   }, [accessibilityConfig]);
 
@@ -63,15 +86,23 @@ export const AccessibilityProvider: React.FC<{ children: ReactNode }> = ({ child
         reduceMotion,
         screenReaderEnabled,
         keyboardNavigation,
-        features: accessibilityFeatures
+        features: accessibilityFeatures,
       });
     }
-  }, [isHighContrast, fontSize, reduceMotion, screenReaderEnabled, keyboardNavigation, accessibilityFeatures]);
+  }, [
+    isHighContrast,
+    fontSize,
+    reduceMotion,
+    screenReaderEnabled,
+    keyboardNavigation,
+    accessibilityFeatures,
+  ]);
 
   const toggleHighContrast = () => setIsHighContrast(!isHighContrast);
   const toggleReduceMotion = () => setReduceMotion(!reduceMotion);
   const toggleScreenReader = () => setScreenReaderEnabled(!screenReaderEnabled);
-  const toggleKeyboardNavigation = () => setKeyboardNavigation(!keyboardNavigation);
+  const toggleKeyboardNavigation = () =>
+    setKeyboardNavigation(!keyboardNavigation);
 
   const addAccessibilityFeature = (feature: string) => {
     if (!accessibilityFeatures.includes(feature)) {
@@ -80,11 +111,13 @@ export const AccessibilityProvider: React.FC<{ children: ReactNode }> = ({ child
   };
 
   const removeAccessibilityFeature = (feature: string) => {
-    setAccessibilityFeatures(accessibilityFeatures.filter(f => f !== feature));
+    setAccessibilityFeatures(
+      accessibilityFeatures.filter((f) => f !== feature),
+    );
   };
 
   const handleSetFontSize = (size: string) => {
-    const validSizes = ['small', 'medium', 'large', 'xlarge'];
+    const validSizes = ["small", "medium", "large", "xlarge"];
     if (validSizes.includes(size)) {
       setFontSize(size);
     }
@@ -105,11 +138,11 @@ export const AccessibilityProvider: React.FC<{ children: ReactNode }> = ({ child
         toggleKeyboardNavigation,
         accessibilityFeatures,
         addAccessibilityFeature,
-        removeAccessibilityFeature
+        removeAccessibilityFeature,
       }}
     >
       <div
-        className={`accessibility-provider ${isHighContrast ? 'high-contrast' : ''} ${reduceMotion ? 'reduce-motion' : ''}`}
+        className={`accessibility-provider ${isHighContrast ? "high-contrast" : ""} ${reduceMotion ? "reduce-motion" : ""}`}
         style={{ fontSize: getFontSizeValue(fontSize) }}
         aria-live="polite"
         aria-atomic="true"
@@ -122,18 +155,20 @@ export const AccessibilityProvider: React.FC<{ children: ReactNode }> = ({ child
 
 const getFontSizeValue = (size: string): string => {
   const fontSizes: Record<string, string> = {
-    small: '0.8rem',
-    medium: '1rem',
-    large: '1.2rem',
-    xlarge: '1.5rem'
+    small: "0.8rem",
+    medium: "1rem",
+    large: "1.2rem",
+    xlarge: "1.5rem",
   };
-  return fontSizes[size] || '1rem';
+  return fontSizes[size] || "1rem";
 };
 
 export const useAccessibilityContext = () => {
   const context = useContext(AccessibilityContext);
   if (context === undefined) {
-    throw new Error('useAccessibilityContext must be used within an AccessibilityProvider');
+    throw new Error(
+      "useAccessibilityContext must be used within an AccessibilityProvider",
+    );
   }
   return context;
 };

@@ -1,12 +1,15 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { axe } from './accessibilitySetup';
-import { setupAccessibilityTests, cleanupAccessibilityTests } from './accessibilitySetup';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import {
+  axe,
+  setupAccessibilityTests,
+  cleanupAccessibilityTests,
+} from "./accessibilitySetup";
 
 // Mock components for keyboard navigation testing
 const KeyboardNavTestComponent = () => {
   const [activeTab, setActiveTab] = React.useState(0);
-  const tabs = ['Tab 1', 'Tab 2', 'Tab 3'];
+  const tabs = ["Tab 1", "Tab 2", "Tab 3"];
 
   return (
     <div role="tablist" aria-label="Test tabs">
@@ -19,10 +22,10 @@ const KeyboardNavTestComponent = () => {
           id={`tab-${index}`}
           onClick={() => setActiveTab(index)}
           onKeyDown={(e) => {
-            if (e.key === 'ArrowRight' && index < tabs.length - 1) {
+            if (e.key === "ArrowRight" && index < tabs.length - 1) {
               setActiveTab(index + 1);
               document.getElementById(`tab-${index + 1}`)?.focus();
-            } else if (e.key === 'ArrowLeft' && index > 0) {
+            } else if (e.key === "ArrowLeft" && index > 0) {
               setActiveTab(index - 1);
               document.getElementById(`tab-${index - 1}`)?.focus();
             }
@@ -38,19 +41,26 @@ const KeyboardNavTestComponent = () => {
   );
 };
 
-const FocusTrapTestComponent = ({ children }: { children: React.ReactNode }) => {
+const FocusTrapTestComponent = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Tab') {
-        const focusableElements = containerRef.current?.querySelectorAll(
-          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-        ) || [];
+      if (e.key === "Tab") {
+        const focusableElements =
+          containerRef.current?.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          ) || [];
 
         if (focusableElements.length > 0) {
           const firstElement = focusableElements[0] as HTMLElement;
-          const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+          const lastElement = focusableElements[
+            focusableElements.length - 1
+          ] as HTMLElement;
 
           if (e.shiftKey && document.activeElement === firstElement) {
             // Shift+Tab from first element - trap at last element
@@ -65,12 +75,17 @@ const FocusTrapTestComponent = ({ children }: { children: React.ReactNode }) => 
       }
     };
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   return (
-    <div ref={containerRef} role="dialog" aria-modal="true" aria-labelledby="focus-trap-title">
+    <div
+      ref={containerRef}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="focus-trap-title"
+    >
       <h2 id="focus-trap-title">Focus Trap Test</h2>
       {children}
     </div>
@@ -83,21 +98,21 @@ const KeyboardShortcutsComponent = () => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.ctrlKey || e.metaKey) {
       switch (e.key) {
-        case 's':
+        case "s":
           e.preventDefault();
-          setActions(prev => [...prev, 'Save']);
+          setActions((prev) => [...prev, "Save"]);
           break;
-        case 'n':
+        case "n":
           e.preventDefault();
-          setActions(prev => [...prev, 'New']);
+          setActions((prev) => [...prev, "New"]);
           break;
-        case 'z':
+        case "z":
           if (e.shiftKey) {
             e.preventDefault();
-            setActions(prev => [...prev, 'Redo']);
+            setActions((prev) => [...prev, "Redo"]);
           } else {
             e.preventDefault();
-            setActions(prev => [...prev, 'Undo']);
+            setActions((prev) => [...prev, "Undo"]);
           }
           break;
       }
@@ -112,7 +127,10 @@ const KeyboardShortcutsComponent = () => {
       tabIndex={0}
     >
       <h3>Keyboard Shortcuts Test</h3>
-      <p>Press Ctrl/Cmd + S for Save, Ctrl/Cmd + N for New, Ctrl/Cmd + Z for Undo, Ctrl/Cmd + Shift + Z for Redo</p>
+      <p>
+        Press Ctrl/Cmd + S for Save, Ctrl/Cmd + N for New, Ctrl/Cmd + Z for
+        Undo, Ctrl/Cmd + Shift + Z for Redo
+      </p>
       <div role="log" aria-live="polite">
         {actions.map((action, index) => (
           <p key={index}>{action}</p>
@@ -123,7 +141,7 @@ const KeyboardShortcutsComponent = () => {
   );
 };
 
-describe('Keyboard Navigation Accessibility Tests', () => {
+describe("Keyboard Navigation Accessibility Tests", () => {
   beforeAll(() => {
     setupAccessibilityTests();
   });
@@ -132,8 +150,8 @@ describe('Keyboard Navigation Accessibility Tests', () => {
     cleanupAccessibilityTests();
   });
 
-  describe('Tab Order Tests', () => {
-    it('should maintain logical tab order', () => {
+  describe("Tab Order Tests", () => {
+    it("should maintain logical tab order", () => {
       render(
         <div>
           <button>Button 1</button>
@@ -141,7 +159,7 @@ describe('Keyboard Navigation Accessibility Tests', () => {
           <button>Button 2</button>
           <a href="#">Link 1</a>
           <button>Button 3</button>
-        </div>
+        </div>,
       );
 
       const focusableElements = screen.getAllByRole(/button|link|textbox/);
@@ -153,77 +171,81 @@ describe('Keyboard Navigation Accessibility Tests', () => {
         expect(document.activeElement).toBe(element);
 
         if (index < focusableElements.length - 1) {
-          fireEvent.keyDown(element, { key: 'Tab' });
+          fireEvent.keyDown(element, { key: "Tab" });
           expect(document.activeElement).toBe(focusableElements[index + 1]);
         }
       });
     });
 
-    it('should skip disabled elements in tab order', () => {
+    it("should skip disabled elements in tab order", () => {
       render(
         <div>
           <button>Button 1</button>
           <button disabled>Disabled Button</button>
           <button>Button 2</button>
-        </div>
+        </div>,
       );
 
-      const buttons = screen.getAllByRole('button');
-      const enabledButtons = buttons.filter(button => !button.hasAttribute('disabled'));
+      const buttons = screen.getAllByRole("button");
+      const enabledButtons = buttons.filter(
+        (button) => !button.hasAttribute("disabled"),
+      );
 
       // Focus first button
       enabledButtons[0].focus();
       expect(document.activeElement).toBe(enabledButtons[0]);
 
       // Tab should skip disabled button
-      fireEvent.keyDown(enabledButtons[0], { key: 'Tab' });
+      fireEvent.keyDown(enabledButtons[0], { key: "Tab" });
       expect(document.activeElement).toBe(enabledButtons[1]);
     });
   });
 
-  describe('Focus Management Tests', () => {
-    it('should manage focus in modal dialogs', () => {
+  describe("Focus Management Tests", () => {
+    it("should manage focus in modal dialogs", () => {
       render(
         <FocusTrapTestComponent>
           <button>First Button</button>
           <button>Second Button</button>
           <input type="text" placeholder="Input" />
           <button>Third Button</button>
-        </FocusTrapTestComponent>
+        </FocusTrapTestComponent>,
       );
 
-      const dialog = screen.getByRole('dialog');
-      const buttons = screen.getAllByRole('button');
-      const input = screen.getByRole('textbox');
+      const dialog = screen.getByRole("dialog");
+      const buttons = screen.getAllByRole("button");
+      const input = screen.getByRole("textbox");
 
       // Focus should be trapped within dialog
       buttons[0].focus();
       expect(document.activeElement).toBe(buttons[0]);
 
       // Tab through elements
-      fireEvent.keyDown(buttons[0], { key: 'Tab' });
+      fireEvent.keyDown(buttons[0], { key: "Tab" });
       expect(document.activeElement).toBe(input);
 
-      fireEvent.keyDown(input, { key: 'Tab' });
+      fireEvent.keyDown(input, { key: "Tab" });
       expect(document.activeElement).toBe(buttons[2]);
 
       // Tab from last element should wrap to first
-      fireEvent.keyDown(buttons[2], { key: 'Tab' });
+      fireEvent.keyDown(buttons[2], { key: "Tab" });
       expect(document.activeElement).toBe(buttons[0]);
 
       // Shift+Tab from first element should wrap to last
-      fireEvent.keyDown(buttons[0], { key: 'Tab', shiftKey: true });
+      fireEvent.keyDown(buttons[0], { key: "Tab", shiftKey: true });
       expect(document.activeElement).toBe(buttons[2]);
     });
 
-    it('should return focus to triggering element after modal closes', () => {
+    it("should return focus to triggering element after modal closes", () => {
       const ModalWithTrigger = () => {
         const [isOpen, setIsOpen] = React.useState(false);
         const triggerRef = React.useRef<HTMLButtonElement>(null);
 
         return (
           <div>
-            <button ref={triggerRef} onClick={() => setIsOpen(true)}>Open Modal</button>
+            <button ref={triggerRef} onClick={() => setIsOpen(true)}>
+              Open Modal
+            </button>
             {isOpen && (
               <FocusTrapTestComponent>
                 <button onClick={() => setIsOpen(false)}>Close Modal</button>
@@ -235,14 +257,14 @@ describe('Keyboard Navigation Accessibility Tests', () => {
       };
 
       render(<ModalWithTrigger />);
-      const openButton = screen.getByText('Open Modal');
+      const openButton = screen.getByText("Open Modal");
 
       // Open modal
       openButton.focus();
       fireEvent.click(openButton);
 
       // Focus should be in modal
-      const closeButton = screen.getByText('Close Modal');
+      const closeButton = screen.getByText("Close Modal");
       expect(document.activeElement).toBe(closeButton);
 
       // Close modal
@@ -253,52 +275,52 @@ describe('Keyboard Navigation Accessibility Tests', () => {
     });
   });
 
-  describe('Keyboard Shortcuts Tests', () => {
-    it('should handle keyboard shortcuts', () => {
+  describe("Keyboard Shortcuts Tests", () => {
+    it("should handle keyboard shortcuts", () => {
       render(<KeyboardShortcutsComponent />);
-      const app = screen.getByRole('application');
+      const app = screen.getByRole("application");
 
       // Focus the application
       app.focus();
 
       // Test Ctrl+S (Save)
-      fireEvent.keyDown(app, { key: 's', ctrlKey: true });
-      expect(screen.getByText('Save')).toBeInTheDocument();
+      fireEvent.keyDown(app, { key: "s", ctrlKey: true });
+      expect(screen.getByText("Save")).toBeInTheDocument();
 
       // Test Ctrl+N (New)
-      fireEvent.keyDown(app, { key: 'n', ctrlKey: true });
-      expect(screen.getByText('New')).toBeInTheDocument();
+      fireEvent.keyDown(app, { key: "n", ctrlKey: true });
+      expect(screen.getByText("New")).toBeInTheDocument();
 
       // Test Ctrl+Z (Undo)
-      fireEvent.keyDown(app, { key: 'z', ctrlKey: true });
-      expect(screen.getByText('Undo')).toBeInTheDocument();
+      fireEvent.keyDown(app, { key: "z", ctrlKey: true });
+      expect(screen.getByText("Undo")).toBeInTheDocument();
 
       // Test Ctrl+Shift+Z (Redo)
-      fireEvent.keyDown(app, { key: 'z', ctrlKey: true, shiftKey: true });
-      expect(screen.getByText('Redo')).toBeInTheDocument();
+      fireEvent.keyDown(app, { key: "z", ctrlKey: true, shiftKey: true });
+      expect(screen.getByText("Redo")).toBeInTheDocument();
     });
 
-    it('should not interfere with browser shortcuts', () => {
+    it("should not interfere with browser shortcuts", () => {
       render(<KeyboardShortcutsComponent />);
-      const app = screen.getByRole('application');
+      const app = screen.getByRole("application");
       app.focus();
 
       // These should not be prevented
-      fireEvent.keyDown(app, { key: 'Tab' });
-      fireEvent.keyDown(app, { key: 'Escape' });
-      fireEvent.keyDown(app, { key: 'ArrowUp' });
+      fireEvent.keyDown(app, { key: "Tab" });
+      fireEvent.keyDown(app, { key: "Escape" });
+      fireEvent.keyDown(app, { key: "ArrowUp" });
 
       // Verify no actions were triggered
-      const actions = screen.queryAllByRole('log');
+      const actions = screen.queryAllByRole("log");
       expect(actions.length).toBe(0);
     });
   });
 
-  describe('Tab Navigation Tests', () => {
-    it('should handle tab navigation in complex components', () => {
+  describe("Tab Navigation Tests", () => {
+    it("should handle tab navigation in complex components", () => {
       render(<KeyboardNavTestComponent />);
 
-      const tabs = screen.getAllByRole('tab');
+      const tabs = screen.getAllByRole("tab");
       expect(tabs.length).toBe(3);
 
       // Test arrow key navigation
@@ -306,97 +328,101 @@ describe('Keyboard Navigation Accessibility Tests', () => {
       expect(document.activeElement).toBe(tabs[0]);
 
       // Right arrow should move to next tab
-      fireEvent.keyDown(tabs[0], { key: 'ArrowRight' });
+      fireEvent.keyDown(tabs[0], { key: "ArrowRight" });
       expect(document.activeElement).toBe(tabs[1]);
 
       // Right arrow again
-      fireEvent.keyDown(tabs[1], { key: 'ArrowRight' });
+      fireEvent.keyDown(tabs[1], { key: "ArrowRight" });
       expect(document.activeElement).toBe(tabs[2]);
 
       // Left arrow should move to previous tab
-      fireEvent.keyDown(tabs[2], { key: 'ArrowLeft' });
+      fireEvent.keyDown(tabs[2], { key: "ArrowLeft" });
       expect(document.activeElement).toBe(tabs[1]);
     });
 
-    it('should maintain ARIA attributes during tab navigation', () => {
+    it("should maintain ARIA attributes during tab navigation", () => {
       render(<KeyboardNavTestComponent />);
 
-      const tabs = screen.getAllByRole('tab');
-      const tabPanel = screen.getByRole('tabpanel');
+      const tabs = screen.getAllByRole("tab");
+      const tabPanel = screen.getByRole("tabpanel");
 
       // First tab should be selected
-      expect(tabs[0]).toHaveAttribute('aria-selected', 'true');
-      expect(tabPanel).toHaveAttribute('aria-labelledby', 'tab-0');
+      expect(tabs[0]).toHaveAttribute("aria-selected", "true");
+      expect(tabPanel).toHaveAttribute("aria-labelledby", "tab-0");
 
       // Navigate to second tab
       fireEvent.click(tabs[1]);
 
       // Second tab should now be selected
-      expect(tabs[1]).toHaveAttribute('aria-selected', 'true');
-      expect(tabPanel).toHaveAttribute('aria-labelledby', 'tab-1');
+      expect(tabs[1]).toHaveAttribute("aria-selected", "true");
+      expect(tabPanel).toHaveAttribute("aria-labelledby", "tab-1");
     });
   });
 
-  describe('Focus Indicators Tests', () => {
-    it('should show visible focus indicators', () => {
+  describe("Focus Indicators Tests", () => {
+    it("should show visible focus indicators", () => {
       render(
         <div>
-          <button className="focus:outline focus:outline-2 focus:outline-blue-500">Button with focus</button>
-          <a href="#" className="focus:ring-2 focus:ring-blue-500">Link with focus</a>
-        </div>
+          <button className="focus:outline focus:outline-2 focus:outline-blue-500">
+            Button with focus
+          </button>
+          <a href="#" className="focus:ring-2 focus:ring-blue-500">
+            Link with focus
+          </a>
+        </div>,
       );
 
-      const button = screen.getByRole('button');
-      const link = screen.getByRole('link');
+      const button = screen.getByRole("button");
+      const link = screen.getByRole("link");
 
       // Focus button and check styles
       button.focus();
-      expect(button).toHaveClass('focus:outline');
+      expect(button).toHaveClass("focus:outline");
 
       // Focus link and check styles
       link.focus();
-      expect(link).toHaveClass('focus:ring-2');
+      expect(link).toHaveClass("focus:ring-2");
     });
 
-    it('should maintain focus indicators across themes', () => {
+    it("should maintain focus indicators across themes", () => {
       const { rerender } = render(
         <div data-theme="light">
           <button className="focus:outline">Light Theme Button</button>
-        </div>
+        </div>,
       );
 
-      const button = screen.getByRole('button');
+      const button = screen.getByRole("button");
       button.focus();
-      expect(button).toHaveClass('focus:outline');
+      expect(button).toHaveClass("focus:outline");
 
       // Switch to dark theme
       rerender(
         <div data-theme="dark">
           <button className="focus:outline">Dark Theme Button</button>
-        </div>
+        </div>,
       );
 
-      const darkButton = screen.getByRole('button');
+      const darkButton = screen.getByRole("button");
       darkButton.focus();
-      expect(darkButton).toHaveClass('focus:outline');
+      expect(darkButton).toHaveClass("focus:outline");
     });
   });
 
-  describe('WCAG 2.1 AA Compliance Tests', () => {
-    it('should pass axe accessibility tests for keyboard navigation', async () => {
+  describe("WCAG 2.1 AA Compliance Tests", () => {
+    it("should pass axe accessibility tests for keyboard navigation", async () => {
       const { container } = render(
         <div>
           <KeyboardNavTestComponent />
           <FocusTrapTestComponent>
             <button>Test Button</button>
           </FocusTrapTestComponent>
-        </div>
+        </div>,
       );
       const results = await axe(container);
       expect(results).toHaveNoViolations();
     });
 
-    it('should ensure all interactive elements are keyboard accessible', () => {
+    it("should ensure all interactive elements are keyboard accessible", () => {
       render(
         <div>
           <button>Button</button>
@@ -406,21 +432,23 @@ describe('Keyboard Navigation Accessibility Tests', () => {
             <option>Option 1</option>
             <option>Option 2</option>
           </select>
-        </div>
+        </div>,
       );
 
-      const interactiveElements = screen.getAllByRole(/button|link|textbox|combobox/);
-      interactiveElements.forEach(element => {
+      const interactiveElements = screen.getAllByRole(
+        /button|link|textbox|combobox/,
+      );
+      interactiveElements.forEach((element) => {
         // Each element should be focusable
         element.focus();
         expect(document.activeElement).toBe(element);
 
         // Each element should respond to keyboard events
-        fireEvent.keyDown(element, { key: 'Tab' });
+        fireEvent.keyDown(element, { key: "Tab" });
       });
     });
 
-    it('should validate keyboard navigation compliance', () => {
+    it("should validate keyboard navigation compliance", () => {
       render(
         <>
           <KeyboardNavTestComponent />
@@ -428,32 +456,32 @@ describe('Keyboard Navigation Accessibility Tests', () => {
             <button>Focusable 1</button>
             <button>Focusable 2</button>
           </FocusTrapTestComponent>
-        </>
+        </>,
       );
 
       // Test that all keyboard navigable elements work
       const allFocusable = screen.getAllByRole(/button|tab|dialog/);
-      allFocusable.forEach(element => {
+      allFocusable.forEach((element) => {
         element.focus();
         expect(document.activeElement).toBe(element);
       });
     });
   });
 
-  describe('Integration Tests', () => {
-    it('should integrate keyboard navigation with accessibility features', () => {
+  describe("Integration Tests", () => {
+    it("should integrate keyboard navigation with accessibility features", () => {
       render(
         <>
           <KeyboardNavTestComponent />
           <FocusTrapTestComponent>
             <button>Modal Button</button>
           </FocusTrapTestComponent>
-        </>
+        </>,
       );
 
       // Verify both components work together
-      const tabs = screen.getAllByRole('tab');
-      const modalButton = screen.getByText('Modal Button');
+      const tabs = screen.getAllByRole("tab");
+      const modalButton = screen.getByText("Modal Button");
 
       tabs[0].focus();
       expect(document.activeElement).toBe(tabs[0]);
@@ -462,7 +490,7 @@ describe('Keyboard Navigation Accessibility Tests', () => {
       expect(document.activeElement).toBe(modalButton);
     });
 
-    it('should maintain accessibility across keyboard navigation components', () => {
+    it("should maintain accessibility across keyboard navigation components", () => {
       render(
         <div>
           <KeyboardNavTestComponent />
@@ -470,15 +498,15 @@ describe('Keyboard Navigation Accessibility Tests', () => {
           <FocusTrapTestComponent>
             <button>Trapped Button</button>
           </FocusTrapTestComponent>
-        </div>
+        </div>,
       );
 
       // All components should be accessible
       const allComponents = screen.getAllByRole(/tablist|application|dialog/);
       expect(allComponents.length).toBe(3);
 
-      allComponents.forEach(component => {
-        expect(component).toHaveAttribute('aria-label');
+      allComponents.forEach((component) => {
+        expect(component).toHaveAttribute("aria-label");
       });
     });
   });

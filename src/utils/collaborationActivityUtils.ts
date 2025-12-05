@@ -1,5 +1,9 @@
-import { CollaborationActivity, CollaborationEvent, CollaborationEventType } from '../types/collaboration';
-import { User } from '../types/user';
+import {
+  CollaborationActivity,
+  CollaborationEvent,
+  CollaborationEventType,
+} from "../types/collaboration";
+import { User } from "../types/user";
 
 /**
  * Collaboration Activity Utilities - Helper functions for collaboration activity features
@@ -26,7 +30,7 @@ export function createDefaultActivity(activityData: {
   teamId: string;
   userId: string;
   action: string;
-  type?: CollaborationActivity['type'];
+  type?: CollaborationActivity["type"];
   details?: string;
   entityId?: string;
   entityType?: string;
@@ -36,11 +40,11 @@ export function createDefaultActivity(activityData: {
     teamId: activityData.teamId,
     userId: activityData.userId,
     action: activityData.action,
-    type: activityData.type || 'other',
+    type: activityData.type || "other",
     timestamp: new Date(),
     details: activityData.details,
     entityId: activityData.entityId,
-    entityType: activityData.entityType
+    entityType: activityData.entityType,
   };
 }
 
@@ -58,14 +62,17 @@ export function createCollaborationEvent(eventData: {
     timestamp: new Date(),
     data: eventData.data,
     teamId: eventData.teamId,
-    userId: eventData.userId
+    userId: eventData.userId,
   };
 }
 
 /**
  * Format activity for display
  */
-export function formatActivityForDisplay(activity: CollaborationActivity, userMap?: Record<string, string>): string {
+export function formatActivityForDisplay(
+  activity: CollaborationActivity,
+  userMap?: Record<string, string>,
+): string {
   const userName = userMap?.[activity.userId] || getUserName(activity.userId);
   const date = new Date(activity.timestamp).toLocaleString();
 
@@ -75,13 +82,15 @@ export function formatActivityForDisplay(activity: CollaborationActivity, userMa
 /**
  * Format activity timestamp for display
  */
-export function formatActivityTimestamp(activity: CollaborationActivity): string {
-  return new Date(activity.timestamp).toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+export function formatActivityTimestamp(
+  activity: CollaborationActivity,
+): string {
+  return new Date(activity.timestamp).toLocaleString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
 
@@ -89,10 +98,10 @@ export function formatActivityTimestamp(activity: CollaborationActivity): string
  * Format activity date for display (date only)
  */
 export function formatActivityDate(activity: CollaborationActivity): string {
-  return new Date(activity.timestamp).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  return new Date(activity.timestamp).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   });
 }
 
@@ -100,9 +109,9 @@ export function formatActivityDate(activity: CollaborationActivity): string {
  * Format activity time for display (time only)
  */
 export function formatActivityTime(activity: CollaborationActivity): string {
-  return new Date(activity.timestamp).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit'
+  return new Date(activity.timestamp).toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
 
@@ -117,15 +126,17 @@ export function getUserName(userId: string): string {
 /**
  * Get activity type label for display
  */
-export function getActivityTypeLabel(type: CollaborationActivity['type']): string {
-  const typeLabels: Record<CollaborationActivity['type'], string> = {
-    message: 'Message',
-    file: 'File',
-    task: 'Task',
-    other: 'Other',
-    member_added: 'Member Added',
-    member_removed: 'Member Removed',
-    settings_updated: 'Settings Updated'
+export function getActivityTypeLabel(
+  type: CollaborationActivity["type"],
+): string {
+  const typeLabels: Record<CollaborationActivity["type"], string> = {
+    message: "Message",
+    file: "File",
+    task: "Task",
+    other: "Other",
+    member_added: "Member Added",
+    member_removed: "Member Removed",
+    settings_updated: "Settings Updated",
   };
 
   return typeLabels[type] || type;
@@ -134,63 +145,76 @@ export function getActivityTypeLabel(type: CollaborationActivity['type']): strin
 /**
  * Get activity icon based on type
  */
-export function getActivityIcon(type: CollaborationActivity['type']): string {
-  const icons: Record<CollaborationActivity['type'], string> = {
-    message: '💬',
-    file: '📁',
-    task: '📋',
-    other: '⚡',
-    member_added: '👤',
-    member_removed: '👥',
-    settings_updated: '⚙️'
+export function getActivityIcon(type: CollaborationActivity["type"]): string {
+  const icons: Record<CollaborationActivity["type"], string> = {
+    message: "💬",
+    file: "📁",
+    task: "📋",
+    other: "⚡",
+    member_added: "👤",
+    member_removed: "👥",
+    settings_updated: "⚙️",
   };
 
-  return icons[type] || '⚡';
+  return icons[type] || "⚡";
 }
 
 /**
  * Get activity color based on type
  */
-export function getActivityColor(type: CollaborationActivity['type']): string {
-  const colors: Record<CollaborationActivity['type'], string> = {
-    message: '#4285F4', // Blue
-    file: '#34A853',   // Green
-    task: '#FBBC05',   // Yellow
-    other: '#EA4335',  // Red
-    member_added: '#673AB7', // Purple
-    member_removed: '#9C27B0', // Deep Purple
-    settings_updated: '#009688'  // Teal
+export function getActivityColor(type: CollaborationActivity["type"]): string {
+  const colors: Record<CollaborationActivity["type"], string> = {
+    message: "#4285F4", // Blue
+    file: "#34A853", // Green
+    task: "#FBBC05", // Yellow
+    other: "#EA4335", // Red
+    member_added: "#673AB7", // Purple
+    member_removed: "#9C27B0", // Deep Purple
+    settings_updated: "#009688", // Teal
   };
 
-  return colors[type] || '#666666';
+  return colors[type] || "#666666";
 }
 
 /**
  * Filter activities by type
  */
-export function filterActivitiesByType(activities: CollaborationActivity[], type: CollaborationActivity['type']): CollaborationActivity[] {
-  return activities.filter(activity => activity.type === type);
+export function filterActivitiesByType(
+  activities: CollaborationActivity[],
+  type: CollaborationActivity["type"],
+): CollaborationActivity[] {
+  return activities.filter((activity) => activity.type === type);
 }
 
 /**
  * Filter activities by user
  */
-export function filterActivitiesByUser(activities: CollaborationActivity[], userId: string): CollaborationActivity[] {
-  return activities.filter(activity => activity.userId === userId);
+export function filterActivitiesByUser(
+  activities: CollaborationActivity[],
+  userId: string,
+): CollaborationActivity[] {
+  return activities.filter((activity) => activity.userId === userId);
 }
 
 /**
  * Filter activities by team
  */
-export function filterActivitiesByTeam(activities: CollaborationActivity[], teamId: string): CollaborationActivity[] {
-  return activities.filter(activity => activity.teamId === teamId);
+export function filterActivitiesByTeam(
+  activities: CollaborationActivity[],
+  teamId: string,
+): CollaborationActivity[] {
+  return activities.filter((activity) => activity.teamId === teamId);
 }
 
 /**
  * Filter activities by date range
  */
-export function filterActivitiesByDateRange(activities: CollaborationActivity[], startDate: Date, endDate: Date): CollaborationActivity[] {
-  return activities.filter(activity => {
+export function filterActivitiesByDateRange(
+  activities: CollaborationActivity[],
+  startDate: Date,
+  endDate: Date,
+): CollaborationActivity[] {
+  return activities.filter((activity) => {
     const activityDate = new Date(activity.timestamp);
     return activityDate >= startDate && activityDate <= endDate;
   });
@@ -199,42 +223,54 @@ export function filterActivitiesByDateRange(activities: CollaborationActivity[],
 /**
  * Filter activities by entity type
  */
-export function filterActivitiesByEntityType(activities: CollaborationActivity[], entityType: string): CollaborationActivity[] {
-  return activities.filter(activity => activity.entityType === entityType);
+export function filterActivitiesByEntityType(
+  activities: CollaborationActivity[],
+  entityType: string,
+): CollaborationActivity[] {
+  return activities.filter((activity) => activity.entityType === entityType);
 }
 
 /**
  * Filter activities by entity ID
  */
-export function filterActivitiesByEntityId(activities: CollaborationActivity[], entityId: string): CollaborationActivity[] {
-  return activities.filter(activity => activity.entityId === entityId);
+export function filterActivitiesByEntityId(
+  activities: CollaborationActivity[],
+  entityId: string,
+): CollaborationActivity[] {
+  return activities.filter((activity) => activity.entityId === entityId);
 }
 
 /**
  * Sort activities by timestamp (newest first)
  */
-export function sortActivitiesByTimestamp(activities: CollaborationActivity[]): CollaborationActivity[] {
-  return [...activities].sort((a, b) =>
-    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+export function sortActivitiesByTimestamp(
+  activities: CollaborationActivity[],
+): CollaborationActivity[] {
+  return [...activities].sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
   );
 }
 
 /**
  * Sort activities by timestamp (oldest first)
  */
-export function sortActivitiesByTimestampAsc(activities: CollaborationActivity[]): CollaborationActivity[] {
-  return [...activities].sort((a, b) =>
-    new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+export function sortActivitiesByTimestampAsc(
+  activities: CollaborationActivity[],
+): CollaborationActivity[] {
+  return [...activities].sort(
+    (a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime(),
   );
 }
 
 /**
  * Group activities by date
  */
-export function groupActivitiesByDate(activities: CollaborationActivity[]): Record<string, CollaborationActivity[]> {
+export function groupActivitiesByDate(
+  activities: CollaborationActivity[],
+): Record<string, CollaborationActivity[]> {
   const grouped: Record<string, CollaborationActivity[]> = {};
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     const date = new Date(activity.timestamp);
     const dateKey = date.toDateString();
 
@@ -250,10 +286,12 @@ export function groupActivitiesByDate(activities: CollaborationActivity[]): Reco
 /**
  * Group activities by type
  */
-export function groupActivitiesByType(activities: CollaborationActivity[]): Record<string, CollaborationActivity[]> {
+export function groupActivitiesByType(
+  activities: CollaborationActivity[],
+): Record<string, CollaborationActivity[]> {
   const grouped: Record<string, CollaborationActivity[]> = {};
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     if (!grouped[activity.type]) {
       grouped[activity.type] = [];
     }
@@ -266,10 +304,12 @@ export function groupActivitiesByType(activities: CollaborationActivity[]): Reco
 /**
  * Group activities by user
  */
-export function groupActivitiesByUser(activities: CollaborationActivity[]): Record<string, CollaborationActivity[]> {
+export function groupActivitiesByUser(
+  activities: CollaborationActivity[],
+): Record<string, CollaborationActivity[]> {
   const grouped: Record<string, CollaborationActivity[]> = {};
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     if (!grouped[activity.userId]) {
       grouped[activity.userId] = [];
     }
@@ -291,10 +331,13 @@ export function getActivityStatistics(activities: CollaborationActivity[]): {
   const byType: Record<string, number> = {};
   const byUser: Record<string, number> = {};
   const recent = [...activities]
-    .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+    .sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+    )
     .slice(0, 5);
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     byType[activity.type] = (byType[activity.type] || 0) + 1;
     byUser[activity.userId] = (byUser[activity.userId] || 0) + 1;
   });
@@ -303,17 +346,19 @@ export function getActivityStatistics(activities: CollaborationActivity[]): {
     total: activities.length,
     byType,
     byUser,
-    recent
+    recent,
   };
 }
 
 /**
  * Get activity statistics by type
  */
-export function getActivityStatsByType(activities: CollaborationActivity[]): Record<string, number> {
+export function getActivityStatsByType(
+  activities: CollaborationActivity[],
+): Record<string, number> {
   const stats: Record<string, number> = {};
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     stats[activity.type] = (stats[activity.type] || 0) + 1;
   });
 
@@ -323,10 +368,12 @@ export function getActivityStatsByType(activities: CollaborationActivity[]): Rec
 /**
  * Get activity statistics by user
  */
-export function getActivityStatsByUser(activities: CollaborationActivity[]): Record<string, number> {
+export function getActivityStatsByUser(
+  activities: CollaborationActivity[],
+): Record<string, number> {
   const stats: Record<string, number> = {};
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     stats[activity.userId] = (stats[activity.userId] || 0) + 1;
   });
 
@@ -336,7 +383,10 @@ export function getActivityStatsByUser(activities: CollaborationActivity[]): Rec
 /**
  * Get most active users
  */
-export function getMostActiveUsers(activities: CollaborationActivity[], limit: number = 5): Array<{ userId: string; count: number }> {
+export function getMostActiveUsers(
+  activities: CollaborationActivity[],
+  limit: number = 5,
+): Array<{ userId: string; count: number }> {
   const stats = getActivityStatsByUser(activities);
 
   return Object.entries(stats)
@@ -348,7 +398,10 @@ export function getMostActiveUsers(activities: CollaborationActivity[], limit: n
 /**
  * Get most common activity types
  */
-export function getMostCommonActivityTypes(activities: CollaborationActivity[], limit: number = 5): Array<{ type: string; count: number }> {
+export function getMostCommonActivityTypes(
+  activities: CollaborationActivity[],
+  limit: number = 5,
+): Array<{ type: string; count: number }> {
   const stats = getActivityStatsByType(activities);
 
   return Object.entries(stats)
@@ -360,27 +413,30 @@ export function getMostCommonActivityTypes(activities: CollaborationActivity[], 
 /**
  * Get activity timeline (grouped by time periods)
  */
-export function getActivityTimeline(activities: CollaborationActivity[], period: 'day' | 'week' | 'month' = 'day'): Record<string, number> {
+export function getActivityTimeline(
+  activities: CollaborationActivity[],
+  period: "day" | "week" | "month" = "day",
+): Record<string, number> {
   const timeline: Record<string, number> = {};
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     const date = new Date(activity.timestamp);
     let periodKey: string;
 
     switch (period) {
-      case 'week':
+      case "week":
         // Get year and week number
         const weekNumber = Math.floor((date.getDate() - 1) / 7) + 1;
-        periodKey = `${date.getFullYear()}-W${weekNumber.toString().padStart(2, '0')}`;
+        periodKey = `${date.getFullYear()}-W${weekNumber.toString().padStart(2, "0")}`;
         break;
 
-      case 'month':
-        periodKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+      case "month":
+        periodKey = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, "0")}`;
         break;
 
-      case 'day':
+      case "day":
       default:
-        periodKey = date.toISOString().split('T')[0];
+        periodKey = date.toISOString().split("T")[0];
         break;
     }
 
@@ -393,12 +449,14 @@ export function getActivityTimeline(activities: CollaborationActivity[], period:
 /**
  * Get activity heatmap data
  */
-export function getActivityHeatmap(activities: CollaborationActivity[]): Array<{ date: string; count: number }> {
+export function getActivityHeatmap(
+  activities: CollaborationActivity[],
+): Array<{ date: string; count: number }> {
   const heatmap: Record<string, number> = {};
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     const date = new Date(activity.timestamp);
-    const dateKey = date.toISOString().split('T')[0];
+    const dateKey = date.toISOString().split("T")[0];
 
     heatmap[dateKey] = (heatmap[dateKey] || 0) + 1;
   });
@@ -411,14 +469,19 @@ export function getActivityHeatmap(activities: CollaborationActivity[]): Array<{
 /**
  * Search activities by content
  */
-export function searchActivities(activities: CollaborationActivity[], searchTerm: string): CollaborationActivity[] {
+export function searchActivities(
+  activities: CollaborationActivity[],
+  searchTerm: string,
+): CollaborationActivity[] {
   const term = searchTerm.toLowerCase();
 
-  return activities.filter(activity =>
-    activity.action.toLowerCase().includes(term) ||
-    (activity.details && activity.details.toLowerCase().includes(term)) ||
-    (activity.entityType && activity.entityType.toLowerCase().includes(term)) ||
-    (activity.entityId && activity.entityId.toLowerCase().includes(term))
+  return activities.filter(
+    (activity) =>
+      activity.action.toLowerCase().includes(term) ||
+      (activity.details && activity.details.toLowerCase().includes(term)) ||
+      (activity.entityType &&
+        activity.entityType.toLowerCase().includes(term)) ||
+      (activity.entityId && activity.entityId.toLowerCase().includes(term)),
   );
 }
 
@@ -436,7 +499,9 @@ export function getActivitySummary(activity: CollaborationActivity): string {
 /**
  * Get activity detailed summary
  */
-export function getActivityDetailedSummary(activity: CollaborationActivity): string {
+export function getActivityDetailedSummary(
+  activity: CollaborationActivity,
+): string {
   const userName = getUserName(activity.userId);
   const typeLabel = getActivityTypeLabel(activity.type);
   const formattedDate = formatActivityDate(activity);
@@ -459,34 +524,37 @@ export function getActivityDetailedSummary(activity: CollaborationActivity): str
 /**
  * Get activity type statistics summary
  */
-export function getActivityTypeStatsSummary(activities: CollaborationActivity[]): string {
+export function getActivityTypeStatsSummary(
+  activities: CollaborationActivity[],
+): string {
   const stats = getActivityStatsByType(activities);
   const total = activities.length;
 
-  const summaryParts = Object.entries(stats)
-    .map(([type, count]) => {
-      const percentage = Math.round((count / total) * 100);
-      return `${getActivityTypeLabel(type as CollaborationActivity['type'])}: ${count} (${percentage}%)`;
-    });
+  const summaryParts = Object.entries(stats).map(([type, count]) => {
+    const percentage = Math.round((count / total) * 100);
+    return `${getActivityTypeLabel(type as CollaborationActivity["type"])}: ${count} (${percentage}%)`;
+  });
 
-  return summaryParts.join(', ');
+  return summaryParts.join(", ");
 }
 
 /**
  * Get activity user statistics summary
  */
-export function getActivityUserStatsSummary(activities: CollaborationActivity[], userMap?: Record<string, string>): string {
+export function getActivityUserStatsSummary(
+  activities: CollaborationActivity[],
+  userMap?: Record<string, string>,
+): string {
   const stats = getActivityStatsByUser(activities);
   const total = activities.length;
 
-  const summaryParts = Object.entries(stats)
-    .map(([userId, count]) => {
-      const userName = userMap?.[userId] || getUserName(userId);
-      const percentage = Math.round((count / total) * 100);
-      return `${userName}: ${count} (${percentage}%)`;
-    });
+  const summaryParts = Object.entries(stats).map(([userId, count]) => {
+    const userName = userMap?.[userId] || getUserName(userId);
+    const percentage = Math.round((count / total) * 100);
+    return `${userName}: ${count} (${percentage}%)`;
+  });
 
-  return summaryParts.join(', ');
+  return summaryParts.join(", ");
 }
 
 /**
@@ -495,7 +563,9 @@ export function getActivityUserStatsSummary(activities: CollaborationActivity[],
 export function isRecentActivity(activity: CollaborationActivity): boolean {
   const activityDate = new Date(activity.timestamp);
   const now = new Date();
-  const diffInHours = Math.floor((now.getTime() - activityDate.getTime()) / (1000 * 60 * 60));
+  const diffInHours = Math.floor(
+    (now.getTime() - activityDate.getTime()) / (1000 * 60 * 60),
+  );
 
   return diffInHours <= 24;
 }
@@ -507,9 +577,11 @@ export function isTodayActivity(activity: CollaborationActivity): boolean {
   const activityDate = new Date(activity.timestamp);
   const now = new Date();
 
-  return activityDate.getFullYear() === now.getFullYear() &&
-         activityDate.getMonth() === now.getMonth() &&
-         activityDate.getDate() === now.getDate();
+  return (
+    activityDate.getFullYear() === now.getFullYear() &&
+    activityDate.getMonth() === now.getMonth() &&
+    activityDate.getDate() === now.getDate()
+  );
 }
 
 /**
@@ -521,7 +593,9 @@ export function isThisWeekActivity(activity: CollaborationActivity): boolean {
 
   // Get the start of this week (Monday)
   const startOfWeek = new Date(now);
-  startOfWeek.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1));
+  startOfWeek.setDate(
+    now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1),
+  );
 
   return activityDate >= startOfWeek;
 }
@@ -533,8 +607,10 @@ export function isThisMonthActivity(activity: CollaborationActivity): boolean {
   const activityDate = new Date(activity.timestamp);
   const now = new Date();
 
-  return activityDate.getFullYear() === now.getFullYear() &&
-         activityDate.getMonth() === now.getMonth();
+  return (
+    activityDate.getFullYear() === now.getFullYear() &&
+    activityDate.getMonth() === now.getMonth()
+  );
 }
 
 /**
@@ -543,7 +619,9 @@ export function isThisMonthActivity(activity: CollaborationActivity): boolean {
 export function getActivityAge(activity: CollaborationActivity): string {
   const activityDate = new Date(activity.timestamp);
   const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - activityDate.getTime()) / 1000);
+  const diffInSeconds = Math.floor(
+    (now.getTime() - activityDate.getTime()) / 1000,
+  );
 
   if (diffInSeconds < 60) {
     return `${diffInSeconds} seconds ago`;
@@ -584,7 +662,9 @@ export function getActivityAge(activity: CollaborationActivity): string {
 export function getActivityAgeShort(activity: CollaborationActivity): string {
   const activityDate = new Date(activity.timestamp);
   const now = new Date();
-  const diffInSeconds = Math.floor((now.getTime() - activityDate.getTime()) / 1000);
+  const diffInSeconds = Math.floor(
+    (now.getTime() - activityDate.getTime()) / 1000,
+  );
 
   if (diffInSeconds < 60) return `${diffInSeconds}s`;
   if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)}m`;
@@ -599,25 +679,42 @@ export function getActivityAgeShort(activity: CollaborationActivity): string {
 /**
  * Validate activity data
  */
-export function validateActivity(activity: Partial<CollaborationActivity>): { valid: boolean; message?: string } {
+export function validateActivity(activity: Partial<CollaborationActivity>): {
+  valid: boolean;
+  message?: string;
+} {
   if (!activity.userId) {
-    return { valid: false, message: 'User ID is required' };
+    return { valid: false, message: "User ID is required" };
   }
 
   if (!activity.teamId) {
-    return { valid: false, message: 'Team ID is required' };
+    return { valid: false, message: "Team ID is required" };
   }
 
   if (!activity.action || activity.action.trim().length === 0) {
-    return { valid: false, message: 'Activity action is required' };
+    return { valid: false, message: "Activity action is required" };
   }
 
   if (activity.action.length > 500) {
-    return { valid: false, message: 'Activity action cannot exceed 500 characters' };
+    return {
+      valid: false,
+      message: "Activity action cannot exceed 500 characters",
+    };
   }
 
-  if (activity.type && !['message', 'file', 'task', 'other', 'member_added', 'member_removed', 'settings_updated'].includes(activity.type)) {
-    return { valid: false, message: 'Invalid activity type' };
+  if (
+    activity.type &&
+    ![
+      "message",
+      "file",
+      "task",
+      "other",
+      "member_added",
+      "member_removed",
+      "settings_updated",
+    ].includes(activity.type)
+  ) {
+    return { valid: false, message: "Invalid activity type" };
   }
 
   return { valid: true };
@@ -626,11 +723,22 @@ export function validateActivity(activity: Partial<CollaborationActivity>): { va
 /**
  * Validate activity type
  */
-export function validateActivityType(type: CollaborationActivity['type']): { valid: boolean; message?: string } {
-  const validTypes: CollaborationActivity['type'][] = ['message', 'file', 'task', 'other', 'member_added', 'member_removed', 'settings_updated'];
+export function validateActivityType(type: CollaborationActivity["type"]): {
+  valid: boolean;
+  message?: string;
+} {
+  const validTypes: CollaborationActivity["type"][] = [
+    "message",
+    "file",
+    "task",
+    "other",
+    "member_added",
+    "member_removed",
+    "settings_updated",
+  ];
 
   if (!validTypes.includes(type)) {
-    return { valid: false, message: 'Invalid activity type' };
+    return { valid: false, message: "Invalid activity type" };
   }
 
   return { valid: true };
@@ -639,37 +747,46 @@ export function validateActivityType(type: CollaborationActivity['type']): { val
 /**
  * Get activity event type from activity
  */
-export function getActivityEventType(activity: CollaborationActivity): CollaborationEventType {
-  const eventTypeMap: Record<CollaborationActivity['type'], CollaborationEventType> = {
-    message: 'activity_created',
-    file: 'activity_created',
-    task: 'activity_created',
-    other: 'activity_created',
-    member_added: 'member_added',
-    member_removed: 'member_removed',
-    settings_updated: 'settings_updated'
+export function getActivityEventType(
+  activity: CollaborationActivity,
+): CollaborationEventType {
+  const eventTypeMap: Record<
+    CollaborationActivity["type"],
+    CollaborationEventType
+  > = {
+    message: "activity_created",
+    file: "activity_created",
+    task: "activity_created",
+    other: "activity_created",
+    member_added: "member_added",
+    member_removed: "member_removed",
+    settings_updated: "settings_updated",
   };
 
-  return eventTypeMap[activity.type] || 'activity_created';
+  return eventTypeMap[activity.type] || "activity_created";
 }
 
 /**
  * Create collaboration event from activity
  */
-export function createEventFromActivity(activity: CollaborationActivity): CollaborationEvent {
+export function createEventFromActivity(
+  activity: CollaborationActivity,
+): CollaborationEvent {
   return {
     type: getActivityEventType(activity),
     timestamp: activity.timestamp,
     data: activity,
     teamId: activity.teamId,
-    userId: activity.userId
+    userId: activity.userId,
   };
 }
 
 /**
  * Get activity notification message
  */
-export function getActivityNotificationMessage(activity: CollaborationActivity): string {
+export function getActivityNotificationMessage(
+  activity: CollaborationActivity,
+): string {
   const userName = getUserName(activity.userId);
   const typeLabel = getActivityTypeLabel(activity.type);
 
@@ -679,7 +796,9 @@ export function getActivityNotificationMessage(activity: CollaborationActivity):
 /**
  * Get activity notification title
  */
-export function getActivityNotificationTitle(activity: CollaborationActivity): string {
+export function getActivityNotificationTitle(
+  activity: CollaborationActivity,
+): string {
   const userName = getUserName(activity.userId);
   const typeLabel = getActivityTypeLabel(activity.type);
 
@@ -689,8 +808,10 @@ export function getActivityNotificationTitle(activity: CollaborationActivity): s
 /**
  * Get activity notification body
  */
-export function getActivityNotificationBody(activity: CollaborationActivity): string {
-  return activity.action + (activity.details ? `\n\n${activity.details}` : '');
+export function getActivityNotificationBody(
+  activity: CollaborationActivity,
+): string {
+  return activity.action + (activity.details ? `\n\n${activity.details}` : "");
 }
 
 /**
@@ -713,7 +834,7 @@ export function getActivityFeedItem(activity: CollaborationActivity): {
     subtitle: typeLabel,
     timestamp: formatActivityTimestamp(activity),
     icon: getActivityIcon(activity.type),
-    color: getActivityColor(activity.type)
+    color: getActivityColor(activity.type),
   };
 }
 
@@ -736,7 +857,7 @@ export function getActivityListItem(activity: CollaborationActivity): {
     action: activity.action,
     type: getActivityTypeLabel(activity.type),
     timestamp: formatActivityTimestamp(activity),
-    isRecent: isRecentActivity(activity)
+    isRecent: isRecentActivity(activity),
   };
 }
 
@@ -763,8 +884,8 @@ export function getActivityCardData(activity: CollaborationActivity): {
     timestamp: formatActivityTimestamp(activity),
     icon: getActivityIcon(activity.type),
     color: getActivityColor(activity.type),
-    details: activity.details || 'No additional details',
-    age: getActivityAgeShort(activity)
+    details: activity.details || "No additional details",
+    age: getActivityAgeShort(activity),
   };
 }
 
@@ -786,9 +907,9 @@ export function getActivityDashboardData(activities: CollaborationActivity[]): {
 
   const activityTypes = Object.entries(byType)
     .map(([type, count]) => ({
-      type: getActivityTypeLabel(type as CollaborationActivity['type']),
+      type: getActivityTypeLabel(type as CollaborationActivity["type"]),
       count,
-      percentage: Math.round((count / total) * 100)
+      percentage: Math.round((count / total) * 100),
     }))
     .sort((a, b) => b.count - a.count);
 
@@ -796,7 +917,7 @@ export function getActivityDashboardData(activities: CollaborationActivity[]): {
     .map(([userId, count]) => ({
       userId,
       count,
-      percentage: Math.round((count / total) * 100)
+      percentage: Math.round((count / total) * 100),
     }))
     .sort((a, b) => b.count - a.count);
 
@@ -807,14 +928,16 @@ export function getActivityDashboardData(activities: CollaborationActivity[]): {
     recentActivities,
     activityTypes,
     userActivity,
-    timeline
+    timeline,
   };
 }
 
 /**
  * Get activity export data (for CSV/JSON export)
  */
-export function getActivityExportData(activities: CollaborationActivity[]): Array<{
+export function getActivityExportData(
+  activities: CollaborationActivity[],
+): Array<{
   id: string;
   teamId: string;
   userId: string;
@@ -825,37 +948,51 @@ export function getActivityExportData(activities: CollaborationActivity[]): Arra
   entityId: string;
   entityType: string;
 }> {
-  return activities.map(activity => ({
+  return activities.map((activity) => ({
     id: activity.id,
     teamId: activity.teamId,
     userId: activity.userId,
     action: activity.action,
     type: activity.type,
     timestamp: activity.timestamp.toISOString(),
-    details: activity.details || '',
-    entityId: activity.entityId || '',
-    entityType: activity.entityType || ''
+    details: activity.details || "",
+    entityId: activity.entityId || "",
+    entityType: activity.entityType || "",
   }));
 }
 
 /**
  * Get activity import validation
  */
-export function validateActivityImportData(data: any): { valid: boolean; message?: string } {
-  if (!data.id || !data.teamId || !data.userId || !data.action || !data.type || !data.timestamp) {
-    return { valid: false, message: 'Missing required activity fields' };
+export function validateActivityImportData(data: any): {
+  valid: boolean;
+  message?: string;
+} {
+  if (
+    !data.id ||
+    !data.teamId ||
+    !data.userId ||
+    !data.action ||
+    !data.type ||
+    !data.timestamp
+  ) {
+    return { valid: false, message: "Missing required activity fields" };
   }
 
-  if (typeof data.id !== 'string' || typeof data.teamId !== 'string' ||
-      typeof data.userId !== 'string' || typeof data.action !== 'string' ||
-      typeof data.type !== 'string') {
-    return { valid: false, message: 'Invalid activity field types' };
+  if (
+    typeof data.id !== "string" ||
+    typeof data.teamId !== "string" ||
+    typeof data.userId !== "string" ||
+    typeof data.action !== "string" ||
+    typeof data.type !== "string"
+  ) {
+    return { valid: false, message: "Invalid activity field types" };
   }
 
   try {
     new Date(data.timestamp);
   } catch (error) {
-    return { valid: false, message: 'Invalid timestamp format' };
+    return { valid: false, message: "Invalid timestamp format" };
   }
 
   return { valid: true };
@@ -864,38 +1001,54 @@ export function validateActivityImportData(data: any): { valid: boolean; message
 /**
  * Get activity change summary (for activity updates)
  */
-export function getActivityChangeSummary(oldActivity: CollaborationActivity, newActivity: CollaborationActivity): string {
+export function getActivityChangeSummary(
+  oldActivity: CollaborationActivity,
+  newActivity: CollaborationActivity,
+): string {
   const changes: string[] = [];
 
   if (oldActivity.action !== newActivity.action) {
-    changes.push(`Action changed from "${oldActivity.action}" to "${newActivity.action}"`);
+    changes.push(
+      `Action changed from "${oldActivity.action}" to "${newActivity.action}"`,
+    );
   }
 
   if (oldActivity.type !== newActivity.type) {
-    changes.push(`Type changed from "${oldActivity.type}" to "${newActivity.type}"`);
+    changes.push(
+      `Type changed from "${oldActivity.type}" to "${newActivity.type}"`,
+    );
   }
 
   if (oldActivity.details !== newActivity.details) {
-    changes.push(`Details changed from "${oldActivity.details || 'none'}" to "${newActivity.details || 'none'}"`);
+    changes.push(
+      `Details changed from "${oldActivity.details || "none"}" to "${newActivity.details || "none"}"`,
+    );
   }
 
   if (oldActivity.entityId !== newActivity.entityId) {
-    changes.push(`Entity ID changed from "${oldActivity.entityId || 'none'}" to "${newActivity.entityId || 'none'}"`);
+    changes.push(
+      `Entity ID changed from "${oldActivity.entityId || "none"}" to "${newActivity.entityId || "none"}"`,
+    );
   }
 
   if (oldActivity.entityType !== newActivity.entityType) {
-    changes.push(`Entity type changed from "${oldActivity.entityType || 'none'}" to "${newActivity.entityType || 'none'}"`);
+    changes.push(
+      `Entity type changed from "${oldActivity.entityType || "none"}" to "${newActivity.entityType || "none"}"`,
+    );
   }
 
   return changes.length > 0
-    ? `Activity changes: ${changes.join('; ')}`
-    : 'No changes detected';
+    ? `Activity changes: ${changes.join("; ")}`
+    : "No changes detected";
 }
 
 /**
  * Get activity comparison data
  */
-export function getActivityComparison(oldActivity: CollaborationActivity, newActivity: CollaborationActivity): {
+export function getActivityComparison(
+  oldActivity: CollaborationActivity,
+  newActivity: CollaborationActivity,
+): {
   fieldChanges: Record<string, { oldValue: any; newValue: any }>;
   hasChanges: boolean;
 } {
@@ -904,48 +1057,51 @@ export function getActivityComparison(oldActivity: CollaborationActivity, newAct
   if (oldActivity.action !== newActivity.action) {
     fieldChanges.action = {
       oldValue: oldActivity.action,
-      newValue: newActivity.action
+      newValue: newActivity.action,
     };
   }
 
   if (oldActivity.type !== newActivity.type) {
     fieldChanges.type = {
       oldValue: oldActivity.type,
-      newValue: newActivity.type
+      newValue: newActivity.type,
     };
   }
 
   if (oldActivity.details !== newActivity.details) {
     fieldChanges.details = {
       oldValue: oldActivity.details,
-      newValue: newActivity.details
+      newValue: newActivity.details,
     };
   }
 
   if (oldActivity.entityId !== newActivity.entityId) {
     fieldChanges.entityId = {
       oldValue: oldActivity.entityId,
-      newValue: newActivity.entityId
+      newValue: newActivity.entityId,
     };
   }
 
   if (oldActivity.entityType !== newActivity.entityType) {
     fieldChanges.entityType = {
       oldValue: oldActivity.entityType,
-      newValue: newActivity.entityType
+      newValue: newActivity.entityType,
     };
   }
 
   return {
     fieldChanges,
-    hasChanges: Object.keys(fieldChanges).length > 0
+    hasChanges: Object.keys(fieldChanges).length > 0,
   };
 }
 
 /**
  * Get activity audit log entry
  */
-export function getActivityAuditLogEntry(activity: CollaborationActivity, action: 'created' | 'updated' | 'deleted'): string {
+export function getActivityAuditLogEntry(
+  activity: CollaborationActivity,
+  action: "created" | "updated" | "deleted",
+): string {
   const userName = getUserName(activity.userId);
   const timestamp = formatActivityTimestamp(activity);
 
@@ -967,7 +1123,7 @@ export function getActivityHistoryEntry(activity: CollaborationActivity): {
     user: getUserName(activity.userId),
     action: activity.action,
     type: getActivityTypeLabel(activity.type),
-    details: activity.details || 'No details'
+    details: activity.details || "No details",
   };
 }
 
@@ -988,8 +1144,8 @@ export function getActivityAnalyticsData(activities: CollaborationActivity[]): {
       activitiesPerDay: 0,
       activitiesPerUser: 0,
       activityTypeDistribution: {},
-      mostActiveDay: '',
-      mostActiveUser: ''
+      mostActiveDay: "",
+      mostActiveUser: "",
     };
   }
 
@@ -1007,7 +1163,7 @@ export function getActivityAnalyticsData(activities: CollaborationActivity[]): {
     activitiesPerUser,
     activityTypeDistribution,
     mostActiveDay,
-    mostActiveUser
+    mostActiveUser,
   };
 }
 
@@ -1017,9 +1173,9 @@ export function getActivityAnalyticsData(activities: CollaborationActivity[]): {
 function getUniqueDays(activities: CollaborationActivity[]): string[] {
   const days = new Set<string>();
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     const date = new Date(activity.timestamp);
-    days.add(date.toISOString().split('T')[0]);
+    days.add(date.toISOString().split("T")[0]);
   });
 
   return Array.from(days);
@@ -1031,7 +1187,7 @@ function getUniqueDays(activities: CollaborationActivity[]): string[] {
 function getUniqueUsers(activities: CollaborationActivity[]): string[] {
   const users = new Set<string>();
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     users.add(activity.userId);
   });
 
@@ -1044,14 +1200,13 @@ function getUniqueUsers(activities: CollaborationActivity[]): string[] {
 function getMostActiveDay(activities: CollaborationActivity[]): string {
   const dayCounts: Record<string, number> = {};
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     const date = new Date(activity.timestamp);
-    const dayKey = date.toISOString().split('T')[0];
+    const dayKey = date.toISOString().split("T")[0];
     dayCounts[dayKey] = (dayCounts[dayKey] || 0) + 1;
   });
 
-  return Object.entries(dayCounts)
-    .sort((a, b) => b[1] - a[1])[0]?.[0] || '';
+  return Object.entries(dayCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "";
 }
 
 /**
@@ -1060,12 +1215,11 @@ function getMostActiveDay(activities: CollaborationActivity[]): string {
 function getMostActiveUser(activities: CollaborationActivity[]): string {
   const userCounts: Record<string, number> = {};
 
-  activities.forEach(activity => {
+  activities.forEach((activity) => {
     userCounts[activity.userId] = (userCounts[activity.userId] || 0) + 1;
   });
 
-  return Object.entries(userCounts)
-    .sort((a, b) => b[1] - a[1])[0]?.[0] || '';
+  return Object.entries(userCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "";
 }
 
 /**
@@ -1130,5 +1284,5 @@ export const CollaborationActivityUtils = {
   getActivityComparison,
   getActivityAuditLogEntry,
   getActivityHistoryEntry,
-  getActivityAnalyticsData
+  getActivityAnalyticsData,
 };

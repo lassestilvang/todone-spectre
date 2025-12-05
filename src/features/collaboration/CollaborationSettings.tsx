@@ -1,17 +1,60 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { useCollaboration } from '../../hooks/useCollaboration';
-import { CollaborationSettings } from '../../types/collaboration';
-import { Settings, Bell, Lock, Globe, Users, ShieldCheck, Save, RefreshCw, AlertTriangle, Key, Link, Calendar, FileText, MessageSquare, UserPlus, Trash2, Plus, Minus, Info, Check, X, ExternalLink } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardFooter,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { useCollaboration } from "../../hooks/useCollaboration";
+import { CollaborationSettings } from "../../types/collaboration";
+import {
+  Settings,
+  Bell,
+  Lock,
+  Globe,
+  Users,
+  ShieldCheck,
+  Save,
+  RefreshCw,
+  AlertTriangle,
+  Key,
+  Link,
+  Calendar,
+  FileText,
+  MessageSquare,
+  UserPlus,
+  Trash2,
+  Plus,
+  Minus,
+  Info,
+  Check,
+  X,
+  ExternalLink,
+} from "lucide-react";
 
 interface CollaborationSettingsProps {
   teamId: string;
@@ -26,19 +69,22 @@ export const CollaborationSettings: React.FC<CollaborationSettingsProps> = ({
   initialSettings,
   onSave,
   onCancel,
-  showAdvanced = true
+  showAdvanced = true,
 }) => {
   const { settings, updateTeamSettings, loading, error } = useCollaboration();
-  const [currentSettings, setCurrentSettings] = useState<CollaborationSettings | null>(null);
-  const [originalSettings, setOriginalSettings] = useState<CollaborationSettings | null>(null);
+  const [currentSettings, setCurrentSettings] =
+    useState<CollaborationSettings | null>(null);
+  const [originalSettings, setOriginalSettings] =
+    useState<CollaborationSettings | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('general');
+  const [activeTab, setActiveTab] = useState("general");
 
   // Get team settings
-  const teamSettings = settings.find(s => s.teamId === teamId) || initialSettings;
+  const teamSettings =
+    settings.find((s) => s.teamId === teamId) || initialSettings;
 
   // Initialize settings
   useEffect(() => {
@@ -46,76 +92,112 @@ export const CollaborationSettings: React.FC<CollaborationSettingsProps> = ({
       setCurrentSettings({
         teamId: teamId,
         notificationSettings: {
-          emailNotifications: teamSettings.notificationSettings?.emailNotifications || true,
-          pushNotifications: teamSettings.notificationSettings?.pushNotifications || true,
-          mentionNotifications: teamSettings.notificationSettings?.mentionNotifications || true,
-          dailyDigest: teamSettings.notificationSettings?.dailyDigest || false
+          emailNotifications:
+            teamSettings.notificationSettings?.emailNotifications || true,
+          pushNotifications:
+            teamSettings.notificationSettings?.pushNotifications || true,
+          mentionNotifications:
+            teamSettings.notificationSettings?.mentionNotifications || true,
+          dailyDigest: teamSettings.notificationSettings?.dailyDigest || false,
         },
         permissionSettings: {
-          allowGuestInvites: teamSettings.permissionSettings?.allowGuestInvites || false,
-          allowPublicSharing: teamSettings.permissionSettings?.allowPublicSharing || false,
-          requireAdminApproval: teamSettings.permissionSettings?.requireAdminApproval || true,
-          allowMemberInvites: teamSettings.permissionSettings?.allowMemberInvites || false
+          allowGuestInvites:
+            teamSettings.permissionSettings?.allowGuestInvites || false,
+          allowPublicSharing:
+            teamSettings.permissionSettings?.allowPublicSharing || false,
+          requireAdminApproval:
+            teamSettings.permissionSettings?.requireAdminApproval || true,
+          allowMemberInvites:
+            teamSettings.permissionSettings?.allowMemberInvites || false,
         },
         privacySettings: {
-          visibleToPublic: teamSettings.privacySettings?.visibleToPublic || false,
+          visibleToPublic:
+            teamSettings.privacySettings?.visibleToPublic || false,
           searchable: teamSettings.privacySettings?.searchable || false,
-          allowExternalAccess: teamSettings.privacySettings?.allowExternalAccess || false
+          allowExternalAccess:
+            teamSettings.privacySettings?.allowExternalAccess || false,
         },
         integrationSettings: {
-          calendarIntegration: teamSettings.integrationSettings?.calendarIntegration || false,
-          taskIntegration: teamSettings.integrationSettings?.taskIntegration || false,
-          fileIntegration: teamSettings.integrationSettings?.fileIntegration || false
+          calendarIntegration:
+            teamSettings.integrationSettings?.calendarIntegration || false,
+          taskIntegration:
+            teamSettings.integrationSettings?.taskIntegration || false,
+          fileIntegration:
+            teamSettings.integrationSettings?.fileIntegration || false,
         },
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
 
       setOriginalSettings({
         teamId: teamId,
         notificationSettings: {
-          emailNotifications: teamSettings.notificationSettings?.emailNotifications || true,
-          pushNotifications: teamSettings.notificationSettings?.pushNotifications || true,
-          mentionNotifications: teamSettings.notificationSettings?.mentionNotifications || true,
-          dailyDigest: teamSettings.notificationSettings?.dailyDigest || false
+          emailNotifications:
+            teamSettings.notificationSettings?.emailNotifications || true,
+          pushNotifications:
+            teamSettings.notificationSettings?.pushNotifications || true,
+          mentionNotifications:
+            teamSettings.notificationSettings?.mentionNotifications || true,
+          dailyDigest: teamSettings.notificationSettings?.dailyDigest || false,
         },
         permissionSettings: {
-          allowGuestInvites: teamSettings.permissionSettings?.allowGuestInvites || false,
-          allowPublicSharing: teamSettings.permissionSettings?.allowPublicSharing || false,
-          requireAdminApproval: teamSettings.permissionSettings?.requireAdminApproval || true,
-          allowMemberInvites: teamSettings.permissionSettings?.allowMemberInvites || false
+          allowGuestInvites:
+            teamSettings.permissionSettings?.allowGuestInvites || false,
+          allowPublicSharing:
+            teamSettings.permissionSettings?.allowPublicSharing || false,
+          requireAdminApproval:
+            teamSettings.permissionSettings?.requireAdminApproval || true,
+          allowMemberInvites:
+            teamSettings.permissionSettings?.allowMemberInvites || false,
         },
         privacySettings: {
-          visibleToPublic: teamSettings.privacySettings?.visibleToPublic || false,
+          visibleToPublic:
+            teamSettings.privacySettings?.visibleToPublic || false,
           searchable: teamSettings.privacySettings?.searchable || false,
-          allowExternalAccess: teamSettings.privacySettings?.allowExternalAccess || false
+          allowExternalAccess:
+            teamSettings.privacySettings?.allowExternalAccess || false,
         },
         integrationSettings: {
-          calendarIntegration: teamSettings.integrationSettings?.calendarIntegration || false,
-          taskIntegration: teamSettings.integrationSettings?.taskIntegration || false,
-          fileIntegration: teamSettings.integrationSettings?.fileIntegration || false
+          calendarIntegration:
+            teamSettings.integrationSettings?.calendarIntegration || false,
+          taskIntegration:
+            teamSettings.integrationSettings?.taskIntegration || false,
+          fileIntegration:
+            teamSettings.integrationSettings?.fileIntegration || false,
         },
-        updatedAt: new Date()
+        updatedAt: new Date(),
       });
     }
   }, [teamId, teamSettings, initialSettings]);
 
-  const handleInputChange = (category: keyof CollaborationSettings, field: string, value: any) => {
+  const handleInputChange = (
+    category: keyof CollaborationSettings,
+    field: string,
+    value: any,
+  ) => {
     if (!currentSettings) return;
 
-    setCurrentSettings(prev => ({
+    setCurrentSettings((prev) => ({
       ...prev!,
       [category]: {
         ...prev![category],
-        [field]: value
-      }
+        [field]: value,
+      },
     }));
   };
 
-  const handleSwitchChange = (category: keyof CollaborationSettings, field: string, checked: boolean) => {
+  const handleSwitchChange = (
+    category: keyof CollaborationSettings,
+    field: string,
+    checked: boolean,
+  ) => {
     handleInputChange(category, field, checked);
   };
 
-  const handleSelectChange = (category: keyof CollaborationSettings, field: string, value: string) => {
+  const handleSelectChange = (
+    category: keyof CollaborationSettings,
+    field: string,
+    value: string,
+  ) => {
     handleInputChange(category, field, value);
   };
 
@@ -139,7 +221,9 @@ export const CollaborationSettings: React.FC<CollaborationSettingsProps> = ({
       // Auto-close success message after 3 seconds
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (err) {
-      setSaveError(err instanceof Error ? err.message : 'Failed to save settings');
+      setSaveError(
+        err instanceof Error ? err.message : "Failed to save settings",
+      );
     } finally {
       setIsSaving(false);
     }
@@ -160,28 +244,45 @@ export const CollaborationSettings: React.FC<CollaborationSettingsProps> = ({
     return JSON.stringify(currentSettings) !== JSON.stringify(originalSettings);
   };
 
-  const getSettingDescription = (category: keyof CollaborationSettings, field: string) => {
+  const getSettingDescription = (
+    category: keyof CollaborationSettings,
+    field: string,
+  ) => {
     const descriptions: Record<string, string> = {
-      'notificationSettings.emailNotifications': 'Receive email updates about team activities and mentions',
-      'notificationSettings.pushNotifications': 'Get real-time push notifications for important events',
-      'notificationSettings.mentionNotifications': 'Get notified when someone mentions you in comments or discussions',
-      'notificationSettings.dailyDigest': 'Receive a daily summary of team activities via email',
+      "notificationSettings.emailNotifications":
+        "Receive email updates about team activities and mentions",
+      "notificationSettings.pushNotifications":
+        "Get real-time push notifications for important events",
+      "notificationSettings.mentionNotifications":
+        "Get notified when someone mentions you in comments or discussions",
+      "notificationSettings.dailyDigest":
+        "Receive a daily summary of team activities via email",
 
-      'permissionSettings.allowGuestInvites': 'Allow team members to invite guests to the team',
-      'permissionSettings.allowPublicSharing': 'Allow sharing team content publicly outside the organization',
-      'permissionSettings.requireAdminApproval': 'New members require admin approval before joining',
-      'permissionSettings.allowMemberInvites': 'Allow regular members to invite new members',
+      "permissionSettings.allowGuestInvites":
+        "Allow team members to invite guests to the team",
+      "permissionSettings.allowPublicSharing":
+        "Allow sharing team content publicly outside the organization",
+      "permissionSettings.requireAdminApproval":
+        "New members require admin approval before joining",
+      "permissionSettings.allowMemberInvites":
+        "Allow regular members to invite new members",
 
-      'privacySettings.visibleToPublic': 'Make team visible to public users (not just team members)',
-      'privacySettings.searchable': 'Allow team to be discovered through search',
-      'privacySettings.allowExternalAccess': 'Allow external users to access team resources',
+      "privacySettings.visibleToPublic":
+        "Make team visible to public users (not just team members)",
+      "privacySettings.searchable":
+        "Allow team to be discovered through search",
+      "privacySettings.allowExternalAccess":
+        "Allow external users to access team resources",
 
-      'integrationSettings.calendarIntegration': 'Enable calendar integration for team events and deadlines',
-      'integrationSettings.taskIntegration': 'Enable task integration with external project management tools',
-      'integrationSettings.fileIntegration': 'Enable file integration with cloud storage providers'
+      "integrationSettings.calendarIntegration":
+        "Enable calendar integration for team events and deadlines",
+      "integrationSettings.taskIntegration":
+        "Enable task integration with external project management tools",
+      "integrationSettings.fileIntegration":
+        "Enable file integration with cloud storage providers",
     };
 
-    return descriptions[`${category}.${field}`] || '';
+    return descriptions[`${category}.${field}`] || "";
   };
 
   if (loading) {
@@ -245,7 +346,9 @@ export const CollaborationSettings: React.FC<CollaborationSettingsProps> = ({
               <Settings className="h-5 w-5" />
               <span>Collaboration Settings</span>
             </CardTitle>
-            <CardDescription>Configure your team's collaboration preferences</CardDescription>
+            <CardDescription>
+              Configure your team's collaboration preferences
+            </CardDescription>
           </div>
           <div className="flex items-center space-x-2">
             {hasChanges() && (
@@ -277,7 +380,11 @@ export const CollaborationSettings: React.FC<CollaborationSettingsProps> = ({
           </Alert>
         )}
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+        <Tabs
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="space-y-4"
+        >
           <TabsList>
             <TabsTrigger value="general">
               <Globe className="h-4 w-4 mr-2" />
@@ -322,31 +429,49 @@ export const CollaborationSettings: React.FC<CollaborationSettingsProps> = ({
                     readOnly
                     className="bg-gray-100 cursor-not-allowed"
                   />
-                  <p className="text-xs text-muted-foreground">Team ID is used for internal reference</p>
+                  <p className="text-xs text-muted-foreground">
+                    Team ID is used for internal reference
+                  </p>
                 </div>
 
                 <div className="space-y-2">
                   <Label>Team Privacy</Label>
                   <Select
-                    value={currentSettings.privacySettings.visibleToPublic ? 'public' : 'private'}
+                    value={
+                      currentSettings.privacySettings.visibleToPublic
+                        ? "public"
+                        : "private"
+                    }
                     onValueChange={(value) => {
-                      const visibleToPublic = value === 'public';
-                      handleInputChange('privacySettings', 'visibleToPublic', visibleToPublic);
-                      handleInputChange('privacySettings', 'searchable', visibleToPublic);
+                      const visibleToPublic = value === "public";
+                      handleInputChange(
+                        "privacySettings",
+                        "visibleToPublic",
+                        visibleToPublic,
+                      );
+                      handleInputChange(
+                        "privacySettings",
+                        "searchable",
+                        visibleToPublic,
+                      );
                     }}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select privacy setting" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="private">Private (Team members only)</SelectItem>
-                      <SelectItem value="public">Public (Visible to everyone)</SelectItem>
+                      <SelectItem value="private">
+                        Private (Team members only)
+                      </SelectItem>
+                      <SelectItem value="public">
+                        Public (Visible to everyone)
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                   <p className="text-xs text-muted-foreground">
                     {currentSettings.privacySettings.visibleToPublic
-                      ? 'Team is visible to public users and can be discovered through search'
-                      : 'Team is only visible to team members'}
+                      ? "Team is visible to public users and can be discovered through search"
+                      : "Team is only visible to team members"}
                   </p>
                 </div>
               </div>
@@ -359,64 +484,118 @@ export const CollaborationSettings: React.FC<CollaborationSettingsProps> = ({
               <Alert variant="info">
                 <AlertTitle>Notification Settings</AlertTitle>
                 <AlertDescription>
-                  Configure how team members receive notifications about collaboration activities
+                  Configure how team members receive notifications about
+                  collaboration activities
                 </AlertDescription>
               </Alert>
 
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-1">
-                    <Label htmlFor="emailNotifications" className="font-medium">Email Notifications</Label>
+                    <Label htmlFor="emailNotifications" className="font-medium">
+                      Email Notifications
+                    </Label>
                     <p className="text-sm text-muted-foreground">
-                      {getSettingDescription('notificationSettings', 'emailNotifications')}
+                      {getSettingDescription(
+                        "notificationSettings",
+                        "emailNotifications",
+                      )}
                     </p>
                   </div>
                   <Switch
                     id="emailNotifications"
-                    checked={currentSettings.notificationSettings.emailNotifications}
-                    onCheckedChange={(checked) => handleSwitchChange('notificationSettings', 'emailNotifications', checked)}
+                    checked={
+                      currentSettings.notificationSettings.emailNotifications
+                    }
+                    onCheckedChange={(checked) =>
+                      handleSwitchChange(
+                        "notificationSettings",
+                        "emailNotifications",
+                        checked,
+                      )
+                    }
                   />
                 </div>
 
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-1">
-                    <Label htmlFor="pushNotifications" className="font-medium">Push Notifications</Label>
+                    <Label htmlFor="pushNotifications" className="font-medium">
+                      Push Notifications
+                    </Label>
                     <p className="text-sm text-muted-foreground">
-                      {getSettingDescription('notificationSettings', 'pushNotifications')}
+                      {getSettingDescription(
+                        "notificationSettings",
+                        "pushNotifications",
+                      )}
                     </p>
                   </div>
                   <Switch
                     id="pushNotifications"
-                    checked={currentSettings.notificationSettings.pushNotifications}
-                    onCheckedChange={(checked) => handleSwitchChange('notificationSettings', 'pushNotifications', checked)}
+                    checked={
+                      currentSettings.notificationSettings.pushNotifications
+                    }
+                    onCheckedChange={(checked) =>
+                      handleSwitchChange(
+                        "notificationSettings",
+                        "pushNotifications",
+                        checked,
+                      )
+                    }
                   />
                 </div>
 
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-1">
-                    <Label htmlFor="mentionNotifications" className="font-medium">Mention Notifications</Label>
+                    <Label
+                      htmlFor="mentionNotifications"
+                      className="font-medium"
+                    >
+                      Mention Notifications
+                    </Label>
                     <p className="text-sm text-muted-foreground">
-                      {getSettingDescription('notificationSettings', 'mentionNotifications')}
+                      {getSettingDescription(
+                        "notificationSettings",
+                        "mentionNotifications",
+                      )}
                     </p>
                   </div>
                   <Switch
                     id="mentionNotifications"
-                    checked={currentSettings.notificationSettings.mentionNotifications}
-                    onCheckedChange={(checked) => handleSwitchChange('notificationSettings', 'mentionNotifications', checked)}
+                    checked={
+                      currentSettings.notificationSettings.mentionNotifications
+                    }
+                    onCheckedChange={(checked) =>
+                      handleSwitchChange(
+                        "notificationSettings",
+                        "mentionNotifications",
+                        checked,
+                      )
+                    }
                   />
                 </div>
 
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-1">
-                    <Label htmlFor="dailyDigest" className="font-medium">Daily Digest</Label>
+                    <Label htmlFor="dailyDigest" className="font-medium">
+                      Daily Digest
+                    </Label>
                     <p className="text-sm text-muted-foreground">
-                      {getSettingDescription('notificationSettings', 'dailyDigest')}
+                      {getSettingDescription(
+                        "notificationSettings",
+                        "dailyDigest",
+                      )}
                     </p>
                   </div>
                   <Switch
                     id="dailyDigest"
                     checked={currentSettings.notificationSettings.dailyDigest}
-                    onCheckedChange={(checked) => handleSwitchChange('notificationSettings', 'dailyDigest', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSwitchChange(
+                        "notificationSettings",
+                        "dailyDigest",
+                        checked,
+                      )
+                    }
                   />
                 </div>
               </div>
@@ -436,57 +615,112 @@ export const CollaborationSettings: React.FC<CollaborationSettingsProps> = ({
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-1">
-                    <Label htmlFor="allowGuestInvites" className="font-medium">Allow Guest Invites</Label>
+                    <Label htmlFor="allowGuestInvites" className="font-medium">
+                      Allow Guest Invites
+                    </Label>
                     <p className="text-sm text-muted-foreground">
-                      {getSettingDescription('permissionSettings', 'allowGuestInvites')}
+                      {getSettingDescription(
+                        "permissionSettings",
+                        "allowGuestInvites",
+                      )}
                     </p>
                   </div>
                   <Switch
                     id="allowGuestInvites"
-                    checked={currentSettings.permissionSettings.allowGuestInvites}
-                    onCheckedChange={(checked) => handleSwitchChange('permissionSettings', 'allowGuestInvites', checked)}
+                    checked={
+                      currentSettings.permissionSettings.allowGuestInvites
+                    }
+                    onCheckedChange={(checked) =>
+                      handleSwitchChange(
+                        "permissionSettings",
+                        "allowGuestInvites",
+                        checked,
+                      )
+                    }
                   />
                 </div>
 
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-1">
-                    <Label htmlFor="allowPublicSharing" className="font-medium">Allow Public Sharing</Label>
+                    <Label htmlFor="allowPublicSharing" className="font-medium">
+                      Allow Public Sharing
+                    </Label>
                     <p className="text-sm text-muted-foreground">
-                      {getSettingDescription('permissionSettings', 'allowPublicSharing')}
+                      {getSettingDescription(
+                        "permissionSettings",
+                        "allowPublicSharing",
+                      )}
                     </p>
                   </div>
                   <Switch
                     id="allowPublicSharing"
-                    checked={currentSettings.permissionSettings.allowPublicSharing}
-                    onCheckedChange={(checked) => handleSwitchChange('permissionSettings', 'allowPublicSharing', checked)}
+                    checked={
+                      currentSettings.permissionSettings.allowPublicSharing
+                    }
+                    onCheckedChange={(checked) =>
+                      handleSwitchChange(
+                        "permissionSettings",
+                        "allowPublicSharing",
+                        checked,
+                      )
+                    }
                   />
                 </div>
 
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-1">
-                    <Label htmlFor="requireAdminApproval" className="font-medium">Require Admin Approval</Label>
+                    <Label
+                      htmlFor="requireAdminApproval"
+                      className="font-medium"
+                    >
+                      Require Admin Approval
+                    </Label>
                     <p className="text-sm text-muted-foreground">
-                      {getSettingDescription('permissionSettings', 'requireAdminApproval')}
+                      {getSettingDescription(
+                        "permissionSettings",
+                        "requireAdminApproval",
+                      )}
                     </p>
                   </div>
                   <Switch
                     id="requireAdminApproval"
-                    checked={currentSettings.permissionSettings.requireAdminApproval}
-                    onCheckedChange={(checked) => handleSwitchChange('permissionSettings', 'requireAdminApproval', checked)}
+                    checked={
+                      currentSettings.permissionSettings.requireAdminApproval
+                    }
+                    onCheckedChange={(checked) =>
+                      handleSwitchChange(
+                        "permissionSettings",
+                        "requireAdminApproval",
+                        checked,
+                      )
+                    }
                   />
                 </div>
 
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-1">
-                    <Label htmlFor="allowMemberInvites" className="font-medium">Allow Member Invites</Label>
+                    <Label htmlFor="allowMemberInvites" className="font-medium">
+                      Allow Member Invites
+                    </Label>
                     <p className="text-sm text-muted-foreground">
-                      {getSettingDescription('permissionSettings', 'allowMemberInvites')}
+                      {getSettingDescription(
+                        "permissionSettings",
+                        "allowMemberInvites",
+                      )}
                     </p>
                   </div>
                   <Switch
                     id="allowMemberInvites"
-                    checked={currentSettings.permissionSettings.allowMemberInvites}
-                    onCheckedChange={(checked) => handleSwitchChange('permissionSettings', 'allowMemberInvites', checked)}
+                    checked={
+                      currentSettings.permissionSettings.allowMemberInvites
+                    }
+                    onCheckedChange={(checked) =>
+                      handleSwitchChange(
+                        "permissionSettings",
+                        "allowMemberInvites",
+                        checked,
+                      )
+                    }
                   />
                 </div>
               </div>
@@ -506,43 +740,78 @@ export const CollaborationSettings: React.FC<CollaborationSettingsProps> = ({
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-1">
-                    <Label htmlFor="visibleToPublic" className="font-medium">Visible to Public</Label>
+                    <Label htmlFor="visibleToPublic" className="font-medium">
+                      Visible to Public
+                    </Label>
                     <p className="text-sm text-muted-foreground">
-                      {getSettingDescription('privacySettings', 'visibleToPublic')}
+                      {getSettingDescription(
+                        "privacySettings",
+                        "visibleToPublic",
+                      )}
                     </p>
                   </div>
                   <Switch
                     id="visibleToPublic"
                     checked={currentSettings.privacySettings.visibleToPublic}
-                    onCheckedChange={(checked) => handleSwitchChange('privacySettings', 'visibleToPublic', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSwitchChange(
+                        "privacySettings",
+                        "visibleToPublic",
+                        checked,
+                      )
+                    }
                   />
                 </div>
 
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-1">
-                    <Label htmlFor="searchable" className="font-medium">Searchable</Label>
+                    <Label htmlFor="searchable" className="font-medium">
+                      Searchable
+                    </Label>
                     <p className="text-sm text-muted-foreground">
-                      {getSettingDescription('privacySettings', 'searchable')}
+                      {getSettingDescription("privacySettings", "searchable")}
                     </p>
                   </div>
                   <Switch
                     id="searchable"
                     checked={currentSettings.privacySettings.searchable}
-                    onCheckedChange={(checked) => handleSwitchChange('privacySettings', 'searchable', checked)}
+                    onCheckedChange={(checked) =>
+                      handleSwitchChange(
+                        "privacySettings",
+                        "searchable",
+                        checked,
+                      )
+                    }
                   />
                 </div>
 
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="space-y-1">
-                    <Label htmlFor="allowExternalAccess" className="font-medium">Allow External Access</Label>
+                    <Label
+                      htmlFor="allowExternalAccess"
+                      className="font-medium"
+                    >
+                      Allow External Access
+                    </Label>
                     <p className="text-sm text-muted-foreground">
-                      {getSettingDescription('privacySettings', 'allowExternalAccess')}
+                      {getSettingDescription(
+                        "privacySettings",
+                        "allowExternalAccess",
+                      )}
                     </p>
                   </div>
                   <Switch
                     id="allowExternalAccess"
-                    checked={currentSettings.privacySettings.allowExternalAccess}
-                    onCheckedChange={(checked) => handleSwitchChange('privacySettings', 'allowExternalAccess', checked)}
+                    checked={
+                      currentSettings.privacySettings.allowExternalAccess
+                    }
+                    onCheckedChange={(checked) =>
+                      handleSwitchChange(
+                        "privacySettings",
+                        "allowExternalAccess",
+                        checked,
+                      )
+                    }
                   />
                 </div>
               </div>
@@ -563,43 +832,85 @@ export const CollaborationSettings: React.FC<CollaborationSettingsProps> = ({
                 <div className="space-y-4">
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="space-y-1">
-                      <Label htmlFor="calendarIntegration" className="font-medium">Calendar Integration</Label>
+                      <Label
+                        htmlFor="calendarIntegration"
+                        className="font-medium"
+                      >
+                        Calendar Integration
+                      </Label>
                       <p className="text-sm text-muted-foreground">
-                        {getSettingDescription('integrationSettings', 'calendarIntegration')}
+                        {getSettingDescription(
+                          "integrationSettings",
+                          "calendarIntegration",
+                        )}
                       </p>
                     </div>
                     <Switch
                       id="calendarIntegration"
-                      checked={currentSettings.integrationSettings.calendarIntegration}
-                      onCheckedChange={(checked) => handleSwitchChange('integrationSettings', 'calendarIntegration', checked)}
+                      checked={
+                        currentSettings.integrationSettings.calendarIntegration
+                      }
+                      onCheckedChange={(checked) =>
+                        handleSwitchChange(
+                          "integrationSettings",
+                          "calendarIntegration",
+                          checked,
+                        )
+                      }
                     />
                   </div>
 
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="space-y-1">
-                      <Label htmlFor="taskIntegration" className="font-medium">Task Integration</Label>
+                      <Label htmlFor="taskIntegration" className="font-medium">
+                        Task Integration
+                      </Label>
                       <p className="text-sm text-muted-foreground">
-                        {getSettingDescription('integrationSettings', 'taskIntegration')}
+                        {getSettingDescription(
+                          "integrationSettings",
+                          "taskIntegration",
+                        )}
                       </p>
                     </div>
                     <Switch
                       id="taskIntegration"
-                      checked={currentSettings.integrationSettings.taskIntegration}
-                      onCheckedChange={(checked) => handleSwitchChange('integrationSettings', 'taskIntegration', checked)}
+                      checked={
+                        currentSettings.integrationSettings.taskIntegration
+                      }
+                      onCheckedChange={(checked) =>
+                        handleSwitchChange(
+                          "integrationSettings",
+                          "taskIntegration",
+                          checked,
+                        )
+                      }
                     />
                   </div>
 
                   <div className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="space-y-1">
-                      <Label htmlFor="fileIntegration" className="font-medium">File Integration</Label>
+                      <Label htmlFor="fileIntegration" className="font-medium">
+                        File Integration
+                      </Label>
                       <p className="text-sm text-muted-foreground">
-                        {getSettingDescription('integrationSettings', 'fileIntegration')}
+                        {getSettingDescription(
+                          "integrationSettings",
+                          "fileIntegration",
+                        )}
                       </p>
                     </div>
                     <Switch
                       id="fileIntegration"
-                      checked={currentSettings.integrationSettings.fileIntegration}
-                      onCheckedChange={(checked) => handleSwitchChange('integrationSettings', 'fileIntegration', checked)}
+                      checked={
+                        currentSettings.integrationSettings.fileIntegration
+                      }
+                      onCheckedChange={(checked) =>
+                        handleSwitchChange(
+                          "integrationSettings",
+                          "fileIntegration",
+                          checked,
+                        )
+                      }
                     />
                   </div>
                 </div>
@@ -612,14 +923,23 @@ export const CollaborationSettings: React.FC<CollaborationSettingsProps> = ({
       <CardFooter className="flex justify-between items-center">
         <div className="flex items-center space-x-2">
           {hasChanges() && (
-            <Button variant="outline" size="sm" onClick={() => setIsResetDialogOpen(true)}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsResetDialogOpen(true)}
+            >
               <X className="h-4 w-4 mr-2" />
               Reset Changes
             </Button>
           )}
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" size="sm" onClick={onCancel} disabled={isSaving}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onCancel}
+            disabled={isSaving}
+          >
             Cancel
           </Button>
           <Button onClick={handleSave} disabled={isSaving || !hasChanges()}>

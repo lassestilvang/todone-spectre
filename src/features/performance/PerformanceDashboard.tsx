@@ -1,8 +1,8 @@
-import React from 'react';
-import { PerformanceMonitor } from './PerformanceMonitor';
-import { PerformanceControls } from './PerformanceControls';
-import { PerformanceSettings } from './PerformanceSettings';
-import { PerformanceStatus } from './PerformanceStatus';
+import React from "react";
+import { PerformanceMonitor } from "./PerformanceMonitor";
+import { PerformanceControls } from "./PerformanceControls";
+import { PerformanceSettings } from "./PerformanceSettings";
+import { PerformanceStatus } from "./PerformanceStatus";
 
 export const PerformanceDashboard: React.FC = () => {
   return (

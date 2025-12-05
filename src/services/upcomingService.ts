@@ -1,6 +1,6 @@
-import { Task } from '../types/task';
-import { taskService } from './taskService';
-import { isFutureDate } from '../utils/dateUtils';
+import { Task } from "../types/task";
+import { taskService } from "./taskService";
+import { isFutureDate } from "../utils/dateUtils";
 
 /**
  * Upcoming Service - Handles business logic for the Upcoming view
@@ -35,7 +35,7 @@ export class UpcomingService {
       today.setHours(0, 0, 0, 0);
 
       // Filter for upcoming: tasks due in the future, not completed
-      const upcomingTasks = allTasks.filter(task => {
+      const upcomingTasks = allTasks.filter((task) => {
         if (!task.dueDate || task.completed) return false;
 
         const taskDueDate = new Date(task.dueDate);
@@ -47,7 +47,7 @@ export class UpcomingService {
       // Sort by due date and then by priority
       return this.sortUpcomingTasks(upcomingTasks);
     } catch (error) {
-      console.error('Error fetching upcoming tasks:', error);
+      console.error("Error fetching upcoming tasks:", error);
       throw error;
     }
   }
@@ -59,10 +59,10 @@ export class UpcomingService {
    */
   private sortUpcomingTasks(tasks: Task[]): Task[] {
     const priorityOrder: Record<string, number> = {
-      'critical': 1,
-      'high': 2,
-      'medium': 3,
-      'low': 4
+      critical: 1,
+      high: 2,
+      medium: 3,
+      low: 4,
     };
 
     return [...tasks].sort((a, b) => {
@@ -74,7 +74,9 @@ export class UpcomingService {
       if (dateCompare !== 0) return dateCompare;
 
       // Then by priority
-      return (priorityOrder[a.priority] || 5) - (priorityOrder[b.priority] || 5);
+      return (
+        (priorityOrder[a.priority] || 5) - (priorityOrder[b.priority] || 5)
+      );
     });
   }
 
@@ -94,20 +96,23 @@ export class UpcomingService {
     const oneWeekLater = new Date(today);
     oneWeekLater.setDate(today.getDate() + 7);
 
-    tasks.forEach(task => {
+    tasks.forEach((task) => {
       if (task.dueDate) {
         const taskDueDate = new Date(task.dueDate);
 
         // Tasks due within the next week
         if (taskDueDate <= oneWeekLater) {
-          const weekKey = `Week of ${taskDueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+          const weekKey = `Week of ${taskDueDate.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
           if (!nextWeek[weekKey]) {
             nextWeek[weekKey] = [];
           }
           nextWeek[weekKey].push(task);
         } else {
           // Tasks due in the future (grouped by month)
-          const monthKey = taskDueDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+          const monthKey = taskDueDate.toLocaleDateString("en-US", {
+            month: "long",
+            year: "numeric",
+          });
           if (!futureMonths[monthKey]) {
             futureMonths[monthKey] = [];
           }
@@ -138,46 +143,54 @@ export class UpcomingService {
       today.setHours(0, 0, 0, 0);
 
       const timeDistribution: Record<string, number> = {
-        '0-7 days': 0,
-        '7-30 days': 0,
-        '30+ days': 0
+        "0-7 days": 0,
+        "7-30 days": 0,
+        "30+ days": 0,
       };
 
-      tasks.forEach(task => {
+      tasks.forEach((task) => {
         if (task.dueDate) {
           const taskDueDate = new Date(task.dueDate);
-          const daysUntilDue = Math.ceil((taskDueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+          const daysUntilDue = Math.ceil(
+            (taskDueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+          );
 
           if (daysUntilDue <= 7) {
-            timeDistribution['0-7 days']++;
+            timeDistribution["0-7 days"]++;
           } else if (daysUntilDue <= 30) {
-            timeDistribution['7-30 days']++;
+            timeDistribution["7-30 days"]++;
           } else {
-            timeDistribution['30+ days']++;
+            timeDistribution["30+ days"]++;
           }
         }
       });
 
       const statistics = {
         total: tasks.length,
-        nextWeekCount: Object.values(nextWeek).reduce((sum, tasks) => sum + tasks.length, 0),
-        futureCount: Object.values(futureMonths).reduce((sum, tasks) => sum + tasks.length, 0),
+        nextWeekCount: Object.values(nextWeek).reduce(
+          (sum, tasks) => sum + tasks.length,
+          0,
+        ),
+        futureCount: Object.values(futureMonths).reduce(
+          (sum, tasks) => sum + tasks.length,
+          0,
+        ),
         byPriority: {
-          'critical': 0,
-          'high': 0,
-          'medium': 0,
-          'low': 0
+          critical: 0,
+          high: 0,
+          medium: 0,
+          low: 0,
         },
-        timeDistribution
+        timeDistribution,
       };
 
-      tasks.forEach(task => {
+      tasks.forEach((task) => {
         statistics.byPriority[task.priority]++;
       });
 
       return statistics;
     } catch (error) {
-      console.error('Error getting upcoming statistics:', error);
+      console.error("Error getting upcoming statistics:", error);
       throw error;
     }
   }
@@ -185,24 +198,29 @@ export class UpcomingService {
   /**
    * Filter upcoming tasks by time range
    */
-  filterByTimeRange(tasks: Task[], range: 'next-week' | 'next-month' | 'next-3-months' | 'all' = 'all'): Task[] {
+  filterByTimeRange(
+    tasks: Task[],
+    range: "next-week" | "next-month" | "next-3-months" | "all" = "all",
+  ): Task[] {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    return tasks.filter(task => {
+    return tasks.filter((task) => {
       if (!task.dueDate) return false;
 
       const taskDueDate = new Date(task.dueDate);
-      const daysUntilDue = Math.ceil((taskDueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      const daysUntilDue = Math.ceil(
+        (taskDueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24),
+      );
 
       switch (range) {
-        case 'next-week':
+        case "next-week":
           return daysUntilDue <= 7;
-        case 'next-month':
+        case "next-month":
           return daysUntilDue <= 30;
-        case 'next-3-months':
+        case "next-3-months":
           return daysUntilDue <= 90;
-        case 'all':
+        case "all":
         default:
           return true;
       }
@@ -215,19 +233,19 @@ export class UpcomingService {
   async getTasksInDateRange(
     startDate: Date,
     endDate: Date,
-    projectId?: string
+    projectId?: string,
   ): Promise<Task[]> {
     try {
       const allTasks = await this.getUpcomingTasks(projectId);
 
-      return allTasks.filter(task => {
+      return allTasks.filter((task) => {
         if (!task.dueDate) return false;
 
         const taskDueDate = new Date(task.dueDate);
         return taskDueDate >= startDate && taskDueDate <= endDate;
       });
     } catch (error) {
-      console.error('Error getting tasks in date range:', error);
+      console.error("Error getting tasks in date range:", error);
       throw error;
     }
   }

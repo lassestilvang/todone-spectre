@@ -1,12 +1,13 @@
-import React, { useState } from 'react';
-import { useAnimationContext } from './AnimationProvider';
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import { useAnimationContext } from "./AnimationProvider";
 
 interface AnimationControlsProps {
   onClose: () => void;
 }
 
-export const AnimationControls: React.FC<AnimationControlsProps> = ({ onClose }) => {
+export const AnimationControls: React.FC<AnimationControlsProps> = ({
+  onClose,
+}) => {
   const {
     isAnimating,
     animationSpeed,
@@ -15,7 +16,7 @@ export const AnimationControls: React.FC<AnimationControlsProps> = ({ onClose })
     toggleAnimation,
     setAnimationSpeed,
     setAnimationType,
-    toggleMicroInteraction
+    toggleMicroInteraction,
   } = useAnimationContext();
 
   const [speedValue, setSpeedValue] = useState(animationSpeed);
@@ -37,59 +38,72 @@ export const AnimationControls: React.FC<AnimationControlsProps> = ({ onClose })
       exit={{ opacity: 0, y: -20 }}
       className="animation-controls"
       style={{
-        position: 'fixed',
-        bottom: '20px',
-        right: '20px',
-        background: 'white',
-        padding: '15px',
-        borderRadius: '8px',
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+        position: "fixed",
+        bottom: "20px",
+        right: "20px",
+        background: "white",
+        padding: "15px",
+        borderRadius: "8px",
+        boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
         zIndex: 1000,
-        width: '250px'
+        width: "250px",
       }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
-        <h3 style={{ margin: 0, fontSize: '16px' }}>Animation Controls</h3>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "15px",
+        }}
+      >
+        <h3 style={{ margin: 0, fontSize: "16px" }}>Animation Controls</h3>
         <button
           onClick={onClose}
           style={{
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            fontSize: '18px',
-            padding: '0 5px'
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "18px",
+            padding: "0 5px",
           }}
         >
           ×
         </button>
       </div>
 
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px' }}>
+      <div style={{ marginBottom: "15px" }}>
+        <label
+          style={{ display: "block", marginBottom: "5px", fontSize: "14px" }}
+        >
           <input
             type="checkbox"
             checked={isAnimating}
             onChange={toggleAnimation}
-            style={{ marginRight: '8px' }}
+            style={{ marginRight: "8px" }}
           />
           Enable Animations
         </label>
       </div>
 
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px' }}>
+      <div style={{ marginBottom: "15px" }}>
+        <label
+          style={{ display: "block", marginBottom: "5px", fontSize: "14px" }}
+        >
           <input
             type="checkbox"
             checked={microInteractionEnabled}
             onChange={toggleMicroInteraction}
-            style={{ marginRight: '8px' }}
+            style={{ marginRight: "8px" }}
           />
           Enable Micro-interactions
         </label>
       </div>
 
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px' }}>
+      <div style={{ marginBottom: "15px" }}>
+        <label
+          style={{ display: "block", marginBottom: "5px", fontSize: "14px" }}
+        >
           Animation Speed: {speedValue.toFixed(1)}x
         </label>
         <input
@@ -99,22 +113,24 @@ export const AnimationControls: React.FC<AnimationControlsProps> = ({ onClose })
           step="0.1"
           value={speedValue}
           onChange={handleSpeedChange}
-          style={{ width: '100%' }}
+          style={{ width: "100%" }}
         />
       </div>
 
-      <div style={{ marginBottom: '15px' }}>
-        <label style={{ display: 'block', marginBottom: '5px', fontSize: '14px' }}>
+      <div style={{ marginBottom: "15px" }}>
+        <label
+          style={{ display: "block", marginBottom: "5px", fontSize: "14px" }}
+        >
           Animation Type:
         </label>
         <select
           value={animationType}
           onChange={handleTypeChange}
           style={{
-            width: '100%',
-            padding: '8px',
-            borderRadius: '4px',
-            border: '1px solid #ddd'
+            width: "100%",
+            padding: "8px",
+            borderRadius: "4px",
+            border: "1px solid #ddd",
           }}
         >
           <option value="fade">Fade</option>

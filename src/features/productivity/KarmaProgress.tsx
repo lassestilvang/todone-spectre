@@ -1,13 +1,14 @@
-import React from 'react';
-import { useKarma } from '../../../hooks/useKarma';
+import React from "react";
+import { useKarma } from "../../../hooks/useKarma";
 
 export const KarmaProgress: React.FC = () => {
   const { level, xp, xpToNextLevel } = useKarma();
 
   // Calculate progress percentage
-  const progressPercentage = xpToNextLevel > 0
-    ? Math.min(100, Math.round((xp / xpToNextLevel) * 100))
-    : 0;
+  const progressPercentage =
+    xpToNextLevel > 0
+      ? Math.min(100, Math.round((xp / xpToNextLevel) * 100))
+      : 0;
 
   return (
     <div className="karma-progress">

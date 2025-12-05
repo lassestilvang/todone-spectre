@@ -1,10 +1,10 @@
-import React from 'react';
-import { Task } from '../../types/task';
-import { ViewHeader } from './ViewHeader';
-import { ViewToolbar } from './ViewToolbar';
-import { TaskItem } from '../../features/tasks/TaskItem';
-import { ViewFilterControls } from './ViewFilterControls';
-import { ViewSortControls } from './ViewSortControls';
+import React from "react";
+import { Task } from "../../types/task";
+import { ViewHeader } from "./ViewHeader";
+import { ViewToolbar } from "./ViewToolbar";
+import { TaskItem } from "../../features/tasks/TaskItem";
+import { ViewFilterControls } from "./ViewFilterControls";
+import { ViewSortControls } from "./ViewSortControls";
 
 interface ListViewProps {
   tasks: Task[];

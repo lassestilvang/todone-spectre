@@ -1,14 +1,14 @@
 module.exports = {
   // Production build configuration
-  apiUrl: process.env.VITE_API_URL || 'https://api.todone.com',
-  authSecret: process.env.VITE_AUTH_SECRET || 'default-secret-key',
+  apiUrl: process.env.VITE_API_URL || "https://api.todone.com",
+  authSecret: process.env.VITE_AUTH_SECRET || "default-secret-key",
   debug: false,
   logging: {
-    level: 'error',
-    file: '/var/log/todone/production.log',
+    level: "error",
+    file: "/var/log/todone/production.log",
   },
   database: {
-    url: process.env.DATABASE_URL || 'mongodb://localhost:27017/todone',
+    url: process.env.DATABASE_URL || "mongodb://localhost:27017/todone",
     options: {
       useNewUrlParser: true,
       useUnifiedTopology: true,

@@ -1,6 +1,6 @@
-import React from 'react';
-import CommentItem from './CommentItem';
-import { Comment } from '../../types/models';
+import React from "react";
+import CommentItem from "./CommentItem";
+import { Comment } from "../../types/models";
 
 interface CommentListProps {
   comments: Comment[];
@@ -9,7 +9,12 @@ interface CommentListProps {
   onReply: (comment: Comment) => void;
 }
 
-const CommentList: React.FC<CommentListProps> = ({ comments, onEdit, onDelete, onReply }) => {
+const CommentList: React.FC<CommentListProps> = ({
+  comments,
+  onEdit,
+  onDelete,
+  onReply,
+}) => {
   if (!comments || comments.length === 0) {
     return <div className="text-gray-500 text-sm py-4">No comments yet</div>;
   }

@@ -1,4 +1,4 @@
-import { KeyboardShortcut } from '../types/keyboard';
+import { KeyboardShortcut } from "../types/keyboard";
 
 class KeyboardService {
   private shortcuts: KeyboardShortcut[] = [];
@@ -11,7 +11,9 @@ class KeyboardService {
   registerShortcut(shortcut: KeyboardShortcut): void {
     // Check if shortcut already exists
     const existingIndex = this.shortcuts.findIndex(
-      s => s.key === shortcut.key && this.arraysEqual(s.modifiers, shortcut.modifiers)
+      (s) =>
+        s.key === shortcut.key &&
+        this.arraysEqual(s.modifiers, shortcut.modifiers),
     );
 
     if (existingIndex >= 0) {
@@ -30,7 +32,11 @@ class KeyboardService {
    */
   unregisterShortcut(key: string, modifiers?: string[]): void {
     this.shortcuts = this.shortcuts.filter(
-      shortcut => !(shortcut.key === key && this.arraysEqual(shortcut.modifiers, modifiers))
+      (shortcut) =>
+        !(
+          shortcut.key === key &&
+          this.arraysEqual(shortcut.modifiers, modifiers)
+        ),
     );
   }
 
@@ -44,7 +50,7 @@ class KeyboardService {
     const pressedKey = event.key.toLowerCase();
 
     // Find matching shortcuts
-    const matchingShortcuts = this.shortcuts.filter(shortcut => {
+    const matchingShortcuts = this.shortcuts.filter((shortcut) => {
       return (
         shortcut.key.toLowerCase() === pressedKey &&
         this.arraysEqual(shortcut.modifiers, pressedModifiers)
@@ -90,9 +96,9 @@ class KeyboardService {
    */
   private getPressedModifiers(event: KeyboardEvent): string[] {
     const modifiers: string[] = [];
-    if (event.ctrlKey || event.metaKey) modifiers.push('ctrl');
-    if (event.shiftKey) modifiers.push('shift');
-    if (event.altKey) modifiers.push('alt');
+    if (event.ctrlKey || event.metaKey) modifiers.push("ctrl");
+    if (event.shiftKey) modifiers.push("shift");
+    if (event.altKey) modifiers.push("alt");
     return modifiers;
   }
 

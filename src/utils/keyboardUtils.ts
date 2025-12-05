@@ -1,4 +1,4 @@
-import { KeyboardShortcut } from '../types/keyboard';
+import { KeyboardShortcut } from "../types/keyboard";
 
 /**
  * Format a keyboard shortcut for display
@@ -7,26 +7,40 @@ import { KeyboardShortcut } from '../types/keyboard';
  */
 export const formatShortcut = (shortcut: KeyboardShortcut): string => {
   const formatModifiers = (modifiers: string[] = []) => {
-    return modifiers.map(mod => {
-      switch (mod.toLowerCase()) {
-        case 'ctrl': return 'Ctrl';
-        case 'meta': return '⌘';
-        case 'shift': return 'Shift';
-        case 'alt': return 'Alt';
-        default: return mod;
-      }
-    }).join(' + ');
+    return modifiers
+      .map((mod) => {
+        switch (mod.toLowerCase()) {
+          case "ctrl":
+            return "Ctrl";
+          case "meta":
+            return "⌘";
+          case "shift":
+            return "Shift";
+          case "alt":
+            return "Alt";
+          default:
+            return mod;
+        }
+      })
+      .join(" + ");
   };
 
   const formatKey = (key: string) => {
     switch (key.toLowerCase()) {
-      case ' ': return 'Space';
-      case 'escape': return 'Esc';
-      case 'arrowup': return '↑';
-      case 'arrowdown': return '↓';
-      case 'arrowleft': return '←';
-      case 'arrowright': return '→';
-      default: return key;
+      case " ":
+        return "Space";
+      case "escape":
+        return "Esc";
+      case "arrowup":
+        return "↑";
+      case "arrowdown":
+        return "↓";
+      case "arrowleft":
+        return "←";
+      case "arrowright":
+        return "→";
+      default:
+        return key;
     }
   };
 
@@ -45,7 +59,10 @@ export const formatShortcut = (shortcut: KeyboardShortcut): string => {
  * @param shortcut The shortcut to check against
  * @returns True if the event matches the shortcut
  */
-export const isShortcutMatch = (event: KeyboardEvent, shortcut: KeyboardShortcut): boolean => {
+export const isShortcutMatch = (
+  event: KeyboardEvent,
+  shortcut: KeyboardShortcut,
+): boolean => {
   // Check key match
   if (event.key.toLowerCase() !== shortcut.key.toLowerCase()) {
     return false;
@@ -67,9 +84,9 @@ export const isShortcutMatch = (event: KeyboardEvent, shortcut: KeyboardShortcut
  */
 export const getEventModifiers = (event: KeyboardEvent): string[] => {
   const modifiers: string[] = [];
-  if (event.ctrlKey || event.metaKey) modifiers.push('ctrl');
-  if (event.shiftKey) modifiers.push('shift');
-  if (event.altKey) modifiers.push('alt');
+  if (event.ctrlKey || event.metaKey) modifiers.push("ctrl");
+  if (event.shiftKey) modifiers.push("shift");
+  if (event.altKey) modifiers.push("alt");
   return modifiers;
 };
 
@@ -92,8 +109,8 @@ export const arraysEqual = (a: string[] = [], b: string[] = []): boolean => {
 export const isInputTarget = (event: KeyboardEvent): boolean => {
   const target = event.target as HTMLElement;
   return (
-    target.tagName === 'INPUT' ||
-    target.tagName === 'TEXTAREA' ||
+    target.tagName === "INPUT" ||
+    target.tagName === "TEXTAREA" ||
     target.isContentEditable
   );
 };
@@ -103,38 +120,38 @@ export const isInputTarget = (event: KeyboardEvent): boolean => {
  */
 export const DEFAULT_SHORTCUTS: KeyboardShortcut[] = [
   {
-    key: 'f',
-    modifiers: ['ctrl'],
-    description: 'Open search',
-    category: 'Navigation',
-    action: () => console.log('Search opened')
+    key: "f",
+    modifiers: ["ctrl"],
+    description: "Open search",
+    category: "Navigation",
+    action: () => console.log("Search opened"),
   },
   {
-    key: 'k',
-    modifiers: ['ctrl'],
-    description: 'Open command palette',
-    category: 'Navigation',
-    action: () => console.log('Command palette opened')
+    key: "k",
+    modifiers: ["ctrl"],
+    description: "Open command palette",
+    category: "Navigation",
+    action: () => console.log("Command palette opened"),
   },
   {
-    key: 'Escape',
+    key: "Escape",
     modifiers: [],
-    description: 'Close modal/dialog',
-    category: 'Navigation',
-    action: () => console.log('Modal closed')
+    description: "Close modal/dialog",
+    category: "Navigation",
+    action: () => console.log("Modal closed"),
   },
   {
-    key: 'n',
-    modifiers: ['ctrl'],
-    description: 'Create new task',
-    category: 'Task Management',
-    action: () => console.log('New task created')
+    key: "n",
+    modifiers: ["ctrl"],
+    description: "Create new task",
+    category: "Task Management",
+    action: () => console.log("New task created"),
   },
   {
-    key: 't',
-    modifiers: ['ctrl'],
-    description: 'Toggle task completion',
-    category: 'Task Management',
-    action: () => console.log('Task toggled')
-  }
+    key: "t",
+    modifiers: ["ctrl"],
+    description: "Toggle task completion",
+    category: "Task Management",
+    action: () => console.log("Task toggled"),
+  },
 ];

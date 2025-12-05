@@ -1,14 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { Task, TaskStatus, PriorityLevel, RecurringPattern } from '../../types/task';
-import { useForm, SubmitHandler } from 'react-hook-form';
-import { useRecurringTasks } from '../../hooks/useRecurringTasks';
-import { recurringTaskService } from '../../services/recurringTaskService';
-import { RecurringPatternConfig, RecurringTaskConfig } from '../../types/task';
-import { recurringPatternService } from '../../services/recurringPatternService';
+import React, { useState, useEffect } from "react";
+import {
+  Task,
+  TaskStatus,
+  PriorityLevel,
+  RecurringPattern,
+} from "../../types/task";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { useRecurringTasks } from "../../hooks/useRecurringTasks";
+import { recurringTaskService } from "../../services/recurringTaskService";
+import { RecurringPatternConfig, RecurringTaskConfig } from "../../types/task";
+import { recurringPatternService } from "../../services/recurringPatternService";
 
 interface RecurringTaskFormProps {
   task?: Task;
-  onSubmit: (taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'completed'>, config: RecurringTaskConfig) => Promise<void>;
+  onSubmit: (
+    taskData: Omit<Task, "id" | "createdAt" | "updatedAt" | "completed">,
+    config: RecurringTaskConfig,
+  ) => Promise<void>;
   onCancel?: () => void;
   projectId?: string;
 }
@@ -24,33 +32,53 @@ type FormValues = {
   recurringEndDate?: Date | null;
   recurringCount?: number | null;
   customInterval?: number | null;
-  customUnit?: 'days' | 'weeks' | 'months' | 'years' | null;
+  customUnit?: "days" | "weeks" | "months" | "years" | null;
   customDays?: number[];
   customMonthDays?: number[];
-  customMonthPosition?: 'first' | 'second' | 'third' | 'fourth' | 'last' | null;
-  customMonthDay?: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday' | null;
+  customMonthPosition?: "first" | "second" | "third" | "fourth" | "last" | null;
+  customMonthDay?:
+    | "monday"
+    | "tuesday"
+    | "wednesday"
+    | "thursday"
+    | "friday"
+    | "saturday"
+    | "sunday"
+    | null;
 };
 
 const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
   task,
   onSubmit,
   onCancel,
-  projectId
+  projectId,
 }) => {
-  const { register, handleSubmit, formState: { errors }, reset, setValue, watch, getValues } = useForm<FormValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    setValue,
+    watch,
+    getValues,
+  } = useForm<FormValues>();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showAdvancedRecurring, setShowAdvancedRecurring] = useState(false);
-  const [patternPresets, setPatternPresets] = useState<{ id: string; name: string; config: RecurringPatternConfig }[]>([]);
+  const [patternPresets, setPatternPresets] = useState<
+    { id: string; name: string; config: RecurringPatternConfig }[]
+  >([]);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
-  const [previewInstances, setPreviewInstances] = useState<{ date: Date; isGenerated: boolean }[]>([]);
+  const [previewInstances, setPreviewInstances] = useState<
+    { date: Date; isGenerated: boolean }[]
+  >([]);
 
-  const recurringPattern = watch('recurringPattern');
-  const customInterval = watch('customInterval');
-  const customUnit = watch('customUnit');
-  const customDays = watch('customDays');
-  const customMonthDays = watch('customMonthDays');
-  const customMonthPosition = watch('customMonthPosition');
-  const customMonthDay = watch('customMonthDay');
+  const recurringPattern = watch("recurringPattern");
+  const customInterval = watch("customInterval");
+  const customUnit = watch("customUnit");
+  const customDays = watch("customDays");
+  const customMonthDays = watch("customMonthDays");
+  const customMonthPosition = watch("customMonthPosition");
+  const customMonthDay = watch("customMonthDay");
 
   const { validateRecurringConfig } = useRecurringTasks();
 
@@ -66,7 +94,7 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
       const config = task.customFields?.recurringConfig || {};
       reset({
         title: task.title,
-        description: task.description || '',
+        description: task.description || "",
         status: task.status,
         priority: task.priority,
         dueDate: task.dueDate || null,
@@ -79,14 +107,14 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
         customDays: config.customDays || [],
         customMonthDays: config.customMonthDays || [],
         customMonthPosition: config.customMonthPosition || null,
-        customMonthDay: config.customMonthDay || null
+        customMonthDay: config.customMonthDay || null,
       });
     } else {
       reset({
-        title: '',
-        description: '',
-        status: 'active',
-        priority: 'P2',
+        title: "",
+        description: "",
+        status: "active",
+        priority: "P2",
         dueDate: null,
         dueTime: null,
         recurringPattern: null,
@@ -97,17 +125,25 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
         customDays: [],
         customMonthDays: [],
         customMonthPosition: null,
-        customMonthDay: null
+        customMonthDay: null,
       });
     }
   }, [task, reset]);
 
   // Generate preview when pattern changes
   useEffect(() => {
-    if (recurringPattern && getValues('dueDate')) {
+    if (recurringPattern && getValues("dueDate")) {
       generatePreview();
     }
-  }, [recurringPattern, customInterval, customUnit, customDays, customMonthDays, customMonthPosition, customMonthDay]);
+  }, [
+    recurringPattern,
+    customInterval,
+    customUnit,
+    customDays,
+    customMonthDays,
+    customMonthPosition,
+    customMonthDay,
+  ]);
 
   const generatePreview = () => {
     const formValues = getValues();
@@ -123,42 +159,47 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
         endDate: formValues.recurringEndDate || null,
         maxOccurrences: formValues.recurringCount || 5,
         customInterval: formValues.customInterval || 1,
-        customUnit: formValues.customUnit || null
+        customUnit: formValues.customUnit || null,
       };
 
       const patternConfig: RecurringPatternConfig = {
         pattern: config.pattern,
         frequency: config.customUnit || config.pattern,
-        endCondition: config.endDate ? 'on_date' : config.maxOccurrences ? 'after_occurrences' : 'never',
+        endCondition: config.endDate
+          ? "on_date"
+          : config.maxOccurrences
+            ? "after_occurrences"
+            : "never",
         endDate: config.endDate || null,
         maxOccurrences: config.maxOccurrences || null,
         interval: config.customInterval || 1,
         customDays: formValues.customDays || null,
         customMonthDays: formValues.customMonthDays || null,
         customMonthPosition: formValues.customMonthPosition || null,
-        customMonthDay: formValues.customMonthDay || null
+        customMonthDay: formValues.customMonthDay || null,
       };
 
       const instances = recurringTaskService.generateRecurringInstances(
         {
           ...task,
-          id: task?.id || 'preview-task',
-          title: formValues.title || 'Preview Task',
+          id: task?.id || "preview-task",
+          title: formValues.title || "Preview Task",
           dueDate: formValues.dueDate,
           customFields: {
-            recurringConfig: config
-          }
+            recurringConfig: config,
+          },
         },
-        config
+        config,
       );
 
-      setPreviewInstances(instances.slice(0, 5).map(instance => ({
-        date: instance.date,
-        isGenerated: instance.isGenerated
-      })));
-
+      setPreviewInstances(
+        instances.slice(0, 5).map((instance) => ({
+          date: instance.date,
+          isGenerated: instance.isGenerated,
+        })),
+      );
     } catch (error) {
-      console.error('Preview generation error:', error);
+      console.error("Preview generation error:", error);
       setPreviewInstances([]);
     }
   };
@@ -166,12 +207,12 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
   const validateForm = (): boolean => {
     const formValues = getValues();
     const config: RecurringTaskConfig = {
-      pattern: formValues.recurringPattern || 'weekly',
+      pattern: formValues.recurringPattern || "weekly",
       startDate: formValues.dueDate || new Date(),
       endDate: formValues.recurringEndDate || null,
       maxOccurrences: formValues.recurringCount || null,
       customInterval: formValues.customInterval || 1,
-      customUnit: formValues.customUnit || null
+      customUnit: formValues.customUnit || null,
     };
 
     const validation = validateRecurringConfig(config);
@@ -187,17 +228,20 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
     setIsSubmitting(true);
     try {
       const config: RecurringTaskConfig = {
-        pattern: data.recurringPattern || 'weekly',
+        pattern: data.recurringPattern || "weekly",
         startDate: data.dueDate || new Date(),
         endDate: data.recurringEndDate || null,
         maxOccurrences: data.recurringCount || null,
         customInterval: data.customInterval || 1,
-        customUnit: data.customUnit || null
+        customUnit: data.customUnit || null,
       };
 
-      const taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'completed'> = {
+      const taskData: Omit<
+        Task,
+        "id" | "createdAt" | "updatedAt" | "completed"
+      > = {
         title: data.title,
-        description: data.description || '',
+        description: data.description || "",
         status: data.status,
         priority: data.priority,
         dueDate: data.dueDate || null,
@@ -216,67 +260,79 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
           customMonthDays: data.customMonthDays,
           customMonthPosition: data.customMonthPosition,
           customMonthDay: data.customMonthDay,
-          ...(task?.customFields || {})
-        }
+          ...(task?.customFields || {}),
+        },
       };
 
       await onSubmit(taskData, config);
     } catch (error) {
-      console.error('Form submission error:', error);
+      console.error("Form submission error:", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handlePatternPresetSelect = (presetId: string) => {
-    const preset = patternPresets.find(p => p.id === presetId);
+    const preset = patternPresets.find((p) => p.id === presetId);
     if (preset) {
-      setValue('recurringPattern', preset.config.pattern);
-      setValue('customInterval', preset.config.interval || 1);
-      setValue('customUnit', preset.config.frequency as any || null);
-      setValue('customDays', preset.config.customDays || []);
-      setValue('customMonthDays', preset.config.customMonthDays || []);
-      setValue('customMonthPosition', preset.config.customMonthPosition || null);
-      setValue('customMonthDay', preset.config.customMonthDay || null);
+      setValue("recurringPattern", preset.config.pattern);
+      setValue("customInterval", preset.config.interval || 1);
+      setValue("customUnit", (preset.config.frequency as any) || null);
+      setValue("customDays", preset.config.customDays || []);
+      setValue("customMonthDays", preset.config.customMonthDays || []);
+      setValue(
+        "customMonthPosition",
+        preset.config.customMonthPosition || null,
+      );
+      setValue("customMonthDay", preset.config.customMonthDay || null);
     }
   };
 
   const handleDayToggle = (day: number) => {
-    const currentDays = watch('customDays') || [];
+    const currentDays = watch("customDays") || [];
     if (currentDays.includes(day)) {
-      setValue('customDays', currentDays.filter(d => d !== day));
+      setValue(
+        "customDays",
+        currentDays.filter((d) => d !== day),
+      );
     } else {
-      setValue('customDays', [...currentDays, day]);
+      setValue("customDays", [...currentDays, day]);
     }
   };
 
   const handleMonthDayToggle = (day: number) => {
-    const currentDays = watch('customMonthDays') || [];
+    const currentDays = watch("customMonthDays") || [];
     if (currentDays.includes(day)) {
-      setValue('customMonthDays', currentDays.filter(d => d !== day));
+      setValue(
+        "customMonthDays",
+        currentDays.filter((d) => d !== day),
+      );
     } else {
-      setValue('customMonthDays', [...currentDays, day]);
+      setValue("customMonthDays", [...currentDays, day]);
     }
   };
 
   return (
     <form onSubmit={handleSubmit(onSubmitForm)} className="space-y-4">
       <div>
-        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          htmlFor="title"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Title <span className="text-red-500">*</span>
         </label>
         <input
           id="title"
           type="text"
-          {...register('title', {
-            required: 'Title is required',
+          {...register("title", {
+            required: "Title is required",
             maxLength: {
               value: 255,
-              message: 'Title cannot exceed 255 characters'
-            }
+              message: "Title cannot exceed 255 characters",
+            },
           })}
           className={`w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 ${
-            errors.title ? 'border-red-500' : 'border-gray-300'
+            errors.title ? "border-red-500" : "border-gray-300"
           }`}
           placeholder="Enter task title"
         />
@@ -286,34 +342,42 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          htmlFor="description"
+          className="block text-sm font-medium text-gray-700 mb-1"
+        >
           Description
         </label>
         <textarea
           id="description"
           rows={3}
-          {...register('description', {
+          {...register("description", {
             maxLength: {
               value: 5000,
-              message: 'Description cannot exceed 5000 characters'
-            }
+              message: "Description cannot exceed 5000 characters",
+            },
           })}
           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           placeholder="Enter task description"
         />
         {errors.description && (
-          <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+          <p className="mt-1 text-sm text-red-600">
+            {errors.description.message}
+          </p>
         )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="status"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Status
           </label>
           <select
             id="status"
-            {...register('status')}
+            {...register("status")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="active">Active</option>
@@ -325,12 +389,15 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
         </div>
 
         <div>
-          <label htmlFor="priority" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="priority"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Priority
           </label>
           <select
             id="priority"
-            {...register('priority')}
+            {...register("priority")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="P1">P1 - Critical</option>
@@ -343,43 +410,54 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="dueDate" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="dueDate"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Due Date
           </label>
           <input
             id="dueDate"
             type="date"
-            {...register('dueDate')}
+            {...register("dueDate")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
 
         <div>
-          <label htmlFor="dueTime" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="dueTime"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Due Time
           </label>
           <input
             id="dueTime"
             type="time"
-            {...register('dueTime')}
+            {...register("dueTime")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
       </div>
 
       <div className="border-t pt-4">
-        <h3 className="text-lg font-medium text-gray-900 mb-3">Recurring Task Settings</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-3">
+          Recurring Task Settings
+        </h3>
 
         <div>
-          <label htmlFor="recurringPattern" className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            htmlFor="recurringPattern"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
             Recurring Pattern
           </label>
           <select
             id="recurringPattern"
-            {...register('recurringPattern')}
+            {...register("recurringPattern")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             onChange={(e) => {
-              if (e.target.value !== 'custom') {
+              if (e.target.value !== "custom") {
                 setShowAdvancedRecurring(false);
               } else {
                 setShowAdvancedRecurring(true);
@@ -395,17 +473,26 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
           </select>
         </div>
 
-        {recurringPattern && recurringPattern !== '' && (
+        {recurringPattern && recurringPattern !== "" && (
           <div className="mt-3 ml-4">
             <button
               type="button"
               onClick={() => setShowAdvancedRecurring(!showAdvancedRecurring)}
               className="text-sm text-blue-600 hover:text-blue-800 flex items-center"
             >
-              {showAdvancedRecurring ? 'Hide' : 'Show'} Advanced Settings
-              <svg className={`ml-1 h-4 w-4 transform ${showAdvancedRecurring ? 'rotate-180' : ''}`}
-                   fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              {showAdvancedRecurring ? "Hide" : "Show"} Advanced Settings
+              <svg
+                className={`ml-1 h-4 w-4 transform ${showAdvancedRecurring ? "rotate-180" : ""}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
 
@@ -413,7 +500,7 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
               <div className="mt-3 space-y-3">
                 {/* Pattern Presets */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mt-3">
-                  {patternPresets.map(preset => (
+                  {patternPresets.map((preset) => (
                     <button
                       key={preset.id}
                       type="button"
@@ -427,14 +514,17 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
 
                 {/* Custom Interval */}
                 <div>
-                  <label htmlFor="customInterval" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="customInterval"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Interval
                   </label>
                   <input
                     id="customInterval"
                     type="number"
                     min="1"
-                    {...register('customInterval')}
+                    {...register("customInterval")}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Interval"
                   />
@@ -442,12 +532,15 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
 
                 {/* Custom Unit */}
                 <div>
-                  <label htmlFor="customUnit" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="customUnit"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Unit
                   </label>
                   <select
                     id="customUnit"
-                    {...register('customUnit')}
+                    {...register("customUnit")}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="">Select unit</option>
@@ -459,61 +552,72 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
                 </div>
 
                 {/* Custom Days (for weekly patterns) */}
-                {recurringPattern === 'weekly' && (
+                {recurringPattern === "weekly" && (
                   <div className="border p-3 rounded-md">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Days of Week</h4>
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">
+                      Days of Week
+                    </h4>
                     <div className="grid grid-cols-7 gap-1 text-xs">
-                      {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day, index) => (
-                        <button
-                          key={day}
-                          type="button"
-                          onClick={() => handleDayToggle(index)}
-                          className={`px-2 py-1 rounded-md ${
-                            (watch('customDays') || []).includes(index)
-                              ? 'bg-blue-600 text-white'
-                              : 'border border-gray-300 hover:bg-gray-50'
-                          }`}
-                        >
-                          {day}
-                        </button>
-                      ))}
+                      {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+                        (day, index) => (
+                          <button
+                            key={day}
+                            type="button"
+                            onClick={() => handleDayToggle(index)}
+                            className={`px-2 py-1 rounded-md ${
+                              (watch("customDays") || []).includes(index)
+                                ? "bg-blue-600 text-white"
+                                : "border border-gray-300 hover:bg-gray-50"
+                            }`}
+                          >
+                            {day}
+                          </button>
+                        ),
+                      )}
                     </div>
                   </div>
                 )}
 
                 {/* Custom Month Days (for monthly patterns) */}
-                {recurringPattern === 'monthly' && (
+                {recurringPattern === "monthly" && (
                   <div className="border p-3 rounded-md">
-                    <h4 className="text-sm font-medium text-gray-700 mb-2">Days of Month</h4>
+                    <h4 className="text-sm font-medium text-gray-700 mb-2">
+                      Days of Month
+                    </h4>
                     <div className="grid grid-cols-7 gap-1 text-xs">
-                      {Array.from({ length: 31 }, (_, i) => i + 1).map(day => (
-                        <button
-                          key={day}
-                          type="button"
-                          onClick={() => handleMonthDayToggle(day)}
-                          className={`px-2 py-1 rounded-md ${
-                            (watch('customMonthDays') || []).includes(day)
-                              ? 'bg-blue-600 text-white'
-                              : 'border border-gray-300 hover:bg-gray-50'
-                          }`}
-                        >
-                          {day}
-                        </button>
-                      ))}
+                      {Array.from({ length: 31 }, (_, i) => i + 1).map(
+                        (day) => (
+                          <button
+                            key={day}
+                            type="button"
+                            onClick={() => handleMonthDayToggle(day)}
+                            className={`px-2 py-1 rounded-md ${
+                              (watch("customMonthDays") || []).includes(day)
+                                ? "bg-blue-600 text-white"
+                                : "border border-gray-300 hover:bg-gray-50"
+                            }`}
+                          >
+                            {day}
+                          </button>
+                        ),
+                      )}
                     </div>
                   </div>
                 )}
 
                 {/* Custom Month Position (for monthly patterns) */}
-                {recurringPattern === 'monthly' && (
+                {recurringPattern === "monthly" && (
                   <div className="space-y-2">
                     <div>
-                      <label htmlFor="customMonthPosition" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="customMonthPosition"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Month Position
                       </label>
                       <select
                         id="customMonthPosition"
-                        {...register('customMonthPosition')}
+                        {...register("customMonthPosition")}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       >
                         <option value="">Select position</option>
@@ -526,12 +630,15 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
                     </div>
 
                     <div>
-                      <label htmlFor="customMonthDay" className="block text-sm font-medium text-gray-700 mb-1">
+                      <label
+                        htmlFor="customMonthDay"
+                        className="block text-sm font-medium text-gray-700 mb-1"
+                      >
                         Day of Week
                       </label>
                       <select
                         id="customMonthDay"
-                        {...register('customMonthDay')}
+                        {...register("customMonthDay")}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                       >
                         <option value="">Select day</option>
@@ -548,26 +655,32 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
                 )}
 
                 <div>
-                  <label htmlFor="recurringEndDate" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="recurringEndDate"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     End Date (optional)
                   </label>
                   <input
                     id="recurringEndDate"
                     type="date"
-                    {...register('recurringEndDate')}
+                    {...register("recurringEndDate")}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="recurringCount" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="recurringCount"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Number of Occurrences (optional)
                   </label>
                   <input
                     id="recurringCount"
                     type="number"
                     min="1"
-                    {...register('recurringCount')}
+                    {...register("recurringCount")}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter number of times this task should repeat"
                   />
@@ -581,20 +694,27 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
       {/* Preview Section */}
       {previewInstances.length > 0 && (
         <div className="border-t pt-4">
-          <h4 className="font-medium text-gray-900 mb-2">Preview of Next 5 Instances</h4>
+          <h4 className="font-medium text-gray-900 mb-2">
+            Preview of Next 5 Instances
+          </h4>
           <div className="space-y-2">
             {previewInstances.map((instance, index) => (
-              <div key={index} className="flex items-center justify-between p-2 border border-gray-100 rounded-md bg-gray-50">
+              <div
+                key={index}
+                className="flex items-center justify-between p-2 border border-gray-100 rounded-md bg-gray-50"
+              >
                 <div className="flex items-center space-x-2">
-                  <div className={`w-2 h-2 rounded-full ${
-                    instance.isGenerated ? 'bg-blue-500' : 'bg-green-500'
-                  }`}></div>
+                  <div
+                    className={`w-2 h-2 rounded-full ${
+                      instance.isGenerated ? "bg-blue-500" : "bg-green-500"
+                    }`}
+                  ></div>
                   <span className="text-sm text-gray-700">
                     {instance.date.toLocaleDateString()}
                   </span>
                 </div>
                 <span className="text-xs px-2 py-1 rounded-full bg-gray-200 text-gray-600">
-                  {instance.isGenerated ? 'Generated' : 'Original'}
+                  {instance.isGenerated ? "Generated" : "Original"}
                 </span>
               </div>
             ))}
@@ -605,7 +725,9 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
       {/* Validation Errors */}
       {validationErrors.length > 0 && (
         <div className="border border-red-200 bg-red-50 p-3 rounded-md">
-          <h4 className="text-sm font-medium text-red-700 mb-2">Configuration Errors</h4>
+          <h4 className="text-sm font-medium text-red-700 mb-2">
+            Configuration Errors
+          </h4>
           <ul className="text-sm text-red-600 list-disc list-inside">
             {validationErrors.map((error, index) => (
               <li key={index}>{error}</li>
@@ -641,13 +763,32 @@ const RecurringTaskForm: React.FC<RecurringTaskFormProps> = ({
         >
           {isSubmitting ? (
             <>
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Saving...
             </>
-          ) : task ? 'Update Recurring Task' : 'Create Recurring Task'}
+          ) : task ? (
+            "Update Recurring Task"
+          ) : (
+            "Create Recurring Task"
+          )}
         </button>
       </div>
     </form>

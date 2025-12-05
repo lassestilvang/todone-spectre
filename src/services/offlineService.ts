@@ -4,9 +4,9 @@ import {
   OfflineState,
   OfflineQueuePriority,
   OfflineOperationResult,
-  OfflineBatchResult
-} from '../types/offlineTypes';
-import { useOfflineStore } from '../store/useOfflineStore';
+  OfflineBatchResult,
+} from "../types/offlineTypes";
+import { useOfflineStore } from "../store/useOfflineStore";
 
 /**
  * Offline Service - Handles offline status and queue management
@@ -40,7 +40,7 @@ export class OfflineService {
    * Get current offline status
    */
   getOfflineStatus(): OfflineStatus {
-    return this.offlineStore.isOffline ? 'offline' : 'online';
+    return this.offlineStore.isOffline ? "offline" : "online";
   }
 
   /**
@@ -54,22 +54,29 @@ export class OfflineService {
       lastSync: this.offlineStore.lastSync,
       error: this.offlineStore.error,
       isProcessing: this.offlineStore.isProcessing,
-      settings: this.offlineStore.settings
+      settings: this.offlineStore.settings,
     };
   }
 
   /**
    * Add item to offline queue
    */
-  addToQueue(item: Omit<OfflineQueueItem, 'id' | 'timestamp' | 'status' | 'attempts'>): {
+  addToQueue(
+    item: Omit<OfflineQueueItem, "id" | "timestamp" | "status" | "attempts">,
+  ): {
     success: boolean;
     error?: Error | null;
     queueItem?: OfflineQueueItem;
   } {
     try {
       // Check if queue is full
-      if (this.offlineStore.queue.length >= this.offlineStore.settings.maxQueueSize) {
-        throw new Error(`Queue full. Maximum size: ${this.offlineStore.settings.maxQueueSize}`);
+      if (
+        this.offlineStore.queue.length >=
+        this.offlineStore.settings.maxQueueSize
+      ) {
+        throw new Error(
+          `Queue full. Maximum size: ${this.offlineStore.settings.maxQueueSize}`,
+        );
       }
 
       // Create new queue item
@@ -79,8 +86,8 @@ export class OfflineService {
         type: item.type,
         data: item.data,
         timestamp: new Date(),
-        status: 'pending',
-        attempts: 0
+        status: "pending",
+        attempts: 0,
       };
 
       // Add to queue
@@ -88,12 +95,13 @@ export class OfflineService {
 
       return {
         success: true,
-        queueItem: newItem
+        queueItem: newItem,
       };
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to add to queue')
+        error:
+          error instanceof Error ? error : new Error("Failed to add to queue"),
       };
     }
   }
@@ -108,23 +116,26 @@ export class OfflineService {
   }> {
     try {
       if (this.offlineStore.isOffline) {
-        throw new Error('Cannot process queue while offline');
+        throw new Error("Cannot process queue while offline");
       }
 
       if (this.offlineStore.queue.length === 0) {
-        throw new Error('No items to process');
+        throw new Error("No items to process");
       }
 
       await this.offlineStore.processQueue();
 
       return {
         success: true,
-        processedItems: this.offlineStore.queue.filter(item => item.status === 'completed')
+        processedItems: this.offlineStore.queue.filter(
+          (item) => item.status === "completed",
+        ),
       };
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error : new Error('Queue processing failed')
+        error:
+          error instanceof Error ? error : new Error("Queue processing failed"),
       };
     }
   }
@@ -142,7 +153,10 @@ export class OfflineService {
     } catch (error) {
       return {
         success: false,
-        error: error instanceof Error ? error : new Error('Failed to retry queue item')
+        error:
+          error instanceof Error
+            ? error
+            : new Error("Failed to retry queue item"),
       };
     }
   }
@@ -165,17 +179,25 @@ export class OfflineService {
     failedItems: number;
   } {
     const totalItems = this.offlineStore.queue.length;
-    const pendingItems = this.offlineStore.queue.filter(item => item.status === 'pending').length;
-    const processingItems = this.offlineStore.queue.filter(item => item.status === 'processing').length;
-    const completedItems = this.offlineStore.queue.filter(item => item.status === 'completed').length;
-    const failedItems = this.offlineStore.queue.filter(item => item.status === 'failed').length;
+    const pendingItems = this.offlineStore.queue.filter(
+      (item) => item.status === "pending",
+    ).length;
+    const processingItems = this.offlineStore.queue.filter(
+      (item) => item.status === "processing",
+    ).length;
+    const completedItems = this.offlineStore.queue.filter(
+      (item) => item.status === "completed",
+    ).length;
+    const failedItems = this.offlineStore.queue.filter(
+      (item) => item.status === "failed",
+    ).length;
 
     return {
       totalItems,
       pendingItems,
       processingItems,
       completedItems,
-      failedItems
+      failedItems,
     };
   }
 

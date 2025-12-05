@@ -1,21 +1,21 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
-import { UiState } from '../types/store';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
+import { UiState } from "../types/store";
 
 export const useUiStore = create<UiState>()(
   devtools(
     persist(
       (set) => ({
         isSidebarOpen: true,
-        theme: 'system',
-        currentView: 'dashboard',
+        theme: "system",
+        currentView: "dashboard",
         isTaskModalOpen: false,
         isProjectModalOpen: false,
         isSettingsModalOpen: false,
         isSearchModalOpen: false,
         isCommandPaletteOpen: false,
-        searchQuery: '',
+        searchQuery: "",
         searchResults: [],
         commandHistory: [],
 
@@ -23,22 +23,22 @@ export const useUiStore = create<UiState>()(
           set((state) => ({ isSidebarOpen: !state.isSidebarOpen }));
         },
 
-        setTheme: (theme: UiState['theme']) => {
+        setTheme: (theme: UiState["theme"]) => {
           set({ theme });
           // Apply theme to document
-          if (theme === 'dark') {
-            document.documentElement.classList.add('dark');
-            document.documentElement.classList.remove('light');
-          } else if (theme === 'light') {
-            document.documentElement.classList.add('light');
-            document.documentElement.classList.remove('dark');
+          if (theme === "dark") {
+            document.documentElement.classList.add("dark");
+            document.documentElement.classList.remove("light");
+          } else if (theme === "light") {
+            document.documentElement.classList.add("light");
+            document.documentElement.classList.remove("dark");
           } else {
             // System theme - remove both classes and let OS decide
-            document.documentElement.classList.remove('light', 'dark');
+            document.documentElement.classList.remove("light", "dark");
           }
         },
 
-        setCurrentView: (view: UiState['currentView']) => {
+        setCurrentView: (view: UiState["currentView"]) => {
           set({ currentView: view });
         },
 
@@ -72,7 +72,7 @@ export const useUiStore = create<UiState>()(
         },
 
         closeSearchModal: () => {
-          set({ isSearchModalOpen: false, searchQuery: '', searchResults: [] });
+          set({ isSearchModalOpen: false, searchQuery: "", searchResults: [] });
         },
 
         // Command palette methods
@@ -95,7 +95,7 @@ export const useUiStore = create<UiState>()(
 
         addToCommandHistory: (commandId: string) => {
           set((state) => ({
-            commandHistory: [...state.commandHistory, commandId]
+            commandHistory: [...state.commandHistory, commandId],
           }));
         },
 
@@ -116,88 +116,96 @@ export const useUiStore = create<UiState>()(
         // View-specific state management
         viewFilters: {
           inbox: {
-            status: 'all',
-            priority: 'all',
-            searchQuery: ''
+            status: "all",
+            priority: "all",
+            searchQuery: "",
           },
           today: {
-            priority: 'all',
-            searchQuery: ''
+            priority: "all",
+            searchQuery: "",
           },
           upcoming: {
-            priority: 'all',
-            timeRange: 'all',
-            searchQuery: ''
-          }
+            priority: "all",
+            timeRange: "all",
+            searchQuery: "",
+          },
         },
 
         // View layout configurations
         listViewConfig: {
-          sortBy: 'dueDate',
-          groupBy: 'project'
+          sortBy: "dueDate",
+          groupBy: "project",
         },
         boardViewConfig: {
-          columns: ['To Do', 'In Progress', 'Done'],
-          showTaskCount: true
+          columns: ["To Do", "In Progress", "Done"],
+          showTaskCount: true,
         },
         calendarViewConfig: {
-          viewMode: 'week',
-          showWeekends: true
+          viewMode: "week",
+          showWeekends: true,
         },
 
         viewSorting: {
           inbox: {
-            field: 'priority',
-            direction: 'asc'
+            field: "priority",
+            direction: "asc",
           },
           today: {
-            field: 'dueDate',
-            direction: 'asc'
+            field: "dueDate",
+            direction: "asc",
           },
           upcoming: {
-            field: 'dueDate',
-            direction: 'asc'
-          }
+            field: "dueDate",
+            direction: "asc",
+          },
         },
 
         viewGrouping: {
-          inbox: 'status',
-          today: 'overdue-today',
-          upcoming: 'time-period'
+          inbox: "status",
+          today: "overdue-today",
+          upcoming: "time-period",
         },
 
         viewPagination: {
           inbox: {
             page: 1,
-            pageSize: 20
+            pageSize: 20,
           },
           today: {
             page: 1,
-            pageSize: 20
+            pageSize: 20,
           },
           upcoming: {
             page: 1,
-            pageSize: 20
-          }
+            pageSize: 20,
+          },
         },
 
-        setViewFilter: (view: 'inbox' | 'today' | 'upcoming', filterType: string, value: any) => {
+        setViewFilter: (
+          view: "inbox" | "today" | "upcoming",
+          filterType: string,
+          value: any,
+        ) => {
           set((state) => {
             const newFilters = { ...state.viewFilters };
-            if (filterType === 'status') {
+            if (filterType === "status") {
               newFilters[view].status = value;
-            } else if (filterType === 'priority') {
+            } else if (filterType === "priority") {
               newFilters[view].priority = value;
-            } else if (filterType === 'timeRange') {
+            } else if (filterType === "timeRange") {
               newFilters[view].timeRange = value;
-            } else if (filterType === 'searchQuery') {
+            } else if (filterType === "searchQuery") {
               newFilters[view].searchQuery = value;
             }
             return { viewFilters: newFilters };
           });
         },
 
-        setViewSorting: (view: 'inbox' | 'today' | 'upcoming', field: string, direction: 'asc' | 'desc') => {
+        setViewSorting: (
+          view: "inbox" | "today" | "upcoming",
+          field: string,
+          direction: "asc" | "desc",
+        ) => {
           set((state) => {
             const newSorting = { ...state.viewSorting };
             newSorting[view] = { field, direction };
@@ -205,7 +213,10 @@ export const useUiStore = create<UiState>()(
           });
         },
 
-        setViewGrouping: (view: 'inbox' | 'today' | 'upcoming', grouping: string) => {
+        setViewGrouping: (
+          view: "inbox" | "today" | "upcoming",
+          grouping: string,
+        ) => {
           set((state) => {
             const newGrouping = { ...state.viewGrouping };
             newGrouping[view] = grouping;
@@ -213,7 +224,11 @@ export const useUiStore = create<UiState>()(
           });
         },
 
-        setViewPagination: (view: 'inbox' | 'today' | 'upcoming', page: number, pageSize: number) => {
+        setViewPagination: (
+          view: "inbox" | "today" | "upcoming",
+          page: number,
+          pageSize: number,
+        ) => {
           set((state) => {
             const newPagination = { ...state.viewPagination };
             newPagination[view] = { page, pageSize };
@@ -221,14 +236,14 @@ export const useUiStore = create<UiState>()(
           });
         },
 
-        resetViewFilters: (view: 'inbox' | 'today' | 'upcoming') => {
+        resetViewFilters: (view: "inbox" | "today" | "upcoming") => {
           set((state) => {
             const newFilters = { ...state.viewFilters };
             newFilters[view] = {
-              status: 'all',
-              priority: 'all',
-              searchQuery: '',
-              ...(view === 'upcoming' && { timeRange: 'all' })
+              status: "all",
+              priority: "all",
+              searchQuery: "",
+              ...(view === "upcoming" && { timeRange: "all" }),
             };
             return { viewFilters: newFilters };
           });
@@ -239,20 +254,26 @@ export const useUiStore = create<UiState>()(
           set({ listViewConfig: config });
         },
 
-        setBoardViewConfig: (config: { columns: string[]; showTaskCount: boolean }) => {
+        setBoardViewConfig: (config: {
+          columns: string[];
+          showTaskCount: boolean;
+        }) => {
           set({ boardViewConfig: config });
         },
 
-        setCalendarViewConfig: (config: { viewMode: string; showWeekends: boolean }) => {
+        setCalendarViewConfig: (config: {
+          viewMode: string;
+          showWeekends: boolean;
+        }) => {
           set({ calendarViewConfig: config });
         },
       }),
       {
-        name: 'todone-ui-storage',
+        name: "todone-ui-storage",
         storage: createJSONStorage(() => localStorage),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
 
 // Helper function to create localStorage

@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react';
-import { performanceConfigService } from '../services/performanceConfigService';
-import { PerformanceConfig } from '../types/performance';
+import { useState, useEffect } from "react";
+import { performanceConfigService } from "../services/performanceConfigService";
+import { PerformanceConfig } from "../types/performance";
 
 export const usePerformanceConfig = () => {
-  const [config, setConfig] = useState<PerformanceConfig>(performanceConfigService.getConfig());
+  const [config, setConfig] = useState<PerformanceConfig>(
+    performanceConfigService.getConfig(),
+  );
 
   useEffect(() => {
     const unsubscribe = performanceConfigService.subscribe((newConfig) => {
@@ -24,6 +26,6 @@ export const usePerformanceConfig = () => {
   return {
     config,
     updateConfig,
-    resetConfig
+    resetConfig,
   };
 };

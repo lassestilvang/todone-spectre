@@ -1,6 +1,6 @@
-import React from 'react';
-import { useEmptyState } from '../../../hooks/useEmptyState';
-import { EmptyStateConfig } from '../../../types/emptyStateTypes';
+import React from "react";
+import { useEmptyState } from "../../../hooks/useEmptyState";
+import { EmptyStateConfig } from "../../../types/emptyStateTypes";
 
 interface EmptyStateWithCustomizationProps {
   emptyStateKey: string;
@@ -9,20 +9,18 @@ interface EmptyStateWithCustomizationProps {
   onActionClick?: () => void;
 }
 
-export const EmptyStateWithCustomization: React.FC<EmptyStateWithCustomizationProps> = ({
-  emptyStateKey,
-  customConfig,
-  className = '',
-  onActionClick
-}) => {
-  const { emptyStateConfig, isVisible, updateEmptyState } = useEmptyState(emptyStateKey);
+export const EmptyStateWithCustomization: React.FC<
+  EmptyStateWithCustomizationProps
+> = ({ emptyStateKey, customConfig, className = "", onActionClick }) => {
+  const { emptyStateConfig, isVisible, updateEmptyState } =
+    useEmptyState(emptyStateKey);
 
   // Merge default config with custom config
   const mergedConfig = React.useMemo(() => {
     return {
       ...emptyStateConfig,
       ...customConfig,
-      actions: customConfig?.actions || emptyStateConfig.actions
+      actions: customConfig?.actions || emptyStateConfig.actions,
     };
   }, [emptyStateConfig, customConfig]);
 
@@ -41,9 +39,7 @@ export const EmptyStateWithCustomization: React.FC<EmptyStateWithCustomizationPr
     <div className={`empty-state-custom ${className}`}>
       <div className="empty-state-content">
         {mergedConfig.icon && (
-          <div className="empty-state-icon">
-            {mergedConfig.icon}
-          </div>
+          <div className="empty-state-icon">{mergedConfig.icon}</div>
         )}
 
         <div className="empty-state-text">
@@ -54,7 +50,7 @@ export const EmptyStateWithCustomization: React.FC<EmptyStateWithCustomizationPr
         {mergedConfig.actions && (
           <div className="empty-state-actions">
             {React.cloneElement(mergedConfig.actions as React.ReactElement, {
-              onClick: handleActionClick
+              onClick: handleActionClick,
             })}
           </div>
         )}

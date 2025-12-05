@@ -1,17 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { useCollaboration } from '../../hooks/useCollaboration';
-import { useAuth } from '../../hooks/useAuth';
-import { useUsers } from '../../hooks/useUsers';
-import { User } from '../../types/user';
-import { CollaborationActivity, CollaborationMember } from '../../types/collaboration';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Users, Activity, Settings, Check, X, Edit, Trash2, User, Mail, Phone, Briefcase } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useCollaboration } from "../../hooks/useCollaboration";
+import { useAuth } from "../../hooks/useAuth";
+import { useUsers } from "../../hooks/useUsers";
+import { User } from "../../types/user";
+import {
+  CollaborationActivity,
+  CollaborationMember,
+} from "../../types/collaboration";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Plus,
+  Users,
+  Activity,
+  Settings,
+  Check,
+  X,
+  Edit,
+  Trash2,
+  User,
+  Mail,
+  Phone,
+  Briefcase,
+} from "lucide-react";
 
 interface UserProfileCollaborationIntegrationProps {
   teamId: string;
@@ -21,14 +49,17 @@ interface UserProfileCollaborationIntegrationProps {
   onProfileUpdated?: (user: User) => void;
 }
 
-export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborationIntegrationProps> = ({
+export const UserProfileCollaborationIntegration: React.FC<
+  UserProfileCollaborationIntegrationProps
+> = ({
   teamId,
   userId,
   showProfileManagement = true,
   showActivityFeed = true,
-  onProfileUpdated
+  onProfileUpdated,
 }) => {
-  const { teams, members, addMemberToTeam, updateMemberRole } = useCollaboration();
+  const { teams, members, addMemberToTeam, updateMemberRole } =
+    useCollaboration();
   const { user, updateUserProfile } = useAuth();
   const { users, getUserById, updateUser } = useUsers();
   const [profileUser, setProfileUser] = useState<User | null>(null);
@@ -39,8 +70,8 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
   const [editedUser, setEditedUser] = useState<Partial<User>>({});
 
   // Get current team
-  const currentTeam = teams.find(team => team.id === teamId);
-  const teamMembers = members.filter(member => member.teamId === teamId);
+  const currentTeam = teams.find((team) => team.id === teamId);
+  const teamMembers = members.filter((member) => member.teamId === teamId);
 
   // Get the user to display (either provided userId or current user)
   useEffect(() => {
@@ -56,10 +87,10 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
           name: fetchedUser.name,
           email: fetchedUser.email,
           bio: fetchedUser.bio,
-          title: fetchedUser.title
+          title: fetchedUser.title,
         });
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch user');
+        setError(err instanceof Error ? err.message : "Failed to fetch user");
       } finally {
         setLoading(false);
       }
@@ -79,17 +110,20 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
       const updatedUser = await updateUser(profileUser.id, editedUser);
 
       // Create collaboration activity
-      const activityData: Omit<CollaborationActivity, 'id'> = {
+      const activityData: Omit<CollaborationActivity, "id"> = {
         teamId,
         userId: updatedUser.id,
         action: `updated their profile`,
-        type: 'member_updated',
+        type: "member_updated",
         timestamp: new Date(),
         entityId: updatedUser.id,
-        entityType: 'user'
+        entityType: "user",
       };
 
-      setActivityFeed(prev => [activityData as CollaborationActivity, ...prev]);
+      setActivityFeed((prev) => [
+        activityData as CollaborationActivity,
+        ...prev,
+      ]);
       setProfileUser(updatedUser);
       setEditMode(false);
 
@@ -97,14 +131,17 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
         onProfileUpdated(updatedUser);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update profile');
+      setError(err instanceof Error ? err.message : "Failed to update profile");
     } finally {
       setLoading(false);
     }
   };
 
   // Handle team member role updates
-  const handleRoleUpdate = async (memberId: string, newRole: CollaborationMember['role']) => {
+  const handleRoleUpdate = async (
+    memberId: string,
+    newRole: CollaborationMember["role"],
+  ) => {
     try {
       setLoading(true);
       setError(null);
@@ -112,19 +149,24 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
       await updateMemberRole(teamId, memberId, newRole);
 
       // Create collaboration activity
-      const activityData: Omit<CollaborationActivity, 'id'> = {
+      const activityData: Omit<CollaborationActivity, "id"> = {
         teamId,
-        userId: user?.id || 'current-user',
+        userId: user?.id || "current-user",
         action: `updated member role to ${newRole}`,
-        type: 'member_updated',
+        type: "member_updated",
         timestamp: new Date(),
         entityId: memberId,
-        entityType: 'member'
+        entityType: "member",
       };
 
-      setActivityFeed(prev => [activityData as CollaborationActivity, ...prev]);
+      setActivityFeed((prev) => [
+        activityData as CollaborationActivity,
+        ...prev,
+      ]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update member role');
+      setError(
+        err instanceof Error ? err.message : "Failed to update member role",
+      );
     } finally {
       setLoading(false);
     }
@@ -139,32 +181,39 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
       setError(null);
 
       // Check if user is already a member
-      const isAlreadyMember = teamMembers.some(member => member.userId === profileUser.id);
+      const isAlreadyMember = teamMembers.some(
+        (member) => member.userId === profileUser.id,
+      );
       if (isAlreadyMember) {
-        setError('User is already a team member');
+        setError("User is already a team member");
         return;
       }
 
       await addMemberToTeam(teamId, {
         userId: profileUser.id,
-        role: 'member',
-        status: 'active'
+        role: "member",
+        status: "active",
       });
 
       // Create collaboration activity
-      const activityData: Omit<CollaborationActivity, 'id'> = {
+      const activityData: Omit<CollaborationActivity, "id"> = {
         teamId,
-        userId: user?.id || 'current-user',
+        userId: user?.id || "current-user",
         action: `added ${profileUser.name} to the team`,
-        type: 'member_added',
+        type: "member_added",
         timestamp: new Date(),
         entityId: profileUser.id,
-        entityType: 'member'
+        entityType: "member",
       };
 
-      setActivityFeed(prev => [activityData as CollaborationActivity, ...prev]);
+      setActivityFeed((prev) => [
+        activityData as CollaborationActivity,
+        ...prev,
+      ]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to add user to team');
+      setError(
+        err instanceof Error ? err.message : "Failed to add user to team",
+      );
     } finally {
       setLoading(false);
     }
@@ -185,14 +234,18 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
         <Card>
           <CardHeader>
             <CardTitle>User Profile</CardTitle>
-            <CardDescription>Manage user profile and team membership</CardDescription>
+            <CardDescription>
+              Manage user profile and team membership
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center space-x-4">
               <Avatar className="w-16 h-16">
                 <AvatarImage src={profileUser.avatar || undefined} />
                 <AvatarFallback>
-                  {profileUser.name ? profileUser.name.substring(0, 2).toUpperCase() : 'U'}
+                  {profileUser.name
+                    ? profileUser.name.substring(0, 2).toUpperCase()
+                    : "U"}
                 </AvatarFallback>
               </Avatar>
 
@@ -203,8 +256,13 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
                       <Label htmlFor="edit-name">Name</Label>
                       <Input
                         id="edit-name"
-                        value={editedUser.name || ''}
-                        onChange={(e) => setEditedUser(prev => ({ ...prev, name: e.target.value }))}
+                        value={editedUser.name || ""}
+                        onChange={(e) =>
+                          setEditedUser((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }))
+                        }
                       />
                     </div>
 
@@ -212,8 +270,13 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
                       <Label htmlFor="edit-title">Title</Label>
                       <Input
                         id="edit-title"
-                        value={editedUser.title || ''}
-                        onChange={(e) => setEditedUser(prev => ({ ...prev, title: e.target.value }))}
+                        value={editedUser.title || ""}
+                        onChange={(e) =>
+                          setEditedUser((prev) => ({
+                            ...prev,
+                            title: e.target.value,
+                          }))
+                        }
                       />
                     </div>
 
@@ -221,19 +284,28 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
                       <Label htmlFor="edit-bio">Bio</Label>
                       <Input
                         id="edit-bio"
-                        value={editedUser.bio || ''}
-                        onChange={(e) => setEditedUser(prev => ({ ...prev, bio: e.target.value }))}
+                        value={editedUser.bio || ""}
+                        onChange={(e) =>
+                          setEditedUser((prev) => ({
+                            ...prev,
+                            bio: e.target.value,
+                          }))
+                        }
                       />
                     </div>
                   </div>
                 ) : (
                   <div>
-                    <h3 className="text-xl font-semibold">{profileUser.name}</h3>
+                    <h3 className="text-xl font-semibold">
+                      {profileUser.name}
+                    </h3>
                     {profileUser.title && (
                       <p className="text-gray-600">{profileUser.title}</p>
                     )}
                     {profileUser.bio && (
-                      <p className="text-sm text-gray-500 mt-1">{profileUser.bio}</p>
+                      <p className="text-sm text-gray-500 mt-1">
+                        {profileUser.bio}
+                      </p>
                     )}
                   </div>
                 )}
@@ -248,7 +320,7 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
 
               <div className="space-y-1">
                 <Label className="text-sm text-gray-500">Role</Label>
-                <p className="capitalize">{profileUser.role || 'member'}</p>
+                <p className="capitalize">{profileUser.role || "member"}</p>
               </div>
             </div>
 
@@ -256,20 +328,28 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
               {editMode ? (
                 <>
                   <Button onClick={handleProfileUpdate} disabled={loading}>
-                    {loading ? 'Saving...' : 'Save Profile'}
+                    {loading ? "Saving..." : "Save Profile"}
                   </Button>
-                  <Button variant="outline" onClick={() => setEditMode(false)} disabled={loading}>
+                  <Button
+                    variant="outline"
+                    onClick={() => setEditMode(false)}
+                    disabled={loading}
+                  >
                     Cancel
                   </Button>
                 </>
               ) : (
                 <>
-                  <Button onClick={() => setEditMode(true)}>Edit Profile</Button>
+                  <Button onClick={() => setEditMode(true)}>
+                    Edit Profile
+                  </Button>
 
                   {/* Show add to team button if user is not already a member */}
-                  {!teamMembers.some(member => member.userId === profileUser.id) && (
+                  {!teamMembers.some(
+                    (member) => member.userId === profileUser.id,
+                  ) && (
                     <Button onClick={handleAddToTeam} disabled={loading}>
-                      {loading ? 'Adding...' : 'Add to Team'}
+                      {loading ? "Adding..." : "Add to Team"}
                     </Button>
                   )}
                 </>
@@ -285,25 +365,36 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
       <Card>
         <CardHeader>
           <CardTitle>Team Members</CardTitle>
-          <CardDescription>Manage team member roles and permissions</CardDescription>
+          <CardDescription>
+            Manage team member roles and permissions
+          </CardDescription>
         </CardHeader>
         <CardContent>
           {teamMembers.length === 0 ? (
             <p className="text-gray-500">No team members found.</p>
           ) : (
             <div className="space-y-4">
-              {teamMembers.map(member => (
-                <div key={member.id} className="flex items-center justify-between p-3 border rounded-lg">
+              {teamMembers.map((member) => (
+                <div
+                  key={member.id}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
                   <div className="flex items-center space-x-3">
                     <Avatar className="w-8 h-8">
                       <AvatarImage src={member.user?.avatar || undefined} />
                       <AvatarFallback>
-                        {member.user?.name ? member.user.name.substring(0, 2).toUpperCase() : 'U'}
+                        {member.user?.name
+                          ? member.user.name.substring(0, 2).toUpperCase()
+                          : "U"}
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium truncate">{member.user?.name || member.id}</h4>
-                      <p className="text-sm text-gray-500 truncate">{member.user?.email || 'No email'}</p>
+                      <h4 className="font-medium truncate">
+                        {member.user?.name || member.id}
+                      </h4>
+                      <p className="text-sm text-gray-500 truncate">
+                        {member.user?.email || "No email"}
+                      </p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
@@ -312,7 +403,12 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
                     </Badge>
                     <Select
                       value={member.role}
-                      onValueChange={(value) => handleRoleUpdate(member.id, value as CollaborationMember['role'])}
+                      onValueChange={(value) =>
+                        handleRoleUpdate(
+                          member.id,
+                          value as CollaborationMember["role"],
+                        )
+                      }
                       disabled={loading}
                     >
                       <SelectTrigger className="w-[120px]">
@@ -337,7 +433,9 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
         <Card>
           <CardHeader>
             <CardTitle>Profile Activity Feed</CardTitle>
-            <CardDescription>Recent profile-related collaboration activities</CardDescription>
+            <CardDescription>
+              Recent profile-related collaboration activities
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {activityFeed.length === 0 ? (
@@ -345,19 +443,27 @@ export const UserProfileCollaborationIntegration: React.FC<UserProfileCollaborat
             ) : (
               <div className="space-y-4">
                 {activityFeed.map((activity, index) => (
-                  <div key={index} className="flex items-start space-x-3 p-3 border rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-start space-x-3 p-3 border rounded-lg"
+                  >
                     <div className="flex-shrink-0">
                       <Activity className="w-5 h-5 text-gray-400" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm">
-                        <span className="font-medium">{activity.user?.name || 'Team Member'}</span> {activity.action}
+                        <span className="font-medium">
+                          {activity.user?.name || "Team Member"}
+                        </span>{" "}
+                        {activity.action}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
                         {activity.timestamp.toLocaleString()}
                       </p>
                       {activity.details && (
-                        <p className="text-xs text-gray-400 mt-1">{activity.details}</p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          {activity.details}
+                        </p>
                       )}
                     </div>
                   </div>

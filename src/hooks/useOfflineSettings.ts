@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useOfflineStore } from '../store/useOfflineStore';
-import { OfflineSettings } from '../types/offlineTypes';
+import { useState, useEffect, useCallback } from "react";
+import { useOfflineStore } from "../store/useOfflineStore";
+import { OfflineSettings } from "../types/offlineTypes";
 
 export const useOfflineSettings = () => {
   const { settings, updateSettings } = useOfflineStore();
@@ -17,30 +17,36 @@ export const useOfflineSettings = () => {
   /**
    * Update settings
    */
-  const updateSettingsWrapper = useCallback(async (newSettings: Partial<OfflineSettings>) => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  const updateSettingsWrapper = useCallback(
+    async (newSettings: Partial<OfflineSettings>) => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      // Validate settings
-      const validatedSettings = validateSettings(newSettings);
+        // Validate settings
+        const validatedSettings = validateSettings(newSettings);
 
-      updateSettings(validatedSettings);
+        updateSettings(validatedSettings);
 
-      return {
-        success: true,
-        settings: validatedSettings
-      };
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to update settings'));
-      return {
-        success: false,
-        error: err instanceof Error ? err : new Error('Failed to update settings')
-      };
-    } finally {
-      setIsLoading(false);
-    }
-  }, [updateSettings]);
+        return {
+          success: true,
+          settings: validatedSettings,
+        };
+      } catch (err) {
+        setError(
+          err instanceof Error ? err : new Error("Failed to update settings"),
+        );
+        return {
+          success: false,
+          error:
+            err instanceof Error ? err : new Error("Failed to update settings"),
+        };
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [updateSettings],
+  );
 
   /**
    * Reset to default settings
@@ -54,7 +60,7 @@ export const useOfflineSettings = () => {
         autoSyncEnabled: true,
         syncInterval: 30000,
         maxQueueSize: 100,
-        conflictResolution: 'timestamp',
+        conflictResolution: "timestamp",
         offlineDataRetention: 30,
         showOfflineIndicator: true,
         syncOnReconnect: true,
@@ -63,22 +69,25 @@ export const useOfflineSettings = () => {
         batchSize: 10,
         enableCompression: false,
         enableEncryption: false,
-        syncPriority: 'medium',
+        syncPriority: "medium",
         autoRetryFailedItems: true,
-        retryStrategy: 'exponential'
+        retryStrategy: "exponential",
       };
 
       updateSettings(defaultSettings);
 
       return {
         success: true,
-        settings: defaultSettings
+        settings: defaultSettings,
       };
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to reset settings'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to reset settings"),
+      );
       return {
         success: false,
-        error: err instanceof Error ? err : new Error('Failed to reset settings')
+        error:
+          err instanceof Error ? err : new Error("Failed to reset settings"),
       };
     } finally {
       setIsLoading(false);
@@ -88,43 +97,60 @@ export const useOfflineSettings = () => {
   /**
    * Validate settings
    */
-  const validateSettings = useCallback((newSettings: Partial<OfflineSettings>): Partial<OfflineSettings> => {
-    const validated: Partial<OfflineSettings> = {};
+  const validateSettings = useCallback(
+    (newSettings: Partial<OfflineSettings>): Partial<OfflineSettings> => {
+      const validated: Partial<OfflineSettings> = {};
 
-    if (newSettings.syncInterval !== undefined) {
-      validated.syncInterval = Math.max(10000, Math.min(300000, newSettings.syncInterval));
-    }
-
-    if (newSettings.maxQueueSize !== undefined) {
-      validated.maxQueueSize = Math.max(10, Math.min(1000, newSettings.maxQueueSize));
-    }
-
-    if (newSettings.offlineDataRetention !== undefined) {
-      validated.offlineDataRetention = Math.max(1, Math.min(365, newSettings.offlineDataRetention));
-    }
-
-    if (newSettings.conflictResolution !== undefined) {
-      const validResolutions: OfflineSettings['conflictResolution'][] = ['local-wins', 'remote-wins', 'manual', 'timestamp'];
-      if (validResolutions.includes(newSettings.conflictResolution)) {
-        validated.conflictResolution = newSettings.conflictResolution;
+      if (newSettings.syncInterval !== undefined) {
+        validated.syncInterval = Math.max(
+          10000,
+          Math.min(300000, newSettings.syncInterval),
+        );
       }
-    }
 
-    // Copy other settings directly if they exist
-    if (newSettings.autoSyncEnabled !== undefined) {
-      validated.autoSyncEnabled = newSettings.autoSyncEnabled;
-    }
+      if (newSettings.maxQueueSize !== undefined) {
+        validated.maxQueueSize = Math.max(
+          10,
+          Math.min(1000, newSettings.maxQueueSize),
+        );
+      }
 
-    if (newSettings.showOfflineIndicator !== undefined) {
-      validated.showOfflineIndicator = newSettings.showOfflineIndicator;
-    }
+      if (newSettings.offlineDataRetention !== undefined) {
+        validated.offlineDataRetention = Math.max(
+          1,
+          Math.min(365, newSettings.offlineDataRetention),
+        );
+      }
 
-    if (newSettings.syncOnReconnect !== undefined) {
-      validated.syncOnReconnect = newSettings.syncOnReconnect;
-    }
+      if (newSettings.conflictResolution !== undefined) {
+        const validResolutions: OfflineSettings["conflictResolution"][] = [
+          "local-wins",
+          "remote-wins",
+          "manual",
+          "timestamp",
+        ];
+        if (validResolutions.includes(newSettings.conflictResolution)) {
+          validated.conflictResolution = newSettings.conflictResolution;
+        }
+      }
 
-    return validated;
-  }, []);
+      // Copy other settings directly if they exist
+      if (newSettings.autoSyncEnabled !== undefined) {
+        validated.autoSyncEnabled = newSettings.autoSyncEnabled;
+      }
+
+      if (newSettings.showOfflineIndicator !== undefined) {
+        validated.showOfflineIndicator = newSettings.showOfflineIndicator;
+      }
+
+      if (newSettings.syncOnReconnect !== undefined) {
+        validated.syncOnReconnect = newSettings.syncOnReconnect;
+      }
+
+      return validated;
+    },
+    [],
+  );
 
   return {
     settings,
@@ -133,6 +159,6 @@ export const useOfflineSettings = () => {
     getSettings,
     updateSettings: updateSettingsWrapper,
     resetToDefaults,
-    validateSettings
+    validateSettings,
   };
 };

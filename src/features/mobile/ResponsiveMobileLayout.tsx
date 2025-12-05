@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Dimensions, Platform, SafeAreaView, StatusBar } from 'react-native';
-import { useMobile } from '../../../hooks/useMobile';
-import { useMobileConfig } from '../../../hooks/useMobileConfig';
-import { mobileUtils } from '../../../utils/mobileUtils';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  Platform,
+  SafeAreaView,
+  StatusBar,
+} from "react-native";
+import { useMobile } from "../../../hooks/useMobile";
+import { useMobileConfig } from "../../../hooks/useMobileConfig";
+import { mobileUtils } from "../../../utils/mobileUtils";
 
 interface ResponsiveMobileLayoutProps {
   children: React.ReactNode;
@@ -14,16 +22,26 @@ interface ResponsiveMobileLayoutProps {
 
 export const ResponsiveMobileLayout: React.FC<ResponsiveMobileLayoutProps> = ({
   children,
-  title = 'Todone',
+  title = "Todone",
   showNavigation = true,
   headerComponent,
   footerComponent,
 }) => {
-  const { isMobile, deviceType, isPortrait, isLandscape, getScreenWidth, isSmallScreen, isLargeScreen } = useMobile();
+  const {
+    isMobile,
+    deviceType,
+    isPortrait,
+    isLandscape,
+    getScreenWidth,
+    isSmallScreen,
+    isLargeScreen,
+  } = useMobile();
   const { mobileConfig } = useMobileConfig();
   const [layoutReady, setLayoutReady] = useState(false);
   const [screenWidth, setScreenWidth] = useState(getScreenWidth());
-  const [screenHeight, setScreenHeight] = useState(Dimensions.get('window').height);
+  const [screenHeight, setScreenHeight] = useState(
+    Dimensions.get("window").height,
+  );
 
   useEffect(() => {
     const prepareLayout = async () => {
@@ -33,10 +51,13 @@ export const ResponsiveMobileLayout: React.FC<ResponsiveMobileLayoutProps> = ({
 
     prepareLayout();
 
-    const dimensionListener = Dimensions.addEventListener('change', ({ window }) => {
-      setScreenWidth(window.width);
-      setScreenHeight(window.height);
-    });
+    const dimensionListener = Dimensions.addEventListener(
+      "change",
+      ({ window }) => {
+        setScreenWidth(window.width);
+        setScreenHeight(window.height);
+      },
+    );
 
     return () => {
       dimensionListener.remove();
@@ -45,7 +66,9 @@ export const ResponsiveMobileLayout: React.FC<ResponsiveMobileLayoutProps> = ({
 
   const getLayoutStyles = () => {
     const isCompact = isSmallScreen() || (isPortrait() && screenWidth < 375);
-    const isRegular = (!isSmallScreen() && !isLargeScreen()) || (isPortrait() && screenWidth >= 375 && screenWidth < 414);
+    const isRegular =
+      (!isSmallScreen() && !isLargeScreen()) ||
+      (isPortrait() && screenWidth >= 375 && screenWidth < 414);
     const isLarge = isLargeScreen() || (isPortrait() && screenWidth >= 414);
 
     return {
@@ -70,7 +93,7 @@ export const ResponsiveMobileLayout: React.FC<ResponsiveMobileLayoutProps> = ({
     if (isLandscape()) {
       return {
         container: {
-          flexDirection: 'row' as const,
+          flexDirection: "row" as const,
         },
         mainContent: {
           flex: 2,
@@ -84,13 +107,13 @@ export const ResponsiveMobileLayout: React.FC<ResponsiveMobileLayoutProps> = ({
 
     return {
       container: {
-        flexDirection: 'column' as const,
+        flexDirection: "column" as const,
       },
       mainContent: {
         flex: 1,
       },
       sidebar: {
-        width: '100%',
+        width: "100%",
         marginTop: 16,
       },
     };
@@ -101,8 +124,19 @@ export const ResponsiveMobileLayout: React.FC<ResponsiveMobileLayoutProps> = ({
 
   if (!layoutReady) {
     return (
-      <View style={[styles.loadingContainer, mobileConfig.darkMode ? styles.darkLoading : styles.lightLoading]}>
-        <Text style={mobileConfig.darkMode ? styles.darkLoadingText : styles.lightLoadingText}>
+      <View
+        style={[
+          styles.loadingContainer,
+          mobileConfig.darkMode ? styles.darkLoading : styles.lightLoading,
+        ]}
+      >
+        <Text
+          style={
+            mobileConfig.darkMode
+              ? styles.darkLoadingText
+              : styles.lightLoadingText
+          }
+        >
           Loading Todone Mobile...
         </Text>
       </View>
@@ -110,17 +144,34 @@ export const ResponsiveMobileLayout: React.FC<ResponsiveMobileLayoutProps> = ({
   }
 
   return (
-    <SafeAreaView style={[styles.safeArea, mobileConfig.darkMode ? styles.darkSafeArea : styles.lightSafeArea]}>
+    <SafeAreaView
+      style={[
+        styles.safeArea,
+        mobileConfig.darkMode ? styles.darkSafeArea : styles.lightSafeArea,
+      ]}
+    >
       <StatusBar
-        barStyle={mobileConfig.darkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={mobileConfig.darkMode ? '#1a1a1a' : '#f5f5f5'}
+        barStyle={mobileConfig.darkMode ? "light-content" : "dark-content"}
+        backgroundColor={mobileConfig.darkMode ? "#1a1a1a" : "#f5f5f5"}
       />
 
       <View style={[styles.outerContainer, breakpointStyles.container]}>
         {showNavigation && (
-          <View style={[styles.header, layoutStyles.header, mobileConfig.darkMode ? styles.darkHeader : styles.lightHeader]}>
+          <View
+            style={[
+              styles.header,
+              layoutStyles.header,
+              mobileConfig.darkMode ? styles.darkHeader : styles.lightHeader,
+            ]}
+          >
             {headerComponent || (
-              <Text style={[styles.title, layoutStyles.title, mobileConfig.darkMode ? styles.darkTitle : styles.lightTitle]}>
+              <Text
+                style={[
+                  styles.title,
+                  layoutStyles.title,
+                  mobileConfig.darkMode ? styles.darkTitle : styles.lightTitle,
+                ]}
+              >
                 {title}
               </Text>
             )}
@@ -128,7 +179,13 @@ export const ResponsiveMobileLayout: React.FC<ResponsiveMobileLayoutProps> = ({
         )}
 
         <View style={[styles.mainContent, breakpointStyles.mainContent]}>
-          <View style={[styles.content, layoutStyles.content, layoutStyles.container]}>
+          <View
+            style={[
+              styles.content,
+              layoutStyles.content,
+              layoutStyles.container,
+            ]}
+          >
             {children}
           </View>
         </View>
@@ -148,36 +205,36 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   darkSafeArea: {
-    backgroundColor: '#121212',
+    backgroundColor: "#121212",
   },
   lightSafeArea: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   outerContainer: {
     flex: 1,
   },
   header: {
     borderBottomWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   darkHeader: {
-    backgroundColor: '#1e1e1e',
-    borderBottomColor: '#333',
+    backgroundColor: "#1e1e1e",
+    borderBottomColor: "#333",
   },
   lightHeader: {
-    backgroundColor: '#ffffff',
-    borderBottomColor: '#e0e0e0',
+    backgroundColor: "#ffffff",
+    borderBottomColor: "#e0e0e0",
   },
   title: {
-    fontWeight: 'bold',
-    textAlign: 'center',
+    fontWeight: "bold",
+    textAlign: "center",
   },
   darkTitle: {
-    color: '#ffffff',
+    color: "#ffffff",
   },
   lightTitle: {
-    color: '#333333',
+    color: "#333333",
   },
   mainContent: {
     flex: 1,
@@ -190,19 +247,19 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   darkLoading: {
-    backgroundColor: '#121212',
+    backgroundColor: "#121212",
   },
   lightLoading: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   darkLoadingText: {
-    color: '#ffffff',
+    color: "#ffffff",
   },
   lightLoadingText: {
-    color: '#333333',
+    color: "#333333",
   },
 });

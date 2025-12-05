@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { useAuthStore } from '../store/useAuthStore';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
+import { useAuthStore } from "../store/useAuthStore";
+import { useNavigate } from "react-router-dom";
 
 export const useAuth = () => {
   const {
@@ -28,9 +28,9 @@ export const useAuth = () => {
       setIsLoading(true);
       setError(null);
       await storeLogin(email, password);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      setError(err instanceof Error ? err.message : "Login failed");
       throw err;
     } finally {
       setIsLoading(false);
@@ -42,9 +42,9 @@ export const useAuth = () => {
       setIsLoading(true);
       setError(null);
       await storeRegister(name, email, password);
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
+      setError(err instanceof Error ? err.message : "Registration failed");
       throw err;
     } finally {
       setIsLoading(false);
@@ -56,9 +56,9 @@ export const useAuth = () => {
       setIsLoading(true);
       setError(null);
       await storeLogout();
-      navigate('/auth/login');
+      navigate("/auth/login");
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Logout failed');
+      setError(err instanceof Error ? err.message : "Logout failed");
       throw err;
     } finally {
       setIsLoading(false);
@@ -71,7 +71,7 @@ export const useAuth = () => {
       setError(null);
       await storeCheckAuth();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Auth check failed');
+      setError(err instanceof Error ? err.message : "Auth check failed");
       throw err;
     } finally {
       setIsLoading(false);

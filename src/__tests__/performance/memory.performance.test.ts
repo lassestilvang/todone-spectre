@@ -1,18 +1,21 @@
-import { test, expect } from '@playwright/test';
-import { TEST_USER, login } from '../e2e/utils/auth';
-import { generateRandomTask, generateRandomProject } from '../e2e/utils/testData';
+import { test, expect } from "@playwright/test";
+import { TEST_USER, login } from "../e2e/utils/auth";
+import {
+  generateRandomTask,
+  generateRandomProject,
+} from "../e2e/utils/testData";
 
-test.describe('Memory Usage Performance Tests', () => {
-  test('Memory usage during long sessions', async ({ page }) => {
+test.describe("Memory Usage Performance Tests", () => {
+  test("Memory usage during long sessions", async ({ page }) => {
     await login(page, TEST_USER);
 
     // Monitor memory usage over extended operations
-    await test.step('Monitor memory usage during long session', async () => {
+    await test.step("Monitor memory usage during long session", async () => {
       const memoryMeasurements = [];
 
       // Get initial memory usage
       const initialMemory = await getMemoryUsage(page);
-      memoryMeasurements.push({ step: 'Initial', ...initialMemory });
+      memoryMeasurements.push({ step: "Initial", ...initialMemory });
 
       // Perform operations in batches and measure memory
       for (let batch = 0; batch < 5; batch++) {
@@ -28,28 +31,34 @@ test.describe('Memory Usage Performance Tests', () => {
 
         // Measure memory after batch
         const batchMemory = await getMemoryUsage(page);
-        memoryMeasurements.push({ step: `After batch ${batch + 1}`, ...batchMemory });
+        memoryMeasurements.push({
+          step: `After batch ${batch + 1}`,
+          ...batchMemory,
+        });
 
         // Perform some task operations
         await page.click('button:has-text("Filter")');
-        await page.selectOption('select[name="priorityFilter"]', 'high');
+        await page.selectOption('select[name="priorityFilter"]', "high");
         await page.click('button:has-text("Apply")');
 
-        await page.fill('input[placeholder="Search tasks"]', 'test');
-        await page.waitForSelector('div.task-item');
-        await page.fill('input[placeholder="Search tasks"]', '');
+        await page.fill('input[placeholder="Search tasks"]', "test");
+        await page.waitForSelector("div.task-item");
+        await page.fill('input[placeholder="Search tasks"]', "");
       }
 
       // Analyze memory usage patterns
-      console.log('Memory usage measurements:', memoryMeasurements);
+      console.log("Memory usage measurements:", memoryMeasurements);
 
       // Calculate memory growth
       if (initialMemory.usedJSHeapSize && memoryMeasurements.length > 1) {
         const finalMemory = memoryMeasurements[memoryMeasurements.length - 1];
         if (finalMemory.usedJSHeapSize) {
-          const memoryIncrease = finalMemory.usedJSHeapSize - initialMemory.usedJSHeapSize;
+          const memoryIncrease =
+            finalMemory.usedJSHeapSize - initialMemory.usedJSHeapSize;
           const memoryIncreaseMB = memoryIncrease / (1024 * 1024);
-          console.log(`Total memory increase during long session: ${memoryIncreaseMB.toFixed(2)} MB`);
+          console.log(
+            `Total memory increase during long session: ${memoryIncreaseMB.toFixed(2)} MB`,
+          );
 
           // Memory should not increase excessively during normal operations
           expect(memoryIncreaseMB).toBeLessThan(100); // Should be under 100MB increase
@@ -58,11 +67,11 @@ test.describe('Memory Usage Performance Tests', () => {
     });
   });
 
-  test('Memory usage with large datasets', async ({ page }) => {
+  test("Memory usage with large datasets", async ({ page }) => {
     await login(page, TEST_USER);
 
     // Test memory usage with progressively larger datasets
-    await test.step('Test memory usage with large datasets', async () => {
+    await test.step("Test memory usage with large datasets", async () => {
       const datasetSizes = [50, 100, 200];
       const memoryResults = [];
 
@@ -82,16 +91,19 @@ test.describe('Memory Usage Performance Tests', () => {
         const endMemory = await getMemoryUsage(page);
 
         if (startMemory.usedJSHeapSize && endMemory.usedJSHeapSize) {
-          const memoryIncrease = endMemory.usedJSHeapSize - startMemory.usedJSHeapSize;
+          const memoryIncrease =
+            endMemory.usedJSHeapSize - startMemory.usedJSHeapSize;
           const memoryIncreaseMB = memoryIncrease / (1024 * 1024);
 
           memoryResults.push({
             datasetSize: size,
             memoryIncreaseMB,
-            memoryPerItemKB: (memoryIncrease / size) / 1024
+            memoryPerItemKB: memoryIncrease / size / 1024,
           });
 
-          console.log(`Memory increase for ${size} items: ${memoryIncreaseMB.toFixed(2)} MB (${(memoryIncrease / size / 1024).toFixed(2)} KB per item)`);
+          console.log(
+            `Memory increase for ${size} items: ${memoryIncreaseMB.toFixed(2)} MB (${(memoryIncrease / size / 1024).toFixed(2)} KB per item)`,
+          );
         }
 
         // Clean up for next test
@@ -100,21 +112,23 @@ test.describe('Memory Usage Performance Tests', () => {
       }
 
       // Analyze memory efficiency
-      console.log('Memory efficiency analysis:', memoryResults);
+      console.log("Memory efficiency analysis:", memoryResults);
 
       // Verify memory usage scales reasonably
-      const largeDatasetResult = memoryResults.find(r => r.datasetSize === 200);
+      const largeDatasetResult = memoryResults.find(
+        (r) => r.datasetSize === 200,
+      );
       if (largeDatasetResult) {
         expect(largeDatasetResult.memoryPerItemKB).toBeLessThan(50); // Should be under 50KB per item
       }
     });
   });
 
-  test('Memory leak detection during prolonged usage', async ({ page }) => {
+  test("Memory leak detection during prolonged usage", async ({ page }) => {
     await login(page, TEST_USER);
 
     // Test for memory leaks by repeating operations
-    await test.step('Test for memory leaks', async () => {
+    await test.step("Test for memory leaks", async () => {
       const memoryMeasurements = [];
       const operations = [];
 
@@ -138,7 +152,7 @@ test.describe('Memory Usage Performance Tests', () => {
 
         // Perform operations
         await page.click('button:has-text("Filter")');
-        await page.selectOption('select[name="priorityFilter"]', 'all');
+        await page.selectOption('select[name="priorityFilter"]', "all");
         await page.click('button:has-text("Apply")');
 
         // Delete tasks
@@ -149,38 +163,44 @@ test.describe('Memory Usage Performance Tests', () => {
         memoryMeasurements.push(cycleEndMemory);
 
         if (cycleStartMemory.usedJSHeapSize && cycleEndMemory.usedJSHeapSize) {
-          const cycleMemoryIncrease = cycleEndMemory.usedJSHeapSize - cycleStartMemory.usedJSHeapSize;
+          const cycleMemoryIncrease =
+            cycleEndMemory.usedJSHeapSize - cycleStartMemory.usedJSHeapSize;
           operations.push({
             cycle,
             memoryIncrease: cycleMemoryIncrease,
-            memoryIncreaseMB: cycleMemoryIncrease / (1024 * 1024)
+            memoryIncreaseMB: cycleMemoryIncrease / (1024 * 1024),
           });
         }
       }
 
-      console.log('Memory leak detection results:', operations);
+      console.log("Memory leak detection results:", operations);
 
       // Analyze for memory leaks
-      const significantLeaks = operations.filter(op => op.memoryIncreaseMB > 5); // More than 5MB increase per cycle
+      const significantLeaks = operations.filter(
+        (op) => op.memoryIncreaseMB > 5,
+      ); // More than 5MB increase per cycle
       if (significantLeaks.length > 0) {
-        console.warn('Potential memory leaks detected:', significantLeaks);
+        console.warn("Potential memory leaks detected:", significantLeaks);
       }
 
       // Overall memory increase should be reasonable
-      const finalMemoryIncrease = memoryMeasurements[memoryMeasurements.length - 1].usedJSHeapSize -
-                                  memoryMeasurements[0].usedJSHeapSize;
+      const finalMemoryIncrease =
+        memoryMeasurements[memoryMeasurements.length - 1].usedJSHeapSize -
+        memoryMeasurements[0].usedJSHeapSize;
       const finalMemoryIncreaseMB = finalMemoryIncrease / (1024 * 1024);
 
-      console.log(`Total memory increase after ${operations.length} cycles: ${finalMemoryIncreaseMB.toFixed(2)} MB`);
+      console.log(
+        `Total memory increase after ${operations.length} cycles: ${finalMemoryIncreaseMB.toFixed(2)} MB`,
+      );
       expect(finalMemoryIncreaseMB).toBeLessThan(50); // Should be under 50MB total increase
     });
   });
 
-  test('Complex workflow memory usage', async ({ page }) => {
+  test("Complex workflow memory usage", async ({ page }) => {
     await login(page, TEST_USER);
 
     // Test memory usage with complex workflows
-    await test.step('Test complex workflow memory usage', async () => {
+    await test.step("Test complex workflow memory usage", async () => {
       const initialMemory = await getMemoryUsage(page);
 
       // Create complex structure: projects with tasks, comments, attachments
@@ -203,7 +223,10 @@ test.describe('Memory Usage Performance Tests', () => {
           // Add comments to some tasks
           if (t % 2 === 0) {
             await page.click('button:has-text("Add Comment")');
-            await page.fill('textarea[name="comment"]', `Comment for task ${p}-${t}`);
+            await page.fill(
+              'textarea[name="comment"]',
+              `Comment for task ${p}-${t}`,
+            );
             await page.click('button[type="submit"]:has-text("Post Comment")');
           }
         }
@@ -213,21 +236,27 @@ test.describe('Memory Usage Performance Tests', () => {
 
       // Perform complex operations
       await page.click('button:has-text("Filter")');
-      await page.selectOption('select[name="priorityFilter"]', 'high');
+      await page.selectOption('select[name="priorityFilter"]', "high");
       await page.click('button:has-text("Apply")');
 
-      await page.fill('input[placeholder="Search tasks"]', 'important');
-      await page.waitForSelector('div.task-item');
+      await page.fill('input[placeholder="Search tasks"]', "important");
+      await page.waitForSelector("div.task-item");
 
       const finalMemory = await getMemoryUsage(page);
 
       // Analyze memory usage
       if (initialMemory.usedJSHeapSize && finalMemory.usedJSHeapSize) {
-        const totalIncrease = finalMemory.usedJSHeapSize - initialMemory.usedJSHeapSize;
-        const complexOperationsIncrease = finalMemory.usedJSHeapSize - afterComplexMemory.usedJSHeapSize;
+        const totalIncrease =
+          finalMemory.usedJSHeapSize - initialMemory.usedJSHeapSize;
+        const complexOperationsIncrease =
+          finalMemory.usedJSHeapSize - afterComplexMemory.usedJSHeapSize;
 
-        console.log(`Memory increase after complex structure creation: ${(totalIncrease / (1024 * 1024)).toFixed(2)} MB`);
-        console.log(`Memory increase after complex operations: ${(complexOperationsIncrease / (1024 * 1024)).toFixed(2)} MB`);
+        console.log(
+          `Memory increase after complex structure creation: ${(totalIncrease / (1024 * 1024)).toFixed(2)} MB`,
+        );
+        console.log(
+          `Memory increase after complex operations: ${(complexOperationsIncrease / (1024 * 1024)).toFixed(2)} MB`,
+        );
 
         // Complex workflows should not cause excessive memory usage
         expect(totalIncrease / (1024 * 1024)).toBeLessThan(80); // Under 80MB for complex structure
@@ -243,7 +272,7 @@ async function getMemoryUsage(page) {
       jsHeapSizeLimit: window.performance?.memory?.jsHeapSizeLimit,
       usedJSHeapSize: window.performance?.memory?.usedJSHeapSize,
       totalJSHeapSize: window.performance?.memory?.totalJSHeapSize,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     };
   });
 }

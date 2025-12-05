@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useOfflineStore } from '../../store/useOfflineStore';
-import { useOfflineSync } from '../../hooks/useOfflineSync';
+import React, { useState, useEffect } from "react";
+import { useOfflineStore } from "../../store/useOfflineStore";
+import { useOfflineSync } from "../../hooks/useOfflineSync";
 
 interface OfflineSyncProps {
   autoSync?: boolean;
@@ -15,14 +15,14 @@ export const OfflineSync: React.FC<OfflineSyncProps> = ({
   syncInterval = 30000,
   showProgress = true,
   onSyncComplete,
-  onSyncError
+  onSyncError,
 }) => {
   const { isOffline, pendingChanges, queue } = useOfflineStore();
   const {
     syncStatus,
     lastSynced,
     syncQueue,
-    error: syncError
+    error: syncError,
   } = useOfflineSync();
   const [progress, setProgress] = useState<number>(0);
   const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
@@ -38,20 +38,23 @@ export const OfflineSync: React.FC<OfflineSyncProps> = ({
   }, [autoSync, isOffline, pendingChanges, syncInterval, syncQueue]);
 
   useEffect(() => {
-    if (syncStatus === 'syncing') {
+    if (syncStatus === "syncing") {
       // Simulate progress for demo purposes
       const startTime = Date.now();
       const totalTime = 5000; // 5 seconds for demo
 
       const progressInterval = setInterval(() => {
         const elapsed = Date.now() - startTime;
-        const newProgress = Math.min(90, Math.floor((elapsed / totalTime) * 100));
+        const newProgress = Math.min(
+          90,
+          Math.floor((elapsed / totalTime) * 100),
+        );
         setProgress(newProgress);
         setTimeRemaining(Math.max(0, Math.floor((totalTime - elapsed) / 1000)));
       }, 200);
 
       return () => clearInterval(progressInterval);
-    } else if (syncStatus === 'completed') {
+    } else if (syncStatus === "completed") {
       setProgress(100);
       setTimeout(() => setProgress(0), 1000);
     }
@@ -64,9 +67,9 @@ export const OfflineSync: React.FC<OfflineSyncProps> = ({
   }, [syncError, onSyncError]);
 
   useEffect(() => {
-    if (syncStatus === 'completed' && onSyncComplete) {
+    if (syncStatus === "completed" && onSyncComplete) {
       onSyncComplete(true);
-    } else if (syncStatus === 'error' && onSyncComplete) {
+    } else if (syncStatus === "error" && onSyncComplete) {
       onSyncComplete(false);
     }
   }, [syncStatus, onSyncComplete]);
@@ -77,31 +80,31 @@ export const OfflineSync: React.FC<OfflineSyncProps> = ({
 
   const getStatusText = () => {
     switch (syncStatus) {
-      case 'idle':
-        return 'Ready to sync';
-      case 'syncing':
-        return 'Syncing...';
-      case 'completed':
-        return 'Sync completed';
-      case 'error':
-        return 'Sync failed';
+      case "idle":
+        return "Ready to sync";
+      case "syncing":
+        return "Syncing...";
+      case "completed":
+        return "Sync completed";
+      case "error":
+        return "Sync failed";
       default:
-        return 'Unknown status';
+        return "Unknown status";
     }
   };
 
   const getStatusClass = () => {
     switch (syncStatus) {
-      case 'idle':
-        return 'offline-sync-idle';
-      case 'syncing':
-        return 'offline-sync-syncing';
-      case 'completed':
-        return 'offline-sync-completed';
-      case 'error':
-        return 'offline-sync-error';
+      case "idle":
+        return "offline-sync-idle";
+      case "syncing":
+        return "offline-sync-syncing";
+      case "completed":
+        return "offline-sync-completed";
+      case "error":
+        return "offline-sync-error";
       default:
-        return 'offline-sync-unknown';
+        return "offline-sync-unknown";
     }
   };
 
@@ -118,22 +121,21 @@ export const OfflineSync: React.FC<OfflineSyncProps> = ({
         )}
       </div>
 
-      {showProgress && syncStatus === 'syncing' && (
+      {showProgress && syncStatus === "syncing" && (
         <div className="offline-sync-progress">
           <div
             className="offline-sync-progress-bar"
             style={{ width: `${progress}%` }}
           />
           <span className="offline-sync-progress-text">
-            {progress}% {timeRemaining !== null && `(${timeRemaining}s remaining)`}
+            {progress}%{" "}
+            {timeRemaining !== null && `(${timeRemaining}s remaining)`}
           </span>
         </div>
       )}
 
       {syncError && (
-        <div className="offline-sync-error">
-          Error: {syncError.message}
-        </div>
+        <div className="offline-sync-error">Error: {syncError.message}</div>
       )}
 
       <div className="offline-sync-stats">
@@ -155,9 +157,12 @@ export const OfflineSync: React.FC<OfflineSyncProps> = ({
         <button
           className="offline-sync-button"
           onClick={handleManualSync}
-          disabled={syncStatus === 'syncing' || (pendingChanges === 0 && queue.length === 0)}
+          disabled={
+            syncStatus === "syncing" ||
+            (pendingChanges === 0 && queue.length === 0)
+          }
         >
-          {syncStatus === 'syncing' ? 'Syncing...' : 'Sync Now'}
+          {syncStatus === "syncing" ? "Syncing..." : "Sync Now"}
         </button>
 
         {autoSync && (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface Achievement {
   id: string;
@@ -12,7 +12,9 @@ interface KarmaAchievementsProps {
   achievements: Achievement[];
 }
 
-export const KarmaAchievements: React.FC<KarmaAchievementsProps> = ({ achievements }) => {
+export const KarmaAchievements: React.FC<KarmaAchievementsProps> = ({
+  achievements,
+}) => {
   return (
     <div className="karma-achievements">
       <h3>Achievements</h3>
@@ -20,12 +22,14 @@ export const KarmaAchievements: React.FC<KarmaAchievementsProps> = ({ achievemen
         {achievements.map((achievement) => (
           <div
             key={achievement.id}
-            className={`achievement-item ${achievement.unlocked ? 'unlocked' : 'locked'}`}
+            className={`achievement-item ${achievement.unlocked ? "unlocked" : "locked"}`}
           >
             <div className="achievement-icon">{achievement.icon}</div>
             <div className="achievement-info">
               <div className="achievement-name">{achievement.name}</div>
-              <div className="achievement-description">{achievement.description}</div>
+              <div className="achievement-description">
+                {achievement.description}
+              </div>
             </div>
             {!achievement.unlocked && (
               <div className="achievement-locked-overlay">🔒</div>

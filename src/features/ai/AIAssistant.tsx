@@ -1,18 +1,26 @@
-import React, { useState, useEffect } from 'react';
-import { useAIAssistant } from '../../../hooks/useAIAssistant';
-import { useAITaskSuggestions } from '../../../hooks/useAITaskSuggestions';
-import { Task } from '../../../types/taskTypes';
+import React, { useState, useEffect } from "react";
+import { useAIAssistant } from "../../../hooks/useAIAssistant";
+import { useAITaskSuggestions } from "../../../hooks/useAITaskSuggestions";
 
 interface AIAssistantProps {
   taskId?: string;
   onSuggestionSelect?: (suggestion: string) => void;
 }
 
-export const AIAssistant: React.FC<AIAssistantProps> = ({ taskId, onSuggestionSelect }) => {
+export const AIAssistant: React.FC<AIAssistantProps> = ({
+  taskId,
+  onSuggestionSelect,
+}) => {
   const { aiResponse, isLoading, error, generateAIResponse } = useAIAssistant();
-  const { suggestions, loading: suggestionsLoading, generateSuggestions } = useAITaskSuggestions();
-  const [inputValue, setInputValue] = useState('');
-  const [activeTab, setActiveTab] = useState<'assistant' | 'suggestions'>('assistant');
+  const {
+    suggestions,
+    loading: suggestionsLoading,
+    generateSuggestions,
+  } = useAITaskSuggestions();
+  const [inputValue, setInputValue] = useState("");
+  const [activeTab, setActiveTab] = useState<"assistant" | "suggestions">(
+    "assistant",
+  );
 
   useEffect(() => {
     if (taskId) {
@@ -38,20 +46,20 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ taskId, onSuggestionSe
     <div className="ai-assistant-container">
       <div className="ai-assistant-tabs">
         <button
-          className={`tab-button ${activeTab === 'assistant' ? 'active' : ''}`}
-          onClick={() => setActiveTab('assistant')}
+          className={`tab-button ${activeTab === "assistant" ? "active" : ""}`}
+          onClick={() => setActiveTab("assistant")}
         >
           AI Assistant
         </button>
         <button
-          className={`tab-button ${activeTab === 'suggestions' ? 'active' : ''}`}
-          onClick={() => setActiveTab('suggestions')}
+          className={`tab-button ${activeTab === "suggestions" ? "active" : ""}`}
+          onClick={() => setActiveTab("suggestions")}
         >
           Task Suggestions
         </button>
       </div>
 
-      {activeTab === 'assistant' ? (
+      {activeTab === "assistant" ? (
         <div className="ai-assistant-content">
           <form onSubmit={handleSubmit} className="ai-input-form">
             <input
@@ -62,8 +70,12 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ taskId, onSuggestionSe
               className="ai-input"
               disabled={isLoading}
             />
-            <button type="submit" className="ai-submit-button" disabled={isLoading}>
-              {isLoading ? 'Thinking...' : 'Ask AI'}
+            <button
+              type="submit"
+              className="ai-submit-button"
+              disabled={isLoading}
+            >
+              {isLoading ? "Thinking..." : "Ask AI"}
             </button>
           </form>
 

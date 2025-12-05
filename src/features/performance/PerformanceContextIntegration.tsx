@@ -1,7 +1,7 @@
-import React from 'react';
-import { usePerformanceContext } from './PerformanceProvider';
-import { PerformanceStatus } from './PerformanceStatus';
-import { PerformanceControls } from './PerformanceControls';
+import React from "react";
+import { usePerformanceContext } from "./PerformanceProvider";
+import { PerformanceStatus } from "./PerformanceStatus";
+import { PerformanceControls } from "./PerformanceControls";
 
 export const PerformanceContextIntegration: React.FC = () => {
   const {
@@ -10,7 +10,7 @@ export const PerformanceContextIntegration: React.FC = () => {
     config,
     isMonitoring,
     startMonitoring,
-    stopMonitoring
+    stopMonitoring,
   } = usePerformanceContext();
 
   return (
@@ -34,7 +34,7 @@ export const PerformanceContextIntegration: React.FC = () => {
         <PerformanceStatus />
         <div className="status-details">
           Current Status: {status}
-          {isMonitoring ? ' (Monitoring)' : ' (Inactive)'}
+          {isMonitoring ? " (Monitoring)" : " (Inactive)"}
         </div>
       </div>
 

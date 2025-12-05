@@ -20,43 +20,43 @@ interface Achievement {
 
 const DEFAULT_ACHIEVEMENTS: Achievement[] = [
   {
-    id: 'first_task',
-    name: 'First Step',
-    description: 'Complete your first task',
+    id: "first_task",
+    name: "First Step",
+    description: "Complete your first task",
     unlocked: false,
-    icon: '🏆',
+    icon: "🏆",
     xpReward: 50,
   },
   {
-    id: 'five_tasks',
-    name: 'Productive Start',
-    description: 'Complete 5 tasks',
+    id: "five_tasks",
+    name: "Productive Start",
+    description: "Complete 5 tasks",
     unlocked: false,
-    icon: '🚀',
+    icon: "🚀",
     xpReward: 100,
   },
   {
-    id: 'ten_tasks',
-    name: 'Task Master',
-    description: 'Complete 10 tasks',
+    id: "ten_tasks",
+    name: "Task Master",
+    description: "Complete 10 tasks",
     unlocked: false,
-    icon: '💪',
+    icon: "💪",
     xpReward: 200,
   },
   {
-    id: 'streak_3',
-    name: 'Consistent Effort',
-    description: '3 day streak',
+    id: "streak_3",
+    name: "Consistent Effort",
+    description: "3 day streak",
     unlocked: false,
-    icon: '🔥',
+    icon: "🔥",
     xpReward: 150,
   },
   {
-    id: 'streak_7',
-    name: 'Weekly Warrior',
-    description: '7 day streak',
+    id: "streak_7",
+    name: "Weekly Warrior",
+    description: "7 day streak",
     unlocked: false,
-    icon: '🌟',
+    icon: "🌟",
     xpReward: 300,
   },
 ];
@@ -116,44 +116,65 @@ export class KarmaService {
       this.karmaState.karma += 10; // Karma points for leveling up
 
       // Increase XP required for next level (exponential growth)
-      this.karmaState.xpToNextLevel = Math.floor(this.karmaState.xpToNextLevel * 1.5);
+      this.karmaState.xpToNextLevel = Math.floor(
+        this.karmaState.xpToNextLevel * 1.5,
+      );
     }
   }
 
   private checkAchievements(): void {
     // Check first task achievement
-    if (this.karmaState.tasksCompleted >= 1 && !this.isAchievementUnlocked('first_task')) {
-      this.unlockAchievement('first_task');
+    if (
+      this.karmaState.tasksCompleted >= 1 &&
+      !this.isAchievementUnlocked("first_task")
+    ) {
+      this.unlockAchievement("first_task");
     }
 
     // Check 5 tasks achievement
-    if (this.karmaState.tasksCompleted >= 5 && !this.isAchievementUnlocked('five_tasks')) {
-      this.unlockAchievement('five_tasks');
+    if (
+      this.karmaState.tasksCompleted >= 5 &&
+      !this.isAchievementUnlocked("five_tasks")
+    ) {
+      this.unlockAchievement("five_tasks");
     }
 
     // Check 10 tasks achievement
-    if (this.karmaState.tasksCompleted >= 10 && !this.isAchievementUnlocked('ten_tasks')) {
-      this.unlockAchievement('ten_tasks');
+    if (
+      this.karmaState.tasksCompleted >= 10 &&
+      !this.isAchievementUnlocked("ten_tasks")
+    ) {
+      this.unlockAchievement("ten_tasks");
     }
 
     // Check 3 day streak achievement
-    if (this.karmaState.streak >= 3 && !this.isAchievementUnlocked('streak_3')) {
-      this.unlockAchievement('streak_3');
+    if (
+      this.karmaState.streak >= 3 &&
+      !this.isAchievementUnlocked("streak_3")
+    ) {
+      this.unlockAchievement("streak_3");
     }
 
     // Check 7 day streak achievement
-    if (this.karmaState.streak >= 7 && !this.isAchievementUnlocked('streak_7')) {
-      this.unlockAchievement('streak_7');
+    if (
+      this.karmaState.streak >= 7 &&
+      !this.isAchievementUnlocked("streak_7")
+    ) {
+      this.unlockAchievement("streak_7");
     }
   }
 
   private isAchievementUnlocked(achievementId: string): boolean {
-    const achievement = this.karmaState.achievements.find(a => a.id === achievementId);
+    const achievement = this.karmaState.achievements.find(
+      (a) => a.id === achievementId,
+    );
     return achievement ? achievement.unlocked : false;
   }
 
   private unlockAchievement(achievementId: string): void {
-    const achievementIndex = this.karmaState.achievements.findIndex(a => a.id === achievementId);
+    const achievementIndex = this.karmaState.achievements.findIndex(
+      (a) => a.id === achievementId,
+    );
     if (achievementIndex !== -1) {
       this.karmaState.achievements[achievementIndex].unlocked = true;
       this.addXP(this.karmaState.achievements[achievementIndex].xpReward);

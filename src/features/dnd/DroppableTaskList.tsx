@@ -1,5 +1,5 @@
-import React from 'react';
-import { DroppableContainer } from './DroppableContainer';
+import React from "react";
+import { DroppableContainer } from "./DroppableContainer";
 
 interface DroppableTaskListProps {
   id: string;
@@ -11,8 +11,8 @@ interface DroppableTaskListProps {
 export const DroppableTaskList: React.FC<DroppableTaskListProps> = ({
   id,
   children,
-  className = '',
-  onDrop
+  className = "",
+  onDrop,
 }) => {
   return (
     <DroppableContainer

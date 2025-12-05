@@ -1,15 +1,17 @@
-import React from 'react';
-import { usePerformanceConfig } from '../../../hooks/usePerformanceConfig';
+import React from "react";
+import { usePerformanceConfig } from "../../../hooks/usePerformanceConfig";
 
 export const PerformanceSettings: React.FC = () => {
   const { config, updateConfig, resetConfig } = usePerformanceConfig();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value, type } = e.target;
     const checked = (e.target as HTMLInputElement).checked;
 
     updateConfig({
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     });
   };
 

@@ -1,12 +1,12 @@
 /**
  * Offline Sync Service - Handles comprehensive offline synchronization
  */
-import { useOfflineStore } from '../store/useOfflineStore';
-import { offlineTaskService } from './offlineTaskService';
-import { offlineDataPersistence } from './offlineDataPersistence';
-import { SyncEngine } from '../database/sync';
-import { TodoneDatabase } from '../database/db';
-import { OfflineQueueItem, OfflineSyncStatus } from '../types/offlineTypes';
+import { useOfflineStore } from "../store/useOfflineStore";
+import { offlineTaskService } from "./offlineTaskService";
+import { offlineDataPersistence } from "./offlineDataPersistence";
+import { SyncEngine } from "../database/sync";
+import { TodoneDatabase } from "../database/db";
+import { OfflineQueueItem, OfflineSyncStatus } from "../types/offlineTypes";
 
 export class OfflineSyncService {
   private static instance: OfflineSyncService;
@@ -46,7 +46,7 @@ export class OfflineSyncService {
         if (!isOffline && this.needsSync()) {
           this.autoSync();
         }
-      }
+      },
     );
   }
 
@@ -54,7 +54,10 @@ export class OfflineSyncService {
    * Check if sync is needed
    */
   needsSync(): boolean {
-    return this.offlineStore.pendingChanges > 0 && !this.offlineStore.status.isOffline;
+    return (
+      this.offlineStore.pendingChanges > 0 &&
+      !this.offlineStore.status.isOffline
+    );
   }
 
   /**
@@ -63,19 +66,19 @@ export class OfflineSyncService {
   async autoSync(): Promise<void> {
     try {
       if (this.offlineStore.status.isOffline) {
-        console.log('Cannot auto-sync while offline');
+        console.log("Cannot auto-sync while offline");
         return;
       }
 
       if (!this.needsSync()) {
-        console.log('No sync needed');
+        console.log("No sync needed");
         return;
       }
 
-      console.log('Starting auto-sync');
+      console.log("Starting auto-sync");
       await this.syncAll();
     } catch (error) {
-      console.error('Auto-sync failed:', error);
+      console.error("Auto-sync failed:", error);
     }
   }
 
@@ -85,18 +88,18 @@ export class OfflineSyncService {
   async syncAll(): Promise<void> {
     try {
       if (this.offlineStore.status.isOffline) {
-        throw new Error('Cannot sync while offline');
+        throw new Error("Cannot sync while offline");
       }
 
       // Update sync status
       this.offlineStore.sync = {
         ...this.offlineStore.sync,
-        status: 'syncing',
+        status: "syncing",
         isSyncing: true,
-        syncStartTime: new Date()
+        syncStartTime: new Date(),
       };
 
-      console.log('Starting comprehensive sync');
+      console.log("Starting comprehensive sync");
 
       // 1. Sync task operations
       await offlineTaskService.processOfflineTaskQueue();
@@ -110,27 +113,28 @@ export class OfflineSyncService {
       // Update sync status
       this.offlineStore.sync = {
         ...this.offlineStore.sync,
-        status: 'completed',
+        status: "completed",
         isSyncing: false,
         lastSynced: new Date(),
         syncEndTime: new Date(),
-        syncDuration: Date.now() - (this.offlineStore.sync.syncStartTime?.getTime() || 0)
+        syncDuration:
+          Date.now() - (this.offlineStore.sync.syncStartTime?.getTime() || 0),
       };
 
       // Update last sync in offline store
       this.offlineStore.lastSync = new Date();
       this.offlineStore.pendingChanges = 0;
 
-      console.log('Comprehensive sync completed');
+      console.log("Comprehensive sync completed");
     } catch (error) {
-      console.error('Sync failed:', error);
+      console.error("Sync failed:", error);
 
       // Update sync status with error
       this.offlineStore.sync = {
         ...this.offlineStore.sync,
-        status: 'error',
+        status: "error",
         isSyncing: false,
-        error: error instanceof Error ? error : new Error('Sync failed')
+        error: error instanceof Error ? error : new Error("Sync failed"),
       };
 
       throw error;
@@ -152,7 +156,7 @@ export class OfflineSyncService {
       lastSynced: this.offlineStore.lastSync,
       pendingOperations: this.offlineStore.pendingChanges,
       status: this.offlineStore.sync.status,
-      error: this.offlineStore.sync.error
+      error: this.offlineStore.sync.error,
     };
   }
 
@@ -171,7 +175,7 @@ export class OfflineSyncService {
       completedOperations: this.offlineStore.sync.processedItems,
       failedOperations: this.offlineStore.sync.failedItems,
       syncDuration: this.offlineStore.sync.syncDuration,
-      lastSyncSize: this.offlineStore.sync.syncStatistics.lastSyncSize
+      lastSyncSize: this.offlineStore.sync.syncStatistics.lastSyncSize,
     };
   }
 
@@ -181,13 +185,13 @@ export class OfflineSyncService {
   async processSyncQueue(): Promise<void> {
     try {
       if (this.offlineStore.status.isOffline) {
-        throw new Error('Cannot process sync queue while offline');
+        throw new Error("Cannot process sync queue while offline");
       }
 
       const queueItems = this.offlineStore.queue.items;
 
       if (queueItems.length === 0) {
-        console.log('No items in sync queue');
+        console.log("No items in sync queue");
         return;
       }
 
@@ -195,16 +199,16 @@ export class OfflineSyncService {
 
       // Process items by priority
       const priorityOrder: Record<string, number> = {
-        'critical': 1,
-        'high': 2,
-        'medium': 3,
-        'low': 4
+        critical: 1,
+        high: 2,
+        medium: 3,
+        low: 4,
       };
 
       // Sort by priority
       const sortedItems = [...queueItems].sort((a, b) => {
-        const priorityA = priorityOrder[a.priority || 'medium'] || 3;
-        const priorityB = priorityOrder[b.priority || 'medium'] || 3;
+        const priorityA = priorityOrder[a.priority || "medium"] || 3;
+        const priorityB = priorityOrder[b.priority || "medium"] || 3;
         return priorityA - priorityB;
       });
 
@@ -218,7 +222,7 @@ export class OfflineSyncService {
         }
       }
     } catch (error) {
-      console.error('Failed to process sync queue:', error);
+      console.error("Failed to process sync queue:", error);
       throw error;
     }
   }
@@ -232,22 +236,27 @@ export class OfflineSyncService {
 
       // Simulate processing based on operation type
       switch (item.type) {
-        case 'create':
-        case 'update':
-        case 'delete':
+        case "create":
+        case "update":
+        case "delete":
           // These are handled by the task service
           break;
-        case 'sync':
+        case "sync":
           // Handle sync operations
           await this.handleSyncOperation(item);
           break;
       }
 
       // Mark as completed in sync engine
-      await this.syncEngine.addToSyncQueue('completed', 'sync_queue', Date.now(), {
-        ...item,
-        status: 'completed'
-      });
+      await this.syncEngine.addToSyncQueue(
+        "completed",
+        "sync_queue",
+        Date.now(),
+        {
+          ...item,
+          status: "completed",
+        },
+      );
     } catch (error) {
       console.error(`Failed to process queue item ${item.id}:`, error);
       throw error;
@@ -262,7 +271,7 @@ export class OfflineSyncService {
     console.log(`Handling sync operation: ${item.operation}`);
 
     // Simulate sync operation
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
   }
 
   /**
@@ -271,11 +280,11 @@ export class OfflineSyncService {
   async retryFailedOperations(): Promise<void> {
     try {
       const failedItems = this.offlineStore.queue.items.filter(
-        item => item.status === 'failed'
+        (item) => item.status === "failed",
       );
 
       if (failedItems.length === 0) {
-        console.log('No failed operations to retry');
+        console.log("No failed operations to retry");
         return;
       }
 
@@ -294,7 +303,7 @@ export class OfflineSyncService {
         }
       }
     } catch (error) {
-      console.error('Failed to retry failed operations:', error);
+      console.error("Failed to retry failed operations:", error);
       throw error;
     }
   }
@@ -306,9 +315,9 @@ export class OfflineSyncService {
     try {
       this.offlineStore.clearQueue();
       await this.syncEngine.clearSyncQueue();
-      console.log('Sync queue cleared');
+      console.log("Sync queue cleared");
     } catch (error) {
-      console.error('Failed to clear sync queue:', error);
+      console.error("Failed to clear sync queue:", error);
       throw error;
     }
   }
@@ -326,7 +335,7 @@ export class OfflineSyncService {
       totalItems: this.offlineStore.queue.totalCount,
       pendingItems: this.offlineStore.queue.pendingCount,
       completedItems: this.offlineStore.queue.completedCount,
-      failedItems: this.offlineStore.queue.failedCount
+      failedItems: this.offlineStore.queue.failedCount,
     };
   }
 
@@ -340,7 +349,7 @@ export class OfflineSyncService {
           await this.syncAll();
         }
       } catch (error) {
-        console.error('Periodic sync failed:', error);
+        console.error("Periodic sync failed:", error);
       }
     }, interval);
 
@@ -352,7 +361,7 @@ export class OfflineSyncService {
    */
   pauseSync(): void {
     this.offlineStore.pauseSync();
-    console.log('Sync operations paused');
+    console.log("Sync operations paused");
   }
 
   /**
@@ -360,7 +369,7 @@ export class OfflineSyncService {
    */
   resumeSync(): void {
     this.offlineStore.resumeSync();
-    console.log('Sync operations resumed');
+    console.log("Sync operations resumed");
   }
 
   /**
@@ -385,10 +394,10 @@ export class OfflineSyncService {
       queueStatus: {
         total: this.offlineStore.queue.totalCount,
         pending: this.offlineStore.queue.pendingCount,
-        failed: this.offlineStore.queue.failedCount
+        failed: this.offlineStore.queue.failedCount,
       },
       syncStatus: this.offlineStore.sync.status,
-      lastSync: this.offlineStore.lastSync
+      lastSync: this.offlineStore.lastSync,
     };
   }
 }

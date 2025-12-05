@@ -1,6 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { commentService } from '../services/commentService';
-import { Comment } from '../types/common';
+import { useState, useEffect, useCallback } from "react";
+import { commentService } from "../services/commentService";
+import { Comment } from "../types/common";
 
 /**
  * Custom hook for managing comments
@@ -23,7 +23,7 @@ export const useComments = (taskId: string) => {
       const fetchedComments = await commentService.getCommentsByTask(taskId);
       setComments(fetchedComments);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch comments');
+      setError(err instanceof Error ? err.message : "Failed to fetch comments");
     } finally {
       setLoading(false);
     }
@@ -32,106 +32,138 @@ export const useComments = (taskId: string) => {
   /**
    * Create a new comment
    */
-  const createComment = useCallback(async (content: string): Promise<Comment> => {
-    if (!taskId) {
-      throw new Error('Task ID is required');
-    }
+  const createComment = useCallback(
+    async (content: string): Promise<Comment> => {
+      if (!taskId) {
+        throw new Error("Task ID is required");
+      }
 
-    try {
-      setError(null);
-      const userId = localStorage.getItem('userId') || 'anonymous';
-      const newComment = await commentService.createComment(taskId, userId, content);
+      try {
+        setError(null);
+        const userId = localStorage.getItem("userId") || "anonymous";
+        const newComment = await commentService.createComment(
+          taskId,
+          userId,
+          content,
+        );
 
-      // Optimistic update
-      setComments(prev => [newComment, ...prev]);
-      return newComment;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create comment');
-      throw err;
-    }
-  }, [taskId]);
+        // Optimistic update
+        setComments((prev) => [newComment, ...prev]);
+        return newComment;
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to create comment",
+        );
+        throw err;
+      }
+    },
+    [taskId],
+  );
 
   /**
    * Update a comment
    */
-  const updateComment = useCallback(async (commentId: string, content: string): Promise<Comment> => {
-    try {
-      setError(null);
-      const updatedComment = await commentService.updateComment(commentId, content);
+  const updateComment = useCallback(
+    async (commentId: string, content: string): Promise<Comment> => {
+      try {
+        setError(null);
+        const updatedComment = await commentService.updateComment(
+          commentId,
+          content,
+        );
 
-      // Optimistic update
-      setComments(prev =>
-        prev.map(comment =>
-          comment.id === commentId ? { ...comment, content } : comment
-        )
-      );
+        // Optimistic update
+        setComments((prev) =>
+          prev.map((comment) =>
+            comment.id === commentId ? { ...comment, content } : comment,
+          ),
+        );
 
-      return updatedComment;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update comment');
-      throw err;
-    }
-  }, []);
+        return updatedComment;
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to update comment",
+        );
+        throw err;
+      }
+    },
+    [],
+  );
 
   /**
    * Delete a comment
    */
-  const deleteComment = useCallback(async (commentId: string): Promise<void> => {
-    try {
-      setError(null);
-      await commentService.deleteComment(commentId);
+  const deleteComment = useCallback(
+    async (commentId: string): Promise<void> => {
+      try {
+        setError(null);
+        await commentService.deleteComment(commentId);
 
-      // Optimistic update
-      setComments(prev => prev.filter(comment => comment.id !== commentId));
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete comment');
-      throw err;
-    }
-  }, []);
+        // Optimistic update
+        setComments((prev) =>
+          prev.filter((comment) => comment.id !== commentId),
+        );
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to delete comment",
+        );
+        throw err;
+      }
+    },
+    [],
+  );
 
   /**
    * Like a comment
    */
-  const likeComment = useCallback(async (commentId: string): Promise<Comment> => {
-    try {
-      setError(null);
-      const updatedComment = await commentService.likeComment(commentId);
+  const likeComment = useCallback(
+    async (commentId: string): Promise<Comment> => {
+      try {
+        setError(null);
+        const updatedComment = await commentService.likeComment(commentId);
 
-      // Optimistic update
-      setComments(prev =>
-        prev.map(comment =>
-          comment.id === commentId ? updatedComment : comment
-        )
-      );
+        // Optimistic update
+        setComments((prev) =>
+          prev.map((comment) =>
+            comment.id === commentId ? updatedComment : comment,
+          ),
+        );
 
-      return updatedComment;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to like comment');
-      throw err;
-    }
-  }, []);
+        return updatedComment;
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to like comment");
+        throw err;
+      }
+    },
+    [],
+  );
 
   /**
    * Unlike a comment
    */
-  const unlikeComment = useCallback(async (commentId: string): Promise<Comment> => {
-    try {
-      setError(null);
-      const updatedComment = await commentService.unlikeComment(commentId);
+  const unlikeComment = useCallback(
+    async (commentId: string): Promise<Comment> => {
+      try {
+        setError(null);
+        const updatedComment = await commentService.unlikeComment(commentId);
 
-      // Optimistic update
-      setComments(prev =>
-        prev.map(comment =>
-          comment.id === commentId ? updatedComment : comment
-        )
-      );
+        // Optimistic update
+        setComments((prev) =>
+          prev.map((comment) =>
+            comment.id === commentId ? updatedComment : comment,
+          ),
+        );
 
-      return updatedComment;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to unlike comment');
-      throw err;
-    }
-  }, []);
+        return updatedComment;
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to unlike comment",
+        );
+        throw err;
+      }
+    },
+    [],
+  );
 
   /**
    * Refresh comments
@@ -148,20 +180,26 @@ export const useComments = (taskId: string) => {
   /**
    * Filter comments by user
    */
-  const filterCommentsByUser = useCallback((userId: string): Comment[] => {
-    return comments.filter(comment => comment.user === userId);
-  }, [comments]);
+  const filterCommentsByUser = useCallback(
+    (userId: string): Comment[] => {
+      return comments.filter((comment) => comment.user === userId);
+    },
+    [comments],
+  );
 
   /**
    * Sort comments by timestamp
    */
-  const sortComments = useCallback((direction: 'asc' | 'desc' = 'desc'): Comment[] => {
-    return [...comments].sort((a, b) => {
-      const dateA = new Date(a.timestamp).getTime();
-      const dateB = new Date(b.timestamp).getTime();
-      return direction === 'desc' ? dateB - dateA : dateA - dateB;
-    });
-  }, [comments]);
+  const sortComments = useCallback(
+    (direction: "asc" | "desc" = "desc"): Comment[] => {
+      return [...comments].sort((a, b) => {
+        const dateA = new Date(a.timestamp).getTime();
+        const dateB = new Date(b.timestamp).getTime();
+        return direction === "desc" ? dateB - dateA : dateA - dateB;
+      });
+    },
+    [comments],
+  );
 
   /**
    * Get comment statistics
@@ -173,17 +211,20 @@ export const useComments = (taskId: string) => {
   } => {
     const byUser: Record<string, number> = {};
     const recent = [...comments]
-      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      )
       .slice(0, 5);
 
-    comments.forEach(comment => {
+    comments.forEach((comment) => {
       byUser[comment.user] = (byUser[comment.user] || 0) + 1;
     });
 
     return {
       total: comments.length,
       byUser,
-      recent
+      recent,
     };
   }, [comments]);
 
@@ -206,6 +247,6 @@ export const useComments = (taskId: string) => {
     refreshComments,
     filterCommentsByUser,
     sortComments,
-    getCommentStats
+    getCommentStats,
   };
 };

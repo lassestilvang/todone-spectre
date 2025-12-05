@@ -5,7 +5,7 @@
  * for offline storage and synchronization.
  */
 
-import { OfflineQueueItem } from '../types/offlineTypes';
+import { OfflineQueueItem } from "../types/offlineTypes";
 
 /**
  * Transform data for offline storage
@@ -15,15 +15,17 @@ export function transformDataForOfflineStorage(data: any): any {
   // Remove circular references
   const removeCircularReferences = (obj: any): any => {
     const seen = new WeakSet();
-    return JSON.parse(JSON.stringify(obj, (key, value) => {
-      if (typeof value === 'object' && value !== null) {
-        if (seen.has(value)) {
-          return '[Circular]';
+    return JSON.parse(
+      JSON.stringify(obj, (key, value) => {
+        if (typeof value === "object" && value !== null) {
+          if (seen.has(value)) {
+            return "[Circular]";
+          }
+          seen.add(value);
         }
-        seen.add(value);
-      }
-      return value;
-    }));
+        return value;
+      }),
+    );
   };
 
   // Convert dates to ISO strings
@@ -36,9 +38,9 @@ export function transformDataForOfflineStorage(data: any): any {
       return obj.map(convertDates);
     }
 
-    if (typeof obj === 'object' && obj !== null) {
+    if (typeof obj === "object" && obj !== null) {
       return Object.fromEntries(
-        Object.entries(obj).map(([key, value]) => [key, convertDates(value)])
+        Object.entries(obj).map(([key, value]) => [key, convertDates(value)]),
       );
     }
 
@@ -47,12 +49,14 @@ export function transformDataForOfflineStorage(data: any): any {
 
   // Remove sensitive data
   const sanitizeData = (obj: any): any => {
-    if (typeof obj === 'object' && obj !== null) {
+    if (typeof obj === "object" && obj !== null) {
       const sanitized: any = {};
       for (const [key, value] of Object.entries(obj)) {
-        if (key.toLowerCase().includes('password') ||
-            key.toLowerCase().includes('token') ||
-            key.toLowerCase().includes('secret')) {
+        if (
+          key.toLowerCase().includes("password") ||
+          key.toLowerCase().includes("token") ||
+          key.toLowerCase().includes("secret")
+        ) {
           continue; // Skip sensitive fields
         }
         sanitized[key] = sanitizeData(value);
@@ -73,7 +77,10 @@ export function transformDataForOfflineStorage(data: any): any {
 export function transformOfflineDataToApplication(data: any): any {
   // Convert ISO strings back to Date objects
   const convertDateStrings = (obj: any): any => {
-    if (typeof obj === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/.test(obj)) {
+    if (
+      typeof obj === "string" &&
+      /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z$/.test(obj)
+    ) {
       return new Date(obj);
     }
 
@@ -81,9 +88,12 @@ export function transformOfflineDataToApplication(data: any): any {
       return obj.map(convertDateStrings);
     }
 
-    if (typeof obj === 'object' && obj !== null) {
+    if (typeof obj === "object" && obj !== null) {
       return Object.fromEntries(
-        Object.entries(obj).map(([key, value]) => [key, convertDateStrings(value)])
+        Object.entries(obj).map(([key, value]) => [
+          key,
+          convertDateStrings(value),
+        ]),
       );
     }
 
@@ -99,13 +109,13 @@ export function transformOfflineDataToApplication(data: any): any {
  */
 export function prepareQueueItemData(
   operation: string,
-  type: 'create' | 'update' | 'delete' | 'sync',
-  data: any
-): Omit<OfflineQueueItem, 'id' | 'timestamp' | 'status' | 'attempts'> {
+  type: "create" | "update" | "delete" | "sync",
+  data: any,
+): Omit<OfflineQueueItem, "id" | "timestamp" | "status" | "attempts"> {
   return {
     operation,
     type,
-    data: transformDataForOfflineStorage(data)
+    data: transformDataForOfflineStorage(data),
   };
 }
 
@@ -113,14 +123,14 @@ export function prepareQueueItemData(
  * Batch transform multiple items for offline storage
  */
 export function batchTransformForOfflineStorage(items: any[]): any[] {
-  return items.map(item => transformDataForOfflineStorage(item));
+  return items.map((item) => transformDataForOfflineStorage(item));
 }
 
 /**
  * Batch transform offline data back to application format
  */
 export function batchTransformOfflineToApplication(items: any[]): any[] {
-  return items.map(item => transformOfflineDataToApplication(item));
+  return items.map((item) => transformOfflineDataToApplication(item));
 }
 
 /**
@@ -132,7 +142,7 @@ export function createDataSnapshot(data: any, snapshotName: string): any {
     snapshotName,
     timestamp: new Date().toISOString(),
     data: transformDataForOfflineStorage(data),
-    version: '1.0'
+    version: "1.0",
   };
 }
 
@@ -140,7 +150,10 @@ export function createDataSnapshot(data: any, snapshotName: string): any {
  * Compare data snapshots for changes
  * Returns true if there are differences between snapshots
  */
-export function compareDataSnapshots(oldSnapshot: any, newSnapshot: any): boolean {
+export function compareDataSnapshots(
+  oldSnapshot: any,
+  newSnapshot: any,
+): boolean {
   return JSON.stringify(oldSnapshot.data) !== JSON.stringify(newSnapshot.data);
 }
 
@@ -150,8 +163,12 @@ export function compareDataSnapshots(oldSnapshot: any, newSnapshot: any): boolea
  */
 export function mergeOfflineChanges(offlineData: any, onlineData: any): any {
   // For objects, merge properties
-  if (typeof offlineData === 'object' && offlineData !== null &&
-      typeof onlineData === 'object' && onlineData !== null) {
+  if (
+    typeof offlineData === "object" &&
+    offlineData !== null &&
+    typeof onlineData === "object" &&
+    onlineData !== null
+  ) {
     return { ...onlineData, ...offlineData };
   }
 
@@ -196,7 +213,7 @@ export function decompressDataFromStorage(compressedData: string): any {
     const decodedString = decodeURIComponent(atob(compressedData));
     return JSON.parse(decodedString);
   } catch (error) {
-    console.error('Failed to decompress data:', error);
+    console.error("Failed to decompress data:", error);
     return null;
   }
 }

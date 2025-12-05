@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { Comment } from '../../types/common';
-import { Bell, MessageSquare, AlertCircle } from 'lucide-react';
-import { Button } from '../../components/ui/button';
-import { Badge } from '../../components/ui/badge';
+import React, { useState, useEffect } from "react";
+import { Comment } from "../../types/common";
+import { Bell, MessageSquare, AlertCircle } from "lucide-react";
+import { Button } from "../../components/ui/button";
+import { Badge } from "../../components/ui/badge";
 
 interface CommentNotification {
   id: string;
   commentId: string;
-  type: 'mention' | 'reply' | 'like' | 'dislike';
+  type: "mention" | "reply" | "like" | "dislike";
   userId: string;
   read: boolean;
   createdAt: Date;
@@ -25,10 +25,10 @@ const CommentNotifications: React.FC<CommentNotificationsProps> = ({
   notifications,
   onMarkAsRead,
   onViewComment,
-  onDismiss
+  onDismiss,
 }) => {
   const [expanded, setExpanded] = useState(false);
-  const unreadCount = notifications.filter(n => !n.read).length;
+  const unreadCount = notifications.filter((n) => !n.read).length;
 
   const handleNotificationClick = (notification: CommentNotification) => {
     if (!notification.read) {
@@ -71,24 +71,24 @@ const CommentNotifications: React.FC<CommentNotificationsProps> = ({
               </div>
             ) : (
               <ul className="divide-y divide-gray-100">
-                {notifications.map(notification => (
+                {notifications.map((notification) => (
                   <li
                     key={notification.id}
-                    className={`p-3 hover:bg-gray-50 cursor-pointer ${!notification.read ? 'bg-blue-50' : ''}`}
+                    className={`p-3 hover:bg-gray-50 cursor-pointer ${!notification.read ? "bg-blue-50" : ""}`}
                     onClick={() => handleNotificationClick(notification)}
                   >
                     <div className="flex items-start space-x-3">
                       <div className="flex-shrink-0">
-                        {notification.type === 'mention' && (
+                        {notification.type === "mention" && (
                           <MessageSquare className="w-5 h-5 text-blue-500" />
                         )}
-                        {notification.type === 'reply' && (
+                        {notification.type === "reply" && (
                           <MessageSquare className="w-5 h-5 text-green-500" />
                         )}
-                        {notification.type === 'like' && (
+                        {notification.type === "like" && (
                           <Bell className="w-5 h-5 text-yellow-500" />
                         )}
-                        {notification.type === 'dislike' && (
+                        {notification.type === "dislike" && (
                           <Bell className="w-5 h-5 text-red-500" />
                         )}
                       </div>
@@ -105,7 +105,10 @@ const CommentNotifications: React.FC<CommentNotificationsProps> = ({
 
                         {notification.comment && (
                           <p className="text-xs text-gray-500 mt-1 truncate">
-                            {notification.comment.content.substring(0, 50)}{notification.comment.content.length > 50 ? '...' : ''}
+                            {notification.comment.content.substring(0, 50)}
+                            {notification.comment.content.length > 50
+                              ? "..."
+                              : ""}
                           </p>
                         )}
                       </div>
@@ -118,8 +121,18 @@ const CommentNotifications: React.FC<CommentNotificationsProps> = ({
                         className="text-gray-400 hover:text-gray-600"
                         title="Dismiss"
                       >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
                         </svg>
                       </button>
                     </div>
@@ -135,7 +148,7 @@ const CommentNotifications: React.FC<CommentNotificationsProps> = ({
               size="sm"
               className="w-full justify-center"
               onClick={() => {
-                notifications.forEach(n => !n.read && onMarkAsRead(n.id));
+                notifications.forEach((n) => !n.read && onMarkAsRead(n.id));
                 setExpanded(false);
               }}
             >
@@ -150,16 +163,16 @@ const CommentNotifications: React.FC<CommentNotificationsProps> = ({
 
 function getNotificationMessage(notification: CommentNotification): string {
   switch (notification.type) {
-    case 'mention':
-      return 'Someone mentioned you in a comment';
-    case 'reply':
-      return 'Someone replied to your comment';
-    case 'like':
-      return 'Someone liked your comment';
-    case 'dislike':
-      return 'Someone disliked your comment';
+    case "mention":
+      return "Someone mentioned you in a comment";
+    case "reply":
+      return "Someone replied to your comment";
+    case "like":
+      return "Someone liked your comment";
+    case "dislike":
+      return "Someone disliked your comment";
     default:
-      return 'New comment activity';
+      return "New comment activity";
   }
 }
 

@@ -1,8 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
-import { Template, TemplateCategory, TemplateFilterCriteria, TemplateSortOptions } from '../types/template';
-import { templateService } from '../services/templateService';
-import { templateCategoryService } from '../services/templateCategoryService';
-import { useTemplateStore } from '../store/useTemplateStore';
+import { useState, useEffect, useCallback } from "react";
+import {
+  Template,
+  TemplateCategory,
+  TemplateFilterCriteria,
+  TemplateSortOptions,
+} from "../types/template";
+import { templateService } from "../services/templateService";
+import { templateCategoryService } from "../services/templateCategoryService";
+import { useTemplateStore } from "../store/useTemplateStore";
 
 /**
  * Custom hook for template management with data fetching, mutations, filtering, and sorting
@@ -10,10 +15,12 @@ import { useTemplateStore } from '../store/useTemplateStore';
 export const useTemplates = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>('');
-  const [categoryFilter, setCategoryFilter] = useState<string | 'all'>('all');
-  const [sortBy, setSortBy] = useState<'name' | 'createdAt' | 'usageCount' | 'rating'>('name');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [categoryFilter, setCategoryFilter] = useState<string | "all">("all");
+  const [sortBy, setSortBy] = useState<
+    "name" | "createdAt" | "usageCount" | "rating"
+  >("name");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [isPublicFilter, setIsPublicFilter] = useState<boolean | null>(null);
 
   const {
@@ -33,7 +40,7 @@ export const useTemplates = () => {
     setTemplateError,
     setPreviewTemplate,
     clearPreviewTemplate,
-    applyTemplate
+    applyTemplate,
   } = useTemplateStore();
 
   /**
@@ -47,7 +54,9 @@ export const useTemplates = () => {
       const fetchedTemplates = await templateService.getTemplates();
       setTemplates(fetchedTemplates);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch templates');
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch templates",
+      );
     } finally {
       setIsLoading(false);
     }
@@ -56,30 +65,43 @@ export const useTemplates = () => {
   /**
    * Create template mutation
    */
-  const createTemplate = useCallback(async (templateData: Omit<Template, 'id' | 'createdAt' | 'updatedAt'>) => {
-    try {
-      setError(null);
-      const newTemplate = await templateService.createTemplate(templateData);
-      return newTemplate;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create template');
-      throw err;
-    }
-  }, []);
+  const createTemplate = useCallback(
+    async (templateData: Omit<Template, "id" | "createdAt" | "updatedAt">) => {
+      try {
+        setError(null);
+        const newTemplate = await templateService.createTemplate(templateData);
+        return newTemplate;
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to create template",
+        );
+        throw err;
+      }
+    },
+    [],
+  );
 
   /**
    * Update template mutation
    */
-  const updateTemplateMutation = useCallback(async (templateId: string, updates: Partial<Template>) => {
-    try {
-      setError(null);
-      const updatedTemplate = await templateService.updateTemplate(templateId, updates);
-      return updatedTemplate;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update template');
-      throw err;
-    }
-  }, []);
+  const updateTemplateMutation = useCallback(
+    async (templateId: string, updates: Partial<Template>) => {
+      try {
+        setError(null);
+        const updatedTemplate = await templateService.updateTemplate(
+          templateId,
+          updates,
+        );
+        return updatedTemplate;
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to update template",
+        );
+        throw err;
+      }
+    },
+    [],
+  );
 
   /**
    * Delete template mutation
@@ -89,7 +111,9 @@ export const useTemplates = () => {
       setError(null);
       await templateService.deleteTemplate(templateId);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete template');
+      setError(
+        err instanceof Error ? err.message : "Failed to delete template",
+      );
       throw err;
     }
   }, []);
@@ -97,49 +121,77 @@ export const useTemplates = () => {
   /**
    * Apply template with variables
    */
-  const applyTemplateWithVariables = useCallback(async (templateId: string, variables?: Record<string, string>): Promise<string> => {
-    try {
-      setError(null);
-      const result = await templateService.applyTemplate(templateId, variables);
-      return result;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to apply template');
-      throw err;
-    }
-  }, []);
+  const applyTemplateWithVariables = useCallback(
+    async (
+      templateId: string,
+      variables?: Record<string, string>,
+    ): Promise<string> => {
+      try {
+        setError(null);
+        const result = await templateService.applyTemplate(
+          templateId,
+          variables,
+        );
+        return result;
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to apply template",
+        );
+        throw err;
+      }
+    },
+    [],
+  );
 
   /**
    * Preview template with variables
    */
-  const previewTemplateWithVariables = useCallback(async (templateId: string, variables?: Record<string, string>): Promise<string> => {
-    try {
-      setError(null);
-      const result = await templateService.previewTemplate(templateId, variables);
-      return result;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to preview template');
-      throw err;
-    }
-  }, []);
+  const previewTemplateWithVariables = useCallback(
+    async (
+      templateId: string,
+      variables?: Record<string, string>,
+    ): Promise<string> => {
+      try {
+        setError(null);
+        const result = await templateService.previewTemplate(
+          templateId,
+          variables,
+        );
+        return result;
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to preview template",
+        );
+        throw err;
+      }
+    },
+    [],
+  );
 
   /**
    * Apply filters based on current filter state
    */
   const applyCurrentFilters = useCallback(() => {
     const filters: TemplateFilterCriteria = {
-      categoryId: categoryFilter === 'all' ? undefined : categoryFilter,
+      categoryId: categoryFilter === "all" ? undefined : categoryFilter,
       searchQuery: searchQuery || undefined,
-      isPublic: isPublicFilter
+      isPublic: isPublicFilter,
     };
 
     setTemplateFilter(filters);
     applyTemplateFilters();
-  }, [categoryFilter, searchQuery, isPublicFilter, setTemplateFilter, applyTemplateFilters]);
+  }, [
+    categoryFilter,
+    searchQuery,
+    isPublicFilter,
+    setTemplateFilter,
+    applyTemplateFilters,
+  ]);
 
   /**
    * Filter templates by category
    */
-  const filterByCategory = useCallback((category: string | 'all') => {
+  const filterByCategory = useCallback((category: string | "all") => {
     setCategoryFilter(category);
   }, []);
 
@@ -153,11 +205,17 @@ export const useTemplates = () => {
   /**
    * Sort templates
    */
-  const sortTemplates = useCallback((sortField: 'name' | 'createdAt' | 'usageCount' | 'rating', direction: 'asc' | 'desc' = 'asc') => {
-    setSortBy(sortField);
-    setSortDirection(direction);
-    setTemplateSort(sortField, direction);
-  }, [setTemplateSort]);
+  const sortTemplates = useCallback(
+    (
+      sortField: "name" | "createdAt" | "usageCount" | "rating",
+      direction: "asc" | "desc" = "asc",
+    ) => {
+      setSortBy(sortField);
+      setSortDirection(direction);
+      setTemplateSort(sortField, direction);
+    },
+    [setTemplateSort],
+  );
 
   /**
    * Search templates
@@ -170,8 +228,8 @@ export const useTemplates = () => {
    * Reset all filters
    */
   const resetFilters = useCallback(() => {
-    setSearchQuery('');
-    setCategoryFilter('all');
+    setSearchQuery("");
+    setCategoryFilter("all");
     setIsPublicFilter(null);
     setTemplateFilter({});
     applyTemplateFilters();
@@ -186,54 +244,66 @@ export const useTemplates = () => {
     // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
-      result = result.filter(template =>
-        template.name.toLowerCase().includes(query) ||
-        (template.description && template.description.toLowerCase().includes(query)) ||
-        (template.tags && template.tags.some(tag => tag.toLowerCase().includes(query)))
+      result = result.filter(
+        (template) =>
+          template.name.toLowerCase().includes(query) ||
+          (template.description &&
+            template.description.toLowerCase().includes(query)) ||
+          (template.tags &&
+            template.tags.some((tag) => tag.toLowerCase().includes(query))),
       );
     }
 
     // Apply category filter
-    if (categoryFilter !== 'all') {
-      result = result.filter(template => template.categoryId === categoryFilter);
+    if (categoryFilter !== "all") {
+      result = result.filter(
+        (template) => template.categoryId === categoryFilter,
+      );
     }
 
     // Apply public/private filter
     if (isPublicFilter !== null) {
-      result = result.filter(template => template.isPublic === isPublicFilter);
+      result = result.filter(
+        (template) => template.isPublic === isPublicFilter,
+      );
     }
 
     // Apply sorting
     result.sort((a, b) => {
-      let aValue: any = a[sortBy];
-      let bValue: any = b[sortBy];
+      const aValue: any = a[sortBy];
+      const bValue: any = b[sortBy];
 
       // Handle date sorting
       if (aValue instanceof Date && bValue instanceof Date) {
-        return sortDirection === 'asc'
+        return sortDirection === "asc"
           ? aValue.getTime() - bValue.getTime()
           : bValue.getTime() - aValue.getTime();
       }
 
       // Handle string sorting
-      if (typeof aValue === 'string' && typeof bValue === 'string') {
-        return sortDirection === 'asc'
+      if (typeof aValue === "string" && typeof bValue === "string") {
+        return sortDirection === "asc"
           ? aValue.localeCompare(bValue)
           : bValue.localeCompare(aValue);
       }
 
       // Handle numeric sorting (usageCount, rating)
-      if (typeof aValue === 'number' && typeof bValue === 'number') {
-        return sortDirection === 'asc'
-          ? aValue - bValue
-          : bValue - aValue;
+      if (typeof aValue === "number" && typeof bValue === "number") {
+        return sortDirection === "asc" ? aValue - bValue : bValue - aValue;
       }
 
       return 0;
     });
 
     return result;
-  }, [templates, searchQuery, categoryFilter, isPublicFilter, sortBy, sortDirection]);
+  }, [
+    templates,
+    searchQuery,
+    categoryFilter,
+    isPublicFilter,
+    sortBy,
+    sortDirection,
+  ]);
 
   /**
    * Initialize templates on mount
@@ -287,7 +357,7 @@ export const useTemplates = () => {
     clearPreviewTemplate,
 
     // Utility
-    getProcessedTemplates
+    getProcessedTemplates,
   };
 };
 
@@ -308,7 +378,7 @@ export const useTemplate = (templateId?: string) => {
       const fetchedTemplate = await templateService.getTemplate(templateId);
       setTemplate(fetchedTemplate);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch template');
+      setError(err instanceof Error ? err.message : "Failed to fetch template");
     } finally {
       setIsLoading(false);
     }
@@ -324,6 +394,6 @@ export const useTemplate = (templateId?: string) => {
     template,
     isLoading,
     error,
-    refetch: fetchTemplate
+    refetch: fetchTemplate,
   };
 };

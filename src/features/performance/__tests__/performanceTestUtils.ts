@@ -1,20 +1,30 @@
-import { PerformanceMetrics, PerformanceStatus, PerformanceConfig } from '../../../types/performance';
+import {
+  PerformanceMetrics,
+  PerformanceStatus,
+  PerformanceConfig,
+} from "../../../types/performance";
 
-export const generateMockPerformanceMetrics = (overrides: Partial<PerformanceMetrics> = {}): PerformanceMetrics => {
+export const generateMockPerformanceMetrics = (
+  overrides: Partial<PerformanceMetrics> = {},
+): PerformanceMetrics => {
   return {
     loadTime: 1500,
     memoryUsage: 300,
     cpuUsage: 45,
     fps: 58,
-    ...overrides
+    ...overrides,
   };
 };
 
-export const generateMockPerformanceStatus = (status: PerformanceStatus = 'optimal'): PerformanceStatus => {
+export const generateMockPerformanceStatus = (
+  status: PerformanceStatus = "optimal",
+): PerformanceStatus => {
   return status;
 };
 
-export const generateMockPerformanceConfig = (overrides: Partial<PerformanceConfig> = {}): PerformanceConfig => {
+export const generateMockPerformanceConfig = (
+  overrides: Partial<PerformanceConfig> = {},
+): PerformanceConfig => {
   return {
     enableMonitoring: true,
     enableLogging: false,
@@ -25,30 +35,32 @@ export const generateMockPerformanceConfig = (overrides: Partial<PerformanceConf
     enableNetworkMonitoring: false,
     dataRetentionDays: 30,
     alertThreshold: 80,
-    ...overrides
+    ...overrides,
   };
 };
 
 export const createPerformanceServiceMock = () => {
   let metrics: PerformanceMetrics | null = null;
-  let status: PerformanceStatus = 'inactive';
+  let status: PerformanceStatus = "inactive";
   let config: PerformanceConfig = generateMockPerformanceConfig();
   let isMonitoring = false;
 
   return {
     startMonitoring: jest.fn(() => {
       isMonitoring = true;
-      status = 'monitoring';
+      status = "monitoring";
     }),
     stopMonitoring: jest.fn(() => {
       isMonitoring = false;
-      status = 'inactive';
+      status = "inactive";
     }),
     getPerformanceMetrics: jest.fn(() => metrics),
     getPerformanceStatus: jest.fn(() => status),
-    updatePerformanceConfig: jest.fn((newConfig: Partial<PerformanceConfig>) => {
-      config = { ...config, ...newConfig };
-    }),
+    updatePerformanceConfig: jest.fn(
+      (newConfig: Partial<PerformanceConfig>) => {
+        config = { ...config, ...newConfig };
+      },
+    ),
     resetToDefaults: jest.fn(() => {
       config = generateMockPerformanceConfig();
     }),
@@ -62,7 +74,7 @@ export const createPerformanceServiceMock = () => {
     subscribe: jest.fn((callback: (config: PerformanceConfig) => void) => {
       callback(config);
       return () => {};
-    })
+    }),
   };
 };
 
@@ -74,11 +86,11 @@ export const createPerformanceConfigServiceMock = () => {
     getConfig: jest.fn(() => ({ ...config })),
     updateConfig: jest.fn((newConfig: Partial<PerformanceConfig>) => {
       config = { ...config, ...newConfig };
-      listeners.forEach(listener => listener(config));
+      listeners.forEach((listener) => listener(config));
     }),
     resetConfig: jest.fn(() => {
       config = generateMockPerformanceConfig();
-      listeners.forEach(listener => listener(config));
+      listeners.forEach((listener) => listener(config));
     }),
     subscribe: jest.fn((listener: (config: PerformanceConfig) => void) => {
       listeners.push(listener);
@@ -89,6 +101,6 @@ export const createPerformanceConfigServiceMock = () => {
           listeners.splice(index, 1);
         }
       };
-    })
+    }),
   };
 };

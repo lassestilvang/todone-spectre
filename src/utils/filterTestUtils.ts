@@ -1,5 +1,4 @@
-import { Filter } from '../types/models';
-import { FilterModel } from '../types/models';
+import { Filter, FilterModel } from "../types/models";
 
 /**
  * Filter Test Utilities
@@ -13,14 +12,14 @@ export class FilterTestUtils {
    */
   static generateMockFilter(overrides: Partial<Filter> = {}): Filter {
     return new FilterModel({
-      name: 'Test Filter',
+      name: "Test Filter",
       criteria: {
-        status: 'active',
-        priority: 'medium'
+        status: "active",
+        priority: "medium",
       },
-      color: '#4F46E5',
+      color: "#4F46E5",
       favorite: false,
-      ...overrides
+      ...overrides,
     });
   }
 
@@ -31,23 +30,25 @@ export class FilterTestUtils {
    */
   static generateMockFilters(count: number = 5): Filter[] {
     const filters: Filter[] = [];
-    const statuses = ['active', 'completed', 'archived'];
-    const priorities = ['low', 'medium', 'high', 'critical'];
-    const colors = ['#EF4444', '#F59E0B', '#10B981', '#3B82F6', '#8B5CF6'];
+    const statuses = ["active", "completed", "archived"];
+    const priorities = ["low", "medium", "high", "critical"];
+    const colors = ["#EF4444", "#F59E0B", "#10B981", "#3B82F6", "#8B5CF6"];
 
     for (let i = 0; i < count; i++) {
-      filters.push(new FilterModel({
-        id: `filter-${i + 1}`,
-        name: `Test Filter ${i + 1}`,
-        criteria: {
-          status: statuses[i % statuses.length],
-          priority: priorities[i % priorities.length]
-        },
-        color: colors[i % colors.length],
-        favorite: i % 3 === 0,
-        createdAt: new Date(Date.now() - i * 1000 * 60 * 60 * 24), // Each filter created a day apart
-        updatedAt: new Date(Date.now() - i * 1000 * 60 * 60 * 24)
-      }));
+      filters.push(
+        new FilterModel({
+          id: `filter-${i + 1}`,
+          name: `Test Filter ${i + 1}`,
+          criteria: {
+            status: statuses[i % statuses.length],
+            priority: priorities[i % priorities.length],
+          },
+          color: colors[i % colors.length],
+          favorite: i % 3 === 0,
+          createdAt: new Date(Date.now() - i * 1000 * 60 * 60 * 24), // Each filter created a day apart
+          updatedAt: new Date(Date.now() - i * 1000 * 60 * 60 * 24),
+        }),
+      );
     }
 
     return filters;
@@ -62,64 +63,64 @@ export class FilterTestUtils {
       filters: this.generateMockFilters(10),
       getAllFilters: async () => ({
         success: true,
-        data: this.generateMockFilters(10)
+        data: this.generateMockFilters(10),
       }),
       getFilterById: async (id: string) => {
-        const filter = this.generateMockFilters(10).find(f => f.id === id);
+        const filter = this.generateMockFilters(10).find((f) => f.id === id);
         return {
           success: true,
-          data: filter || null
+          data: filter || null,
         };
       },
       createFilter: async (filterData: Partial<Filter>) => {
         const newFilter = this.generateMockFilter(filterData);
         return {
           success: true,
-          data: newFilter
+          data: newFilter,
         };
       },
       updateFilter: async (id: string, filterData: Partial<Filter>) => {
         const updatedFilter = this.generateMockFilter({
           ...filterData,
-          id
+          id,
         });
         return {
           success: true,
-          data: updatedFilter
+          data: updatedFilter,
         };
       },
       deleteFilter: async (id: string) => ({
         success: true,
-        data: true
+        data: true,
       }),
       toggleFavorite: async (id: string) => {
-        const filter = this.generateMockFilters(10).find(f => f.id === id);
+        const filter = this.generateMockFilters(10).find((f) => f.id === id);
         if (filter) {
           filter.favorite = !filter.favorite;
         }
         return {
           success: true,
-          data: filter || null
+          data: filter || null,
         };
       },
       searchFilters: async (query: string) => {
         const allFilters = this.generateMockFilters(10);
-        const results = allFilters.filter(filter =>
-          filter.name.toLowerCase().includes(query.toLowerCase())
+        const results = allFilters.filter((filter) =>
+          filter.name.toLowerCase().includes(query.toLowerCase()),
         );
         return {
           success: true,
-          data: results
+          data: results,
         };
       },
       getFavoriteFilters: async () => {
         const allFilters = this.generateMockFilters(10);
-        const favorites = allFilters.filter(filter => filter.favorite);
+        const favorites = allFilters.filter((filter) => filter.favorite);
         return {
           success: true,
-          data: favorites
+          data: favorites,
         };
-      }
+      },
     };
   }
 
@@ -130,36 +131,37 @@ export class FilterTestUtils {
   static generateFilterTestScenarios() {
     return [
       {
-        name: 'Basic status filter',
+        name: "Basic status filter",
         input: {
-          criteria: { status: 'active' }
+          criteria: { status: "active" },
         },
         expected: {
-          shouldMatch: (filter: Filter) => filter.criteria.status === 'active'
-        }
+          shouldMatch: (filter: Filter) => filter.criteria.status === "active",
+        },
       },
       {
-        name: 'Priority filter',
+        name: "Priority filter",
         input: {
-          criteria: { priority: 'high' }
+          criteria: { priority: "high" },
         },
         expected: {
-          shouldMatch: (filter: Filter) => filter.criteria.priority === 'high'
-        }
+          shouldMatch: (filter: Filter) => filter.criteria.priority === "high",
+        },
       },
       {
-        name: 'Complex multi-criteria filter',
+        name: "Complex multi-criteria filter",
         input: {
           criteria: {
-            status: 'active',
-            priority: 'high'
-          }
+            status: "active",
+            priority: "high",
+          },
         },
         expected: {
           shouldMatch: (filter: Filter) =>
-            filter.criteria.status === 'active' && filter.criteria.priority === 'high'
-        }
-      }
+            filter.criteria.status === "active" &&
+            filter.criteria.priority === "high",
+        },
+      },
     ];
   }
 
@@ -168,28 +170,31 @@ export class FilterTestUtils {
    * @param filter - Filter to validate
    * @returns Validation result
    */
-  static validateFilterCriteria(filter: Filter): { valid: boolean; errors: string[] } {
+  static validateFilterCriteria(filter: Filter): {
+    valid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
-    if (!filter.name || filter.name.trim() === '') {
-      errors.push('Filter name is required');
+    if (!filter.name || filter.name.trim() === "") {
+      errors.push("Filter name is required");
     }
 
     if (filter.name && filter.name.length > 100) {
-      errors.push('Filter name exceeds maximum length of 100 characters');
+      errors.push("Filter name exceeds maximum length of 100 characters");
     }
 
-    if (!filter.criteria || typeof filter.criteria !== 'object') {
-      errors.push('Filter criteria must be an object');
+    if (!filter.criteria || typeof filter.criteria !== "object") {
+      errors.push("Filter criteria must be an object");
     }
 
-    if (!filter.color || !filter.color.startsWith('#')) {
-      errors.push('Filter color must be a valid hex color');
+    if (!filter.color || !filter.color.startsWith("#")) {
+      errors.push("Filter color must be a valid hex color");
     }
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 }

@@ -1,16 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Animated, Easing, Platform } from 'react-native';
-import { useMobile } from '../../../hooks/useMobile';
-import { useMobileConfig } from '../../../hooks/useMobileConfig';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import NetInfo from '@react-native-community/netinfo';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Animated,
+  Easing,
+  Platform,
+} from "react-native";
+import { useMobile } from "../../../hooks/useMobile";
+import { useMobileConfig } from "../../../hooks/useMobileConfig";
+import Icon from "react-native-vector-icons/MaterialIcons";
+import NetInfo from "@react-native-community/netinfo";
 
 interface MobileStatusIndicatorsProps {
   showNetwork?: boolean;
   showBattery?: boolean;
   showPerformance?: boolean;
   showOrientation?: boolean;
-  position?: 'top' | 'bottom';
+  position?: "top" | "bottom";
 }
 
 export const MobileStatusIndicators: React.FC<MobileStatusIndicatorsProps> = ({
@@ -18,7 +25,7 @@ export const MobileStatusIndicators: React.FC<MobileStatusIndicatorsProps> = ({
   showBattery = true,
   showPerformance = true,
   showOrientation = false,
-  position = 'top',
+  position = "top",
 }) => {
   const { mobileConfig } = useMobileConfig();
   const {
@@ -31,17 +38,17 @@ export const MobileStatusIndicators: React.FC<MobileStatusIndicatorsProps> = ({
   } = useMobile();
 
   const [networkInfo, setNetworkInfo] = useState({
-    isConnected: networkStatus === 'online',
-    connectionType: 'unknown',
+    isConnected: networkStatus === "online",
+    connectionType: "unknown",
   });
   const [animation] = useState(new Animated.Value(0));
 
   useEffect(() => {
     // Set up network monitoring
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setNetworkInfo({
         isConnected: state.isConnected ?? false,
-        connectionType: state.type ?? 'unknown',
+        connectionType: state.type ?? "unknown",
       });
     });
 
@@ -60,7 +67,7 @@ export const MobileStatusIndicators: React.FC<MobileStatusIndicatorsProps> = ({
           easing: Easing.inOut(Easing.quad),
           useNativeDriver: true,
         }),
-      ])
+      ]),
     ).start();
 
     return () => {
@@ -71,28 +78,33 @@ export const MobileStatusIndicators: React.FC<MobileStatusIndicatorsProps> = ({
   const getNetworkIndicator = () => {
     if (!showNetwork) return null;
 
-    let iconName = 'wifi';
+    let iconName = "wifi";
     let iconColor = mobileConfig.secondaryColor;
-    let label = 'Online';
+    let label = "Online";
 
     if (!networkInfo.isConnected) {
-      iconName = 'wifi-off';
-      iconColor = '#F44336';
-      label = 'Offline';
-    } else if (networkInfo.connectionType === 'wifi') {
-      iconName = 'wifi';
-      iconColor = '#4CAF50';
-      label = 'WiFi';
-    } else if (networkInfo.connectionType === 'cellular') {
-      iconName = 'signal-cellular-alt';
-      iconColor = '#FF9800';
-      label = 'Cellular';
+      iconName = "wifi-off";
+      iconColor = "#F44336";
+      label = "Offline";
+    } else if (networkInfo.connectionType === "wifi") {
+      iconName = "wifi";
+      iconColor = "#4CAF50";
+      label = "WiFi";
+    } else if (networkInfo.connectionType === "cellular") {
+      iconName = "signal-cellular-alt";
+      iconColor = "#FF9800";
+      label = "Cellular";
     }
 
     return (
       <View style={styles.indicatorItem}>
         <Icon name={iconName} size={16} color={iconColor} />
-        <Text style={[styles.indicatorText, mobileConfig.darkMode ? styles.darkText : styles.lightText]}>
+        <Text
+          style={[
+            styles.indicatorText,
+            mobileConfig.darkMode ? styles.darkText : styles.lightText,
+          ]}
+        >
           {label}
         </Text>
       </View>
@@ -103,34 +115,39 @@ export const MobileStatusIndicators: React.FC<MobileStatusIndicatorsProps> = ({
     if (!showBattery) return null;
 
     const batteryStatus = getBatteryStatus();
-    let iconName = 'battery-full';
+    let iconName = "battery-full";
     let iconColor = mobileConfig.secondaryColor;
     let label = `${Math.round(batteryStatus.level * 100)}%`;
 
     if (batteryStatus.isCritical) {
-      iconName = 'battery-alert';
-      iconColor = '#F44336';
+      iconName = "battery-alert";
+      iconColor = "#F44336";
     } else if (batteryStatus.isLow) {
-      iconName = 'battery-20';
-      iconColor = '#FF9800';
+      iconName = "battery-20";
+      iconColor = "#FF9800";
     } else if (batteryStatus.level > 0.8) {
-      iconName = 'battery-full';
+      iconName = "battery-full";
     } else if (batteryStatus.level > 0.5) {
-      iconName = 'battery-60';
+      iconName = "battery-60";
     } else if (batteryStatus.level > 0.3) {
-      iconName = 'battery-50';
+      iconName = "battery-50";
     } else {
-      iconName = 'battery-30';
+      iconName = "battery-30";
     }
 
     if (isLowPowerMode) {
-      label += ' (Saver)';
+      label += " (Saver)";
     }
 
     return (
       <View style={styles.indicatorItem}>
         <Icon name={iconName} size={16} color={iconColor} />
-        <Text style={[styles.indicatorText, mobileConfig.darkMode ? styles.darkText : styles.lightText]}>
+        <Text
+          style={[
+            styles.indicatorText,
+            mobileConfig.darkMode ? styles.darkText : styles.lightText,
+          ]}
+        >
           {label}
         </Text>
       </View>
@@ -140,24 +157,29 @@ export const MobileStatusIndicators: React.FC<MobileStatusIndicatorsProps> = ({
   const getPerformanceIndicator = () => {
     if (!showPerformance) return null;
 
-    let iconName = 'memory';
+    let iconName = "memory";
     let iconColor = mobileConfig.secondaryColor;
-    let label = 'Balanced';
+    let label = "Balanced";
 
-    if (mobileConfig.performanceMode === 'high') {
-      iconName = 'speed';
-      iconColor = '#4CAF50';
-      label = 'High Performance';
-    } else if (mobileConfig.performanceMode === 'battery_saver') {
-      iconName = 'battery-saver';
-      iconColor = '#FF9800';
-      label = 'Battery Saver';
+    if (mobileConfig.performanceMode === "high") {
+      iconName = "speed";
+      iconColor = "#4CAF50";
+      label = "High Performance";
+    } else if (mobileConfig.performanceMode === "battery_saver") {
+      iconName = "battery-saver";
+      iconColor = "#FF9800";
+      label = "Battery Saver";
     }
 
     return (
       <View style={styles.indicatorItem}>
         <Icon name={iconName} size={16} color={iconColor} />
-        <Text style={[styles.indicatorText, mobileConfig.darkMode ? styles.darkText : styles.lightText]}>
+        <Text
+          style={[
+            styles.indicatorText,
+            mobileConfig.darkMode ? styles.darkText : styles.lightText,
+          ]}
+        >
           {label}
         </Text>
       </View>
@@ -167,13 +189,18 @@ export const MobileStatusIndicators: React.FC<MobileStatusIndicatorsProps> = ({
   const getOrientationIndicator = () => {
     if (!showOrientation) return null;
 
-    const iconName = isPortrait() ? 'phone-android' : 'tablet-mac';
-    const label = isPortrait() ? 'Portrait' : 'Landscape';
+    const iconName = isPortrait() ? "phone-android" : "tablet-mac";
+    const label = isPortrait() ? "Portrait" : "Landscape";
 
     return (
       <View style={styles.indicatorItem}>
         <Icon name={iconName} size={16} color={mobileConfig.secondaryColor} />
-        <Text style={[styles.indicatorText, mobileConfig.darkMode ? styles.darkText : styles.lightText]}>
+        <Text
+          style={[
+            styles.indicatorText,
+            mobileConfig.darkMode ? styles.darkText : styles.lightText,
+          ]}
+        >
           {label}
         </Text>
       </View>
@@ -196,7 +223,7 @@ export const MobileStatusIndicators: React.FC<MobileStatusIndicatorsProps> = ({
       style={[
         styles.container,
         mobileConfig.darkMode ? styles.darkContainer : styles.lightContainer,
-        position === 'top' ? styles.topPosition : styles.bottomPosition,
+        position === "top" ? styles.topPosition : styles.bottomPosition,
         {
           opacity: animation.interpolate({
             inputRange: [0, 1],
@@ -227,7 +254,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 20,
     margin: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -235,46 +262,46 @@ const styles = StyleSheet.create({
     zIndex: 1000,
   },
   darkContainer: {
-    backgroundColor: 'rgba(30, 30, 30, 0.9)',
-    borderColor: '#444',
+    backgroundColor: "rgba(30, 30, 30, 0.9)",
+    borderColor: "#444",
     borderWidth: 1,
   },
   lightContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-    borderColor: '#e0e0e0',
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    borderColor: "#e0e0e0",
     borderWidth: 1,
   },
   topPosition: {
-    position: 'absolute',
-    top: Platform.OS === 'ios' ? 50 : 30,
+    position: "absolute",
+    top: Platform.OS === "ios" ? 50 : 30,
     right: 8,
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
   },
   bottomPosition: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 70,
     right: 8,
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
   },
   indicatorsContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 12,
-    alignItems: 'center',
+    alignItems: "center",
   },
   indicatorItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 4,
     padding: 4,
   },
   indicatorText: {
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   darkText: {
-    color: '#ffffff',
+    color: "#ffffff",
   },
   lightText: {
-    color: '#333333',
+    color: "#333333",
   },
 });

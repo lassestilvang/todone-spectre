@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from 'react';
-import { SubTaskItem } from './SubTaskItem';
-import { SubTaskForm } from './SubTaskForm';
-import { Task } from '../../types/task';
-import { useSubTasks } from '../../hooks/useSubTasks';
-import { Button } from '../../components/Button';
+import React, { useState, useCallback } from "react";
+import { SubTaskItem } from "./SubTaskItem";
+import { SubTaskForm } from "./SubTaskForm";
+import { Task } from "../../types/task";
+import { useSubTasks } from "../../hooks/useSubTasks";
+import { Button } from "../../components/Button";
 
 interface SubTaskListProps {
   parentTaskId: string;
@@ -18,7 +18,7 @@ export const SubTaskList: React.FC<SubTaskListProps> = ({
   projectId,
   onSubTaskCreated,
   onSubTaskUpdated,
-  onSubTaskDeleted
+  onSubTaskDeleted,
 }) => {
   const [isAddingSubTask, setIsAddingSubTask] = useState(false);
   const {
@@ -28,54 +28,66 @@ export const SubTaskList: React.FC<SubTaskListProps> = ({
     createSubTask,
     updateSubTask,
     deleteSubTask,
-    toggleSubTaskCompletion
+    toggleSubTaskCompletion,
   } = useSubTasks(parentTaskId);
 
-  const handleCreateSubTask = useCallback(async (subTaskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'completed'>) => {
-    try {
-      const newSubTask = await createSubTask({
-        ...subTaskData,
-        parentTaskId,
-        projectId: projectId || subTaskData.projectId
-      });
-      onSubTaskCreated?.(newSubTask);
-      setIsAddingSubTask(false);
-    } catch (error) {
-      console.error('Failed to create sub-task:', error);
-    }
-  }, [createSubTask, parentTaskId, projectId, onSubTaskCreated]);
+  const handleCreateSubTask = useCallback(
+    async (
+      subTaskData: Omit<Task, "id" | "createdAt" | "updatedAt" | "completed">,
+    ) => {
+      try {
+        const newSubTask = await createSubTask({
+          ...subTaskData,
+          parentTaskId,
+          projectId: projectId || subTaskData.projectId,
+        });
+        onSubTaskCreated?.(newSubTask);
+        setIsAddingSubTask(false);
+      } catch (error) {
+        console.error("Failed to create sub-task:", error);
+      }
+    },
+    [createSubTask, parentTaskId, projectId, onSubTaskCreated],
+  );
 
-  const handleUpdateSubTask = useCallback(async (subTaskId: string, updates: Partial<Task>) => {
-    try {
-      const updatedSubTask = await updateSubTask(subTaskId, updates);
-      onSubTaskUpdated?.(updatedSubTask);
-    } catch (error) {
-      console.error('Failed to update sub-task:', error);
-    }
-  }, [updateSubTask, onSubTaskUpdated]);
+  const handleUpdateSubTask = useCallback(
+    async (subTaskId: string, updates: Partial<Task>) => {
+      try {
+        const updatedSubTask = await updateSubTask(subTaskId, updates);
+        onSubTaskUpdated?.(updatedSubTask);
+      } catch (error) {
+        console.error("Failed to update sub-task:", error);
+      }
+    },
+    [updateSubTask, onSubTaskUpdated],
+  );
 
-  const handleDeleteSubTask = useCallback(async (subTaskId: string) => {
-    try {
-      await deleteSubTask(subTaskId);
-      onSubTaskDeleted?.(subTaskId);
-    } catch (error) {
-      console.error('Failed to delete sub-task:', error);
-    }
-  }, [deleteSubTask, onSubTaskDeleted]);
+  const handleDeleteSubTask = useCallback(
+    async (subTaskId: string) => {
+      try {
+        await deleteSubTask(subTaskId);
+        onSubTaskDeleted?.(subTaskId);
+      } catch (error) {
+        console.error("Failed to delete sub-task:", error);
+      }
+    },
+    [deleteSubTask, onSubTaskDeleted],
+  );
 
-  const handleToggleCompletion = useCallback(async (subTaskId: string) => {
-    try {
-      await toggleSubTaskCompletion(subTaskId);
-    } catch (error) {
-      console.error('Failed to toggle sub-task completion:', error);
-    }
-  }, [toggleSubTaskCompletion]);
+  const handleToggleCompletion = useCallback(
+    async (subTaskId: string) => {
+      try {
+        await toggleSubTaskCompletion(subTaskId);
+      } catch (error) {
+        console.error("Failed to toggle sub-task completion:", error);
+      }
+    },
+    [toggleSubTaskCompletion],
+  );
 
   if (isLoading) {
     return (
-      <div className="p-4 text-center text-gray-500">
-        Loading sub-tasks...
-      </div>
+      <div className="p-4 text-center text-gray-500">Loading sub-tasks...</div>
     );
   }
 
@@ -98,7 +110,7 @@ export const SubTaskList: React.FC<SubTaskListProps> = ({
           size="sm"
           onClick={() => setIsAddingSubTask(!isAddingSubTask)}
         >
-          {isAddingSubTask ? 'Cancel' : 'Add Sub-Task'}
+          {isAddingSubTask ? "Cancel" : "Add Sub-Task"}
         </Button>
       </div>
 

@@ -1,56 +1,57 @@
-import React, { useState, useEffect } from 'react';
-import { useCalendar } from '../../../hooks/useCalendar';
-import { useTasks } from '../../../hooks/useTasks';
-import { CalendarEventType } from '../../../types/calendarTypes';
-import { Task } from '../../../types/taskTypes';
+import React, { useState, useEffect } from "react";
+import { useCalendar } from "../../../hooks/useCalendar";
+import { useTasks } from "../../../hooks/useTasks";
+import { CalendarEventType } from "../../../types/calendarTypes";
+import { Task } from "../../../types/taskTypes";
 
 interface CalendarTaskIntegrationProps {
   taskId: string;
   onEventCreated?: (event: CalendarEventType) => void;
 }
 
-export const CalendarTaskIntegration: React.FC<CalendarTaskIntegrationProps> = ({
-  taskId,
-  onEventCreated
-}) => {
+export const CalendarTaskIntegration: React.FC<
+  CalendarTaskIntegrationProps
+> = ({ taskId, onEventCreated }) => {
   const { events, createEvent, linkTaskToEvent } = useCalendar();
   const { tasks } = useTasks();
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [newEventData, setNewEventData] = useState<Partial<CalendarEventType>>({
-    title: '',
-    description: '',
+    title: "",
+    description: "",
     startDate: new Date().toISOString(),
     endDate: new Date().toISOString(),
-    priority: 'normal'
+    priority: "normal",
   });
 
-  const task = tasks.find(t => t.id === taskId);
+  const task = tasks.find((t) => t.id === taskId);
 
   useEffect(() => {
     if (task) {
-      setNewEventData(prev => ({
+      setNewEventData((prev) => ({
         ...prev,
-        title: task.title || '',
-        description: task.description || '',
+        title: task.title || "",
+        description: task.description || "",
         startDate: task.dueDate || new Date().toISOString(),
         endDate: task.dueDate || new Date().toISOString(),
-        priority: task.priority || 'normal'
+        priority: task.priority || "normal",
       }));
     }
   }, [task]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
-    setNewEventData(prev => ({
+    setNewEventData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  const handleDateChange = (field: 'startDate' | 'endDate', value: string) => {
-    setNewEventData(prev => ({
+  const handleDateChange = (field: "startDate" | "endDate", value: string) => {
+    setNewEventData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -59,13 +60,13 @@ export const CalendarTaskIntegration: React.FC<CalendarTaskIntegrationProps> = (
 
     try {
       setIsCreatingEvent(true);
-      const eventData: Omit<CalendarEventType, 'id'> = {
-        title: newEventData.title || task.title || 'Untitled Event',
-        description: newEventData.description || task.description || '',
+      const eventData: Omit<CalendarEventType, "id"> = {
+        title: newEventData.title || task.title || "Untitled Event",
+        description: newEventData.description || task.description || "",
         startDate: newEventData.startDate || new Date().toISOString(),
         endDate: newEventData.endDate || new Date().toISOString(),
-        priority: newEventData.priority || 'normal',
-        taskId: task.id
+        priority: newEventData.priority || "normal",
+        taskId: task.id,
       };
 
       const createdEvent = await createEvent(eventData);
@@ -77,13 +78,13 @@ export const CalendarTaskIntegration: React.FC<CalendarTaskIntegrationProps> = (
 
       setIsCreatingEvent(false);
     } catch (error) {
-      console.error('Failed to create event:', error);
+      console.error("Failed to create event:", error);
       setIsCreatingEvent(false);
     }
   };
 
   const getLinkedEvent = () => {
-    return events.find(event => event.taskId === taskId);
+    return events.find((event) => event.taskId === taskId);
   };
 
   const linkedEvent = getLinkedEvent();
@@ -95,9 +96,16 @@ export const CalendarTaskIntegration: React.FC<CalendarTaskIntegrationProps> = (
       {linkedEvent ? (
         <div className="linked-event-info">
           <h4>Linked Calendar Event</h4>
-          <p><strong>Title:</strong> {linkedEvent.title}</p>
-          <p><strong>Date:</strong> {new Date(linkedEvent.startDate).toLocaleString()}</p>
-          <p><strong>Priority:</strong> {linkedEvent.priority}</p>
+          <p>
+            <strong>Title:</strong> {linkedEvent.title}
+          </p>
+          <p>
+            <strong>Date:</strong>{" "}
+            {new Date(linkedEvent.startDate).toLocaleString()}
+          </p>
+          <p>
+            <strong>Priority:</strong> {linkedEvent.priority}
+          </p>
           <p>This task is linked to a calendar event.</p>
         </div>
       ) : (
@@ -136,8 +144,12 @@ export const CalendarTaskIntegration: React.FC<CalendarTaskIntegrationProps> = (
                 <input
                   type="datetime-local"
                   id="eventStartDate"
-                  value={new Date(newEventData.startDate || '').toISOString().slice(0, 16)}
-                  onChange={(e) => handleDateChange('startDate', e.target.value)}
+                  value={new Date(newEventData.startDate || "")
+                    .toISOString()
+                    .slice(0, 16)}
+                  onChange={(e) =>
+                    handleDateChange("startDate", e.target.value)
+                  }
                 />
               </div>
 
@@ -146,8 +158,10 @@ export const CalendarTaskIntegration: React.FC<CalendarTaskIntegrationProps> = (
                 <input
                   type="datetime-local"
                   id="eventEndDate"
-                  value={new Date(newEventData.endDate || '').toISOString().slice(0, 16)}
-                  onChange={(e) => handleDateChange('endDate', e.target.value)}
+                  value={new Date(newEventData.endDate || "")
+                    .toISOString()
+                    .slice(0, 16)}
+                  onChange={(e) => handleDateChange("endDate", e.target.value)}
                 />
               </div>
 

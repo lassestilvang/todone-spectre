@@ -1,9 +1,9 @@
-import React, { useState, useCallback } from 'react';
-import { Task } from '../../types/task';
-import { TaskItem } from './TaskItem';
-import { SubTaskList } from './SubTaskList';
-import { Button } from '../../components/Button';
-import { useTaskHierarchy } from '../../hooks/useTaskHierarchy';
+import React, { useState, useCallback } from "react";
+import { Task } from "../../types/task";
+import { TaskItem } from "./TaskItem";
+import { SubTaskList } from "./SubTaskList";
+import { Button } from "../../components/Button";
+import { useTaskHierarchy } from "../../hooks/useTaskHierarchy";
 
 interface TaskHierarchyProps {
   task: Task;
@@ -22,10 +22,11 @@ export const TaskHierarchy: React.FC<TaskHierarchyProps> = ({
   onTaskUpdate,
   onTaskDelete,
   onToggleCompletion,
-  depth = 0
+  depth = 0,
 }) => {
   const [isExpanded, setIsExpanded] = useState(depth < 2); // Auto-expand first 2 levels
-  const { getSubTasks, createSubTask, updateSubTask, deleteSubTask } = useTaskHierarchy();
+  const { getSubTasks, createSubTask, updateSubTask, deleteSubTask } =
+    useTaskHierarchy();
 
   const handleToggleExpand = useCallback(() => {
     setIsExpanded(!isExpanded);
@@ -33,17 +34,17 @@ export const TaskHierarchy: React.FC<TaskHierarchyProps> = ({
 
   const handleSubTaskCreated = useCallback((subTask: Task) => {
     // Handle sub-task creation
-    console.log('Sub-task created:', subTask);
+    console.log("Sub-task created:", subTask);
   }, []);
 
   const handleSubTaskUpdated = useCallback((subTask: Task) => {
     // Handle sub-task update
-    console.log('Sub-task updated:', subTask);
+    console.log("Sub-task updated:", subTask);
   }, []);
 
   const handleSubTaskDeleted = useCallback((subTaskId: string) => {
     // Handle sub-task deletion
-    console.log('Sub-task deleted:', subTaskId);
+    console.log("Sub-task deleted:", subTaskId);
   }, []);
 
   const subTasks = getSubTasks(task.id);
@@ -67,7 +68,7 @@ export const TaskHierarchy: React.FC<TaskHierarchyProps> = ({
             onClick={handleToggleExpand}
             className="text-xs text-gray-500 hover:text-gray-700"
           >
-            {isExpanded ? 'Collapse' : `Expand (${subTasks.length} sub-tasks)`}
+            {isExpanded ? "Collapse" : `Expand (${subTasks.length} sub-tasks)`}
           </Button>
 
           {isExpanded && (

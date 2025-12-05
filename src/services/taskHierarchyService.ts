@@ -1,6 +1,6 @@
-import { Task } from '../types/task';
-import { subTaskService } from './subTaskService';
-import { useTaskStore } from '../store/useTaskStore';
+import { Task } from "../types/task";
+import { subTaskService } from "./subTaskService";
+import { useTaskStore } from "../store/useTaskStore";
 
 /**
  * Task Hierarchy Service - Handles task hierarchy operations and tree management
@@ -39,17 +39,19 @@ export class TaskHierarchyService {
       const hierarchy: Task[] = [];
 
       const buildHierarchy = (taskId: string, depth: number = 0): Task[] => {
-        const children = allTasks.filter(task => task.parentTaskId === taskId);
-        return children.map(child => ({
+        const children = allTasks.filter(
+          (task) => task.parentTaskId === taskId,
+        );
+        return children.map((child) => ({
           ...child,
           depth,
-          children: buildHierarchy(child.id, depth + 1)
+          children: buildHierarchy(child.id, depth + 1),
         }));
       };
 
       return buildHierarchy(parentTaskId);
     } catch (error) {
-      console.error('Error building task hierarchy:', error);
+      console.error("Error building task hierarchy:", error);
       throw error;
     }
   }
@@ -63,18 +65,18 @@ export class TaskHierarchyService {
       const hierarchyTasks: Task[] = [];
 
       const collectHierarchy = (taskId: string) => {
-        const task = allTasks.find(t => t.id === taskId);
+        const task = allTasks.find((t) => t.id === taskId);
         if (task) {
           hierarchyTasks.push(task);
-          const children = allTasks.filter(t => t.parentTaskId === taskId);
-          children.forEach(child => collectHierarchy(child.id));
+          const children = allTasks.filter((t) => t.parentTaskId === taskId);
+          children.forEach((child) => collectHierarchy(child.id));
         }
       };
 
       collectHierarchy(parentTaskId);
       return hierarchyTasks;
     } catch (error) {
-      console.error('Error collecting flat hierarchy:', error);
+      console.error("Error collecting flat hierarchy:", error);
       throw error;
     }
   }
@@ -84,11 +86,11 @@ export class TaskHierarchyService {
    */
   async createSubTaskInHierarchy(
     parentTaskId: string,
-    subTaskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'completed'>
+    subTaskData: Omit<Task, "id" | "createdAt" | "updatedAt" | "completed">,
   ): Promise<Task> {
     return subTaskService.createSubTask({
       ...subTaskData,
-      parentTaskId
+      parentTaskId,
     });
   }
 
@@ -98,24 +100,26 @@ export class TaskHierarchyService {
   async updateSubTaskPosition(
     subTaskId: string,
     newParentTaskId: string,
-    newOrder: number
+    newOrder: number,
   ): Promise<Task> {
     try {
       // Get the sub-task
-      const subTask = this.taskStore.tasks.find(task => task.id === subTaskId);
+      const subTask = this.taskStore.tasks.find(
+        (task) => task.id === subTaskId,
+      );
       if (!subTask) {
-        throw new Error('Sub-task not found');
+        throw new Error("Sub-task not found");
       }
 
       // Update parent and order
       const updatedSubTask = await subTaskService.updateSubTask(subTaskId, {
         parentTaskId: newParentTaskId,
-        order: newOrder
+        order: newOrder,
       });
 
       return updatedSubTask;
     } catch (error) {
-      console.error('Error updating sub-task position:', error);
+      console.error("Error updating sub-task position:", error);
       throw error;
     }
   }
@@ -125,27 +129,34 @@ export class TaskHierarchyService {
    */
   async moveSubTask(subTaskId: string, newParentTaskId: string): Promise<Task> {
     try {
-      const subTask = this.taskStore.tasks.find(task => task.id === subTaskId);
+      const subTask = this.taskStore.tasks.find(
+        (task) => task.id === subTaskId,
+      );
       if (!subTask) {
-        throw new Error('Sub-task not found');
+        throw new Error("Sub-task not found");
       }
 
       // Prevent circular references
       if (subTask.id === newParentTaskId) {
-        throw new Error('Cannot move task to be its own parent');
+        throw new Error("Cannot move task to be its own parent");
       }
 
       // Check if new parent would create circular reference
-      const newParent = this.taskStore.tasks.find(task => task.id === newParentTaskId);
-      if (newParent && this.wouldCreateCircularReference(newParentTaskId, subTaskId)) {
-        throw new Error('Moving this task would create a circular reference');
+      const newParent = this.taskStore.tasks.find(
+        (task) => task.id === newParentTaskId,
+      );
+      if (
+        newParent &&
+        this.wouldCreateCircularReference(newParentTaskId, subTaskId)
+      ) {
+        throw new Error("Moving this task would create a circular reference");
       }
 
       return subTaskService.updateSubTask(subTaskId, {
-        parentTaskId: newParentTaskId
+        parentTaskId: newParentTaskId,
       });
     } catch (error) {
-      console.error('Error moving sub-task:', error);
+      console.error("Error moving sub-task:", error);
       throw error;
     }
   }
@@ -153,19 +164,22 @@ export class TaskHierarchyService {
   /**
    * Check if moving a task would create circular reference
    */
-  private wouldCreateCircularReference(parentTaskId: string, taskId: string): boolean {
+  private wouldCreateCircularReference(
+    parentTaskId: string,
+    taskId: string,
+  ): boolean {
     const allTasks = this.taskStore.tasks;
     let currentTaskId = parentTaskId;
 
     while (currentTaskId) {
-      const task = allTasks.find(t => t.id === currentTaskId);
+      const task = allTasks.find((t) => t.id === currentTaskId);
       if (!task) break;
 
       if (task.id === taskId) {
         return true; // Circular reference detected
       }
 
-      currentTaskId = task.parentTaskId || '';
+      currentTaskId = task.parentTaskId || "";
     }
 
     return false;
@@ -181,7 +195,7 @@ export class TaskHierarchyService {
       let currentTaskId = taskId;
 
       while (currentTaskId) {
-        const task = allTasks.find(t => t.id === currentTaskId);
+        const task = allTasks.find((t) => t.id === currentTaskId);
         if (!task || !task.parentTaskId) break;
 
         depth++;
@@ -190,7 +204,7 @@ export class TaskHierarchyService {
 
       return depth;
     } catch (error) {
-      console.error('Error calculating task depth:', error);
+      console.error("Error calculating task depth:", error);
       throw error;
     }
   }
@@ -205,16 +219,16 @@ export class TaskHierarchyService {
       let currentTaskId = taskId;
 
       while (currentTaskId) {
-        const task = allTasks.find(t => t.id === currentTaskId);
+        const task = allTasks.find((t) => t.id === currentTaskId);
         if (!task) break;
 
         path.unshift(task); // Add to beginning to maintain order
-        currentTaskId = task.parentTaskId || '';
+        currentTaskId = task.parentTaskId || "";
       }
 
       return path;
     } catch (error) {
-      console.error('Error getting task path:', error);
+      console.error("Error getting task path:", error);
       throw error;
     }
   }
@@ -226,11 +240,13 @@ export class TaskHierarchyService {
     try {
       const hierarchy = await this.getFlatHierarchy(taskId);
       const totalTasks = hierarchy.length;
-      const completedTasks = hierarchy.filter(task => task.completed).length;
+      const completedTasks = hierarchy.filter((task) => task.completed).length;
 
-      return totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+      return totalTasks > 0
+        ? Math.round((completedTasks / totalTasks) * 100)
+        : 0;
     } catch (error) {
-      console.error('Error calculating hierarchy completion:', error);
+      console.error("Error calculating hierarchy completion:", error);
       throw error;
     }
   }
@@ -241,7 +257,7 @@ export class TaskHierarchyService {
   async getTasksByLevel(level: number): Promise<Task[]> {
     try {
       const allTasks = this.taskStore.tasks;
-      return allTasks.filter(task => {
+      return allTasks.filter((task) => {
         try {
           const depth = this.getTaskDepthSync(task.id);
           return depth === level;
@@ -250,7 +266,7 @@ export class TaskHierarchyService {
         }
       });
     } catch (error) {
-      console.error('Error getting tasks by level:', error);
+      console.error("Error getting tasks by level:", error);
       throw error;
     }
   }
@@ -264,7 +280,7 @@ export class TaskHierarchyService {
     let currentTaskId = taskId;
 
     while (currentTaskId) {
-      const task = allTasks.find(t => t.id === currentTaskId);
+      const task = allTasks.find((t) => t.id === currentTaskId);
       if (!task || !task.parentTaskId) break;
 
       depth++;
@@ -283,7 +299,7 @@ export class TaskHierarchyService {
       let currentTaskId = taskId;
 
       while (currentTaskId) {
-        const task = allTasks.find(t => t.id === currentTaskId);
+        const task = allTasks.find((t) => t.id === currentTaskId);
         if (!task || !task.parentTaskId) {
           return task || null;
         }
@@ -292,7 +308,7 @@ export class TaskHierarchyService {
 
       return null;
     } catch (error) {
-      console.error('Error finding root parent:', error);
+      console.error("Error finding root parent:", error);
       throw error;
     }
   }

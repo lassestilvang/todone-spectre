@@ -1,5 +1,16 @@
-import { TodoneDatabase } from '../database/db';
-import { User, Project, Section, Task, Label, Filter, Comment, Attachment, SyncQueueItem, SyncStatus } from '../database/models';
+import { TodoneDatabase } from "../database/db";
+import {
+  User,
+  Project,
+  Section,
+  Task,
+  Label,
+  Filter,
+  Comment,
+  Attachment,
+  SyncQueueItem,
+  SyncStatus,
+} from "../database/models";
 
 export {
   User,
@@ -12,26 +23,26 @@ export {
   Attachment,
   SyncQueueItem,
   SyncStatus,
-  TodoneDatabase
+  TodoneDatabase,
 };
 
 // Database error types
 export interface DatabaseError {
-  type: 'database_error';
+  type: "database_error";
   message: string;
   code?: string;
   details?: any;
 }
 
 export interface MigrationError {
-  type: 'migration_error';
+  type: "migration_error";
   message: string;
   version?: number;
   details?: any;
 }
 
 export interface SyncError {
-  type: 'sync_error';
+  type: "sync_error";
   message: string;
   operation?: string;
   table?: string;
@@ -44,7 +55,7 @@ export interface QueryOptions {
   limit?: number;
   offset?: number;
   sortBy?: string;
-  sortDirection?: 'asc' | 'desc';
+  sortDirection?: "asc" | "desc";
   filters?: Record<string, any>;
 }
 
@@ -57,7 +68,7 @@ export interface QueryResult<T> {
 
 // Transaction types
 export interface TransactionOptions {
-  mode: 'readwrite' | 'readonly';
+  mode: "readwrite" | "readonly";
   tables?: string[];
   timeout?: number;
 }

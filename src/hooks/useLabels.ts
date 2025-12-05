@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import labelService from '../services/labelService';
-import { Label } from '../types/models';
+import { useState, useEffect } from "react";
+import labelService from "../services/labelService";
+import { Label } from "../types/models";
 
 /**
  * Custom hook for managing labels
@@ -23,10 +23,10 @@ export const useLabels = () => {
       if (result.success && result.data) {
         setLabels(result.data);
       } else {
-        setError(result.error || new Error('Failed to load labels'));
+        setError(result.error || new Error("Failed to load labels"));
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to load labels'));
+      setError(err instanceof Error ? err : new Error("Failed to load labels"));
     } finally {
       setLoading(false);
     }
@@ -42,14 +42,16 @@ export const useLabels = () => {
       const result = await labelService.createLabel(labelData);
 
       if (result.success && result.data) {
-        setLabels(prev => [...prev, result.data]);
+        setLabels((prev) => [...prev, result.data]);
         return result.data;
       } else {
-        setError(result.error || new Error('Failed to create label'));
+        setError(result.error || new Error("Failed to create label"));
         return null;
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to create label'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to create label"),
+      );
       return null;
     } finally {
       setLoading(false);
@@ -66,14 +68,16 @@ export const useLabels = () => {
       const result = await labelService.updateLabel(id, labelData);
 
       if (result.success && result.data) {
-        setLabels(prev => prev.map(l => l.id === id ? result.data : l));
+        setLabels((prev) => prev.map((l) => (l.id === id ? result.data : l)));
         return result.data;
       } else {
-        setError(result.error || new Error('Failed to update label'));
+        setError(result.error || new Error("Failed to update label"));
         return null;
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to update label'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to update label"),
+      );
       return null;
     } finally {
       setLoading(false);
@@ -90,17 +94,19 @@ export const useLabels = () => {
       const result = await labelService.deleteLabel(id);
 
       if (result.success) {
-        setLabels(prev => prev.filter(l => l.id !== id));
+        setLabels((prev) => prev.filter((l) => l.id !== id));
         if (selectedLabelId === id) {
           setSelectedLabelId(null);
         }
         return true;
       } else {
-        setError(result.error || new Error('Failed to delete label'));
+        setError(result.error || new Error("Failed to delete label"));
         return false;
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to delete label'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to delete label"),
+      );
       return false;
     } finally {
       setLoading(false);
@@ -119,11 +125,13 @@ export const useLabels = () => {
       if (result.success && result.data) {
         return result.data;
       } else {
-        setError(result.error || new Error('Failed to search labels'));
+        setError(result.error || new Error("Failed to search labels"));
         return [];
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to search labels'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to search labels"),
+      );
       return [];
     } finally {
       setLoading(false);
@@ -142,11 +150,13 @@ export const useLabels = () => {
       if (result.success && result.data) {
         return result.data;
       } else {
-        setError(result.error || new Error('Failed to get personal labels'));
+        setError(result.error || new Error("Failed to get personal labels"));
         return [];
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to get personal labels'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to get personal labels"),
+      );
       return [];
     } finally {
       setLoading(false);
@@ -165,11 +175,13 @@ export const useLabels = () => {
       if (result.success && result.data) {
         return result.data;
       } else {
-        setError(result.error || new Error('Failed to get shared labels'));
+        setError(result.error || new Error("Failed to get shared labels"));
         return [];
       }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to get shared labels'));
+      setError(
+        err instanceof Error ? err : new Error("Failed to get shared labels"),
+      );
       return [];
     } finally {
       setLoading(false);
@@ -200,6 +212,6 @@ export const useLabels = () => {
     searchLabels,
     getPersonalLabels,
     getSharedLabels,
-    selectLabel
+    selectLabel,
   };
 };

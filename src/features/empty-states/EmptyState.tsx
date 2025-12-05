@@ -1,5 +1,5 @@
-import React from 'react';
-import { useEmptyState } from '../../../hooks/useEmptyState';
+import React from "react";
+import { useEmptyState } from "../../../hooks/useEmptyState";
 
 interface EmptyStateProps {
   title?: string;
@@ -10,11 +10,11 @@ interface EmptyStateProps {
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
-  title = 'No content available',
-  description = 'There is nothing to display here yet',
+  title = "No content available",
+  description = "There is nothing to display here yet",
   icon,
   actions,
-  className = ''
+  className = "",
 }) => {
   const { emptyStateConfig } = useEmptyState();
 

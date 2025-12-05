@@ -3,9 +3,16 @@
  * Comprehensive mock implementations for offline services
  */
 
-import { Task } from '../../../../types/task';
-import { OfflineQueueItem, OfflineQueuePriority } from '../../../../types/offlineTypes';
-import { generateMockTask, generateOfflineQueueItem, generateStorageStats } from './offlineTestDataGenerators';
+import { Task } from "../../../../types/task";
+import {
+  OfflineQueueItem,
+  OfflineQueuePriority,
+} from "../../../../types/offlineTypes";
+import {
+  generateMockTask,
+  generateOfflineQueueItem,
+  generateStorageStats,
+} from "./offlineTestDataGenerators";
 
 /**
  * Mock Offline Task Service
@@ -18,11 +25,11 @@ export class MockOfflineTaskService {
     this.isOffline = isOffline;
   }
 
-  async createTaskOffline(taskData: Omit<Task, 'id'>): Promise<Task> {
+  async createTaskOffline(taskData: Omit<Task, "id">): Promise<Task> {
     if (this.isOffline) {
-      const queueItem = generateOfflineQueueItem('create', 'high', {
+      const queueItem = generateOfflineQueueItem("create", "high", {
         data: taskData,
-        operation: `Create task: ${taskData.title}`
+        operation: `Create task: ${taskData.title}`,
       });
       this.queueItems.push(queueItem);
 
@@ -32,49 +39,52 @@ export class MockOfflineTaskService {
         createdAt: new Date(),
         updatedAt: new Date(),
         completed: false,
-        status: 'todo',
-        priority: taskData.priority || 'medium'
+        status: "todo",
+        priority: taskData.priority || "medium",
       };
     } else {
       return {
         ...taskData,
         id: `online-${Date.now()}`,
         createdAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
     }
   }
 
-  async updateTaskOffline(taskId: string, taskData: Partial<Task>): Promise<Task> {
+  async updateTaskOffline(
+    taskId: string,
+    taskData: Partial<Task>,
+  ): Promise<Task> {
     if (this.isOffline) {
-      const queueItem = generateOfflineQueueItem('update', 'high', {
+      const queueItem = generateOfflineQueueItem("update", "high", {
         data: {
           taskId,
-          updates: taskData
+          updates: taskData,
         },
-        operation: `Update task: ${taskId}`
+        operation: `Update task: ${taskId}`,
       });
       this.queueItems.push(queueItem);
 
       return {
         ...taskData,
         id: taskId,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Task;
     } else {
       return {
         ...taskData,
         id: taskId,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Task;
     }
   }
 
   async deleteTaskOffline(taskId: string): Promise<void> {
     if (this.isOffline) {
-      const queueItem = generateOfflineQueueItem('delete', 'medium', {
+      const queueItem = generateOfflineQueueItem("delete", "medium", {
         data: { taskId },
-        operation: `Delete task: ${taskId}`
+        operation: `Delete task: ${taskId}`,
       });
       this.queueItems.push(queueItem);
     }
@@ -82,12 +92,12 @@ export class MockOfflineTaskService {
 
   async toggleTaskCompletionOffline(taskId: string): Promise<Task> {
     if (this.isOffline) {
-      const queueItem = generateOfflineQueueItem('update', 'high', {
+      const queueItem = generateOfflineQueueItem("update", "high", {
         data: {
           taskId,
-          operation: 'toggleCompletion'
+          operation: "toggleCompletion",
         },
-        operation: `Toggle completion: ${taskId}`
+        operation: `Toggle completion: ${taskId}`,
       });
       this.queueItems.push(queueItem);
 
@@ -95,33 +105,35 @@ export class MockOfflineTaskService {
         id: taskId,
         completed: true,
         completedAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Task;
     } else {
       return {
         id: taskId,
         completed: true,
         completedAt: new Date(),
-        updatedAt: new Date()
+        updatedAt: new Date(),
       } as Task;
     }
   }
 
   async processOfflineTaskQueue(): Promise<void> {
     if (this.isOffline) {
-      throw new Error('Cannot process queue while offline');
+      throw new Error("Cannot process queue while offline");
     }
 
     // Process all items in queue
-    this.queueItems = this.queueItems.map(item => ({
+    this.queueItems = this.queueItems.map((item) => ({
       ...item,
-      status: 'completed',
+      status: "completed",
       attempts: item.attempts + 1,
-      lastAttempt: new Date()
+      lastAttempt: new Date(),
     }));
 
     // Clear completed items
-    this.queueItems = this.queueItems.filter(item => item.status !== 'completed');
+    this.queueItems = this.queueItems.filter(
+      (item) => item.status !== "completed",
+    );
   }
 
   getOfflineTaskQueueStatus(): {
@@ -130,14 +142,16 @@ export class MockOfflineTaskService {
     totalTasks: number;
   } {
     return {
-      pendingTasks: this.queueItems.filter(item => item.status === 'pending').length,
-      failedTasks: this.queueItems.filter(item => item.status === 'failed').length,
-      totalTasks: this.queueItems.length
+      pendingTasks: this.queueItems.filter((item) => item.status === "pending")
+        .length,
+      failedTasks: this.queueItems.filter((item) => item.status === "failed")
+        .length,
+      totalTasks: this.queueItems.length,
     };
   }
 
   hasPendingOfflineTaskOperations(): boolean {
-    return this.queueItems.some(item => item.status === 'pending');
+    return this.queueItems.some((item) => item.status === "pending");
   }
 
   getQueueItems(): OfflineQueueItem[] {
@@ -183,24 +197,24 @@ export class MockOfflineDataPersistence {
 
   async processOfflineOperations(): Promise<void> {
     // Mark all operations as completed
-    this.operations = this.operations.map(op => ({
+    this.operations = this.operations.map((op) => ({
       ...op,
-      status: 'completed',
+      status: "completed",
       attempts: op.attempts + 1,
-      lastAttempt: new Date()
+      lastAttempt: new Date(),
     }));
 
     // Clear completed operations
-    this.operations = this.operations.filter(op => op.status !== 'completed');
+    this.operations = this.operations.filter((op) => op.status !== "completed");
   }
 
   async syncOfflineData(): Promise<void> {
     if (!this.isInitialized) {
-      throw new Error('Not initialized');
+      throw new Error("Not initialized");
     }
 
     // Simulate sync process
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   getSyncStatus(): {
@@ -211,7 +225,7 @@ export class MockOfflineDataPersistence {
     return {
       isSyncing: false,
       lastSynced: new Date(),
-      pendingOperations: this.operations.length
+      pendingOperations: this.operations.length,
     };
   }
 
@@ -223,7 +237,9 @@ export class MockOfflineDataPersistence {
     return generateStorageStats({
       taskCount: this.tasks.length,
       queueSize: this.operations.length,
-      storageUsage: JSON.stringify(this.tasks).length + JSON.stringify(this.operations).length
+      storageUsage:
+        JSON.stringify(this.tasks).length +
+        JSON.stringify(this.operations).length,
     });
   }
 
@@ -251,8 +267,8 @@ export class MockOfflineSyncService {
     isSyncing: false,
     lastSynced: null,
     pendingOperations: 0,
-    status: 'idle',
-    error: null
+    status: "idle",
+    error: null,
   };
 
   constructor(isOffline: boolean = false) {
@@ -265,7 +281,7 @@ export class MockOfflineSyncService {
 
   async autoSync(): Promise<void> {
     if (this.isOffline) {
-      throw new Error('Cannot auto-sync while offline');
+      throw new Error("Cannot auto-sync while offline");
     }
 
     if (!this.needsSync()) {
@@ -277,27 +293,27 @@ export class MockOfflineSyncService {
 
   async syncAll(): Promise<void> {
     if (this.isOffline) {
-      throw new Error('Cannot sync while offline');
+      throw new Error("Cannot sync while offline");
     }
 
     this.syncStatus = {
       ...this.syncStatus,
       isSyncing: true,
-      status: 'syncing',
-      syncStartTime: new Date()
+      status: "syncing",
+      syncStartTime: new Date(),
     };
 
     // Simulate sync process
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
 
     this.syncStatus = {
       ...this.syncStatus,
       isSyncing: false,
-      status: 'completed',
+      status: "completed",
       lastSynced: new Date(),
       syncEndTime: new Date(),
       syncDuration: 200,
-      pendingOperations: 0
+      pendingOperations: 0,
     };
   }
 
@@ -323,22 +339,22 @@ export class MockOfflineSyncService {
       completedOperations: 8,
       failedOperations: 2,
       syncDuration: 200,
-      lastSyncSize: 5
+      lastSyncSize: 5,
     };
   }
 
   async processSyncQueue(): Promise<void> {
     if (this.isOffline) {
-      throw new Error('Cannot process sync queue while offline');
+      throw new Error("Cannot process sync queue while offline");
     }
 
     // Simulate queue processing
-    await new Promise(resolve => setTimeout(resolve, 150));
+    await new Promise((resolve) => setTimeout(resolve, 150));
   }
 
   async retryFailedOperations(): Promise<void> {
     // Simulate retry process
-    await new Promise(resolve => setTimeout(resolve, 100));
+    await new Promise((resolve) => setTimeout(resolve, 100));
   }
 
   async clearSyncQueue(): Promise<void> {
@@ -355,7 +371,7 @@ export class MockOfflineSyncService {
       totalItems: 10,
       pendingItems: 2,
       completedItems: 7,
-      failedItems: 1
+      failedItems: 1,
     };
   }
 
@@ -367,7 +383,10 @@ export class MockOfflineSyncService {
     this.syncStatus = {
       ...this.syncStatus,
       isPaused: true,
-      status: this.syncStatus.status === 'syncing' ? 'paused' : this.syncStatus.status
+      status:
+        this.syncStatus.status === "syncing"
+          ? "paused"
+          : this.syncStatus.status,
     };
   }
 
@@ -375,7 +394,10 @@ export class MockOfflineSyncService {
     this.syncStatus = {
       ...this.syncStatus,
       isPaused: false,
-      status: this.syncStatus.status === 'paused' ? 'syncing' : this.syncStatus.status
+      status:
+        this.syncStatus.status === "paused"
+          ? "syncing"
+          : this.syncStatus.status,
     };
   }
 
@@ -393,15 +415,15 @@ export class MockOfflineSyncService {
   } {
     return {
       isOffline: this.isOffline,
-      networkStatus: this.isOffline ? 'offline' : 'online',
+      networkStatus: this.isOffline ? "offline" : "online",
       pendingChanges: this.syncStatus.pendingOperations,
       queueStatus: {
         total: 10,
         pending: 2,
-        failed: 1
+        failed: 1,
       },
       syncStatus: this.syncStatus.status,
-      lastSync: this.syncStatus.lastSynced
+      lastSync: this.syncStatus.lastSynced,
     };
   }
 
@@ -420,24 +442,24 @@ export class MockOfflineStore {
     this.state = {
       status: {
         isOffline: false,
-        status: 'online',
-        ...initialState.status
+        status: "online",
+        ...initialState.status,
       },
       queue: {
         items: [],
-        ...initialState.queue
+        ...initialState.queue,
       },
       sync: {
-        status: 'idle',
-        ...initialState.sync
+        status: "idle",
+        ...initialState.sync,
       },
       settings: {
         autoSyncEnabled: true,
         syncInterval: 30000,
         maxQueueSize: 100,
-        ...initialState.settings
+        ...initialState.settings,
       },
-      ...initialState
+      ...initialState,
     };
   }
 
@@ -448,7 +470,7 @@ export class MockOfflineStore {
   setState(newState: Partial<any>) {
     this.state = {
       ...this.state,
-      ...newState
+      ...newState,
     };
   }
 
@@ -470,6 +492,6 @@ export const createMockServices = (isOffline: boolean = false) => {
     offlineTaskService: mockTaskService,
     offlineDataPersistence: mockDataPersistence,
     offlineSyncService: mockSyncService,
-    useOfflineStore: mockStore
+    useOfflineStore: mockStore,
   };
 };

@@ -1,16 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Template, TemplateCategory } from '../../types/template';
-import { useTemplates } from '../../hooks/useTemplates';
-import { useTemplateCategories } from '../../hooks/useTemplateCategories';
-import { TemplateList, TemplateForm, TemplatePreview } from './';
-import { Plus, Search, Template as TemplateIcon, Folder, Star, Tag, Settings, Trash2 } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { Template, TemplateCategory } from "../../types/template";
+import { useTemplates } from "../../hooks/useTemplates";
+import { useTemplateCategories } from "../../hooks/useTemplateCategories";
+import { TemplateList, TemplateForm, TemplatePreview } from "./";
+import {
+  Plus,
+  Search,
+  Template as TemplateIcon,
+  Folder,
+  Star,
+  Tag,
+  Settings,
+  Trash2,
+} from "lucide-react";
 
 interface TemplateManagementSystemProps {
-  initialView?: 'templates' | 'categories' | 'settings';
+  initialView?: "templates" | "categories" | "settings";
 }
 
 const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
-  initialView = 'templates'
+  initialView = "templates",
 }) => {
   const {
     templates,
@@ -22,7 +31,7 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
     updateTemplate,
     deleteTemplate,
     applyTemplate,
-    previewTemplate
+    previewTemplate,
   } = useTemplates();
 
   const {
@@ -31,27 +40,38 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
     error: categoriesError,
     createTemplateCategory,
     updateTemplateCategory,
-    deleteTemplateCategory
+    deleteTemplateCategory,
   } = useTemplateCategories();
 
-  const [activeView, setActiveView] = useState<'templates' | 'categories' | 'settings'>(initialView);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string | 'all'>('all');
+  const [activeView, setActiveView] = useState<
+    "templates" | "categories" | "settings"
+  >(initialView);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string | "all">(
+    "all",
+  );
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingTemplate, setEditingTemplate] = useState<Template | null>(null);
-  const [editingCategory, setEditingCategory] = useState<TemplateCategory | null>(null);
-  const [previewTemplateData, setPreviewTemplateData] = useState<Template | null>(null);
-  const [previewVariables, setPreviewVariables] = useState<Record<string, string>>({});
+  const [editingCategory, setEditingCategory] =
+    useState<TemplateCategory | null>(null);
+  const [previewTemplateData, setPreviewTemplateData] =
+    useState<Template | null>(null);
+  const [previewVariables, setPreviewVariables] = useState<
+    Record<string, string>
+  >({});
   const [showPreview, setShowPreview] = useState(false);
 
   // Filter templates based on search and category
-  const filteredTemplates = templates.filter(template => {
-    const matchesSearch = template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         template.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         template.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredTemplates = templates.filter((template) => {
+    const matchesSearch =
+      template.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      template.tags?.some((tag) =>
+        tag.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
 
-    const matchesCategory = selectedCategory === 'all' ||
-                           template.categoryId === selectedCategory;
+    const matchesCategory =
+      selectedCategory === "all" || template.categoryId === selectedCategory;
 
     return matchesSearch && matchesCategory;
   });
@@ -63,7 +83,7 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
   };
 
   const handleApplyTemplate = async (content: string) => {
-    console.log('Template applied:', content);
+    console.log("Template applied:", content);
     setShowPreview(false);
   };
 
@@ -77,7 +97,9 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
     setShowCreateForm(true);
   };
 
-  const handleSaveTemplate = async (templateData: Omit<Template, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleSaveTemplate = async (
+    templateData: Omit<Template, "id" | "createdAt" | "updatedAt">,
+  ) => {
     try {
       if (editingTemplate) {
         await updateTemplate(editingTemplate.id, templateData);
@@ -87,17 +109,17 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
       setShowCreateForm(false);
       await fetchTemplates();
     } catch (error) {
-      console.error('Failed to save template:', error);
+      console.error("Failed to save template:", error);
     }
   };
 
   const handleDeleteTemplate = async (templateId: string) => {
-    if (window.confirm('Are you sure you want to delete this template?')) {
+    if (window.confirm("Are you sure you want to delete this template?")) {
       try {
         await deleteTemplate(templateId);
         await fetchTemplates();
       } catch (error) {
-        console.error('Failed to delete template:', error);
+        console.error("Failed to delete template:", error);
       }
     }
   };
@@ -112,7 +134,9 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
     setShowCreateForm(true);
   };
 
-  const handleSaveCategory = async (categoryData: Omit<TemplateCategory, 'id' | 'createdAt' | 'updatedAt'>) => {
+  const handleSaveCategory = async (
+    categoryData: Omit<TemplateCategory, "id" | "createdAt" | "updatedAt">,
+  ) => {
     try {
       if (editingCategory) {
         await updateTemplateCategory(editingCategory.id, categoryData);
@@ -122,17 +146,21 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
       setShowCreateForm(false);
       // Refresh categories - would need to call fetch in real implementation
     } catch (error) {
-      console.error('Failed to save category:', error);
+      console.error("Failed to save category:", error);
     }
   };
 
   const handleDeleteCategory = async (categoryId: string) => {
-    if (window.confirm('Are you sure you want to delete this category? All templates in this category will be unaffected.')) {
+    if (
+      window.confirm(
+        "Are you sure you want to delete this category? All templates in this category will be unaffected.",
+      )
+    ) {
       try {
         await deleteTemplateCategory(categoryId);
         // Refresh categories - would need to call fetch in real implementation
       } catch (error) {
-        console.error('Failed to delete category:', error);
+        console.error("Failed to delete category:", error);
       }
     }
   };
@@ -155,7 +183,7 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
             New Template
           </button>
 
-          {activeView === 'categories' && (
+          {activeView === "categories" && (
             <button
               onClick={handleCreateCategory}
               className="flex items-center px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 text-sm"
@@ -170,33 +198,33 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
       {/* Navigation Tabs */}
       <div className="flex border-b border-gray-200">
         <button
-          onClick={() => setActiveView('templates')}
+          onClick={() => setActiveView("templates")}
           className={`py-2 px-4 text-sm font-medium ${
-            activeView === 'templates'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
+            activeView === "templates"
+              ? "text-blue-600 border-b-2 border-blue-600"
+              : "text-gray-500 hover:text-gray-700"
           }`}
         >
           <TemplateIcon className="w-4 h-4 inline-block mr-1" />
           Templates
         </button>
         <button
-          onClick={() => setActiveView('categories')}
+          onClick={() => setActiveView("categories")}
           className={`py-2 px-4 text-sm font-medium ${
-            activeView === 'categories'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
+            activeView === "categories"
+              ? "text-blue-600 border-b-2 border-blue-600"
+              : "text-gray-500 hover:text-gray-700"
           }`}
         >
           <Folder className="w-4 h-4 inline-block mr-1" />
           Categories
         </button>
         <button
-          onClick={() => setActiveView('settings')}
+          onClick={() => setActiveView("settings")}
           className={`py-2 px-4 text-sm font-medium ${
-            activeView === 'settings'
-              ? 'text-blue-600 border-b-2 border-blue-600'
-              : 'text-gray-500 hover:text-gray-700'
+            activeView === "settings"
+              ? "text-blue-600 border-b-2 border-blue-600"
+              : "text-gray-500 hover:text-gray-700"
           }`}
         >
           <Settings className="w-4 h-4 inline-block mr-1" />
@@ -205,7 +233,7 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
       </div>
 
       {/* Content based on active view */}
-      {activeView === 'templates' && (
+      {activeView === "templates" && (
         <div className="space-y-4">
           {/* Search and Filter Controls */}
           <div className="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-4">
@@ -247,7 +275,9 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
             <div className="p-8 text-center text-gray-500">
               <TemplateIcon className="w-12 h-12 mx-auto mb-4 text-gray-400" />
               <h3 className="text-lg font-medium mb-2">No templates found</h3>
-              <p className="text-sm mb-4">Try adjusting your search or create a new template</p>
+              <p className="text-sm mb-4">
+                Try adjusting your search or create a new template
+              </p>
               <button
                 onClick={handleCreateTemplate}
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
@@ -264,9 +294,11 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
         </div>
       )}
 
-      {activeView === 'categories' && (
+      {activeView === "categories" && (
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-gray-900">Template Categories</h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Template Categories
+          </h3>
 
           {categoriesLoading ? (
             <div className="flex justify-center items-center py-8">
@@ -280,7 +312,9 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
             <div className="p-8 text-center text-gray-500">
               <Folder className="w-12 h-12 mx-auto mb-4 text-gray-400" />
               <h3 className="text-lg font-medium mb-2">No categories found</h3>
-              <p className="text-sm mb-4">Create your first template category</p>
+              <p className="text-sm mb-4">
+                Create your first template category
+              </p>
               <button
                 onClick={handleCreateCategory}
                 className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
@@ -291,15 +325,22 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {templateCategories.map((category) => (
-                <div key={category.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                <div
+                  key={category.id}
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+                >
                   <div className="flex items-start justify-between">
                     <div>
                       <h4 className="font-medium text-gray-900 flex items-center">
-                        {category.icon && <span className="mr-2">{category.icon}</span>}
+                        {category.icon && (
+                          <span className="mr-2">{category.icon}</span>
+                        )}
                         {category.name}
                       </h4>
                       {category.description && (
-                        <p className="text-sm text-gray-500 mt-1">{category.description}</p>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {category.description}
+                        </p>
                       )}
                     </div>
                     <div className="flex items-center space-x-2">
@@ -326,9 +367,11 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
         </div>
       )}
 
-      {activeView === 'settings' && (
+      {activeView === "settings" && (
         <div className="space-y-6">
-          <h3 className="text-lg font-semibold text-gray-900">Template Settings</h3>
+          <h3 className="text-lg font-semibold text-gray-900">
+            Template Settings
+          </h3>
 
           <div className="bg-gray-50 border border-gray-200 rounded-lg p-6">
             <h4 className="font-medium text-gray-900 mb-4">General Settings</h4>
@@ -336,8 +379,12 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h5 className="font-medium text-gray-700">Default Template Visibility</h5>
-                  <p className="text-sm text-gray-500">Set the default visibility for new templates</p>
+                  <h5 className="font-medium text-gray-700">
+                    Default Template Visibility
+                  </h5>
+                  <p className="text-sm text-gray-500">
+                    Set the default visibility for new templates
+                  </p>
                 </div>
                 <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
                   <option value="public">Public</option>
@@ -347,8 +394,12 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
 
               <div className="flex items-center justify-between">
                 <div>
-                  <h5 className="font-medium text-gray-700">Template Auto-Save</h5>
-                  <p className="text-sm text-gray-500">Enable automatic saving of template changes</p>
+                  <h5 className="font-medium text-gray-700">
+                    Template Auto-Save
+                  </h5>
+                  <p className="text-sm text-gray-500">
+                    Enable automatic saving of template changes
+                  </p>
                 </div>
                 <input
                   type="checkbox"

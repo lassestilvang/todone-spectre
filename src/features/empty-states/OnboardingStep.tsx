@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface OnboardingStepProps {
   title: string;
@@ -21,7 +21,7 @@ export const OnboardingStep: React.FC<OnboardingStepProps> = ({
   onNext,
   onBack,
   onSkip,
-  className = ''
+  className = "",
 }) => {
   return (
     <div className={`onboarding-step ${className}`}>
@@ -33,35 +33,24 @@ export const OnboardingStep: React.FC<OnboardingStepProps> = ({
         </div>
       </div>
 
-      <div className="step-content">
-        {children}
-      </div>
+      <div className="step-content">{children}</div>
 
       <div className="step-navigation">
         {onBack && (
-          <button
-            onClick={onBack}
-            className="nav-button back"
-          >
+          <button onClick={onBack} className="nav-button back">
             Back
           </button>
         )}
 
         {onSkip && (
-          <button
-            onClick={onSkip}
-            className="nav-button skip"
-          >
+          <button onClick={onSkip} className="nav-button skip">
             Skip
           </button>
         )}
 
         {onNext && (
-          <button
-            onClick={onNext}
-            className="nav-button next"
-          >
-            {stepNumber === totalSteps ? 'Finish' : 'Next'}
+          <button onClick={onNext} className="nav-button next">
+            {stepNumber === totalSteps ? "Finish" : "Next"}
           </button>
         )}
       </div>

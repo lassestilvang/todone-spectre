@@ -18,7 +18,7 @@ export function sleep(ms: number): Promise<void> {
 }
 
 export function generateRandomId(prefix: string = 'test'): string {
-  return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
+  return `${prefix}-${Math.random().toString(36).substring(2, 9)}`;
 }
 
 export function createTestContext() {

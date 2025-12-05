@@ -4,31 +4,31 @@
  * and can be imported and used correctly.
  */
 
-import { offlineService } from '../offlineService';
-import { offlineSyncService } from '../offlineSyncService';
+import { offlineService } from "../offlineService";
+import { offlineSyncService } from "../offlineSyncService";
 
-console.log('🔍 Validating Offline Services Implementation...\\n');
+console.log("🔍 Validating Offline Services Implementation...\\n");
 
 try {
   // Test OfflineService
-  console.log('📋 Testing OfflineService:');
+  console.log("📋 Testing OfflineService:");
 
   const offlineStatus = offlineService.getOfflineStatus();
   console.log(`✅ Offline status: ${offlineStatus}`);
 
   const offlineState = offlineService.getOfflineState();
   console.log(
-    `✅ Offline state retrieved: ${offlineState.isOffline ? 'Offline' : 'Online'}`,
+    `✅ Offline state retrieved: ${offlineState.isOffline ? "Offline" : "Online"}`,
   );
 
   const queueStats = offlineService.getQueueStats();
   console.log(`✅ Queue stats: ${queueStats.totalItems} total items`);
 
   const isOnline = offlineService.checkOnlineStatus();
-  console.log(`✅ Online check: ${isOnline ? 'Online' : 'Offline'}`);
+  console.log(`✅ Online check: ${isOnline ? "Online" : "Offline"}`);
 
   // Test OfflineSyncService
-  console.log('\\n📋 Testing OfflineSyncService:');
+  console.log("\\n📋 Testing OfflineSyncService:");
 
   const syncStatus = offlineSyncService.getSyncStatus();
   console.log(`✅ Sync status: ${syncStatus.status}`);
@@ -53,30 +53,30 @@ try {
   console.log(`✅ Conflict strategy: ${conflictStrategy}`);
 
   // Test conflict resolution
-  const localData = { id: 'test', name: 'local', updatedAt: Date.now() };
+  const localData = { id: "test", name: "local", updatedAt: Date.now() };
   const remoteData = {
-    id: 'test',
-    name: 'remote',
+    id: "test",
+    name: "remote",
     updatedAt: Date.now() - 1000,
   };
   const conflictResult = await offlineSyncService.handleConflict(
     localData,
     remoteData,
-    'update',
+    "update",
   );
   console.log(
-    `✅ Conflict resolution test: ${conflictResult ? 'Success' : 'Manual resolution needed'}`,
+    `✅ Conflict resolution test: ${conflictResult ? "Success" : "Manual resolution needed"}`,
   );
 
-  console.log('\\n🎉 All offline services validation tests passed!');
-  console.log('✅ OfflineService is working correctly');
-  console.log('✅ OfflineSyncService is working correctly');
-  console.log('✅ Services are properly integrated with stores and hooks');
+  console.log("\\n🎉 All offline services validation tests passed!");
+  console.log("✅ OfflineService is working correctly");
+  console.log("✅ OfflineSyncService is working correctly");
+  console.log("✅ Services are properly integrated with stores and hooks");
 } catch (error) {
-  console.error('❌ Offline services validation failed:', error);
+  console.error("❌ Offline services validation failed:", error);
   if (error instanceof Error) {
-    console.error('Error details:', error.message);
-    console.error('Stack trace:', error.stack);
+    console.error("Error details:", error.message);
+    console.error("Stack trace:", error.stack);
   }
   process.exit(1);
 }
@@ -85,7 +85,7 @@ try {
 export const validateOfflineServices = async () => {
   try {
     // Run the same validation logic
-    console.log('Running offline services validation...');
+    console.log("Running offline services validation...");
 
     // Test basic functionality
     const status = offlineService.getOfflineStatus();
@@ -93,7 +93,7 @@ export const validateOfflineServices = async () => {
 
     return {
       success: true,
-      message: 'Offline services validation successful',
+      message: "Offline services validation successful",
       details: {
         offlineStatus: status,
         syncStatus: syncStatus.status,
@@ -103,8 +103,8 @@ export const validateOfflineServices = async () => {
   } catch (error) {
     return {
       success: false,
-      message: 'Offline services validation failed',
-      error: error instanceof Error ? error.message : 'Unknown error',
+      message: "Offline services validation failed",
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 };

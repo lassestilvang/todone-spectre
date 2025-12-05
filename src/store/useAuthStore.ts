@@ -1,9 +1,16 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
-import { AuthState, User } from '../types/store';
-import { login as apiLogin, register as apiRegister, logout as apiLogout } from '../api/auth';
-import { getSession, isAuthenticated as checkIsAuthenticated } from '../utils/auth';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
+import { AuthState, User } from "../types/store";
+import {
+  login as apiLogin,
+  register as apiRegister,
+  logout as apiLogout,
+} from "../api/auth";
+import {
+  getSession,
+  isAuthenticated as checkIsAuthenticated,
+} from "../utils/auth";
 
 export const useAuthStore = create<AuthState>()(
   devtools(
@@ -24,12 +31,12 @@ export const useAuthStore = create<AuthState>()(
             const user: User = {
               id: response.user.id,
               email: response.user.email,
-              name: response.user.name || email.split('@')[0],
-              avatar: `https://api.dicebear.com/6.x/initials/svg?seed=${response.user.name || email.split('@')[0]}`,
+              name: response.user.name || email.split("@")[0],
+              avatar: `https://api.dicebear.com/6.x/initials/svg?seed=${response.user.name || email.split("@")[0]}`,
               settings: {
                 notificationsEnabled: true,
-                emailFrequency: 'weekly',
-                themePreference: 'system',
+                emailFrequency: "weekly",
+                themePreference: "system",
               },
             };
 
@@ -41,7 +48,7 @@ export const useAuthStore = create<AuthState>()(
             });
           } catch (error) {
             set({
-              error: error instanceof Error ? error.message : 'Login failed',
+              error: error instanceof Error ? error.message : "Login failed",
               isLoading: false,
             });
             throw error;
@@ -59,7 +66,7 @@ export const useAuthStore = create<AuthState>()(
             });
           } catch (error) {
             set({
-              error: error instanceof Error ? error.message : 'Logout failed',
+              error: error instanceof Error ? error.message : "Logout failed",
             });
             throw error;
           }
@@ -78,8 +85,8 @@ export const useAuthStore = create<AuthState>()(
               avatar: `https://api.dicebear.com/6.x/initials/svg?seed=${response.user.name || name}`,
               settings: {
                 notificationsEnabled: true,
-                emailFrequency: 'weekly',
-                themePreference: 'system',
+                emailFrequency: "weekly",
+                themePreference: "system",
               },
             };
 
@@ -91,7 +98,8 @@ export const useAuthStore = create<AuthState>()(
             });
           } catch (error) {
             set({
-              error: error instanceof Error ? error.message : 'Registration failed',
+              error:
+                error instanceof Error ? error.message : "Registration failed",
               isLoading: false,
             });
             throw error;
@@ -108,14 +116,14 @@ export const useAuthStore = create<AuthState>()(
             if (authenticated && token) {
               // In a real app, you would fetch user data from the token or API
               const userData = {
-                id: 'current-user-id',
-                email: 'user@example.com',
-                name: 'Current User',
+                id: "current-user-id",
+                email: "user@example.com",
+                name: "Current User",
                 avatar: `https://api.dicebear.com/6.x/initials/svg?seed=Current`,
                 settings: {
                   notificationsEnabled: true,
-                  emailFrequency: 'weekly',
-                  themePreference: 'system',
+                  emailFrequency: "weekly",
+                  themePreference: "system",
                 },
               };
 
@@ -135,22 +143,25 @@ export const useAuthStore = create<AuthState>()(
             }
           } catch (error) {
             set({
-              error: error instanceof Error ? error.message : 'Auth check failed',
+              error:
+                error instanceof Error ? error.message : "Auth check failed",
               isLoading: false,
             });
             throw error;
           }
         },
 
-        updateUserSettings: (settings: Partial<User['settings']>) => {
+        updateUserSettings: (settings: Partial<User["settings"]>) => {
           set((state) => ({
-            user: state.user ? {
-              ...state.user,
-              settings: {
-                ...state.user.settings,
-                ...settings,
-              },
-            } : null,
+            user: state.user
+              ? {
+                  ...state.user,
+                  settings: {
+                    ...state.user.settings,
+                    ...settings,
+                  },
+                }
+              : null,
           }));
         },
 
@@ -159,11 +170,11 @@ export const useAuthStore = create<AuthState>()(
         },
       }),
       {
-        name: 'todone-auth-storage',
+        name: "todone-auth-storage",
         storage: createJSONStorage(() => localStorage),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
 
 // Helper function to create localStorage

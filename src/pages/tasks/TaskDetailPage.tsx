@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import TaskDetail from '../../features/tasks/TaskDetail';
-import TaskForm from '../../features/tasks/TaskForm';
-import RecurringTaskForm from '../../features/recurring/RecurringTaskForm';
-import RecurringTaskPreview from '../../features/recurring/RecurringTaskPreview';
-import { useTask } from '../../hooks/useTasks';
-import { useRecurringTaskIntegration } from '../../hooks/useRecurringTaskIntegration';
-import { ArrowLeftIcon, PencilIcon } from '@heroicons/react/outline';
+import React, { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import TaskDetail from "../../features/tasks/TaskDetail";
+import TaskForm from "../../features/tasks/TaskForm";
+import RecurringTaskForm from "../../features/recurring/RecurringTaskForm";
+import RecurringTaskPreview from "../../features/recurring/RecurringTaskPreview";
+import { useTask } from "../../hooks/useTasks";
+import { useRecurringTaskIntegration } from "../../hooks/useRecurringTaskIntegration";
+import { ArrowLeftIcon, PencilIcon } from "@heroicons/react/outline";
 
 const TaskDetailPage: React.FC = () => {
   const { taskId } = useParams<{ taskId: string }>();
@@ -23,7 +23,7 @@ const TaskDetailPage: React.FC = () => {
         refetch();
       }
     } catch (error) {
-      console.error('Failed to update task:', error);
+      console.error("Failed to update task:", error);
     }
   };
 
@@ -35,7 +35,7 @@ const TaskDetailPage: React.FC = () => {
         refetch();
       }
     } catch (error) {
-      console.error('Failed to update recurring task:', error);
+      console.error("Failed to update recurring task:", error);
     }
   };
 
@@ -43,10 +43,10 @@ const TaskDetailPage: React.FC = () => {
     try {
       if (taskId) {
         await useTasks().deleteTask(taskId);
-        navigate('/tasks');
+        navigate("/tasks");
       }
     } catch (error) {
-      console.error('Failed to delete task:', error);
+      console.error("Failed to delete task:", error);
     }
   };
 
@@ -55,7 +55,7 @@ const TaskDetailPage: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <button
-            onClick={() => navigate('/tasks')}
+            onClick={() => navigate("/tasks")}
             className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
           >
             <ArrowLeftIcon className="w-5 h-5" />
@@ -75,7 +75,7 @@ const TaskDetailPage: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <button
-            onClick={() => navigate('/tasks')}
+            onClick={() => navigate("/tasks")}
             className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
           >
             <ArrowLeftIcon className="w-5 h-5" />
@@ -95,7 +95,7 @@ const TaskDetailPage: React.FC = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <button
-            onClick={() => navigate('/tasks')}
+            onClick={() => navigate("/tasks")}
             className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
           >
             <ArrowLeftIcon className="w-5 h-5" />
@@ -114,7 +114,7 @@ const TaskDetailPage: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
         <button
-          onClick={() => navigate('/tasks')}
+          onClick={() => navigate("/tasks")}
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
         >
           <ArrowLeftIcon className="w-5 h-5" />
@@ -134,7 +134,9 @@ const TaskDetailPage: React.FC = () => {
 
       {isEditing ? (
         <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Edit Task</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            Edit Task
+          </h2>
           {task.recurringPattern ? (
             <RecurringTaskForm
               task={task}

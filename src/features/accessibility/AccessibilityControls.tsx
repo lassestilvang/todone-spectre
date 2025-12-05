@@ -1,7 +1,16 @@
-import React, { useState } from 'react';
-import { useAccessibilityContext } from './AccessibilityProvider';
-import { Button, Switch, Select, SelectItem, Tooltip } from '../../components/ui';
-import { Settings, Contrast, TextSize, Motion, Keyboard, ScreenReader, Accessibility as AccessibilityIcon } from '../../components/icons';
+import React, { useState } from "react";
+import { useAccessibilityContext } from "./AccessibilityProvider";
+import {
+  Switch,
+} from "../../components/ui";
+import {
+  Contrast,
+  TextSize,
+  Motion,
+  Keyboard,
+  ScreenReader,
+  Accessibility as AccessibilityIcon,
+} from "../../components/icons";
 
 interface AccessibilityControlsProps {
   className?: string;
@@ -10,9 +19,9 @@ interface AccessibilityControlsProps {
 }
 
 export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
-  className = '',
+  className = "",
   showLabels = true,
-  onAccessibilityChange
+  onAccessibilityChange,
 }) => {
   const {
     isHighContrast,
@@ -24,7 +33,7 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
     setFontSize,
     toggleReduceMotion,
     toggleScreenReader,
-    toggleKeyboardNavigation
+    toggleKeyboardNavigation,
   } = useAccessibilityContext();
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -36,27 +45,33 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
         fontSize,
         reduceMotion,
         screenReaderEnabled,
-        keyboardNavigation
+        keyboardNavigation,
       });
     }
   };
 
   const fontSizeOptions = [
-    { value: 'small', label: 'Small' },
-    { value: 'medium', label: 'Medium' },
-    { value: 'large', label: 'Large' },
-    { value: 'xlarge', label: 'Extra Large' }
+    { value: "small", label: "Small" },
+    { value: "medium", label: "Medium" },
+    { value: "large", label: "Large" },
+    { value: "xlarge", label: "Extra Large" },
   ];
 
   return (
-    <div className={`accessibility-controls ${className} ${isExpanded ? 'expanded' : 'collapsed'}`}>
+    <div
+      className={`accessibility-controls ${className} ${isExpanded ? "expanded" : "collapsed"}`}
+    >
       <div className="accessibility-controls-header">
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="accessibility-toggle-button"
           aria-expanded={isExpanded}
           aria-controls="accessibility-controls-panel"
-          aria-label={isExpanded ? 'Collapse accessibility controls' : 'Expand accessibility controls'}
+          aria-label={
+            isExpanded
+              ? "Collapse accessibility controls"
+              : "Expand accessibility controls"
+          }
         >
           <AccessibilityIcon className="accessibility-icon" />
           {showLabels && <span>Accessibility</span>}
@@ -64,9 +79,14 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
       </div>
 
       {isExpanded && (
-        <div id="accessibility-controls-panel" className="accessibility-controls-panel">
+        <div
+          id="accessibility-controls-panel"
+          className="accessibility-controls-panel"
+        >
           <div className="accessibility-control-group">
-            {showLabels && <label htmlFor="high-contrast-toggle">High Contrast</label>}
+            {showLabels && (
+              <label htmlFor="high-contrast-toggle">High Contrast</label>
+            )}
             <Tooltip content="Toggle high contrast mode for better visibility">
               <Switch
                 id="high-contrast-toggle"
@@ -93,7 +113,10 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
                 }}
                 aria-label="Select text size"
               >
-                <button className="select-trigger" aria-label="Text size options">
+                <button
+                  className="select-trigger"
+                  aria-label="Text size options"
+                >
                   <TextSize className="control-icon" />
                 </button>
                 {fontSizeOptions.map((option) => (
@@ -106,7 +129,9 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
           </div>
 
           <div className="accessibility-control-group">
-            {showLabels && <label htmlFor="reduce-motion-toggle">Reduce Motion</label>}
+            {showLabels && (
+              <label htmlFor="reduce-motion-toggle">Reduce Motion</label>
+            )}
             <Tooltip content="Reduce animations and motion for better accessibility">
               <Switch
                 id="reduce-motion-toggle"
@@ -123,7 +148,9 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
           </div>
 
           <div className="accessibility-control-group">
-            {showLabels && <label htmlFor="screen-reader-toggle">Screen Reader</label>}
+            {showLabels && (
+              <label htmlFor="screen-reader-toggle">Screen Reader</label>
+            )}
             <Tooltip content="Enable screen reader support">
               <Switch
                 id="screen-reader-toggle"
@@ -140,7 +167,9 @@ export const AccessibilityControls: React.FC<AccessibilityControlsProps> = ({
           </div>
 
           <div className="accessibility-control-group">
-            {showLabels && <label htmlFor="keyboard-nav-toggle">Keyboard Navigation</label>}
+            {showLabels && (
+              <label htmlFor="keyboard-nav-toggle">Keyboard Navigation</label>
+            )}
             <Tooltip content="Enable enhanced keyboard navigation">
               <Switch
                 id="keyboard-nav-toggle"

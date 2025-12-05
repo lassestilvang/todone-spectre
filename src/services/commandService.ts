@@ -1,4 +1,4 @@
-import { Command } from '../types/command';
+import { Command } from "../types/command";
 
 export class CommandService {
   private commands: Command[] = [];
@@ -11,54 +11,54 @@ export class CommandService {
   private initializeDefaultCommands(): void {
     this.commands = [
       {
-        id: 'create-task',
-        name: 'Create New Task',
-        description: 'Create a new task',
-        shortcut: 'Ctrl+N',
+        id: "create-task",
+        name: "Create New Task",
+        description: "Create a new task",
+        shortcut: "Ctrl+N",
         action: () => {
           // This would typically navigate to task creation
-          console.log('Creating new task...');
+          console.log("Creating new task...");
           return Promise.resolve(true);
-        }
+        },
       },
       {
-        id: 'search-tasks',
-        name: 'Search Tasks',
-        description: 'Search through all tasks',
-        shortcut: 'Ctrl+F',
+        id: "search-tasks",
+        name: "Search Tasks",
+        description: "Search through all tasks",
+        shortcut: "Ctrl+F",
         action: () => {
-          console.log('Opening search...');
+          console.log("Opening search...");
           return Promise.resolve(true);
-        }
+        },
       },
       {
-        id: 'show-help',
-        name: 'Show Help',
-        description: 'Show help documentation',
-        shortcut: 'Ctrl+/',
+        id: "show-help",
+        name: "Show Help",
+        description: "Show help documentation",
+        shortcut: "Ctrl+/",
         action: () => {
-          console.log('Showing help...');
+          console.log("Showing help...");
           return Promise.resolve(true);
-        }
+        },
       },
       {
-        id: 'settings',
-        name: 'Open Settings',
-        description: 'Open application settings',
+        id: "settings",
+        name: "Open Settings",
+        description: "Open application settings",
         action: () => {
-          console.log('Opening settings...');
+          console.log("Opening settings...");
           return Promise.resolve(true);
-        }
+        },
       },
       {
-        id: 'logout',
-        name: 'Logout',
-        description: 'Logout from the application',
+        id: "logout",
+        name: "Logout",
+        description: "Logout from the application",
         action: () => {
-          console.log('Logging out...');
+          console.log("Logging out...");
           return Promise.resolve(true);
-        }
-      }
+        },
+      },
     ];
   }
 
@@ -67,7 +67,7 @@ export class CommandService {
   }
 
   public getCommandById(id: string): Command | undefined {
-    return this.commands.find(cmd => cmd.id === id);
+    return this.commands.find((cmd) => cmd.id === id);
   }
 
   public addCommand(command: Command): void {
@@ -75,7 +75,7 @@ export class CommandService {
   }
 
   public removeCommand(id: string): boolean {
-    const index = this.commands.findIndex(cmd => cmd.id === id);
+    const index = this.commands.findIndex((cmd) => cmd.id === id);
     if (index !== -1) {
       this.commands.splice(index, 1);
       return true;
@@ -100,14 +100,16 @@ export class CommandService {
   }
 
   public searchCommands(query: string): Command[] {
-    if (!query || query.trim() === '') {
+    if (!query || query.trim() === "") {
       return this.getCommands();
     }
 
     const searchTerm = query.toLowerCase();
-    return this.commands.filter(command =>
-      command.name.toLowerCase().includes(searchTerm) ||
-      (command.description && command.description.toLowerCase().includes(searchTerm))
+    return this.commands.filter(
+      (command) =>
+        command.name.toLowerCase().includes(searchTerm) ||
+        (command.description &&
+          command.description.toLowerCase().includes(searchTerm)),
     );
   }
 

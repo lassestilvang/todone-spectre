@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useAIAssistant } from '../../../hooks/useAIAssistant';
-import { Task } from '../../../types/taskTypes';
+import React, { useState, useEffect } from "react";
+import { useAIAssistant } from "../../../hooks/useAIAssistant";
 
 interface AITaskBreakdownProps {
   taskId: string;
@@ -18,14 +17,14 @@ interface TaskBreakdown {
 export const AITaskBreakdown: React.FC<AITaskBreakdownProps> = ({
   taskId,
   taskTitle,
-  taskDescription = ''
+  taskDescription = "",
 }) => {
   const { aiResponse, isLoading, error, generateAIResponse } = useAIAssistant();
   const [breakdown, setBreakdown] = useState<TaskBreakdown | null>(null);
   const [expandedSections, setExpandedSections] = useState({
     steps: true,
     dependencies: true,
-    resources: true
+    resources: true,
   });
 
   useEffect(() => {
@@ -40,35 +39,48 @@ export const AITaskBreakdown: React.FC<AITaskBreakdownProps> = ({
       try {
         // Parse AI response into structured breakdown
         const parsedBreakdown: TaskBreakdown = {
-          steps: aiResponse.split('\n').filter(line => line.startsWith('- ')).map(line => line.substring(2)),
-          estimatedTime: '2-4 hours',
+          steps: aiResponse
+            .split("\n")
+            .filter((line) => line.startsWith("- "))
+            .map((line) => line.substring(2)),
+          estimatedTime: "2-4 hours",
           dependencies: [],
-          resources: []
+          resources: [],
         };
         setBreakdown(parsedBreakdown);
       } catch (e) {
-        console.error('Failed to parse AI breakdown:', e);
+        console.error("Failed to parse AI breakdown:", e);
       }
     }
   }, [aiResponse]);
 
   const toggleSection = (section: keyof typeof expandedSections) => {
-    setExpandedSections(prev => ({
+    setExpandedSections((prev) => ({
       ...prev,
-      [section]: !prev[section]
+      [section]: !prev[section],
     }));
   };
 
   if (isLoading && !breakdown) {
-    return <div className="ai-breakdown-loading">Analyzing task and generating breakdown...</div>;
+    return (
+      <div className="ai-breakdown-loading">
+        Analyzing task and generating breakdown...
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="ai-breakdown-error">Error generating task breakdown: {error}</div>;
+    return (
+      <div className="ai-breakdown-error">
+        Error generating task breakdown: {error}
+      </div>
+    );
   }
 
   if (!breakdown) {
-    return <div className="ai-breakdown-empty">No task breakdown available</div>;
+    return (
+      <div className="ai-breakdown-empty">No task breakdown available</div>
+    );
   }
 
   return (
@@ -76,12 +88,11 @@ export const AITaskBreakdown: React.FC<AITaskBreakdownProps> = ({
       <h3 className="breakdown-title">AI Task Breakdown</h3>
 
       <div className="breakdown-section">
-        <div
-          className="section-header"
-          onClick={() => toggleSection('steps')}
-        >
+        <div className="section-header" onClick={() => toggleSection("steps")}>
           <span>Actionable Steps ({breakdown.steps.length})</span>
-          <span className="toggle-icon">{expandedSections.steps ? '−' : '+'}</span>
+          <span className="toggle-icon">
+            {expandedSections.steps ? "−" : "+"}
+          </span>
         </div>
 
         {expandedSections.steps && (
@@ -99,45 +110,51 @@ export const AITaskBreakdown: React.FC<AITaskBreakdownProps> = ({
       <div className="breakdown-section">
         <div
           className="section-header"
-          onClick={() => toggleSection('dependencies')}
+          onClick={() => toggleSection("dependencies")}
         >
           <span>Dependencies</span>
-          <span className="toggle-icon">{expandedSections.dependencies ? '−' : '+'}</span>
+          <span className="toggle-icon">
+            {expandedSections.dependencies ? "−" : "+"}
+          </span>
         </div>
 
-        {expandedSections.dependencies && (
-          breakdown.dependencies.length > 0 ? (
+        {expandedSections.dependencies &&
+          (breakdown.dependencies.length > 0 ? (
             <ul className="dependencies-list">
               {breakdown.dependencies.map((dep, index) => (
-                <li key={index} className="dependency-item">{dep}</li>
+                <li key={index} className="dependency-item">
+                  {dep}
+                </li>
               ))}
             </ul>
           ) : (
             <div className="no-dependencies">No dependencies identified</div>
-          )
-        )}
+          ))}
       </div>
 
       <div className="breakdown-section">
         <div
           className="section-header"
-          onClick={() => toggleSection('resources')}
+          onClick={() => toggleSection("resources")}
         >
           <span>Helpful Resources</span>
-          <span className="toggle-icon">{expandedSections.resources ? '−' : '+'}</span>
+          <span className="toggle-icon">
+            {expandedSections.resources ? "−" : "+"}
+          </span>
         </div>
 
-        {expandedSections.resources && (
-          breakdown.resources.length > 0 ? (
+        {expandedSections.resources &&
+          (breakdown.resources.length > 0 ? (
             <ul className="resources-list">
               {breakdown.resources.map((resource, index) => (
-                <li key={index} className="resource-item">{resource}</li>
+                <li key={index} className="resource-item">
+                  {resource}
+                </li>
               ))}
             </ul>
           ) : (
             <div className="no-resources">No specific resources needed</div>
-          )
-        )}
+          ))}
       </div>
 
       <div className="breakdown-footer">

@@ -1,6 +1,6 @@
-import React from 'react';
-import { useExtensionConfig } from '../../../hooks/useExtensionConfig';
-import { useExtensionService } from '../../../hooks/useExtension';
+import React from "react";
+import { useExtensionConfig } from "../../../hooks/useExtensionConfig";
+import { useExtensionService } from "../../../hooks/useExtension";
 
 interface ExtensionQuickActionsProps {
   className?: string;
@@ -8,8 +8,8 @@ interface ExtensionQuickActionsProps {
 }
 
 export const ExtensionQuickActions: React.FC<ExtensionQuickActionsProps> = ({
-  className = '',
-  onActionClick
+  className = "",
+  onActionClick,
 }) => {
   const { config } = useExtensionConfig();
   const extensionService = useExtensionService();
@@ -23,20 +23,24 @@ export const ExtensionQuickActions: React.FC<ExtensionQuickActionsProps> = ({
 
       // Handle built-in actions
       switch (actionId) {
-        case 'create-task':
-          await chrome.tabs.create({ url: chrome.runtime.getURL('create-task.html') });
+        case "create-task":
+          await chrome.tabs.create({
+            url: chrome.runtime.getURL("create-task.html"),
+          });
           break;
-        case 'view-tasks':
-          await chrome.tabs.create({ url: chrome.runtime.getURL('view-tasks.html') });
+        case "view-tasks":
+          await chrome.tabs.create({
+            url: chrome.runtime.getURL("view-tasks.html"),
+          });
           break;
-        case 'sync-data':
-          await extensionService.dispatch({ type: 'SYNC_START' });
+        case "sync-data":
+          await extensionService.dispatch({ type: "SYNC_START" });
           // Simulate sync
           setTimeout(() => {
-            extensionService.dispatch({ type: 'SYNC_COMPLETE' });
+            extensionService.dispatch({ type: "SYNC_COMPLETE" });
           }, 2000);
           break;
-        case 'settings':
+        case "settings":
           await chrome.runtime.openOptionsPage();
           break;
         default:
@@ -44,7 +48,7 @@ export const ExtensionQuickActions: React.FC<ExtensionQuickActionsProps> = ({
       }
     } catch (error) {
       console.error(`Failed to execute action ${actionId}:`, error);
-      extensionService.dispatch({ type: 'ERROR', payload: error.message });
+      extensionService.dispatch({ type: "ERROR", payload: error.message });
     }
   };
 
@@ -58,22 +62,28 @@ export const ExtensionQuickActions: React.FC<ExtensionQuickActionsProps> = ({
             onClick={() => handleActionClick(action.id)}
             title={action.label}
             style={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '12px',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              width: '80px',
-              height: '80px'
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "12px",
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              width: "80px",
+              height: "80px",
             }}
           >
-            <span className="action-icon" style={{ fontSize: '24px', marginBottom: '6px' }}>
+            <span
+              className="action-icon"
+              style={{ fontSize: "24px", marginBottom: "6px" }}
+            >
               {getActionIcon(action.icon)}
             </span>
-            <span className="action-label" style={{ fontSize: '12px', textAlign: 'center' }}>
+            <span
+              className="action-label"
+              style={{ fontSize: "12px", textAlign: "center" }}
+            >
               {action.label}
             </span>
           </button>
@@ -86,16 +96,27 @@ export const ExtensionQuickActions: React.FC<ExtensionQuickActionsProps> = ({
 // Helper function to get action icons
 const getActionIcon = (icon: string): string => {
   switch (icon) {
-    case 'plus': return '➕';
-    case 'list': return '📋';
-    case 'sync': return '🔄';
-    case 'cog': return '⚙️';
-    case 'check': return '✓';
-    case 'star': return '⭐';
-    case 'calendar': return '📅';
-    case 'search': return '🔍';
-    case 'trash': return '🗑️';
-    case 'edit': return '✏️';
-    default: return icon;
+    case "plus":
+      return "➕";
+    case "list":
+      return "📋";
+    case "sync":
+      return "🔄";
+    case "cog":
+      return "⚙️";
+    case "check":
+      return "✓";
+    case "star":
+      return "⭐";
+    case "calendar":
+      return "📅";
+    case "search":
+      return "🔍";
+    case "trash":
+      return "🗑️";
+    case "edit":
+      return "✏️";
+    default:
+      return icon;
   }
 };

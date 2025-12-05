@@ -2,10 +2,17 @@
  * Template Service - Handles all template-related business logic and CRUD operations
  */
 
-import { Template, CreateTemplateDto, UpdateTemplateDto, TemplateCategory, CreateTemplateCategoryDto, UpdateTemplateCategoryDto } from '../types/template';
-import { ApiResponse } from '../types/api';
-import { templateApi } from '../api/templateApi';
-import { useTemplateStore } from '../store/useTemplateStore';
+import {
+  Template,
+  CreateTemplateDto,
+  UpdateTemplateDto,
+  TemplateCategory,
+  CreateTemplateCategoryDto,
+  UpdateTemplateCategoryDto,
+} from "../types/template";
+import { ApiResponse } from "../types/api";
+import { templateApi } from "../api/templateApi";
+import { useTemplateStore } from "../store/useTemplateStore";
 
 /**
  * Template Service
@@ -33,23 +40,23 @@ export class TemplateService {
    */
   private validateTemplate(templateData: Partial<Template>): void {
     if (!templateData.name || templateData.name.trim().length === 0) {
-      throw new Error('Template name is required');
+      throw new Error("Template name is required");
     }
 
     if (templateData.name.length > 100) {
-      throw new Error('Template name cannot exceed 100 characters');
+      throw new Error("Template name cannot exceed 100 characters");
     }
 
     if (!templateData.content || templateData.content.trim().length === 0) {
-      throw new Error('Template content is required');
+      throw new Error("Template content is required");
     }
 
     if (templateData.description && templateData.description.length > 1000) {
-      throw new Error('Template description cannot exceed 1000 characters');
+      throw new Error("Template description cannot exceed 1000 characters");
     }
 
     if (templateData.content.length > 10000) {
-      throw new Error('Template content cannot exceed 10000 characters');
+      throw new Error("Template content cannot exceed 10000 characters");
     }
   }
 
@@ -59,42 +66,43 @@ export class TemplateService {
   async createTemplate(templateData: CreateTemplateDto): Promise<Template> {
     this.validateTemplate(templateData);
 
-    const newTemplate: Omit<Template, 'id'> = {
+    const newTemplate: Omit<Template, "id"> = {
       ...templateData,
       createdAt: new Date(),
       updatedAt: new Date(),
       usageCount: 0,
       rating: 0,
       isPublic: templateData.isPublic || false,
-      variables: templateData.variables || {}
+      variables: templateData.variables || {},
     };
 
     try {
       // Optimistic update
       const optimisticTemplate: Template = {
         ...newTemplate,
-        id: `temp-${Date.now()}`
+        id: `temp-${Date.now()}`,
       };
 
       this.templateStore.addTemplate(optimisticTemplate);
 
       // Call API
-      const response: ApiResponse<Template> = await templateApi.createTemplate(newTemplate);
+      const response: ApiResponse<Template> =
+        await templateApi.createTemplate(newTemplate);
 
       if (response.success && response.data) {
         // Replace temporary ID with real ID
         this.templateStore.updateTemplate(optimisticTemplate.id, {
           id: response.data.id,
-          ...response.data
+          ...response.data,
         });
         return response.data;
       } else {
         // Revert optimistic update on failure
         this.templateStore.deleteTemplate(optimisticTemplate.id);
-        throw new Error(response.message || 'Failed to create template');
+        throw new Error(response.message || "Failed to create template");
       }
     } catch (error) {
-      console.error('Error creating template:', error);
+      console.error("Error creating template:", error);
       throw error;
     }
   }
@@ -104,15 +112,16 @@ export class TemplateService {
    */
   async getTemplate(templateId: string): Promise<Template> {
     try {
-      const response: ApiResponse<Template> = await templateApi.getTemplate(templateId);
+      const response: ApiResponse<Template> =
+        await templateApi.getTemplate(templateId);
 
       if (response.success && response.data) {
         return response.data;
       } else {
-        throw new Error(response.message || 'Template not found');
+        throw new Error(response.message || "Template not found");
       }
     } catch (error) {
-      console.error('Error fetching template:', error);
+      console.error("Error fetching template:", error);
       throw error;
     }
   }
@@ -122,15 +131,16 @@ export class TemplateService {
    */
   async getTemplates(): Promise<Template[]> {
     try {
-      const response: ApiResponse<Template[]> = await templateApi.getTemplates();
+      const response: ApiResponse<Template[]> =
+        await templateApi.getTemplates();
 
       if (response.success && response.data) {
         return response.data;
       } else {
-        throw new Error(response.message || 'Failed to fetch templates');
+        throw new Error(response.message || "Failed to fetch templates");
       }
     } catch (error) {
-      console.error('Error fetching templates:', error);
+      console.error("Error fetching templates:", error);
       throw error;
     }
   }
@@ -138,36 +148,44 @@ export class TemplateService {
   /**
    * Update a template with optimistic updates
    */
-  async updateTemplate(templateId: string, updates: UpdateTemplateDto): Promise<Template> {
+  async updateTemplate(
+    templateId: string,
+    updates: UpdateTemplateDto,
+  ): Promise<Template> {
     this.validateTemplate(updates);
 
     try {
       // Get current template for optimistic update
-      const currentTemplate = this.templateStore.templates.find(template => template.id === templateId);
+      const currentTemplate = this.templateStore.templates.find(
+        (template) => template.id === templateId,
+      );
       if (!currentTemplate) {
-        throw new Error('Template not found');
+        throw new Error("Template not found");
       }
 
       // Optimistic update
       const optimisticUpdate = {
         ...updates,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
 
       this.templateStore.updateTemplate(templateId, optimisticUpdate);
 
       // Call API
-      const response: ApiResponse<Template> = await templateApi.updateTemplate(templateId, updates);
+      const response: ApiResponse<Template> = await templateApi.updateTemplate(
+        templateId,
+        updates,
+      );
 
       if (response.success && response.data) {
         return response.data;
       } else {
         // Revert optimistic update on failure
         this.templateStore.updateTemplate(templateId, currentTemplate);
-        throw new Error(response.message || 'Failed to update template');
+        throw new Error(response.message || "Failed to update template");
       }
     } catch (error) {
-      console.error('Error updating template:', error);
+      console.error("Error updating template:", error);
       throw error;
     }
   }
@@ -175,10 +193,13 @@ export class TemplateService {
   /**
    * Delete a template with confirmation
    */
-  async deleteTemplate(templateId: string, confirm: boolean = true): Promise<void> {
+  async deleteTemplate(
+    templateId: string,
+    confirm: boolean = true,
+  ): Promise<void> {
     if (confirm) {
       // In a real app, this would show a confirmation dialog
-      console.log('Template deletion requires confirmation');
+      console.log("Template deletion requires confirmation");
     }
 
     try {
@@ -186,15 +207,16 @@ export class TemplateService {
       this.templateStore.deleteTemplate(templateId);
 
       // Call API
-      const response: ApiResponse<void> = await templateApi.deleteTemplate(templateId);
+      const response: ApiResponse<void> =
+        await templateApi.deleteTemplate(templateId);
 
       if (!response.success) {
         // Revert optimistic update on failure
-        console.error('Failed to delete template:', response.message);
-        throw new Error(response.message || 'Failed to delete template');
+        console.error("Failed to delete template:", response.message);
+        throw new Error(response.message || "Failed to delete template");
       }
     } catch (error) {
-      console.error('Error deleting template:', error);
+      console.error("Error deleting template:", error);
       throw error;
     }
   }
@@ -202,17 +224,23 @@ export class TemplateService {
   /**
    * Apply a template with variables
    */
-  async applyTemplate(templateId: string, variables?: Record<string, string>): Promise<string> {
+  async applyTemplate(
+    templateId: string,
+    variables?: Record<string, string>,
+  ): Promise<string> {
     try {
-      const response: ApiResponse<string> = await templateApi.applyTemplate(templateId, variables);
+      const response: ApiResponse<string> = await templateApi.applyTemplate(
+        templateId,
+        variables,
+      );
 
       if (response.success && response.data) {
         return response.data;
       } else {
-        throw new Error(response.message || 'Failed to apply template');
+        throw new Error(response.message || "Failed to apply template");
       }
     } catch (error) {
-      console.error('Error applying template:', error);
+      console.error("Error applying template:", error);
       throw error;
     }
   }
@@ -220,17 +248,23 @@ export class TemplateService {
   /**
    * Preview a template with variables
    */
-  async previewTemplate(templateId: string, variables?: Record<string, string>): Promise<string> {
+  async previewTemplate(
+    templateId: string,
+    variables?: Record<string, string>,
+  ): Promise<string> {
     try {
-      const response: ApiResponse<string> = await templateApi.previewTemplate(templateId, variables);
+      const response: ApiResponse<string> = await templateApi.previewTemplate(
+        templateId,
+        variables,
+      );
 
       if (response.success && response.data) {
         return response.data;
       } else {
-        throw new Error(response.message || 'Failed to preview template');
+        throw new Error(response.message || "Failed to preview template");
       }
     } catch (error) {
-      console.error('Error previewing template:', error);
+      console.error("Error previewing template:", error);
       throw error;
     }
   }
@@ -239,20 +273,24 @@ export class TemplateService {
    * Filter templates by category
    */
   filterTemplatesByCategory(categoryId: string): Template[] {
-    return this.templateStore.templates.filter(template => template.categoryId === categoryId);
+    return this.templateStore.templates.filter(
+      (template) => template.categoryId === categoryId,
+    );
   }
 
   /**
    * Sort templates by name, usage count, or creation date
    */
-  sortTemplates(sortBy: 'name' | 'usageCount' | 'createdAt' = 'name'): Template[] {
+  sortTemplates(
+    sortBy: "name" | "usageCount" | "createdAt" = "name",
+  ): Template[] {
     return [...this.templateStore.templates].sort((a, b) => {
       switch (sortBy) {
-        case 'name':
+        case "name":
           return a.name.localeCompare(b.name);
-        case 'usageCount':
+        case "usageCount":
           return (b.usageCount || 0) - (a.usageCount || 0);
-        case 'createdAt':
+        case "createdAt":
           return b.createdAt.getTime() - a.createdAt.getTime();
         default:
           return 0;

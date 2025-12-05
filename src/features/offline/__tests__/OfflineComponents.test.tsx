@@ -1,12 +1,17 @@
-import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { OfflineIndicator, OfflineQueue, OfflineSync, OfflineSettings } from '../index';
-import { useOfflineStore } from '../../../store/useOfflineStore';
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import {
+  OfflineIndicator,
+  OfflineQueue,
+  OfflineSync,
+  OfflineSettings,
+} from "../index";
+import { useOfflineStore } from "../../../store/useOfflineStore";
 
 // Mock the offline store
-jest.mock('../../../store/useOfflineStore');
+jest.mock("../../../store/useOfflineStore");
 
-describe('Offline Components', () => {
+describe("Offline Components", () => {
   beforeEach(() => {
     // Reset all mocks before each test
     jest.clearAllMocks();
@@ -23,10 +28,10 @@ describe('Offline Components', () => {
         autoSyncEnabled: true,
         syncInterval: 30000,
         maxQueueSize: 100,
-        conflictResolution: 'timestamp',
+        conflictResolution: "timestamp",
         offlineDataRetention: 30,
         showOfflineIndicator: true,
-        syncOnReconnect: true
+        syncOnReconnect: true,
       },
       checkOnlineStatus: jest.fn(),
       addToQueue: jest.fn(),
@@ -35,20 +40,20 @@ describe('Offline Components', () => {
       clearQueue: jest.fn(),
       updateSettings: jest.fn(),
       clearError: jest.fn(),
-      simulateNetworkChange: jest.fn()
+      simulateNetworkChange: jest.fn(),
     });
   });
 
-  test('OfflineIndicator renders correctly', () => {
+  test("OfflineIndicator renders correctly", () => {
     render(<OfflineIndicator />);
     expect(screen.getByText(/You are online/i)).toBeInTheDocument();
   });
 
-  test('OfflineIndicator shows offline status when offline', () => {
+  test("OfflineIndicator shows offline status when offline", () => {
     (useOfflineStore as jest.Mock).mockReturnValue({
       ...useOfflineStore(),
       isOffline: true,
-      pendingChanges: 2
+      pendingChanges: 2,
     });
 
     render(<OfflineIndicator showDetails={true} />);
@@ -56,27 +61,29 @@ describe('Offline Components', () => {
     expect(screen.getByText(/2 pending changes/i)).toBeInTheDocument();
   });
 
-  test('OfflineQueue renders empty state', () => {
+  test("OfflineQueue renders empty state", () => {
     render(<OfflineQueue />);
-    expect(screen.getByText(/No offline operations in queue/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/No offline operations in queue/i),
+    ).toBeInTheDocument();
   });
 
-  test('OfflineQueue shows items when queue has data', () => {
+  test("OfflineQueue shows items when queue has data", () => {
     const mockQueue = [
       {
-        id: '1',
-        operation: 'create_task',
-        type: 'create',
-        data: { title: 'Test task' },
+        id: "1",
+        operation: "create_task",
+        type: "create",
+        data: { title: "Test task" },
         timestamp: new Date(),
-        status: 'pending',
-        attempts: 0
-      }
+        status: "pending",
+        attempts: 0,
+      },
     ];
 
     (useOfflineStore as jest.Mock).mockReturnValue({
       ...useOfflineStore(),
-      queue: mockQueue
+      queue: mockQueue,
     });
 
     render(<OfflineQueue />);
@@ -84,24 +91,24 @@ describe('Offline Components', () => {
     expect(screen.getByText(/Pending/i)).toBeInTheDocument();
   });
 
-  test('OfflineSync renders with default props', () => {
+  test("OfflineSync renders with default props", () => {
     render(<OfflineSync />);
     expect(screen.getByText(/Offline Sync/i)).toBeInTheDocument();
     expect(screen.getByText(/Ready to sync/i)).toBeInTheDocument();
   });
 
-  test('OfflineSettings renders form fields', () => {
+  test("OfflineSettings renders form fields", () => {
     render(<OfflineSettings />);
     expect(screen.getByLabelText(/Enable Auto-Sync/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Sync Interval/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/Max Queue Size/i)).toBeInTheDocument();
   });
 
-  test('OfflineSettings shows current status', () => {
+  test("OfflineSettings shows current status", () => {
     (useOfflineStore as jest.Mock).mockReturnValue({
       ...useOfflineStore(),
       isOffline: true,
-      pendingChanges: 3
+      pendingChanges: 3,
     });
 
     render(<OfflineSettings />);

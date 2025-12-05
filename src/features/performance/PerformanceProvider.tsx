@@ -1,7 +1,11 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { performanceService } from '../../services/performanceService';
-import { performanceConfigService } from '../../services/performanceConfigService';
-import { PerformanceMetrics, PerformanceStatus, PerformanceConfig } from '../../types/performance';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { performanceService } from "../../services/performanceService";
+import { performanceConfigService } from "../../services/performanceConfigService";
+import {
+  PerformanceMetrics,
+  PerformanceStatus,
+  PerformanceConfig,
+} from "../../types/performance";
 
 interface PerformanceContextType {
   metrics: PerformanceMetrics | null;
@@ -14,12 +18,18 @@ interface PerformanceContextType {
   resetConfig: () => void;
 }
 
-const PerformanceContext = createContext<PerformanceContextType | undefined>(undefined);
+const PerformanceContext = createContext<PerformanceContextType | undefined>(
+  undefined,
+);
 
-export const PerformanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const PerformanceProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [metrics, setMetrics] = useState<PerformanceMetrics | null>(null);
-  const [status, setStatus] = useState<PerformanceStatus>('inactive');
-  const [config, setConfig] = useState<PerformanceConfig>(performanceConfigService.getConfig());
+  const [status, setStatus] = useState<PerformanceStatus>("inactive");
+  const [config, setConfig] = useState<PerformanceConfig>(
+    performanceConfigService.getConfig(),
+  );
   const [isMonitoring, setIsMonitoring] = useState(false);
 
   useEffect(() => {
@@ -68,7 +78,7 @@ export const PerformanceProvider: React.FC<{ children: React.ReactNode }> = ({ c
         startMonitoring,
         stopMonitoring,
         updateConfig,
-        resetConfig
+        resetConfig,
       }}
     >
       {children}
@@ -79,7 +89,9 @@ export const PerformanceProvider: React.FC<{ children: React.ReactNode }> = ({ c
 export const usePerformanceContext = () => {
   const context = useContext(PerformanceContext);
   if (!context) {
-    throw new Error('usePerformanceContext must be used within a PerformanceProvider');
+    throw new Error(
+      "usePerformanceContext must be used within a PerformanceProvider",
+    );
   }
   return context;
 };

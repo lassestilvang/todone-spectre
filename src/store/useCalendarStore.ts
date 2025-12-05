@@ -1,10 +1,16 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
-import { CalendarState } from '../types/store';
-import { CalendarService } from '../services/calendarService';
-import { CalendarSyncService } from '../services/calendarSyncService';
-import { CalendarEventType, CalendarType, CalendarConfig, CalendarSyncState, CalendarIntegrationState } from '../types/calendarTypes';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
+import { CalendarState } from "../types/store";
+import { CalendarService } from "../services/calendarService";
+import { CalendarSyncService } from "../services/calendarSyncService";
+import {
+  CalendarEventType,
+  CalendarType,
+  CalendarConfig,
+  CalendarSyncState,
+  CalendarIntegrationState,
+} from "../types/calendarTypes";
 
 export const useCalendarStore = create<CalendarState>()(
   devtools(
@@ -13,26 +19,26 @@ export const useCalendarStore = create<CalendarState>()(
         events: [],
         calendars: [],
         calendarConfig: {
-          defaultView: 'week',
+          defaultView: "week",
           workHours: {
-            start: '09:00',
-            end: '17:00'
+            start: "09:00",
+            end: "17:00",
           },
           showWeekends: true,
-          timeZone: 'UTC',
-          firstDayOfWeek: 1 // Monday
+          timeZone: "UTC",
+          firstDayOfWeek: 1, // Monday
         },
         calendarSyncState: {
-          status: 'idle',
+          status: "idle",
           lastSynced: undefined,
           error: null,
-          availableCalendars: []
+          availableCalendars: [],
         },
         calendarIntegrationState: {
           linkedTasks: {},
           integrationEnabled: true,
           autoSync: false,
-          syncFrequency: 'manual'
+          syncFrequency: "manual",
         },
         loading: false,
         error: null,
@@ -46,11 +52,14 @@ export const useCalendarStore = create<CalendarState>()(
             const newEvent = await CalendarService.createEvent(eventData);
             set((state) => ({
               events: [...state.events, newEvent],
-              loading: false
+              loading: false,
             }));
             return newEvent;
           } catch (err) {
-            set({ loading: false, error: err instanceof Error ? err.message : 'Failed to add event' });
+            set({
+              loading: false,
+              error: err instanceof Error ? err.message : "Failed to add event",
+            });
             throw err;
           }
         },
@@ -61,18 +70,25 @@ export const useCalendarStore = create<CalendarState>()(
         updateEvent: async (eventId, updates) => {
           try {
             set({ loading: true, error: null });
-            const updatedEvent = await CalendarService.updateEvent(eventId, updates);
+            const updatedEvent = await CalendarService.updateEvent(
+              eventId,
+              updates,
+            );
             if (updatedEvent) {
               set((state) => ({
-                events: state.events.map(event =>
-                  event.id === eventId ? updatedEvent : event
+                events: state.events.map((event) =>
+                  event.id === eventId ? updatedEvent : event,
                 ),
-                loading: false
+                loading: false,
               }));
             }
             return updatedEvent;
           } catch (err) {
-            set({ loading: false, error: err instanceof Error ? err.message : 'Failed to update event' });
+            set({
+              loading: false,
+              error:
+                err instanceof Error ? err.message : "Failed to update event",
+            });
             throw err;
           }
         },
@@ -86,13 +102,17 @@ export const useCalendarStore = create<CalendarState>()(
             const success = await CalendarService.deleteEvent(eventId);
             if (success) {
               set((state) => ({
-                events: state.events.filter(event => event.id !== eventId),
-                loading: false
+                events: state.events.filter((event) => event.id !== eventId),
+                loading: false,
               }));
             }
             return success;
           } catch (err) {
-            set({ loading: false, error: err instanceof Error ? err.message : 'Failed to delete event' });
+            set({
+              loading: false,
+              error:
+                err instanceof Error ? err.message : "Failed to delete event",
+            });
             throw err;
           }
         },
@@ -107,7 +127,11 @@ export const useCalendarStore = create<CalendarState>()(
             set({ events, loading: false });
             return events;
           } catch (err) {
-            set({ loading: false, error: err instanceof Error ? err.message : 'Failed to fetch events' });
+            set({
+              loading: false,
+              error:
+                err instanceof Error ? err.message : "Failed to fetch events",
+            });
             throw err;
           }
         },
@@ -121,11 +145,15 @@ export const useCalendarStore = create<CalendarState>()(
             const newCalendar = await CalendarService.addCalendar(calendarData);
             set((state) => ({
               calendars: [...state.calendars, newCalendar],
-              loading: false
+              loading: false,
             }));
             return newCalendar;
           } catch (err) {
-            set({ loading: false, error: err instanceof Error ? err.message : 'Failed to add calendar' });
+            set({
+              loading: false,
+              error:
+                err instanceof Error ? err.message : "Failed to add calendar",
+            });
             throw err;
           }
         },
@@ -140,7 +168,13 @@ export const useCalendarStore = create<CalendarState>()(
             set({ calendars, loading: false });
             return calendars;
           } catch (err) {
-            set({ loading: false, error: err instanceof Error ? err.message : 'Failed to fetch calendars' });
+            set({
+              loading: false,
+              error:
+                err instanceof Error
+                  ? err.message
+                  : "Failed to fetch calendars",
+            });
             throw err;
           }
         },
@@ -150,7 +184,7 @@ export const useCalendarStore = create<CalendarState>()(
          */
         updateCalendarConfig: (updates) => {
           set((state) => ({
-            calendarConfig: { ...state.calendarConfig, ...updates }
+            calendarConfig: { ...state.calendarConfig, ...updates },
           }));
         },
 
@@ -167,35 +201,35 @@ export const useCalendarStore = create<CalendarState>()(
                 events: [...state.events, ...result.syncedEvents],
                 calendarSyncState: {
                   ...state.calendarSyncState,
-                  status: 'completed',
+                  status: "completed",
                   lastSynced: new Date(),
-                  error: null
+                  error: null,
                 },
-                loading: false
+                loading: false,
               }));
             } else {
               set((state) => ({
                 calendarSyncState: {
                   ...state.calendarSyncState,
-                  status: 'error',
-                  error: result.error || new Error('Sync failed')
+                  status: "error",
+                  error: result.error || new Error("Sync failed"),
                 },
-                loading: false
+                loading: false,
               }));
             }
 
             return {
               success: result.success,
-              syncedEvents: result.syncedEvents
+              syncedEvents: result.syncedEvents,
             };
           } catch (err) {
             set((state) => ({
               calendarSyncState: {
                 ...state.calendarSyncState,
-                status: 'error',
-                error: err instanceof Error ? err : new Error('Sync failed')
+                status: "error",
+                error: err instanceof Error ? err : new Error("Sync failed"),
               },
-              loading: false
+              loading: false,
             }));
             throw err;
           }
@@ -208,7 +242,7 @@ export const useCalendarStore = create<CalendarState>()(
           return {
             status: get().calendarSyncState.status,
             lastSynced: get().calendarSyncState.lastSynced,
-            error: get().calendarSyncState.error
+            error: get().calendarSyncState.error,
           };
         },
 
@@ -218,7 +252,10 @@ export const useCalendarStore = create<CalendarState>()(
         linkTaskToEvent: async (taskId, eventId) => {
           try {
             set({ loading: true, error: null });
-            const success = await CalendarService.linkTaskToEvent(taskId, eventId);
+            const success = await CalendarService.linkTaskToEvent(
+              taskId,
+              eventId,
+            );
 
             if (success) {
               set((state) => ({
@@ -226,16 +263,22 @@ export const useCalendarStore = create<CalendarState>()(
                   ...state.calendarIntegrationState,
                   linkedTasks: {
                     ...state.calendarIntegrationState.linkedTasks,
-                    [taskId]: eventId
-                  }
+                    [taskId]: eventId,
+                  },
                 },
-                loading: false
+                loading: false,
               }));
             }
 
             return success;
           } catch (err) {
-            set({ loading: false, error: err instanceof Error ? err.message : 'Failed to link task to event' });
+            set({
+              loading: false,
+              error:
+                err instanceof Error
+                  ? err.message
+                  : "Failed to link task to event",
+            });
             throw err;
           }
         },
@@ -246,23 +289,27 @@ export const useCalendarStore = create<CalendarState>()(
         initializeWithSampleData: () => {
           CalendarService.initializeWithSampleData();
           set((state) => ({
-            events: CalendarService.getEvents().then(events => {
-              set({ events });
-              return events;
-            }).catch(() => []),
-            calendars: CalendarService.getCalendars().then(calendars => {
-              set({ calendars });
-              return calendars;
-            }).catch(() => [])
+            events: CalendarService.getEvents()
+              .then((events) => {
+                set({ events });
+                return events;
+              })
+              .catch(() => []),
+            calendars: CalendarService.getCalendars()
+              .then((calendars) => {
+                set({ calendars });
+                return calendars;
+              })
+              .catch(() => []),
           }));
-        }
+        },
       }),
       {
-        name: 'todone-calendar-storage',
+        name: "todone-calendar-storage",
         storage: createJSONStorage(() => localStorage),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
 
 // Helper function to create localStorage

@@ -1,22 +1,35 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform, Alert } from 'react-native';
-import { useMobileState } from './MobileStateContext';
-import { useMobile } from '../../../hooks/useMobile';
-import { useMobileConfig } from '../../../hooks/useMobileConfig';
-import { mobileUtils } from '../../../utils/mobileUtils';
-import { mobileConfigUtils } from '../../../utils/mobileConfigUtils';
-import { MobileStatusIndicators } from './MobileStatusIndicators';
-import { MobileUIControls } from './MobileUIControls';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+  Alert,
+} from "react-native";
+import { useMobileState } from "./MobileStateContext";
+import { useMobile } from "../../../hooks/useMobile";
+import { useMobileConfig } from "../../../hooks/useMobileConfig";
+import { mobileUtils } from "../../../utils/mobileUtils";
+import { mobileConfigUtils } from "../../../utils/mobileConfigUtils";
+import { MobileStatusIndicators } from "./MobileStatusIndicators";
+import { MobileUIControls } from "./MobileUIControls";
+import Icon from "react-native-vector-icons/MaterialIcons";
 
 interface MobileFeaturesProps {
-  featureSet?: ('performance' | 'accessibility' | 'network' | 'battery' | 'theme')[];
+  featureSet?: (
+    | "performance"
+    | "accessibility"
+    | "network"
+    | "battery"
+    | "theme"
+  )[];
   showFeatureControls?: boolean;
   onFeatureChange?: (feature: string, enabled: boolean) => void;
 }
 
 export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
-  featureSet = ['performance', 'accessibility', 'network', 'battery', 'theme'],
+  featureSet = ["performance", "accessibility", "network", "battery", "theme"],
   showFeatureControls = true,
   onFeatureChange,
 }) => {
@@ -31,29 +44,32 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
 
   const { triggerHapticFeedback } = useMobile();
   const [activeFeatures, setActiveFeatures] = useState<string[]>(featureSet);
-  const [featureStatus, setFeatureStatus] = useState<Record<string, boolean>>({});
+  const [featureStatus, setFeatureStatus] = useState<Record<string, boolean>>(
+    {},
+  );
 
   useEffect(() => {
     // Initialize feature status based on current configuration
     const initialStatus: Record<string, boolean> = {};
 
-    if (featureSet.includes('performance')) {
-      initialStatus.performance = mobileConfig.performanceMode === 'high';
+    if (featureSet.includes("performance")) {
+      initialStatus.performance = mobileConfig.performanceMode === "high";
     }
 
-    if (featureSet.includes('accessibility')) {
-      initialStatus.accessibility = mobilePreferences.accessibility.reducedMotion;
+    if (featureSet.includes("accessibility")) {
+      initialStatus.accessibility =
+        mobilePreferences.accessibility.reducedMotion;
     }
 
-    if (featureSet.includes('network')) {
-      initialStatus.network = mobileState.networkStatus === 'online';
+    if (featureSet.includes("network")) {
+      initialStatus.network = mobileState.networkStatus === "online";
     }
 
-    if (featureSet.includes('battery')) {
+    if (featureSet.includes("battery")) {
       initialStatus.battery = !mobileState.isLowPowerMode;
     }
 
-    if (featureSet.includes('theme')) {
+    if (featureSet.includes("theme")) {
       initialStatus.theme = mobileConfig.darkMode;
     }
 
@@ -65,32 +81,32 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
       let newStatus: boolean;
 
       switch (feature) {
-        case 'performance':
-          newStatus = !featureStatus[feature];
-          await setPerformanceMode(newStatus ? 'high' : 'balanced');
-          await triggerHapticFeedback('selection');
-          break;
+      case "performance":
+        newStatus = !featureStatus[feature];
+        await setPerformanceMode(newStatus ? "high" : "balanced");
+        await triggerHapticFeedback("selection");
+        break;
 
-        case 'accessibility':
-          newStatus = !featureStatus[feature];
-          await setAccessibilityPreferences({
-            reducedMotion: newStatus,
-          });
-          await triggerHapticFeedback('selection');
-          break;
+      case "accessibility":
+        newStatus = !featureStatus[feature];
+        await setAccessibilityPreferences({
+          reducedMotion: newStatus,
+        });
+        await triggerHapticFeedback("selection");
+        break;
 
-        case 'theme':
-          newStatus = !featureStatus[feature];
-          await toggleDarkMode();
-          await triggerHapticFeedback('selection');
-          break;
+      case "theme":
+        newStatus = !featureStatus[feature];
+        await toggleDarkMode();
+        await triggerHapticFeedback("selection");
+        break;
 
-        default:
-          newStatus = !featureStatus[feature];
-          await triggerHapticFeedback('selection');
+      default:
+        newStatus = !featureStatus[feature];
+        await triggerHapticFeedback("selection");
       }
 
-      setFeatureStatus(prev => ({
+      setFeatureStatus((prev) => ({
         ...prev,
         [feature]: newStatus,
       }));
@@ -100,59 +116,76 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
       }
     } catch (error) {
       console.error(`Failed to toggle feature ${feature}:`, error);
-      Alert.alert('Error', `Failed to update ${feature} feature`);
+      Alert.alert("Error", `Failed to update ${feature} feature`);
     }
   };
 
   const getFeatureInfo = (feature: string) => {
     switch (feature) {
-      case 'performance':
-        return {
-          icon: 'speed',
-          label: 'Performance Mode',
-          description: mobileConfig.performanceMode === 'high' ? 'High Performance' : 'Balanced Performance',
-          color: mobileConfig.performanceMode === 'high' ? '#4CAF50' : mobileConfig.secondaryColor,
-        };
+    case "performance":
+      return {
+        icon: "speed",
+        label: "Performance Mode",
+        description:
+            mobileConfig.performanceMode === "high"
+              ? "High Performance"
+              : "Balanced Performance",
+        color:
+            mobileConfig.performanceMode === "high"
+              ? "#4CAF50"
+              : mobileConfig.secondaryColor,
+      };
 
-      case 'accessibility':
-        return {
-          icon: 'accessibility',
-          label: 'Accessibility',
-          description: mobilePreferences.accessibility.reducedMotion ? 'Reduced Motion' : 'Standard Motion',
-          color: mobilePreferences.accessibility.reducedMotion ? '#FF9800' : mobileConfig.secondaryColor,
-        };
+    case "accessibility":
+      return {
+        icon: "accessibility",
+        label: "Accessibility",
+        description: mobilePreferences.accessibility.reducedMotion
+            ? "Reduced Motion"
+            : "Standard Motion",
+        color: mobilePreferences.accessibility.reducedMotion
+            ? "#FF9800"
+            : mobileConfig.secondaryColor,
+      };
 
-      case 'network':
-        return {
-          icon: mobileState.networkStatus === 'online' ? 'wifi' : 'wifi-off',
-          label: 'Network',
-          description: mobileState.networkStatus === 'online' ? 'Online' : 'Offline',
-          color: mobileState.networkStatus === 'online' ? '#4CAF50' : '#F44336',
-        };
+    case "network":
+      return {
+        icon: mobileState.networkStatus === "online" ? "wifi" : "wifi-off",
+        label: "Network",
+        description:
+            mobileState.networkStatus === "online" ? "Online" : "Offline",
+        color: mobileState.networkStatus === "online" ? "#4CAF50" : "#F44336",
+      };
 
-      case 'battery':
-        return {
-          icon: mobileState.isLowPowerMode ? 'battery-saver' : 'battery-full',
-          label: 'Battery',
-          description: mobileState.isLowPowerMode ? 'Battery Saver' : 'Normal Power',
-          color: mobileState.isLowPowerMode ? '#FF9800' : mobileConfig.secondaryColor,
-        };
+    case "battery":
+      return {
+        icon: mobileState.isLowPowerMode ? "battery-saver" : "battery-full",
+        label: "Battery",
+        description: mobileState.isLowPowerMode
+            ? "Battery Saver"
+            : "Normal Power",
+        color: mobileState.isLowPowerMode
+            ? "#FF9800"
+            : mobileConfig.secondaryColor,
+      };
 
-      case 'theme':
-        return {
-          icon: mobileConfig.darkMode ? 'dark-mode' : 'light-mode',
-          label: 'Theme',
-          description: mobileConfig.darkMode ? 'Dark Mode' : 'Light Mode',
-          color: mobileConfig.darkMode ? '#BB86FC' : mobileConfig.secondaryColor,
-        };
+    case "theme":
+      return {
+        icon: mobileConfig.darkMode ? "dark-mode" : "light-mode",
+        label: "Theme",
+        description: mobileConfig.darkMode ? "Dark Mode" : "Light Mode",
+        color: mobileConfig.darkMode
+            ? "#BB86FC"
+            : mobileConfig.secondaryColor,
+      };
 
-      default:
-        return {
-          icon: 'help',
-          label: 'Unknown',
-          description: 'Unknown feature',
-          color: mobileConfig.secondaryColor,
-        };
+    default:
+      return {
+        icon: "help",
+        label: "Unknown",
+        description: "Unknown feature",
+        color: mobileConfig.secondaryColor,
+      };
     }
   };
 
@@ -167,10 +200,22 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
         <View style={styles.featureInfo}>
           <Icon name={icon} size={20} color={color} />
           <View style={styles.featureText}>
-            <Text style={[styles.featureLabel, mobileConfig.darkMode ? styles.darkText : styles.lightText]}>
+            <Text
+              style={[
+                styles.featureLabel,
+                mobileConfig.darkMode ? styles.darkText : styles.lightText,
+              ]}
+            >
               {label}
             </Text>
-            <Text style={[styles.featureDescription, mobileConfig.darkMode ? styles.darkSubtext : styles.lightSubtext]}>
+            <Text
+              style={[
+                styles.featureDescription,
+                mobileConfig.darkMode
+                  ? styles.darkSubtext
+                  : styles.lightSubtext,
+              ]}
+            >
               {description}
             </Text>
           </View>
@@ -178,14 +223,21 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
 
         {showFeatureControls && (
           <TouchableOpacity
-            style={[styles.featureToggle, isActive && styles.activeFeatureToggle]}
+            style={[
+              styles.featureToggle,
+              isActive && styles.activeFeatureToggle,
+            ]}
             onPress={() => handleFeatureToggle(feature)}
             disabled={!featureSet.includes(feature)}
           >
             <Icon
-              name={isActive ? 'toggle-on' : 'toggle-off'}
+              name={isActive ? "toggle-on" : "toggle-off"}
               size={24}
-              color={isActive ? mobileConfig.primaryColor : mobileConfig.secondaryColor}
+              color={
+                isActive
+                  ? mobileConfig.primaryColor
+                  : mobileConfig.secondaryColor
+              }
             />
           </TouchableOpacity>
         )}
@@ -197,15 +249,15 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
     let score = 0;
 
     // Performance optimization score
-    if (mobileConfig.performanceMode === 'high') score += 20;
-    if (mobileConfig.performanceMode === 'balanced') score += 10;
+    if (mobileConfig.performanceMode === "high") score += 20;
+    if (mobileConfig.performanceMode === "balanced") score += 10;
 
     // Battery optimization score
     if (!mobileState.isLowPowerMode) score += 15;
     if (mobileState.batteryLevel > 0.5) score += 10;
 
     // Network optimization score
-    if (mobileState.networkStatus === 'online') score += 15;
+    if (mobileState.networkStatus === "online") score += 15;
 
     // Accessibility score
     if (mobilePreferences.accessibility.reducedMotion) score += 10;
@@ -217,23 +269,45 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
   };
 
   const optimizationScore = getMobileOptimizationScore();
-  const optimizationLevel = optimizationScore >= 80 ? 'Excellent' :
-                            optimizationScore >= 60 ? 'Good' :
-                            optimizationScore >= 40 ? 'Fair' : 'Needs Improvement';
+  const optimizationLevel =
+    optimizationScore >= 80
+      ? "Excellent"
+    optimizationScore >= 60 ? 'Good' :
+      optimizationScore >= 40 ? 'Fair' : 'Needs Improvement';
 
   return (
-    <View style={[styles.container, mobileConfig.darkMode ? styles.darkContainer : styles.lightContainer]}>
+    <View
+      style={[
+        styles.container,
+        mobileConfig.darkMode ? styles.darkContainer : styles.lightContainer,
+      ]}
+    >
       <View style={styles.header}>
-        <Text style={[styles.title, mobileConfig.darkMode ? styles.darkTitle : styles.lightTitle]}>
+        <Text
+          style={[
+            styles.title,
+            mobileConfig.darkMode ? styles.darkTitle : styles.lightTitle,
+          ]}
+        >
           Mobile Features
         </Text>
 
         <View style={styles.optimizationInfo}>
-          <Text style={[styles.optimizationLabel, mobileConfig.darkMode ? styles.darkSubtext : styles.lightSubtext]}>
+          <Text
+            style={[
+              styles.optimizationLabel,
+              mobileConfig.darkMode ? styles.darkSubtext : styles.lightSubtext,
+            ]}
+          >
             Optimization: {optimizationLevel}
           </Text>
           <View style={styles.scoreContainer}>
-            <Text style={[styles.scoreText, mobileConfig.darkMode ? styles.darkText : styles.lightText]}>
+            <Text
+              style={[
+                styles.scoreText,
+                mobileConfig.darkMode ? styles.darkText : styles.lightText,
+              ]}
+            >
               {optimizationScore}
             </Text>
           </View>
@@ -241,14 +315,14 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
       </View>
 
       <View style={styles.featuresList}>
-        {featureSet.map(feature => renderFeatureItem(feature))}
+        {featureSet.map((feature) => renderFeatureItem(feature))}
       </View>
 
       <View style={styles.statusSection}>
         <MobileStatusIndicators
-          showNetwork={featureSet.includes('network')}
-          showBattery={featureSet.includes('battery')}
-          showPerformance={featureSet.includes('performance')}
+          showNetwork={featureSet.includes("network")}
+          showBattery={featureSet.includes("battery")}
+          showPerformance={featureSet.includes("performance")}
           showOrientation={false}
         />
       </View>
@@ -257,10 +331,11 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
         <View style={styles.controlsSection}>
           <MobileUIControls
             onThemeChange={(darkMode) => {
-              if (onFeatureChange) onFeatureChange('theme', darkMode);
+              if (onFeatureChange) onFeatureChange("theme", darkMode);
             }}
             onPerformanceChange={(mode) => {
-              if (onFeatureChange) onFeatureChange('performance', mode === 'high');
+              if (onFeatureChange)
+                onFeatureChange("performance", mode === "high");
             }}
           />
         </View>
@@ -278,26 +353,26 @@ export const useMobileFeatures = () => {
     const features: string[] = [];
 
     // Always available features
-    features.push('theme');
+    features.push("theme");
 
     // Performance features
-    if (mobileState.deviceType !== 'unknown') {
-      features.push('performance');
+    if (mobileState.deviceType !== "unknown") {
+      features.push("performance");
     }
 
     // Accessibility features
     if (mobilePreferences.featureFlags.accessibility) {
-      features.push('accessibility');
+      features.push("accessibility");
     }
 
     // Network features
-    if (mobileState.networkStatus !== 'unknown') {
-      features.push('network');
+    if (mobileState.networkStatus !== "unknown") {
+      features.push("network");
     }
 
     // Battery features
     if (mobileState.batteryLevel !== null) {
-      features.push('battery');
+      features.push("battery");
     }
 
     return features;
@@ -306,12 +381,14 @@ export const useMobileFeatures = () => {
   const optimizeAllFeatures = async (): Promise<void> => {
     try {
       // Optimize based on current conditions
-      const shouldUseHighPerformance = mobileState.batteryLevel > 0.5 && mobileState.networkStatus === 'online';
+      const shouldUseHighPerformance =
+        mobileState.batteryLevel > 0.5 &&
+        mobileState.networkStatus === "online";
 
       if (shouldUseHighPerformance) {
-        await mobileConfigUtils.setPerformanceMode('high');
+        await mobileConfigUtils.setPerformanceMode("high");
       } else {
-        await mobileConfigUtils.setPerformanceMode('battery_saver');
+        await mobileConfigUtils.setPerformanceMode("battery_saver");
       }
 
       // Enable accessibility if battery is low
@@ -321,22 +398,22 @@ export const useMobileFeatures = () => {
         });
       }
 
-      await triggerHapticFeedback('notification');
+      await triggerHapticFeedback("notification");
     } catch (error) {
-      console.error('Failed to optimize all features:', error);
+      console.error("Failed to optimize all features:", error);
     }
   };
 
   const resetAllFeatures = async (): Promise<void> => {
     try {
-      await mobileConfigUtils.setPerformanceMode('balanced');
+      await mobileConfigUtils.setPerformanceMode("balanced");
       await mobileConfigUtils.updateAccessibilityPreferences({
         reducedMotion: false,
       });
 
-      await triggerHapticFeedback('notification');
+      await triggerHapticFeedback("notification");
     } catch (error) {
-      console.error('Failed to reset all features:', error);
+      console.error("Failed to reset all features:", error);
     }
   };
 
@@ -350,15 +427,21 @@ export const useMobileFeatures = () => {
 // Mobile Feature Configuration
 export interface MobileFeatureConfig {
   enabledFeatures?: string[];
-  defaultPerformanceMode?: 'high' | 'balanced' | 'battery_saver';
+  defaultPerformanceMode?: "high" | "balanced" | "battery_saver";
   enableAutoOptimization?: boolean;
   showFeatureIndicators?: boolean;
   showFeatureControls?: boolean;
 }
 
 export const defaultMobileFeatureConfig: MobileFeatureConfig = {
-  enabledFeatures: ['performance', 'accessibility', 'network', 'battery', 'theme'],
-  defaultPerformanceMode: 'balanced',
+  enabledFeatures: [
+    "performance",
+    "accessibility",
+    "network",
+    "battery",
+    "theme",
+  ],
+  defaultPerformanceMode: "balanced",
   enableAutoOptimization: true,
   showFeatureIndicators: true,
   showFeatureControls: true,
@@ -374,55 +457,73 @@ export const MobileFeatureStatus: React.FC<{
 
   const getFeatureStatus = () => {
     switch (feature) {
-      case 'performance':
-        return {
-          status: mobileConfig.performanceMode,
-          icon: mobileConfig.performanceMode === 'high' ? 'trending-up' :
-                mobileConfig.performanceMode === 'battery_saver' ? 'battery-saver' : 'balance',
-          color: mobileConfig.performanceMode === 'high' ? '#4CAF50' :
-                mobileConfig.performanceMode === 'battery_saver' ? '#FF9800' : mobileConfig.secondaryColor,
-        };
+    case "performance":
+      return {
+        status: mobileConfig.performanceMode,
+        icon:
+            mobileConfig.performanceMode === "high"
+              ? "trending-up"
+          mobileConfig.performanceMode === 'battery_saver' ? 'battery-saver' : 'balance',
+        color:
+            mobileConfig.performanceMode === "high"
+              ? "#4CAF50"
+          mobileConfig.performanceMode === 'battery_saver' ? '#FF9800' : mobileConfig.secondaryColor,
+      };
 
-      case 'accessibility':
-        return {
-          status: mobilePreferences.accessibility.reducedMotion ? 'reduced_motion' : 'standard',
-          icon: mobilePreferences.accessibility.reducedMotion ? 'accessibility' : 'accessible',
-          color: mobilePreferences.accessibility.reducedMotion ? '#FF9800' : mobileConfig.secondaryColor,
-        };
+    case "accessibility":
+      return {
+        status: mobilePreferences.accessibility.reducedMotion
+            ? "reduced_motion"
+            : "standard",
+        icon: mobilePreferences.accessibility.reducedMotion
+            ? "accessibility"
+            : "accessible",
+        color: mobilePreferences.accessibility.reducedMotion
+            ? "#FF9800"
+            : mobileConfig.secondaryColor,
+      };
 
-      case 'network':
-        return {
-          status: mobileState.networkStatus,
-          icon: mobileState.networkStatus === 'online' ? 'wifi' :
-                mobileState.networkStatus === 'offline' ? 'wifi-off' : 'help',
-          color: mobileState.networkStatus === 'online' ? '#4CAF50' :
-                mobileState.networkStatus === 'offline' ? '#F44336' : mobileConfig.secondaryColor,
-        };
+    case "network":
+      return {
+        status: mobileState.networkStatus,
+        icon:
+            mobileState.networkStatus === "online"
+              ? "wifi"
+          mobileState.networkStatus === 'offline' ? 'wifi-off' : 'help',
+        color:
+            mobileState.networkStatus === "online"
+              ? "#4CAF50"
+          mobileState.networkStatus === 'offline' ? '#F44336' : mobileConfig.secondaryColor,
+      };
 
-      case 'battery':
-        return {
-          status: mobileState.isLowPowerMode ? 'battery_saver' : 'normal',
-          icon: mobileState.isLowPowerMode ? 'battery-saver' :
-                mobileState.batteryLevel > 0.8 ? 'battery-full' :
-                mobileState.batteryLevel > 0.5 ? 'battery-60' :
-                mobileState.batteryLevel > 0.3 ? 'battery-50' : 'battery-30',
-          color: mobileState.isLowPowerMode ? '#FF9800' :
-                mobileState.batteryLevel < 0.2 ? '#F44336' : mobileConfig.secondaryColor,
-        };
+    case "battery":
+      return {
+        status: mobileState.isLowPowerMode ? "battery_saver" : "normal",
+        icon: mobileState.isLowPowerMode
+            ? "battery-saver"
+          mobileState.batteryLevel > 0.8 ? 'battery-full' :
+            mobileState.batteryLevel > 0.5 ? 'battery-60' :
+              mobileState.batteryLevel > 0.3 ? 'battery-50' : 'battery-30',
+        color: mobileState.isLowPowerMode
+            ? "#FF9800"
+          mobileState.batteryLevel < 0.2 ? '#F44336' : mobileConfig.secondaryColor,
+      };
 
-      case 'theme':
-        return {
-          status: mobileConfig.darkMode ? 'dark' : 'light',
-          icon: mobileConfig.darkMode ? 'dark-mode' : 'light-mode',
-          color: mobileConfig.darkMode ? '#BB86FC' : mobileConfig.secondaryColor,
-        };
+    case "theme":
+      return {
+        status: mobileConfig.darkMode ? "dark" : "light",
+        icon: mobileConfig.darkMode ? "dark-mode" : "light-mode",
+        color: mobileConfig.darkMode
+            ? "#BB86FC"
+            : mobileConfig.secondaryColor,
+      };
 
-      default:
-        return {
-          status: 'unknown',
-          icon: 'help',
-          color: mobileConfig.secondaryColor,
-        };
+    default:
+      return {
+        status: "unknown",
+        icon: "help",
+        color: mobileConfig.secondaryColor,
+      };
     }
   };
 
@@ -435,13 +536,11 @@ export const MobileFeatureStatus: React.FC<{
         if (onPress) {
           await onPress();
         }
-        await triggerHapticFeedback('selection');
+        await triggerHapticFeedback("selection");
       }}
     >
       <Icon name={icon} size={16} color={color} />
-      <Text style={[styles.featureStatusText, { color }]}>
-        {status}
-      </Text>
+      <Text style={[styles.featureStatusText, { color }]}>{status}</Text>
     </TouchableOpacity>
   );
 };
@@ -452,10 +551,10 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   darkContainer: {
-    backgroundColor: '#1e1e1e',
+    backgroundColor: "#1e1e1e",
   },
   lightContainer: {
-    backgroundColor: '#ffffff',
+    backgroundColor: "#ffffff",
   },
   header: {
     marginBottom: 20,
@@ -463,57 +562,57 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   darkHeader: {
-    borderBottomColor: '#333',
+    borderBottomColor: "#333",
   },
   lightHeader: {
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: "#e0e0e0",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 8,
   },
   darkTitle: {
-    color: '#ffffff',
+    color: "#ffffff",
   },
   lightTitle: {
-    color: '#333333',
+    color: "#333333",
   },
   optimizationInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   optimizationLabel: {
     fontSize: 14,
   },
   scoreContainer: {
-    backgroundColor: 'rgba(76, 175, 80, 0.2)',
+    backgroundColor: "rgba(76, 175, 80, 0.2)",
     padding: 4,
     borderRadius: 12,
     minWidth: 40,
-    alignItems: 'center',
+    alignItems: "center",
   },
   scoreText: {
     fontSize: 14,
-    fontWeight: 'bold',
-    color: '#4CAF50',
+    fontWeight: "bold",
+    color: "#4CAF50",
   },
   featuresList: {
     marginBottom: 20,
   },
   featureItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 12,
     marginBottom: 8,
     borderRadius: 8,
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    backgroundColor: "rgba(0, 0, 0, 0.05)",
   },
   featureInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
     flex: 1,
   },
@@ -522,7 +621,7 @@ const styles = StyleSheet.create({
   },
   featureLabel: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   featureDescription: {
     fontSize: 12,
@@ -532,7 +631,7 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   activeFeatureToggle: {
-    backgroundColor: 'rgba(76, 175, 80, 0.1)',
+    backgroundColor: "rgba(76, 175, 80, 0.1)",
     borderRadius: 20,
   },
   statusSection: {
@@ -542,25 +641,25 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   featureStatusContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
     padding: 8,
   },
   featureStatusText: {
     fontSize: 12,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   darkText: {
-    color: '#ffffff',
+    color: "#ffffff",
   },
   lightText: {
-    color: '#333333',
+    color: "#333333",
   },
   darkSubtext: {
-    color: '#bbbbbb',
+    color: "#bbbbbb",
   },
   lightSubtext: {
-    color: '#666666',
+    color: "#666666",
   },
 });

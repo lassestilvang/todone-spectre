@@ -1,13 +1,13 @@
-import React from 'react';
-import { Task } from '../../types/task';
-import { ViewHeader } from '../views/ViewHeader';
-import { ViewToolbar } from '../views/ViewToolbar';
-import { ViewFilterControls } from '../views/ViewFilterControls';
-import { ViewSortControls } from '../views/ViewSortControls';
-import { DraggableTaskItem } from './DraggableTaskItem';
-import { BoardColumn } from './BoardColumn';
-import { DragAndDropProvider } from './DragAndDropProvider';
-import { DragPreview } from './DragPreview';
+import React from "react";
+import { Task } from "../../types/task";
+import { ViewHeader } from "../views/ViewHeader";
+import { ViewToolbar } from "../views/ViewToolbar";
+import { ViewFilterControls } from "../views/ViewFilterControls";
+import { ViewSortControls } from "../views/ViewSortControls";
+import { DraggableTaskItem } from "./DraggableTaskItem";
+import { BoardColumn } from "./BoardColumn";
+import { DragAndDropProvider } from "./DragAndDropProvider";
+import { DragPreview } from "./DragPreview";
 
 interface DndBoardViewProps {
   tasks: Task[];
@@ -19,17 +19,22 @@ interface DndBoardViewProps {
 
 export const DndBoardView: React.FC<DndBoardViewProps> = ({
   tasks,
-  columns = ['To Do', 'In Progress', 'Done'],
+  columns = ["To Do", "In Progress", "Done"],
   onTaskClick,
   onTaskToggleCompletion,
   onTaskDelete,
 }) => {
   // Group tasks by status for board columns
-  const groupedTasks = columns.reduce((acc, column) => {
-    const statusKey = column.toLowerCase().replace(' ', '_') as Task['status'];
-    acc[column] = tasks.filter(task => task.status === statusKey);
-    return acc;
-  }, {} as Record<string, Task[]>);
+  const groupedTasks = columns.reduce(
+    (acc, column) => {
+      const statusKey = column
+        .toLowerCase()
+        .replace(" ", "_") as Task["status"];
+      acc[column] = tasks.filter((task) => task.status === statusKey);
+      return acc;
+    },
+    {} as Record<string, Task[]>,
+  );
 
   const handleColumnDrop = (columnId: string) => {
     console.log(`Task dropped in column: ${columnId}`);
@@ -49,12 +54,14 @@ export const DndBoardView: React.FC<DndBoardViewProps> = ({
             {columns.map((column) => (
               <BoardColumn
                 key={column}
-                columnId={column.toLowerCase().replace(' ', '-')}
+                columnId={column.toLowerCase().replace(" ", "-")}
                 title={column}
                 onDrop={handleColumnDrop}
               >
                 {groupedTasks[column].length === 0 ? (
-                  <div className="empty-column text-gray-400 text-sm">No tasks in this column</div>
+                  <div className="empty-column text-gray-400 text-sm">
+                    No tasks in this column
+                  </div>
                 ) : (
                   groupedTasks[column].map((task) => (
                     <DraggableTaskItem

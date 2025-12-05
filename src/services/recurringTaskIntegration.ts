@@ -2,13 +2,17 @@
  * Recurring Task Integration Service
  * Comprehensive integration layer connecting all recurring task services
  */
-import { Task, RecurringTaskConfig, RecurringTaskInstance } from '../types/task';
-import { RecurringPattern, TaskStatus } from '../types/enums';
-import { recurringTaskService } from './recurringTaskService';
-import { recurringPatternManager } from './recurringPatternManager';
-import { recurringTaskScheduler } from './recurringTaskScheduler';
-import { recurringTaskGenerator } from './recurringTaskGenerator';
-import { useRecurringTaskStore } from '../store/useRecurringTaskStore';
+import {
+  Task,
+  RecurringTaskConfig,
+  RecurringTaskInstance,
+} from "../types/task";
+import { RecurringPattern, TaskStatus } from "../types/enums";
+import { recurringTaskService } from "./recurringTaskService";
+import { recurringPatternManager } from "./recurringPatternManager";
+import { recurringTaskScheduler } from "./recurringTaskScheduler";
+import { recurringTaskGenerator } from "./recurringTaskGenerator";
+import { useRecurringTaskStore } from "../store/useRecurringTaskStore";
 
 /**
  * Recurring Task Integration Service
@@ -43,21 +47,30 @@ export class RecurringTaskIntegration {
    * Create recurring task with full integration
    */
   async createRecurringTaskIntegrated(
-    taskData: Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'completed'>,
-    config: RecurringTaskConfig
+    taskData: Omit<Task, "id" | "createdAt" | "updatedAt" | "completed">,
+    config: RecurringTaskConfig,
   ): Promise<Task> {
     try {
       // Validate configuration
-      const validation = recurringPatternManager.validatePatternConfigAdvanced(config);
+      const validation =
+        recurringPatternManager.validatePatternConfigAdvanced(config);
       if (!validation.valid) {
-        throw new Error(`Invalid configuration: ${validation.errors.join(', ')}`);
+        throw new Error(
+          `Invalid configuration: ${validation.errors.join(", ")}`,
+        );
       }
 
       // Create task using service
-      const newTask = await recurringTaskService.createRecurringTask(taskData, config);
+      const newTask = await recurringTaskService.createRecurringTask(
+        taskData,
+        config,
+      );
 
       // Generate instances using generator
-      await recurringTaskGenerator.generateRecurringTaskInstances(newTask.id, config);
+      await recurringTaskGenerator.generateRecurringTaskInstances(
+        newTask.id,
+        config,
+      );
 
       // Schedule the task
       await recurringTaskScheduler.scheduleRecurringTask(newTask.id);
@@ -67,7 +80,7 @@ export class RecurringTaskIntegration {
 
       return newTask;
     } catch (error) {
-      console.error('Error creating recurring task with integration:', error);
+      console.error("Error creating recurring task with integration:", error);
       throw error;
     }
   }
@@ -78,11 +91,15 @@ export class RecurringTaskIntegration {
   async updateRecurringTaskIntegrated(
     taskId: string,
     updates: Partial<Task>,
-    configUpdates?: Partial<RecurringTaskConfig>
+    configUpdates?: Partial<RecurringTaskConfig>,
   ): Promise<Task> {
     try {
       // Update task using service
-      const updatedTask = await recurringTaskService.updateRecurringTask(taskId, updates, configUpdates);
+      const updatedTask = await recurringTaskService.updateRecurringTask(
+        taskId,
+        updates,
+        configUpdates,
+      );
 
       // If config changed, regenerate instances
       if (configUpdates) {
@@ -90,11 +107,15 @@ export class RecurringTaskIntegration {
         if (task) {
           const updatedConfig = {
             ...task.customFields?.recurringConfig,
-            ...configUpdates
+            ...configUpdates,
           };
 
           // Regenerate instances
-          await recurringTaskGenerator.generateRecurringTaskInstances(taskId, updatedConfig, true);
+          await recurringTaskGenerator.generateRecurringTaskInstances(
+            taskId,
+            updatedConfig,
+            true,
+          );
 
           // Reschedule the task
           await recurringTaskScheduler.scheduleRecurringTask(taskId, true);
@@ -106,7 +127,7 @@ export class RecurringTaskIntegration {
 
       return updatedTask;
     } catch (error) {
-      console.error('Error updating recurring task with integration:', error);
+      console.error("Error updating recurring task with integration:", error);
       throw error;
     }
   }
@@ -124,9 +145,8 @@ export class RecurringTaskIntegration {
 
       // Remove from store
       useRecurringTaskStore.getState().deleteRecurringTask(taskId);
-
     } catch (error) {
-      console.error('Error deleting recurring task with integration:', error);
+      console.error("Error deleting recurring task with integration:", error);
       throw error;
     }
   }
@@ -137,26 +157,31 @@ export class RecurringTaskIntegration {
   async completeRecurringInstanceIntegrated(instanceId: string): Promise<Task> {
     try {
       // Complete using service
-      const completedInstance = await recurringTaskService.completeRecurringInstance(instanceId);
+      const completedInstance =
+        await recurringTaskService.completeRecurringInstance(instanceId);
 
       // Update in store
       useRecurringTaskStore.getState().updateRecurringInstance(instanceId, {
         completed: true,
-        status: 'completed' as TaskStatus
+        status: "completed" as TaskStatus,
       });
 
       // Check if we need to generate next instance
       const instance = await recurringTaskService.getRecurringTask(instanceId);
       if (instance) {
         const originalTask = await recurringTaskService.getRecurringTask(
-          instance.customFields?.originalTaskId
+          instance.customFields?.originalTaskId,
         );
 
-        if (originalTask && originalTask.recurringPattern && !originalTask.customFields?.isPaused) {
+        if (
+          originalTask &&
+          originalTask.recurringPattern &&
+          !originalTask.customFields?.isPaused
+        ) {
           // Generate next instance
           await recurringTaskGenerator.generateRecurringTaskInstances(
             originalTask.id,
-            originalTask.customFields?.recurringConfig
+            originalTask.customFields?.recurringConfig,
           );
 
           // Schedule the task
@@ -166,7 +191,10 @@ export class RecurringTaskIntegration {
 
       return completedInstance;
     } catch (error) {
-      console.error('Error completing recurring instance with integration:', error);
+      console.error(
+        "Error completing recurring instance with integration:",
+        error,
+      );
       throw error;
     }
   }
@@ -177,17 +205,19 @@ export class RecurringTaskIntegration {
   async generateNextInstanceIntegrated(taskId: string): Promise<Task | null> {
     try {
       // Generate using generator
-      const newInstance = await recurringTaskGenerator.generateRecurringTaskInstances(
-        taskId,
-        (await recurringTaskService.getRecurringTask(taskId))?.customFields?.recurringConfig
-      );
+      const newInstance =
+        await recurringTaskGenerator.generateRecurringTaskInstances(
+          taskId,
+          (await recurringTaskService.getRecurringTask(taskId))?.customFields
+            ?.recurringConfig,
+        );
 
       // Schedule the task
       await recurringTaskScheduler.scheduleRecurringTask(taskId);
 
       return newInstance || null;
     } catch (error) {
-      console.error('Error generating next instance with integration:', error);
+      console.error("Error generating next instance with integration:", error);
       throw error;
     }
   }
@@ -204,14 +234,13 @@ export class RecurringTaskIntegration {
       await recurringTaskGenerator.generateRecurringTaskInstances(
         taskId,
         task.customFields?.recurringConfig,
-        true
+        true,
       );
 
       // Reschedule the task
       await recurringTaskScheduler.scheduleRecurringTask(taskId, true);
-
     } catch (error) {
-      console.error('Error regenerating instances with integration:', error);
+      console.error("Error regenerating instances with integration:", error);
       throw error;
     }
   }
@@ -237,17 +266,20 @@ export class RecurringTaskIntegration {
       // Get task
       const task = await recurringTaskService.getRecurringTask(taskId);
       if (!task) {
-        throw new Error('Task not found');
+        throw new Error("Task not found");
       }
 
       // Get instances
       const instances = recurringTaskService.getRecurringInstances(taskId);
 
       // Get stats
-      const stats = useRecurringTaskStore.getState().getRecurringTaskStats(taskId);
+      const stats = useRecurringTaskStore
+        .getState()
+        .getRecurringTaskStats(taskId);
 
       // Get scheduling info
-      const schedulingStats = await recurringTaskScheduler.getSchedulingStatistics();
+      const schedulingStats =
+        await recurringTaskScheduler.getSchedulingStatistics();
 
       return {
         task,
@@ -259,16 +291,16 @@ export class RecurringTaskIntegration {
           originalTaskId: instance.customFields?.originalTaskId || taskId,
           occurrenceNumber: index + 1,
           status: instance.status,
-          completed: instance.completed
+          completed: instance.completed,
         })),
         stats,
         schedulingInfo: {
           isScheduled: true,
-          nextScheduledDate: schedulingStats.nextScheduledDate
-        }
+          nextScheduledDate: schedulingStats.nextScheduledDate,
+        },
       };
     } catch (error) {
-      console.error('Error getting comprehensive recurring task data:', error);
+      console.error("Error getting comprehensive recurring task data:", error);
       throw error;
     }
   }
@@ -302,8 +334,10 @@ export class RecurringTaskIntegration {
   }> {
     try {
       // Get task stats
-      const taskStats = await recurringTaskService.getRecurringTaskCompletionStats();
-      const patternDistribution = await recurringTaskService.getRecurringTaskPatternDistribution();
+      const taskStats =
+        await recurringTaskService.getRecurringTaskCompletionStats();
+      const patternDistribution =
+        await recurringTaskService.getRecurringTaskPatternDistribution();
 
       // Get scheduling stats
       const schedulingStats = recurringTaskScheduler.getSchedulingPerformance();
@@ -316,27 +350,27 @@ export class RecurringTaskIntegration {
           total: taskStats.totalRecurringTasks,
           active: taskStats.activeRecurringTasks,
           paused: taskStats.pausedRecurringTasks,
-          byPattern: patternDistribution
+          byPattern: patternDistribution,
         },
         instances: {
           total: taskStats.completedInstances + taskStats.pendingInstances,
           completed: taskStats.completedInstances,
           pending: taskStats.pendingInstances,
-          overdue: 0 // Would calculate in real implementation
+          overdue: 0, // Would calculate in real implementation
         },
         scheduling: {
           queueLength: schedulingStats.queueLength,
           isProcessing: schedulingStats.isProcessing,
-          lastProcessed: schedulingStats.lastProcessed
+          lastProcessed: schedulingStats.lastProcessed,
         },
         generation: {
           queueLength: generationStats.queueLength,
           isGenerating: generationStats.isGenerating,
-          lastGenerated: generationStats.lastGenerated
-        }
+          lastGenerated: generationStats.lastGenerated,
+        },
       };
     } catch (error) {
-      console.error('Error getting system-wide statistics:', error);
+      console.error("Error getting system-wide statistics:", error);
       return {
         recurringTasks: {
           total: 0,
@@ -347,23 +381,23 @@ export class RecurringTaskIntegration {
             weekly: 0,
             monthly: 0,
             yearly: 0,
-            custom: 0
-          }
+            custom: 0,
+          },
         },
         instances: {
           total: 0,
           completed: 0,
           pending: 0,
-          overdue: 0
+          overdue: 0,
         },
         scheduling: {
           queueLength: 0,
-          isProcessing: false
+          isProcessing: false,
         },
         generation: {
           queueLength: 0,
-          isGenerating: false
-        }
+          isGenerating: false,
+        },
       };
     }
   }
@@ -373,7 +407,7 @@ export class RecurringTaskIntegration {
    */
   async runFullSystemOptimization(): Promise<void> {
     try {
-      console.log('Running full recurring task system optimization...');
+      console.log("Running full recurring task system optimization...");
 
       // Optimize scheduling
       await recurringTaskScheduler.optimizeScheduling();
@@ -384,10 +418,9 @@ export class RecurringTaskIntegration {
       // Clean up old instances
       await recurringTaskGenerator.cleanupOldGeneratedInstances();
 
-      console.log('Full system optimization completed');
-
+      console.log("Full system optimization completed");
     } catch (error) {
-      console.error('Error running full system optimization:', error);
+      console.error("Error running full system optimization:", error);
       throw error;
     }
   }
@@ -398,25 +431,25 @@ export class RecurringTaskIntegration {
   async getSystemHealthReport(): Promise<{
     healthScore: number;
     issues: Array<{
-      severity: 'critical' | 'warning' | 'info';
+      severity: "critical" | "warning" | "info";
       message: string;
       details: any;
     }>;
     recommendations: Array<{
-      priority: 'high' | 'medium' | 'low';
+      priority: "high" | "medium" | "low";
       recommendation: string;
       action: string;
     }>;
   }> {
     try {
       const issues: Array<{
-        severity: 'critical' | 'warning' | 'info';
+        severity: "critical" | "warning" | "info";
         message: string;
         details: any;
       }> = [];
 
       const recommendations: Array<{
-        priority: 'high' | 'medium' | 'low';
+        priority: "high" | "medium" | "low";
         recommendation: string;
         action: string;
       }> = [];
@@ -429,24 +462,24 @@ export class RecurringTaskIntegration {
       // Check for critical issues
       if (stats.scheduling.queueLength > 50) {
         issues.push({
-          severity: 'warning',
-          message: 'High scheduling queue length',
+          severity: "warning",
+          message: "High scheduling queue length",
           details: {
             queueLength: stats.scheduling.queueLength,
-            threshold: 50
-          }
+            threshold: 50,
+          },
         });
         healthScore -= 10;
       }
 
       if (stats.generation.queueLength > 50) {
         issues.push({
-          severity: 'warning',
-          message: 'High generation queue length',
+          severity: "warning",
+          message: "High generation queue length",
           details: {
             queueLength: stats.generation.queueLength,
-            threshold: 50
-          }
+            threshold: 50,
+          },
         });
         healthScore -= 10;
       }
@@ -454,55 +487,67 @@ export class RecurringTaskIntegration {
       // Check for performance issues
       if (stats.recurringTasks.total > 1000) {
         issues.push({
-          severity: 'warning',
-          message: 'Very large number of recurring tasks',
+          severity: "warning",
+          message: "Very large number of recurring tasks",
           details: {
             totalTasks: stats.recurringTasks.total,
-            threshold: 1000
-          }
+            threshold: 1000,
+          },
         });
         healthScore -= 15;
         recommendations.push({
-          priority: 'high',
-          recommendation: 'Consider archiving or deleting old recurring tasks',
-          action: 'Review and clean up recurring tasks'
+          priority: "high",
+          recommendation: "Consider archiving or deleting old recurring tasks",
+          action: "Review and clean up recurring tasks",
         });
       }
 
       if (stats.instances.total > 5000) {
         issues.push({
-          severity: 'critical',
-          message: 'Extremely large number of recurring instances',
+          severity: "critical",
+          message: "Extremely large number of recurring instances",
           details: {
             totalInstances: stats.instances.total,
-            threshold: 5000
-          }
+            threshold: 5000,
+          },
         });
         healthScore -= 25;
         recommendations.push({
-          priority: 'high',
-          recommendation: 'Immediately clean up old recurring instances',
-          action: 'Run cleanup and optimization'
+          priority: "high",
+          recommendation: "Immediately clean up old recurring instances",
+          action: "Run cleanup and optimization",
         });
       }
 
       // Get scheduling recommendations
-      const schedulingRecommendations = await recurringTaskScheduler.getSchedulingRecommendations();
-      schedulingRecommendations.forEach(rec => {
+      const schedulingRecommendations =
+        await recurringTaskScheduler.getSchedulingRecommendations();
+      schedulingRecommendations.forEach((rec) => {
         recommendations.push({
-          priority: rec.severity === 'high' ? 'high' : rec.severity === 'medium' ? 'medium' : 'low',
+          priority:
+            rec.severity === "high"
+              ? "high"
+              : rec.severity === "medium"
+                ? "medium"
+                : "low",
           recommendation: rec.recommendation,
-          action: `Review task ${rec.taskId}`
+          action: `Review task ${rec.taskId}`,
         });
       });
 
       // Get generation recommendations
-      const generationRecommendations = await recurringTaskGenerator.getGenerationRecommendations();
-      generationRecommendations.forEach(rec => {
+      const generationRecommendations =
+        await recurringTaskGenerator.getGenerationRecommendations();
+      generationRecommendations.forEach((rec) => {
         recommendations.push({
-          priority: rec.severity === 'high' ? 'high' : rec.severity === 'medium' ? 'medium' : 'low',
+          priority:
+            rec.severity === "high"
+              ? "high"
+              : rec.severity === "medium"
+                ? "medium"
+                : "low",
           recommendation: rec.recommendation,
-          action: `Review task ${rec.taskId}`
+          action: `Review task ${rec.taskId}`,
         });
       });
 
@@ -512,23 +557,28 @@ export class RecurringTaskIntegration {
       return {
         healthScore,
         issues,
-        recommendations
+        recommendations,
       };
-
     } catch (error) {
-      console.error('Error getting system health report:', error);
+      console.error("Error getting system health report:", error);
       return {
         healthScore: 50,
-        issues: [{
-          severity: 'critical',
-          message: 'Failed to generate health report',
-          details: { error: error instanceof Error ? error.message : 'Unknown error' }
-        }],
-        recommendations: [{
-          priority: 'high',
-          recommendation: 'Check system logs for errors',
-          action: 'Review error details'
-        }]
+        issues: [
+          {
+            severity: "critical",
+            message: "Failed to generate health report",
+            details: {
+              error: error instanceof Error ? error.message : "Unknown error",
+            },
+          },
+        ],
+        recommendations: [
+          {
+            priority: "high",
+            recommendation: "Check system logs for errors",
+            action: "Review error details",
+          },
+        ],
       };
     }
   }
@@ -550,7 +600,7 @@ export class RecurringTaskIntegration {
       stopAll: () => {
         scheduling.stop();
         generation.stop();
-      }
+      },
     };
   }
 
@@ -560,7 +610,7 @@ export class RecurringTaskIntegration {
   getIntegrationStatus(): {
     services: Array<{
       name: string;
-      status: 'active' | 'inactive' | 'error';
+      status: "active" | "inactive" | "error";
       details: any;
     }>;
     systemLoad: number;
@@ -570,33 +620,33 @@ export class RecurringTaskIntegration {
     return {
       services: [
         {
-          name: 'RecurringTaskService',
-          status: 'active',
-          details: { version: '1.0' }
+          name: "RecurringTaskService",
+          status: "active",
+          details: { version: "1.0" },
         },
         {
-          name: 'RecurringPatternManager',
-          status: 'active',
-          details: { version: '1.0' }
+          name: "RecurringPatternManager",
+          status: "active",
+          details: { version: "1.0" },
         },
         {
-          name: 'RecurringTaskScheduler',
-          status: 'active',
-          details: { version: '1.0' }
+          name: "RecurringTaskScheduler",
+          status: "active",
+          details: { version: "1.0" },
         },
         {
-          name: 'RecurringTaskGenerator',
-          status: 'active',
-          details: { version: '1.0' }
+          name: "RecurringTaskGenerator",
+          status: "active",
+          details: { version: "1.0" },
         },
         {
-          name: 'RecurringTaskStore',
-          status: 'active',
-          details: { version: '1.0' }
-        }
+          name: "RecurringTaskStore",
+          status: "active",
+          details: { version: "1.0" },
+        },
       ],
       systemLoad: 0.3, // Would measure actual load
-      memoryUsage: 0.4 // Would measure actual memory usage
+      memoryUsage: 0.4, // Would measure actual memory usage
     };
   }
 
@@ -607,7 +657,7 @@ export class RecurringTaskIntegration {
     isValid: boolean;
     validationResults: Array<{
       component: string;
-      status: 'pass' | 'fail' | 'warning';
+      status: "pass" | "fail" | "warning";
       message: string;
       details: any;
     }>;
@@ -615,7 +665,7 @@ export class RecurringTaskIntegration {
     try {
       const validationResults: Array<{
         component: string;
-        status: 'pass' | 'fail' | 'warning';
+        status: "pass" | "fail" | "warning";
         message: string;
         details: any;
       }> = [];
@@ -623,68 +673,68 @@ export class RecurringTaskIntegration {
       // Validate services are available
       if (recurringTaskService) {
         validationResults.push({
-          component: 'RecurringTaskService',
-          status: 'pass',
-          message: 'Service available',
-          details: {}
+          component: "RecurringTaskService",
+          status: "pass",
+          message: "Service available",
+          details: {},
         });
       } else {
         validationResults.push({
-          component: 'RecurringTaskService',
-          status: 'fail',
-          message: 'Service not available',
-          details: {}
+          component: "RecurringTaskService",
+          status: "fail",
+          message: "Service not available",
+          details: {},
         });
       }
 
       // Validate pattern manager
       if (recurringPatternManager) {
         validationResults.push({
-          component: 'RecurringPatternManager',
-          status: 'pass',
-          message: 'Pattern manager available',
-          details: {}
+          component: "RecurringPatternManager",
+          status: "pass",
+          message: "Pattern manager available",
+          details: {},
         });
       } else {
         validationResults.push({
-          component: 'RecurringPatternManager',
-          status: 'fail',
-          message: 'Pattern manager not available',
-          details: {}
+          component: "RecurringPatternManager",
+          status: "fail",
+          message: "Pattern manager not available",
+          details: {},
         });
       }
 
       // Validate scheduler
       if (recurringTaskScheduler) {
         validationResults.push({
-          component: 'RecurringTaskScheduler',
-          status: 'pass',
-          message: 'Scheduler available',
-          details: {}
+          component: "RecurringTaskScheduler",
+          status: "pass",
+          message: "Scheduler available",
+          details: {},
         });
       } else {
         validationResults.push({
-          component: 'RecurringTaskScheduler',
-          status: 'fail',
-          message: 'Scheduler not available',
-          details: {}
+          component: "RecurringTaskScheduler",
+          status: "fail",
+          message: "Scheduler not available",
+          details: {},
         });
       }
 
       // Validate generator
       if (recurringTaskGenerator) {
         validationResults.push({
-          component: 'RecurringTaskGenerator',
-          status: 'pass',
-          message: 'Generator available',
-          details: {}
+          component: "RecurringTaskGenerator",
+          status: "pass",
+          message: "Generator available",
+          details: {},
         });
       } else {
         validationResults.push({
-          component: 'RecurringTaskGenerator',
-          status: 'fail',
-          message: 'Generator not available',
-          details: {}
+          component: "RecurringTaskGenerator",
+          status: "fail",
+          message: "Generator not available",
+          details: {},
         });
       }
 
@@ -693,50 +743,59 @@ export class RecurringTaskIntegration {
         const storeState = useRecurringTaskStore.getState();
         if (storeState) {
           validationResults.push({
-            component: 'RecurringTaskStore',
-            status: 'pass',
-            message: 'Store available',
+            component: "RecurringTaskStore",
+            status: "pass",
+            message: "Store available",
             details: {
               taskCount: storeState.recurringTasks.length,
-              instanceCount: storeState.recurringTaskInstances.length
-            }
+              instanceCount: storeState.recurringTaskInstances.length,
+            },
           });
         } else {
           validationResults.push({
-            component: 'RecurringTaskStore',
-            status: 'fail',
-            message: 'Store not available',
-            details: {}
+            component: "RecurringTaskStore",
+            status: "fail",
+            message: "Store not available",
+            details: {},
           });
         }
       } catch (error) {
         validationResults.push({
-          component: 'RecurringTaskStore',
-          status: 'fail',
-          message: 'Store error',
-          details: { error: error instanceof Error ? error.message : 'Unknown error' }
+          component: "RecurringTaskStore",
+          status: "fail",
+          message: "Store error",
+          details: {
+            error: error instanceof Error ? error.message : "Unknown error",
+          },
         });
       }
 
       // Check for any critical failures
-      const hasCriticalFailures = validationResults.some(result => result.status === 'fail');
-      const hasWarnings = validationResults.some(result => result.status === 'warning');
+      const hasCriticalFailures = validationResults.some(
+        (result) => result.status === "fail",
+      );
+      const hasWarnings = validationResults.some(
+        (result) => result.status === "warning",
+      );
 
       return {
         isValid: !hasCriticalFailures,
-        validationResults
+        validationResults,
       };
-
     } catch (error) {
-      console.error('Error running system validation:', error);
+      console.error("Error running system validation:", error);
       return {
         isValid: false,
-        validationResults: [{
-          component: 'SystemValidation',
-          status: 'fail',
-          message: 'Validation failed',
-          details: { error: error instanceof Error ? error.message : 'Unknown error' }
-        }]
+        validationResults: [
+          {
+            component: "SystemValidation",
+            status: "fail",
+            message: "Validation failed",
+            details: {
+              error: error instanceof Error ? error.message : "Unknown error",
+            },
+          },
+        ],
       };
     }
   }
@@ -746,26 +805,30 @@ export class RecurringTaskIntegration {
    */
   exportSystemConfiguration(): string {
     try {
-      return JSON.stringify({
-        services: {
-          recurringTaskService: 'active',
-          recurringPatternManager: 'active',
-          recurringTaskScheduler: 'active',
-          recurringTaskGenerator: 'active',
-          recurringTaskStore: 'active'
+      return JSON.stringify(
+        {
+          services: {
+            recurringTaskService: "active",
+            recurringPatternManager: "active",
+            recurringTaskScheduler: "active",
+            recurringTaskGenerator: "active",
+            recurringTaskStore: "active",
+          },
+          configurations: {
+            scheduler: recurringTaskScheduler["schedulingConfig"],
+            generator: recurringTaskGenerator["generationConfig"],
+          },
+          exportDate: new Date().toISOString(),
+          version: "1.0.0",
         },
-        configurations: {
-          scheduler: recurringTaskScheduler['schedulingConfig'],
-          generator: recurringTaskGenerator['generationConfig']
-        },
-        exportDate: new Date().toISOString(),
-        version: '1.0.0'
-      }, null, 2);
+        null,
+        2,
+      );
     } catch (error) {
-      console.error('Error exporting system configuration:', error);
+      console.error("Error exporting system configuration:", error);
       return JSON.stringify({
-        error: 'Failed to export configuration',
-        details: error instanceof Error ? error.message : 'Unknown error'
+        error: "Failed to export configuration",
+        details: error instanceof Error ? error.message : "Unknown error",
       });
     }
   }
@@ -773,7 +836,10 @@ export class RecurringTaskIntegration {
   /**
    * Import system configuration
    */
-  importSystemConfiguration(configData: string): { success: boolean; message: string } {
+  importSystemConfiguration(configData: string): {
+    success: boolean;
+    message: string;
+  } {
     try {
       const config = JSON.parse(configData);
 
@@ -781,7 +847,7 @@ export class RecurringTaskIntegration {
       if (!config || !config.services || !config.configurations) {
         return {
           success: false,
-          message: 'Invalid configuration format'
+          message: "Invalid configuration format",
         };
       }
 
@@ -796,13 +862,13 @@ export class RecurringTaskIntegration {
 
       return {
         success: true,
-        message: 'Configuration imported successfully'
+        message: "Configuration imported successfully",
       };
     } catch (error) {
-      console.error('Error importing system configuration:', error);
+      console.error("Error importing system configuration:", error);
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Unknown error'
+        message: error instanceof Error ? error.message : "Unknown error",
       };
     }
   }

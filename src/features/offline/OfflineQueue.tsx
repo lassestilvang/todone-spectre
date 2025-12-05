@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { useOfflineStore } from '../../store/useOfflineStore';
-import { OfflineQueueItem } from '../../types/offlineTypes';
+import React, { useState, useEffect } from "react";
+import { useOfflineStore } from "../../store/useOfflineStore";
+import { OfflineQueueItem } from "../../types/offlineTypes";
 
 interface OfflineQueueProps {
   maxItems?: number;
@@ -15,7 +15,7 @@ export const OfflineQueue: React.FC<OfflineQueueProps> = ({
   showControls = true,
   onQueueChange,
   onRetryAll,
-  onClearAll
+  onClearAll,
 }) => {
   const { queue, retryQueueItem, clearQueue, isProcessing } = useOfflineStore();
   const [displayedItems, setDisplayedItems] = useState<OfflineQueueItem[]>([]);
@@ -55,31 +55,31 @@ export const OfflineQueue: React.FC<OfflineQueueProps> = ({
 
   const getItemStatusText = (item: OfflineQueueItem) => {
     switch (item.status) {
-      case 'pending':
-        return 'Pending';
-      case 'processing':
-        return 'Processing...';
-      case 'completed':
-        return 'Completed';
-      case 'failed':
-        return 'Failed';
+      case "pending":
+        return "Pending";
+      case "processing":
+        return "Processing...";
+      case "completed":
+        return "Completed";
+      case "failed":
+        return "Failed";
       default:
-        return 'Unknown';
+        return "Unknown";
     }
   };
 
   const getItemStatusClass = (item: OfflineQueueItem) => {
     switch (item.status) {
-      case 'pending':
-        return 'offline-queue-item-pending';
-      case 'processing':
-        return 'offline-queue-item-processing';
-      case 'completed':
-        return 'offline-queue-item-completed';
-      case 'failed':
-        return 'offline-queue-item-failed';
+      case "pending":
+        return "offline-queue-item-pending";
+      case "processing":
+        return "offline-queue-item-processing";
+      case "completed":
+        return "offline-queue-item-completed";
+      case "failed":
+        return "offline-queue-item-failed";
       default:
-        return 'offline-queue-item-unknown';
+        return "offline-queue-item-unknown";
     }
   };
 
@@ -102,24 +102,27 @@ export const OfflineQueue: React.FC<OfflineQueueProps> = ({
 
           <div className="offline-queue-items">
             {displayedItems.map((item) => (
-              <div key={item.id} className={`offline-queue-item ${getItemStatusClass(item)}`}>
+              <div
+                key={item.id}
+                className={`offline-queue-item ${getItemStatusClass(item)}`}
+              >
                 <div className="offline-queue-item-operation">
-                  <span className="offline-queue-item-name">{item.operation}</span>
+                  <span className="offline-queue-item-name">
+                    {item.operation}
+                  </span>
                   <span className="offline-queue-item-timestamp">
                     {new Date(item.timestamp).toLocaleTimeString()}
                   </span>
                 </div>
 
-                <div className="offline-queue-item-type">
-                  {item.type}
-                </div>
+                <div className="offline-queue-item-type">{item.type}</div>
 
                 <div className="offline-queue-item-status">
                   {getItemStatusText(item)}
                 </div>
 
                 <div className="offline-queue-item-actions">
-                  {item.status === 'failed' && (
+                  {item.status === "failed" && (
                     <button
                       className="offline-queue-retry-button"
                       onClick={() => handleRetryItem(item.id)}

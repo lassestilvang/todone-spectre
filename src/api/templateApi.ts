@@ -3,8 +3,15 @@
  * Handles all template-related API calls
  */
 
-import { ApiResponse } from '../types/api';
-import { Template, CreateTemplateDto, UpdateTemplateDto, TemplateCategory, CreateTemplateCategoryDto, UpdateTemplateCategoryDto } from '../types/template';
+import { ApiResponse } from "../types/api";
+import {
+  Template,
+  CreateTemplateDto,
+  UpdateTemplateDto,
+  TemplateCategory,
+  CreateTemplateCategoryDto,
+  UpdateTemplateCategoryDto,
+} from "../types/template";
 
 /**
  * Mock database for templates (in-memory storage)
@@ -19,7 +26,9 @@ export const templateApi = {
   /**
    * Create a new template
    */
-  async createTemplate(templateData: CreateTemplateDto): Promise<ApiResponse<Template>> {
+  async createTemplate(
+    templateData: CreateTemplateDto,
+  ): Promise<ApiResponse<Template>> {
     try {
       const newTemplate: Template = {
         ...templateData,
@@ -29,7 +38,7 @@ export const templateApi = {
         usageCount: 0,
         rating: 0,
         isPublic: templateData.isPublic || false,
-        variables: templateData.variables || {}
+        variables: templateData.variables || {},
       };
 
       mockTemplates.push(newTemplate);
@@ -37,12 +46,13 @@ export const templateApi = {
       return {
         success: true,
         data: newTemplate,
-        message: 'Template created successfully'
+        message: "Template created successfully",
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to create template'
+        message:
+          error instanceof Error ? error.message : "Failed to create template",
       };
     }
   },
@@ -52,24 +62,25 @@ export const templateApi = {
    */
   async getTemplate(templateId: string): Promise<ApiResponse<Template>> {
     try {
-      const template = mockTemplates.find(t => t.id === templateId);
+      const template = mockTemplates.find((t) => t.id === templateId);
 
       if (!template) {
         return {
           success: false,
-          message: 'Template not found'
+          message: "Template not found",
         };
       }
 
       return {
         success: true,
         data: template,
-        message: 'Template retrieved successfully'
+        message: "Template retrieved successfully",
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch template'
+        message:
+          error instanceof Error ? error.message : "Failed to fetch template",
       };
     }
   },
@@ -82,12 +93,13 @@ export const templateApi = {
       return {
         success: true,
         data: [...mockTemplates],
-        message: 'Templates retrieved successfully'
+        message: "Templates retrieved successfully",
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch templates'
+        message:
+          error instanceof Error ? error.message : "Failed to fetch templates",
       };
     }
   },
@@ -95,21 +107,24 @@ export const templateApi = {
   /**
    * Update a template
    */
-  async updateTemplate(templateId: string, updates: UpdateTemplateDto): Promise<ApiResponse<Template>> {
+  async updateTemplate(
+    templateId: string,
+    updates: UpdateTemplateDto,
+  ): Promise<ApiResponse<Template>> {
     try {
-      const templateIndex = mockTemplates.findIndex(t => t.id === templateId);
+      const templateIndex = mockTemplates.findIndex((t) => t.id === templateId);
 
       if (templateIndex === -1) {
         return {
           success: false,
-          message: 'Template not found'
+          message: "Template not found",
         };
       }
 
       const updatedTemplate = {
         ...mockTemplates[templateIndex],
         ...updates,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
 
       mockTemplates[templateIndex] = updatedTemplate;
@@ -117,12 +132,13 @@ export const templateApi = {
       return {
         success: true,
         data: updatedTemplate,
-        message: 'Template updated successfully'
+        message: "Template updated successfully",
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to update template'
+        message:
+          error instanceof Error ? error.message : "Failed to update template",
       };
     }
   },
@@ -132,12 +148,12 @@ export const templateApi = {
    */
   async deleteTemplate(templateId: string): Promise<ApiResponse<void>> {
     try {
-      const templateIndex = mockTemplates.findIndex(t => t.id === templateId);
+      const templateIndex = mockTemplates.findIndex((t) => t.id === templateId);
 
       if (templateIndex === -1) {
         return {
           success: false,
-          message: 'Template not found'
+          message: "Template not found",
         };
       }
 
@@ -145,12 +161,13 @@ export const templateApi = {
 
       return {
         success: true,
-        message: 'Template deleted successfully'
+        message: "Template deleted successfully",
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to delete template'
+        message:
+          error instanceof Error ? error.message : "Failed to delete template",
       };
     }
   },
@@ -158,14 +175,16 @@ export const templateApi = {
   /**
    * Create a new template category
    */
-  async createTemplateCategory(categoryData: CreateTemplateCategoryDto): Promise<ApiResponse<TemplateCategory>> {
+  async createTemplateCategory(
+    categoryData: CreateTemplateCategoryDto,
+  ): Promise<ApiResponse<TemplateCategory>> {
     try {
       const newCategory: TemplateCategory = {
         ...categoryData,
         id: `category-${Date.now()}`,
         createdAt: new Date(),
         updatedAt: new Date(),
-        order: mockCategories.length
+        order: mockCategories.length,
       };
 
       mockCategories.push(newCategory);
@@ -173,12 +192,15 @@ export const templateApi = {
       return {
         success: true,
         data: newCategory,
-        message: 'Template category created successfully'
+        message: "Template category created successfully",
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to create template category'
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to create template category",
       };
     }
   },
@@ -186,26 +208,31 @@ export const templateApi = {
   /**
    * Get a single template category by ID
    */
-  async getTemplateCategory(categoryId: string): Promise<ApiResponse<TemplateCategory>> {
+  async getTemplateCategory(
+    categoryId: string,
+  ): Promise<ApiResponse<TemplateCategory>> {
     try {
-      const category = mockCategories.find(c => c.id === categoryId);
+      const category = mockCategories.find((c) => c.id === categoryId);
 
       if (!category) {
         return {
           success: false,
-          message: 'Template category not found'
+          message: "Template category not found",
         };
       }
 
       return {
         success: true,
         data: category,
-        message: 'Template category retrieved successfully'
+        message: "Template category retrieved successfully",
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch template category'
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch template category",
       };
     }
   },
@@ -218,12 +245,15 @@ export const templateApi = {
       return {
         success: true,
         data: [...mockCategories],
-        message: 'Template categories retrieved successfully'
+        message: "Template categories retrieved successfully",
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch template categories'
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to fetch template categories",
       };
     }
   },
@@ -231,21 +261,26 @@ export const templateApi = {
   /**
    * Update a template category
    */
-  async updateTemplateCategory(categoryId: string, updates: UpdateTemplateCategoryDto): Promise<ApiResponse<TemplateCategory>> {
+  async updateTemplateCategory(
+    categoryId: string,
+    updates: UpdateTemplateCategoryDto,
+  ): Promise<ApiResponse<TemplateCategory>> {
     try {
-      const categoryIndex = mockCategories.findIndex(c => c.id === categoryId);
+      const categoryIndex = mockCategories.findIndex(
+        (c) => c.id === categoryId,
+      );
 
       if (categoryIndex === -1) {
         return {
           success: false,
-          message: 'Template category not found'
+          message: "Template category not found",
         };
       }
 
       const updatedCategory = {
         ...mockCategories[categoryIndex],
         ...updates,
-        updatedAt: new Date()
+        updatedAt: new Date(),
       };
 
       mockCategories[categoryIndex] = updatedCategory;
@@ -253,12 +288,15 @@ export const templateApi = {
       return {
         success: true,
         data: updatedCategory,
-        message: 'Template category updated successfully'
+        message: "Template category updated successfully",
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to update template category'
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to update template category",
       };
     }
   },
@@ -268,12 +306,14 @@ export const templateApi = {
    */
   async deleteTemplateCategory(categoryId: string): Promise<ApiResponse<void>> {
     try {
-      const categoryIndex = mockCategories.findIndex(c => c.id === categoryId);
+      const categoryIndex = mockCategories.findIndex(
+        (c) => c.id === categoryId,
+      );
 
       if (categoryIndex === -1) {
         return {
           success: false,
-          message: 'Template category not found'
+          message: "Template category not found",
         };
       }
 
@@ -281,12 +321,15 @@ export const templateApi = {
 
       return {
         success: true,
-        message: 'Template category deleted successfully'
+        message: "Template category deleted successfully",
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to delete template category'
+        message:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete template category",
       };
     }
   },
@@ -294,14 +337,17 @@ export const templateApi = {
   /**
    * Apply a template with variables
    */
-  async applyTemplate(templateId: string, variables?: Record<string, string>): Promise<ApiResponse<string>> {
+  async applyTemplate(
+    templateId: string,
+    variables?: Record<string, string>,
+  ): Promise<ApiResponse<string>> {
     try {
-      const template = mockTemplates.find(t => t.id === templateId);
+      const template = mockTemplates.find((t) => t.id === templateId);
 
       if (!template) {
         return {
           success: false,
-          message: 'Template not found'
+          message: "Template not found",
         };
       }
 
@@ -310,28 +356,29 @@ export const templateApi = {
       if (variables) {
         for (const [key, value] of Object.entries(variables)) {
           const placeholder = `{{${key}}}`;
-          result = result.replace(new RegExp(placeholder, 'g'), value);
+          result = result.replace(new RegExp(placeholder, "g"), value);
         }
       }
 
       // Increment usage count
-      const templateIndex = mockTemplates.findIndex(t => t.id === templateId);
+      const templateIndex = mockTemplates.findIndex((t) => t.id === templateId);
       if (templateIndex !== -1) {
         mockTemplates[templateIndex] = {
           ...mockTemplates[templateIndex],
-          usageCount: (mockTemplates[templateIndex].usageCount || 0) + 1
+          usageCount: (mockTemplates[templateIndex].usageCount || 0) + 1,
         };
       }
 
       return {
         success: true,
         data: result,
-        message: 'Template applied successfully'
+        message: "Template applied successfully",
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to apply template'
+        message:
+          error instanceof Error ? error.message : "Failed to apply template",
       };
     }
   },
@@ -339,14 +386,17 @@ export const templateApi = {
   /**
    * Preview a template with variables
    */
-  async previewTemplate(templateId: string, variables?: Record<string, string>): Promise<ApiResponse<string>> {
+  async previewTemplate(
+    templateId: string,
+    variables?: Record<string, string>,
+  ): Promise<ApiResponse<string>> {
     try {
-      const template = mockTemplates.find(t => t.id === templateId);
+      const template = mockTemplates.find((t) => t.id === templateId);
 
       if (!template) {
         return {
           success: false,
-          message: 'Template not found'
+          message: "Template not found",
         };
       }
 
@@ -355,20 +405,21 @@ export const templateApi = {
       if (variables) {
         for (const [key, value] of Object.entries(variables)) {
           const placeholder = `{{${key}}}`;
-          result = result.replace(new RegExp(placeholder, 'g'), value);
+          result = result.replace(new RegExp(placeholder, "g"), value);
         }
       }
 
       return {
         success: true,
         data: result,
-        message: 'Template preview generated successfully'
+        message: "Template preview generated successfully",
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to preview template'
+        message:
+          error instanceof Error ? error.message : "Failed to preview template",
       };
     }
-  }
+  },
 };

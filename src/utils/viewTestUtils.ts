@@ -1,6 +1,6 @@
-import { Task } from '../types/task';
-import { ViewType } from '../types/enums';
-import { faker } from '@faker-js/faker';
+import { Task } from "../types/task";
+import { ViewType } from "../types/enums";
+import { faker } from "@faker-js/faker";
 
 /**
  * View Test Utilities
@@ -11,8 +11,18 @@ export class ViewTestUtils {
    * Generate mock tasks for testing
    */
   static generateMockTasks(count: number = 10): Task[] {
-    const statuses: Task['status'][] = ['todo', 'in-progress', 'completed', 'archived'];
-    const priorities: Task['priority'][] = ['low', 'medium', 'high', 'critical'];
+    const statuses: Task["status"][] = [
+      "todo",
+      "in-progress",
+      "completed",
+      "archived",
+    ];
+    const priorities: Task["priority"][] = [
+      "low",
+      "medium",
+      "high",
+      "critical",
+    ];
 
     return Array.from({ length: count }, (_, i) => ({
       id: faker.string.uuid(),
@@ -24,7 +34,7 @@ export class ViewTestUtils {
       createdAt: faker.date.past(),
       updatedAt: faker.date.recent(),
       projectId: Math.random() > 0.5 ? faker.string.uuid() : undefined,
-      completed: Math.random() > 0.7
+      completed: Math.random() > 0.7,
     }));
   }
 
@@ -43,13 +53,13 @@ export class ViewTestUtils {
         id: faker.string.uuid(),
         title: `Task for ${date.toDateString()}`,
         description: faker.lorem.sentence(),
-        status: 'todo',
-        priority: 'medium',
+        status: "todo",
+        priority: "medium",
         dueDate: date,
         createdAt: faker.date.past(),
         updatedAt: faker.date.recent(),
         projectId: faker.string.uuid(),
-        completed: false
+        completed: false,
       });
     }
 
@@ -59,10 +69,13 @@ export class ViewTestUtils {
   /**
    * Generate tasks grouped by project for list view testing
    */
-  static generateTasksByProject(projectCount: number = 3, tasksPerProject: number = 5): Task[] {
+  static generateTasksByProject(
+    projectCount: number = 3,
+    tasksPerProject: number = 5,
+  ): Task[] {
     const tasks: Task[] = [];
-    const statuses: Task['status'][] = ['todo', 'in-progress', 'completed'];
-    const priorities: Task['priority'][] = ['low', 'medium', 'high'];
+    const statuses: Task["status"][] = ["todo", "in-progress", "completed"];
+    const priorities: Task["priority"][] = ["low", "medium", "high"];
 
     for (let p = 0; p < projectCount; p++) {
       const projectId = faker.string.uuid();
@@ -78,7 +91,7 @@ export class ViewTestUtils {
           createdAt: faker.date.past(),
           updatedAt: faker.date.recent(),
           projectId,
-          completed: Math.random() > 0.8
+          completed: Math.random() > 0.8,
         });
       }
     }
@@ -90,13 +103,18 @@ export class ViewTestUtils {
    * Generate tasks for board view testing with specific status distribution
    */
   static generateTasksForBoardView(): Task[] {
-    const statuses: Task['status'][] = ['todo', 'in-progress', 'completed'];
-    const priorities: Task['priority'][] = ['low', 'medium', 'high', 'critical'];
+    const statuses: Task["status"][] = ["todo", "in-progress", "completed"];
+    const priorities: Task["priority"][] = [
+      "low",
+      "medium",
+      "high",
+      "critical",
+    ];
 
     const tasks: Task[] = [];
 
     // Generate tasks with balanced status distribution
-    statuses.forEach(status => {
+    statuses.forEach((status) => {
       for (let i = 0; i < 5; i++) {
         tasks.push({
           id: faker.string.uuid(),
@@ -108,7 +126,7 @@ export class ViewTestUtils {
           createdAt: faker.date.past(),
           updatedAt: faker.date.recent(),
           projectId: faker.string.uuid(),
-          completed: status === 'completed'
+          completed: status === "completed",
         });
       }
     });
@@ -123,28 +141,28 @@ export class ViewTestUtils {
     switch (viewType) {
       case ViewType.LIST:
         return {
-          sortBy: 'dueDate',
-          groupBy: 'project',
-          showTaskCount: false
+          sortBy: "dueDate",
+          groupBy: "project",
+          showTaskCount: false,
         };
 
       case ViewType.BOARD:
         return {
-          columns: ['To Do', 'In Progress', 'Done'],
-          showTaskCount: true
+          columns: ["To Do", "In Progress", "Done"],
+          showTaskCount: true,
         };
 
       case ViewType.CALENDAR:
         return {
-          viewMode: 'week',
+          viewMode: "week",
           showWeekends: true,
-          currentDate: new Date()
+          currentDate: new Date(),
         };
 
       default:
         return {
-          sortBy: 'dueDate',
-          groupBy: 'project'
+          sortBy: "dueDate",
+          groupBy: "project",
         };
     }
   }
@@ -156,17 +174,17 @@ export class ViewTestUtils {
     return {
       currentView: ViewType.LIST,
       listViewConfig: {
-        sortBy: 'dueDate',
-        groupBy: 'project'
+        sortBy: "dueDate",
+        groupBy: "project",
       },
       boardViewConfig: {
-        columns: ['To Do', 'In Progress', 'Done'],
-        showTaskCount: true
+        columns: ["To Do", "In Progress", "Done"],
+        showTaskCount: true,
       },
       calendarViewConfig: {
-        viewMode: 'week',
-        showWeekends: true
-      }
+        viewMode: "week",
+        showWeekends: true,
+      },
     };
   }
 }

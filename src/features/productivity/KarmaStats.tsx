@@ -1,8 +1,9 @@
-import React from 'react';
-import { useKarma } from '../../../hooks/useKarma';
+import React from "react";
+import { useKarma } from "../../../hooks/useKarma";
 
 export const KarmaStats: React.FC = () => {
-  const { karma, level, tasksCompleted, streak, productivityScore } = useKarma();
+  const { karma, level, tasksCompleted, streak, productivityScore } =
+    useKarma();
 
   return (
     <div className="karma-stats">

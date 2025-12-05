@@ -3,10 +3,18 @@
  * Contains fundamental application-level interfaces and types
  */
 
-import { User, Project, Task, Label, Filter, Comment, Attachment } from './common';
-import { PriorityLevel, ViewType, TaskStatus, RecurringPattern } from './enums';
-import { ApiResponse, ErrorResponse, PaginationResult } from './api';
-import { UiState, ModalState, ThemeSettings } from './ui';
+import {
+  User,
+  Project,
+  Task,
+  Label,
+  Filter,
+  Comment,
+  Attachment,
+} from "./common";
+import { PriorityLevel, ViewType, TaskStatus, RecurringPattern } from "./enums";
+import { ApiResponse, ErrorResponse, PaginationResult } from "./api";
+import { UiState, ModalState, ThemeSettings } from "./ui";
 
 /**
  * Main application configuration interface
@@ -20,7 +28,7 @@ export interface AppConfig {
   /**
    * Environment (development, production, test)
    */
-  environment: 'development' | 'production' | 'test' | 'staging';
+  environment: "development" | "production" | "test" | "staging";
 
   /**
    * Base API URL
@@ -136,15 +144,15 @@ export interface AppContext {
  * Application action types
  */
 export type AppAction =
-  | { type: 'INITIALIZE_APP'; payload: AppConfig }
-  | { type: 'SET_USER'; payload: User | null }
-  | { type: 'SET_AUTH_STATUS'; payload: boolean }
-  | { type: 'UPDATE_UI_STATE'; payload: Partial<UiState> }
-  | { type: 'SET_ERROR'; payload: ErrorResponse | null }
-  | { type: 'SET_LOADING'; payload: boolean }
-  | { type: 'SET_ONLINE_STATUS'; payload: boolean }
-  | { type: 'SYNC_COMPLETED'; payload: { timestamp: Date; changes: number } }
-  | { type: 'RESET_APP' };
+  | { type: "INITIALIZE_APP"; payload: AppConfig }
+  | { type: "SET_USER"; payload: User | null }
+  | { type: "SET_AUTH_STATUS"; payload: boolean }
+  | { type: "UPDATE_UI_STATE"; payload: Partial<UiState> }
+  | { type: "SET_ERROR"; payload: ErrorResponse | null }
+  | { type: "SET_LOADING"; payload: boolean }
+  | { type: "SET_ONLINE_STATUS"; payload: boolean }
+  | { type: "SYNC_COMPLETED"; payload: { timestamp: Date; changes: number } }
+  | { type: "RESET_APP" };
 
 /**
  * API client interface
@@ -163,7 +171,11 @@ export interface ApiClient {
   /**
    * Make authenticated API request
    */
-  request<T>(method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH', endpoint: string, data?: any): Promise<ApiResponse<T>>;
+  request<T>(
+    method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
+    endpoint: string,
+    data?: any,
+  ): Promise<ApiResponse<T>>;
 
   /**
    * User-related API methods
@@ -180,8 +192,13 @@ export interface ApiClient {
   projects: {
     getAllProjects(): Promise<ApiResponse<Project[]>>;
     getProject(projectId: string): Promise<ApiResponse<Project>>;
-    createProject(projectData: Omit<Project, 'id'>): Promise<ApiResponse<Project>>;
-    updateProject(projectId: string, projectData: Partial<Project>): Promise<ApiResponse<Project>>;
+    createProject(
+      projectData: Omit<Project, "id">,
+    ): Promise<ApiResponse<Project>>;
+    updateProject(
+      projectId: string,
+      projectData: Partial<Project>,
+    ): Promise<ApiResponse<Project>>;
     deleteProject(projectId: string): Promise<ApiResponse<void>>;
   };
 
@@ -191,8 +208,11 @@ export interface ApiClient {
   tasks: {
     getTasks(projectId?: string): Promise<ApiResponse<Task[]>>;
     getTask(taskId: string): Promise<ApiResponse<Task>>;
-    createTask(taskData: Omit<Task, 'id'>): Promise<ApiResponse<Task>>;
-    updateTask(taskId: string, taskData: Partial<Task>): Promise<ApiResponse<Task>>;
+    createTask(taskData: Omit<Task, "id">): Promise<ApiResponse<Task>>;
+    updateTask(
+      taskId: string,
+      taskData: Partial<Task>,
+    ): Promise<ApiResponse<Task>>;
     deleteTask(taskId: string): Promise<ApiResponse<void>>;
     completeTask(taskId: string): Promise<ApiResponse<Task>>;
     reopenTask(taskId: string): Promise<ApiResponse<Task>>;
@@ -203,8 +223,11 @@ export interface ApiClient {
    */
   labels: {
     getLabels(): Promise<ApiResponse<Label[]>>;
-    createLabel(labelData: Omit<Label, 'id'>): Promise<ApiResponse<Label>>;
-    updateLabel(labelId: string, labelData: Partial<Label>): Promise<ApiResponse<Label>>;
+    createLabel(labelData: Omit<Label, "id">): Promise<ApiResponse<Label>>;
+    updateLabel(
+      labelId: string,
+      labelData: Partial<Label>,
+    ): Promise<ApiResponse<Label>>;
     deleteLabel(labelId: string): Promise<ApiResponse<void>>;
   };
 
@@ -234,7 +257,7 @@ export interface DatabaseInstance {
   users: {
     get(id: string): Promise<User | undefined>;
     getAll(): Promise<User[]>;
-    create(user: Omit<User, 'id'>): Promise<string>;
+    create(user: Omit<User, "id">): Promise<string>;
     update(id: string, user: Partial<User>): Promise<void>;
     delete(id: string): Promise<void>;
   };
@@ -245,7 +268,7 @@ export interface DatabaseInstance {
   projects: {
     get(id: string): Promise<Project | undefined>;
     getAll(): Promise<Project[]>;
-    create(project: Omit<Project, 'id'>): Promise<string>;
+    create(project: Omit<Project, "id">): Promise<string>;
     update(id: string, project: Partial<Project>): Promise<void>;
     delete(id: string): Promise<void>;
   };
@@ -257,7 +280,7 @@ export interface DatabaseInstance {
     get(id: string): Promise<Task | undefined>;
     getByProject(projectId: string): Promise<Task[]>;
     getAll(): Promise<Task[]>;
-    create(task: Omit<Task, 'id'>): Promise<string>;
+    create(task: Omit<Task, "id">): Promise<string>;
     update(id: string, task: Partial<Task>): Promise<void>;
     delete(id: string): Promise<void>;
     complete(id: string): Promise<void>;
@@ -270,7 +293,7 @@ export interface DatabaseInstance {
   labels: {
     get(id: string): Promise<Label | undefined>;
     getAll(): Promise<Label[]>;
-    create(label: Omit<Label, 'id'>): Promise<string>;
+    create(label: Omit<Label, "id">): Promise<string>;
     update(id: string, label: Partial<Label>): Promise<void>;
     delete(id: string): Promise<void>;
   };

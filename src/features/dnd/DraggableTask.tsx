@@ -1,6 +1,6 @@
-import React, { useRef, useEffect } from 'react';
-import { useDragAndDrop } from './DragAndDropProvider';
-import { Task } from '../../types/task';
+import React, { useRef, useEffect } from "react";
+import { useDragAndDrop } from "./DragAndDropProvider";
+import { Task } from "../../types/task";
 
 interface DraggableTaskProps {
   task: Task;
@@ -12,10 +12,11 @@ interface DraggableTaskProps {
 export const DraggableTask: React.FC<DraggableTaskProps> = ({
   task,
   children,
-  className = '',
-  source = 'task-list'
+  className = "",
+  source = "task-list",
 }) => {
-  const { handleDragStart, handleDragEnd, isDragging, draggedTask } = useDragAndDrop();
+  const { handleDragStart, handleDragEnd, isDragging, draggedTask } =
+    useDragAndDrop();
   const dragRef = useRef<HTMLDivElement>(null);
   const isBeingDragged = isDragging && draggedTask?.id === task.id;
 
@@ -24,7 +25,7 @@ export const DraggableTask: React.FC<DraggableTaskProps> = ({
     if (!element) return;
 
     const handleDragStartEvent = (e: DragEvent) => {
-      e.dataTransfer?.setData('text/plain', task.id);
+      e.dataTransfer?.setData("text/plain", task.id);
       handleDragStart(task, source);
     };
 
@@ -32,12 +33,18 @@ export const DraggableTask: React.FC<DraggableTaskProps> = ({
       handleDragEnd();
     };
 
-    element.addEventListener('dragstart', handleDragStartEvent as EventListener);
-    element.addEventListener('dragend', handleDragEndEvent);
+    element.addEventListener(
+      "dragstart",
+      handleDragStartEvent as EventListener,
+    );
+    element.addEventListener("dragend", handleDragEndEvent);
 
     return () => {
-      element.removeEventListener('dragstart', handleDragStartEvent as EventListener);
-      element.removeEventListener('dragend', handleDragEndEvent);
+      element.removeEventListener(
+        "dragstart",
+        handleDragStartEvent as EventListener,
+      );
+      element.removeEventListener("dragend", handleDragEndEvent);
     };
   }, [task, source, handleDragStart, handleDragEnd]);
 
@@ -45,7 +52,7 @@ export const DraggableTask: React.FC<DraggableTaskProps> = ({
     <div
       ref={dragRef}
       draggable
-      className={`draggable-task ${className} ${isBeingDragged ? 'opacity-50' : ''}`}
+      className={`draggable-task ${className} ${isBeingDragged ? "opacity-50" : ""}`}
       data-task-id={task.id}
       data-source={source}
     >

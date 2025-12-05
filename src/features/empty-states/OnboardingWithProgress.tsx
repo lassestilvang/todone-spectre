@@ -1,6 +1,6 @@
-import React from 'react';
-import { useOnboarding } from '../../../hooks/useOnboarding';
-import { OnboardingStepConfig } from '../../../types/onboardingTypes';
+import React from "react";
+import { useOnboarding } from "../../../hooks/useOnboarding";
+import { OnboardingStepConfig } from "../../../types/onboardingTypes";
 
 interface OnboardingWithProgressProps {
   steps: OnboardingStepConfig[];
@@ -13,7 +13,7 @@ export const OnboardingWithProgress: React.FC<OnboardingWithProgressProps> = ({
   steps,
   onComplete,
   showStepNumbers = true,
-  className = ''
+  className = "",
 }) => {
   const {
     currentStep,
@@ -21,7 +21,7 @@ export const OnboardingWithProgress: React.FC<OnboardingWithProgressProps> = ({
     goToNextStep,
     goToPreviousStep,
     completeOnboarding,
-    isCompleted
+    isCompleted,
   } = useOnboarding();
 
   const currentStepConfig = steps[currentStep];
@@ -41,10 +41,7 @@ export const OnboardingWithProgress: React.FC<OnboardingWithProgressProps> = ({
 
         <div className="progress-container">
           <div className="progress-bar">
-            <div
-              className="progress-fill"
-              style={{ width: `${progress}%` }}
-            />
+            <div className="progress-fill" style={{ width: `${progress}%` }} />
           </div>
           <span className="progress-percentage">{Math.round(progress)}%</span>
         </div>
@@ -58,19 +55,13 @@ export const OnboardingWithProgress: React.FC<OnboardingWithProgressProps> = ({
 
       <div className="onboarding-navigation">
         {currentStep > 0 && (
-          <button
-            onClick={goToPreviousStep}
-            className="nav-button back"
-          >
+          <button onClick={goToPreviousStep} className="nav-button back">
             ← Back
           </button>
         )}
 
         {currentStep < steps.length - 1 ? (
-          <button
-            onClick={goToNextStep}
-            className="nav-button next"
-          >
+          <button onClick={goToNextStep} className="nav-button next">
             Next →
           </button>
         ) : (

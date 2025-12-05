@@ -4,42 +4,46 @@
  * Provides mock data, test helpers, and validation functions for testing
  */
 
-import { Task, RecurringTaskConfig, RecurringPatternConfig } from '../../types/task';
-import { RecurringPattern, TaskStatus, PriorityLevel } from '../../types/enums';
-import { addDays, addWeeks, addMonths, addYears } from 'date-fns';
-import { validateRecurringTaskConfiguration } from '../recurringValidationUtils';
-import { recurringPatternService } from '../../services/recurringPatternService';
-import { recurringTaskService } from '../../services/recurringTaskService';
+import {
+  Task,
+  RecurringTaskConfig,
+  RecurringPatternConfig,
+} from "../../types/task";
+import { RecurringPattern, TaskStatus, PriorityLevel } from "../../types/enums";
+import { addDays, addWeeks, addMonths, addYears } from "date-fns";
+import { validateRecurringTaskConfiguration } from "../recurringValidationUtils";
+import { recurringPatternService } from "../../services/recurringPatternService";
+import { recurringTaskService } from "../../services/recurringTaskService";
 
 /**
  * Create mock recurring task
  */
 export const createMockRecurringTask = (
-  overrides: Partial<Task> = {}
+  overrides: Partial<Task> = {},
 ): Task => {
   const baseTask: Task = {
     id: `mock-task-${Date.now()}`,
-    title: 'Mock Recurring Task',
-    description: 'This is a mock recurring task for testing',
-    status: 'active',
-    priority: 'P2',
+    title: "Mock Recurring Task",
+    description: "This is a mock recurring task for testing",
+    status: "active",
+    priority: "P2",
     dueDate: new Date(),
-    dueTime: '10:00',
+    dueTime: "10:00",
     createdAt: new Date(),
     updatedAt: new Date(),
     completed: false,
     order: 0,
-    recurringPattern: 'weekly',
+    recurringPattern: "weekly",
     customFields: {
       recurringConfig: {
-        pattern: 'weekly',
+        pattern: "weekly",
         startDate: new Date(),
         endDate: null,
         maxOccurrences: 10,
         customInterval: 1,
-        customUnit: null
-      }
-    }
+        customUnit: null,
+      },
+    },
   };
 
   return { ...baseTask, ...overrides };
@@ -49,15 +53,15 @@ export const createMockRecurringTask = (
  * Create mock recurring task configuration
  */
 export const createMockRecurringConfig = (
-  overrides: Partial<RecurringTaskConfig> = {}
+  overrides: Partial<RecurringTaskConfig> = {},
 ): RecurringTaskConfig => {
   const baseConfig: RecurringTaskConfig = {
-    pattern: 'weekly',
+    pattern: "weekly",
     startDate: new Date(),
     endDate: null,
     maxOccurrences: 10,
     customInterval: 1,
-    customUnit: null
+    customUnit: null,
   };
 
   return { ...baseConfig, ...overrides };
@@ -67,19 +71,19 @@ export const createMockRecurringConfig = (
  * Create mock pattern configuration
  */
 export const createMockPatternConfig = (
-  overrides: Partial<RecurringPatternConfig> = {}
+  overrides: Partial<RecurringPatternConfig> = {},
 ): RecurringPatternConfig => {
   const baseConfig: RecurringPatternConfig = {
-    pattern: 'weekly',
-    frequency: 'weekly',
-    endCondition: 'never',
+    pattern: "weekly",
+    frequency: "weekly",
+    endCondition: "never",
     endDate: null,
     maxOccurrences: null,
     interval: 1,
     customDays: null,
     customMonthDays: null,
     customMonthPosition: null,
-    customMonthDay: null
+    customMonthDay: null,
   };
 
   return { ...baseConfig, ...overrides };
@@ -90,7 +94,7 @@ export const createMockPatternConfig = (
  */
 export const generateTestRecurringInstances = (
   baseTask: Task,
-  count: number = 5
+  count: number = 5,
 ): Task[] => {
   const instances: Task[] = [baseTask];
 
@@ -105,8 +109,8 @@ export const generateTestRecurringInstances = (
         ...baseTask.customFields,
         originalTaskId: baseTask.id,
         isRecurringInstance: true,
-        instanceNumber: i
-      }
+        instanceNumber: i,
+      },
     });
   }
 
@@ -119,75 +123,75 @@ export const generateTestRecurringInstances = (
 export const createRecurringTaskTestScenarios = () => {
   const scenarios = {
     dailyTask: createMockRecurringTask({
-      title: 'Daily Standup',
-      recurringPattern: 'daily',
+      title: "Daily Standup",
+      recurringPattern: "daily",
       customFields: {
         recurringConfig: createMockRecurringConfig({
-          pattern: 'daily',
-          maxOccurrences: 30
-        })
-      }
+          pattern: "daily",
+          maxOccurrences: 30,
+        }),
+      },
     }),
 
     weeklyTask: createMockRecurringTask({
-      title: 'Weekly Team Meeting',
-      recurringPattern: 'weekly',
+      title: "Weekly Team Meeting",
+      recurringPattern: "weekly",
       customFields: {
         recurringConfig: createMockRecurringConfig({
-          pattern: 'weekly',
+          pattern: "weekly",
           customInterval: 1,
-          maxOccurrences: 52
-        })
-      }
+          maxOccurrences: 52,
+        }),
+      },
     }),
 
     monthlyTask: createMockRecurringTask({
-      title: 'Monthly Report',
-      recurringPattern: 'monthly',
+      title: "Monthly Report",
+      recurringPattern: "monthly",
       customFields: {
         recurringConfig: createMockRecurringConfig({
-          pattern: 'monthly',
-          maxOccurrences: 12
-        })
-      }
+          pattern: "monthly",
+          maxOccurrences: 12,
+        }),
+      },
     }),
 
     customWeeklyTask: createMockRecurringTask({
-      title: 'Custom Weekly Task',
-      recurringPattern: 'custom',
+      title: "Custom Weekly Task",
+      recurringPattern: "custom",
       customFields: {
         recurringConfig: createMockRecurringConfig({
-          pattern: 'custom',
-          customUnit: 'weeks',
+          pattern: "custom",
+          customUnit: "weeks",
           customInterval: 2,
-          maxOccurrences: 26
-        })
-      }
+          maxOccurrences: 26,
+        }),
+      },
     }),
 
     pausedTask: createMockRecurringTask({
-      title: 'Paused Recurring Task',
-      status: 'archived',
+      title: "Paused Recurring Task",
+      status: "archived",
       customFields: {
         isPaused: true,
         recurringConfig: createMockRecurringConfig({
-          pattern: 'weekly',
-          endDate: addMonths(new Date(), 3)
-        })
-      }
+          pattern: "weekly",
+          endDate: addMonths(new Date(), 3),
+        }),
+      },
     }),
 
     completedTask: createMockRecurringTask({
-      title: 'Completed Recurring Task',
-      status: 'completed',
+      title: "Completed Recurring Task",
+      status: "completed",
       completed: true,
       customFields: {
         recurringConfig: createMockRecurringConfig({
-          pattern: 'daily',
-          maxOccurrences: 5
-        })
-      }
-    })
+          pattern: "daily",
+          maxOccurrences: 5,
+        }),
+      },
+    }),
   };
 
   return scenarios;
@@ -197,26 +201,26 @@ export const createRecurringTaskTestScenarios = () => {
  * Validate recurring task test data
  */
 export const validateTestRecurringTask = (
-  task: Task
+  task: Task,
 ): { valid: boolean; errors: string[] } => {
   const errors: string[] = [];
 
   if (!task.id) {
-    errors.push('Task ID is required');
+    errors.push("Task ID is required");
   }
 
   if (!task.title || task.title.trim().length === 0) {
-    errors.push('Task title is required');
+    errors.push("Task title is required");
   }
 
   if (task.recurringPattern && !task.customFields?.recurringConfig) {
-    errors.push('Recurring task must have a recurring configuration');
+    errors.push("Recurring task must have a recurring configuration");
   }
 
   if (task.customFields?.recurringConfig) {
     const configValidation = validateRecurringTaskConfiguration(
       task,
-      task.customFields.recurringConfig
+      task.customFields.recurringConfig,
     );
 
     if (!configValidation.valid) {
@@ -226,7 +230,7 @@ export const validateTestRecurringTask = (
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 };
 
@@ -235,23 +239,27 @@ export const validateTestRecurringTask = (
  */
 export const testRecurringPatternGeneration = async (
   config: RecurringPatternConfig,
-  expectedCount: number
+  expectedCount: number,
 ): Promise<{ success: boolean; actualCount: number; instances: any[] }> => {
   try {
     const startDate = new Date();
-    const instances = recurringPatternService.generateRecurringDates(startDate, config, expectedCount * 2);
+    const instances = recurringPatternService.generateRecurringDates(
+      startDate,
+      config,
+      expectedCount * 2,
+    );
 
     return {
       success: instances.length >= expectedCount,
       actualCount: instances.length,
-      instances
+      instances,
     };
   } catch (error) {
     return {
       success: false,
       actualCount: 0,
       instances: [],
-      error: error.message
+      error: error.message,
     };
   }
 };
@@ -260,7 +268,7 @@ export const testRecurringPatternGeneration = async (
  * Test recurring task service methods
  */
 export const testRecurringTaskServiceMethods = async (
-  mockTask: Task
+  mockTask: Task,
 ): Promise<{
   createTest: { success: boolean; error?: string };
   updateTest: { success: boolean; error?: string };
@@ -271,14 +279,14 @@ export const testRecurringTaskServiceMethods = async (
     createTest: { success: false },
     updateTest: { success: false },
     deleteTest: { success: false },
-    instanceGenerationTest: { success: false }
+    instanceGenerationTest: { success: false },
   };
 
   try {
     // Test create
     const createdTask = await recurringTaskService.createRecurringTask(
       mockTask,
-      mockTask.customFields?.recurringConfig || createMockRecurringConfig()
+      mockTask.customFields?.recurringConfig || createMockRecurringConfig(),
     );
     results.createTest.success = !!createdTask;
 
@@ -286,16 +294,17 @@ export const testRecurringTaskServiceMethods = async (
     if (results.createTest.success && createdTask.id) {
       const updatedTask = await recurringTaskService.updateRecurringTask(
         createdTask.id,
-        { title: 'Updated Test Task' }
+        { title: "Updated Test Task" },
       );
-      results.updateTest.success = updatedTask.title === 'Updated Test Task';
+      results.updateTest.success = updatedTask.title === "Updated Test Task";
     }
 
     // Test instance generation
     if (results.createTest.success && createdTask.id) {
       const instances = await recurringTaskService.generateRecurringInstances(
         createdTask,
-        createdTask.customFields?.recurringConfig || createMockRecurringConfig()
+        createdTask.customFields?.recurringConfig ||
+          createMockRecurringConfig(),
       );
       results.instanceGenerationTest.success = instances.length > 0;
     }
@@ -305,15 +314,14 @@ export const testRecurringTaskServiceMethods = async (
       await recurringTaskService.deleteRecurringTask(createdTask.id, false);
       results.deleteTest.success = true;
     }
-
   } catch (error) {
-    console.error('Test error:', error);
+    console.error("Test error:", error);
     if (error instanceof Error) {
-      if (error.message.includes('create')) {
+      if (error.message.includes("create")) {
         results.createTest.error = error.message;
-      } else if (error.message.includes('update')) {
+      } else if (error.message.includes("update")) {
         results.updateTest.error = error.message;
-      } else if (error.message.includes('delete')) {
+      } else if (error.message.includes("delete")) {
         results.deleteTest.error = error.message;
       } else {
         results.instanceGenerationTest.error = error.message;
@@ -328,7 +336,7 @@ export const testRecurringTaskServiceMethods = async (
  * Create performance test for recurring tasks
  */
 export const createRecurringTaskPerformanceTest = async (
-  taskCount: number = 100
+  taskCount: number = 100,
 ): Promise<{
   creationTime: number;
   generationTime: number;
@@ -338,14 +346,14 @@ export const createRecurringTaskPerformanceTest = async (
   const startTime = performance.now();
   let memoryStart = 0;
 
-  if (typeof performance.memory !== 'undefined') {
+  if (typeof performance.memory !== "undefined") {
     memoryStart = performance.memory.usedJSHeapSize;
   }
 
   try {
     const mockConfig = createMockRecurringConfig({
-      pattern: 'weekly',
-      maxOccurrences: 5
+      pattern: "weekly",
+      maxOccurrences: 5,
     });
 
     // Test creation performance
@@ -356,8 +364,8 @@ export const createRecurringTaskPerformanceTest = async (
       const mockTask = createMockRecurringTask({
         title: `Performance Test Task ${i}`,
         customFields: {
-          recurringConfig: mockConfig
-        }
+          recurringConfig: mockConfig,
+        },
       });
 
       // In a real test, we would actually create these tasks
@@ -374,7 +382,7 @@ export const createRecurringTaskPerformanceTest = async (
     for (const task of createdTasks) {
       const instances = await recurringTaskService.generateRecurringInstances(
         task,
-        task.customFields?.recurringConfig || mockConfig
+        task.customFields?.recurringConfig || mockConfig,
       );
       totalInstances += instances.length;
     }
@@ -382,7 +390,7 @@ export const createRecurringTaskPerformanceTest = async (
     const generationTime = performance.now() - generationStart;
 
     let memoryEnd = 0;
-    if (typeof performance.memory !== 'undefined') {
+    if (typeof performance.memory !== "undefined") {
       memoryEnd = performance.memory.usedJSHeapSize;
     }
 
@@ -392,16 +400,15 @@ export const createRecurringTaskPerformanceTest = async (
       creationTime,
       generationTime,
       memoryUsage,
-      success: true
+      success: true,
     };
-
   } catch (error) {
-    console.error('Performance test error:', error);
+    console.error("Performance test error:", error);
     return {
       creationTime: 0,
       generationTime: 0,
       memoryUsage: 0,
-      success: false
+      success: false,
     };
   }
 };
@@ -412,67 +419,67 @@ export const createRecurringTaskPerformanceTest = async (
 export const createRecurringTaskValidationTestSuite = () => {
   const testCases = [
     {
-      name: 'Valid Daily Task',
+      name: "Valid Daily Task",
       task: createMockRecurringTask({
-        recurringPattern: 'daily',
+        recurringPattern: "daily",
         customFields: {
           recurringConfig: createMockRecurringConfig({
-            pattern: 'daily',
-            maxOccurrences: 30
-          })
-        }
+            pattern: "daily",
+            maxOccurrences: 30,
+          }),
+        },
       }),
-      shouldBeValid: true
+      shouldBeValid: true,
     },
     {
-      name: 'Valid Weekly Task',
+      name: "Valid Weekly Task",
       task: createMockRecurringTask({
-        recurringPattern: 'weekly',
+        recurringPattern: "weekly",
         customFields: {
           recurringConfig: createMockRecurringConfig({
-            pattern: 'weekly',
-            endDate: addMonths(new Date(), 6)
-          })
-        }
+            pattern: "weekly",
+            endDate: addMonths(new Date(), 6),
+          }),
+        },
       }),
-      shouldBeValid: true
+      shouldBeValid: true,
     },
     {
-      name: 'Invalid - No Pattern',
+      name: "Invalid - No Pattern",
       task: createMockRecurringTask({
         recurringPattern: undefined,
         customFields: {
           recurringConfig: createMockRecurringConfig({
-            pattern: undefined
-          })
-        }
+            pattern: undefined,
+          }),
+        },
       }),
-      shouldBeValid: false
+      shouldBeValid: false,
     },
     {
-      name: 'Invalid - Past Start Date',
+      name: "Invalid - Past Start Date",
       task: createMockRecurringTask({
         customFields: {
           recurringConfig: createMockRecurringConfig({
-            pattern: 'weekly',
-            startDate: addDays(new Date(), -1) // Yesterday
-          })
-        }
+            pattern: "weekly",
+            startDate: addDays(new Date(), -1), // Yesterday
+          }),
+        },
       }),
-      shouldBeValid: false
+      shouldBeValid: false,
     },
     {
-      name: 'Invalid - Zero Occurrences',
+      name: "Invalid - Zero Occurrences",
       task: createMockRecurringTask({
         customFields: {
           recurringConfig: createMockRecurringConfig({
-            pattern: 'monthly',
-            maxOccurrences: 0
-          })
-        }
+            pattern: "monthly",
+            maxOccurrences: 0,
+          }),
+        },
       }),
-      shouldBeValid: false
-    }
+      shouldBeValid: false,
+    },
   ];
 
   return testCases;
@@ -486,7 +493,7 @@ export const runRecurringTaskValidationTests = async (
     name: string;
     task: Task;
     shouldBeValid: boolean;
-  }>
+  }>,
 ): Promise<{
   passed: number;
   failed: number;
@@ -510,7 +517,8 @@ export const runRecurringTaskValidationTests = async (
     try {
       const validation = validateRecurringTaskConfiguration(
         testCase.task,
-        testCase.task.customFields?.recurringConfig || createMockRecurringConfig()
+        testCase.task.customFields?.recurringConfig ||
+          createMockRecurringConfig(),
       );
 
       const passed = validation.valid === testCase.shouldBeValid;
@@ -520,27 +528,26 @@ export const runRecurringTaskValidationTests = async (
         passed,
         expectedValid: testCase.shouldBeValid,
         actualValid: validation.valid,
-        errors: passed ? undefined : validation.errors
+        errors: passed ? undefined : validation.errors,
       });
-
     } catch (error) {
       results.push({
         testName: testCase.name,
         passed: false,
         expectedValid: testCase.shouldBeValid,
         actualValid: false,
-        errors: [error instanceof Error ? error.message : 'Unknown error']
+        errors: [error instanceof Error ? error.message : "Unknown error"],
       });
     }
   }
 
-  const passed = results.filter(r => r.passed).length;
+  const passed = results.filter((r) => r.passed).length;
   const failed = results.length - passed;
 
   return {
     passed,
     failed,
-    results
+    results,
   };
 };
 
@@ -548,7 +555,7 @@ export const runRecurringTaskValidationTests = async (
  * Create integration test for recurring tasks
  */
 export const createRecurringTaskIntegrationTest = async (
-  mockTask: Task
+  mockTask: Task,
 ): Promise<{
   serviceIntegration: boolean;
   patternServiceIntegration: boolean;
@@ -563,44 +570,46 @@ export const createRecurringTaskIntegrationTest = async (
   try {
     // Test service integration
     const serviceTest = await testRecurringTaskServiceMethods(mockTask);
-    serviceIntegration = serviceTest.createTest.success &&
-                         serviceTest.updateTest.success &&
-                         serviceTest.instanceGenerationTest.success;
+    serviceIntegration =
+      serviceTest.createTest.success &&
+      serviceTest.updateTest.success &&
+      serviceTest.instanceGenerationTest.success;
 
     if (!serviceIntegration) {
-      errors.push('Service integration test failed');
+      errors.push("Service integration test failed");
     }
 
     // Test pattern service integration
-    const patternConfig = mockTask.customFields?.recurringConfig ||
-                         createMockPatternConfig();
+    const patternConfig =
+      mockTask.customFields?.recurringConfig || createMockPatternConfig();
     const patternTest = await testRecurringPatternGeneration(patternConfig, 3);
     patternServiceIntegration = patternTest.success;
 
     if (!patternServiceIntegration) {
-      errors.push('Pattern service integration test failed');
+      errors.push("Pattern service integration test failed");
     }
 
     // Test validation integration
     const validation = validateRecurringTaskConfiguration(
       mockTask,
-      mockTask.customFields?.recurringConfig || createMockRecurringConfig()
+      mockTask.customFields?.recurringConfig || createMockRecurringConfig(),
     );
     validationIntegration = validation.valid;
 
     if (!validationIntegration) {
-      errors.push('Validation integration test failed');
+      errors.push("Validation integration test failed");
     }
-
   } catch (error) {
-    errors.push(error instanceof Error ? error.message : 'Unknown integration error');
+    errors.push(
+      error instanceof Error ? error.message : "Unknown integration error",
+    );
   }
 
   return {
     serviceIntegration,
     patternServiceIntegration,
     validationIntegration,
-    errors
+    errors,
   };
 };
 
@@ -608,16 +617,16 @@ export const createRecurringTaskIntegrationTest = async (
  * Create mock recurring task with instances
  */
 export const createMockRecurringTaskWithInstances = (
-  instanceCount: number = 3
+  instanceCount: number = 3,
 ): { task: Task; instances: Task[] } => {
   const baseTask = createMockRecurringTask({
-    title: 'Recurring Task with Instances',
+    title: "Recurring Task with Instances",
     customFields: {
       recurringConfig: createMockRecurringConfig({
-        pattern: 'weekly',
-        maxOccurrences: instanceCount + 1
-      })
-    }
+        pattern: "weekly",
+        maxOccurrences: instanceCount + 1,
+      }),
+    },
   });
 
   const instances: Task[] = [];
@@ -631,8 +640,8 @@ export const createMockRecurringTaskWithInstances = (
         ...baseTask.customFields,
         originalTaskId: baseTask.id,
         isRecurringInstance: true,
-        instanceNumber: i
-      }
+        instanceNumber: i,
+      },
     });
   }
 
@@ -648,53 +657,53 @@ export const createRecurringTaskAnalyticsTestData = () => {
 
   return {
     completedTask: createMockRecurringTask({
-      title: 'Completed Recurring Task',
-      status: 'completed',
+      title: "Completed Recurring Task",
+      status: "completed",
       completed: true,
       completedAt: addDays(baseDate, -5),
       customFields: {
         recurringConfig: createMockRecurringConfig({
-          pattern: 'daily',
-          maxOccurrences: 10
-        })
-      }
+          pattern: "daily",
+          maxOccurrences: 10,
+        }),
+      },
     }),
 
     overdueTask: createMockRecurringTask({
-      title: 'Overdue Recurring Task',
-      status: 'active',
+      title: "Overdue Recurring Task",
+      status: "active",
       dueDate: addDays(baseDate, -2),
       customFields: {
         recurringConfig: createMockRecurringConfig({
-          pattern: 'weekly',
-          maxOccurrences: 5
-        })
-      }
+          pattern: "weekly",
+          maxOccurrences: 5,
+        }),
+      },
     }),
 
     upcomingTask: createMockRecurringTask({
-      title: 'Upcoming Recurring Task',
-      status: 'active',
+      title: "Upcoming Recurring Task",
+      status: "active",
       dueDate: addDays(baseDate, 10),
       customFields: {
         recurringConfig: createMockRecurringConfig({
-          pattern: 'monthly',
-          maxOccurrences: 12
-        })
-      }
+          pattern: "monthly",
+          maxOccurrences: 12,
+        }),
+      },
     }),
 
     pausedTask: createMockRecurringTask({
-      title: 'Paused Recurring Task',
-      status: 'archived',
+      title: "Paused Recurring Task",
+      status: "archived",
       customFields: {
         isPaused: true,
         recurringConfig: createMockRecurringConfig({
-          pattern: 'weekly',
-          endDate: addMonths(baseDate, 3)
-        })
-      }
-    })
+          pattern: "weekly",
+          endDate: addMonths(baseDate, 3),
+        }),
+      },
+    }),
   };
 };
 
@@ -702,7 +711,7 @@ export const createRecurringTaskAnalyticsTestData = () => {
  * Test recurring task analytics functions
  */
 export const testRecurringTaskAnalytics = async (
-  testData: ReturnType<typeof createRecurringTaskAnalyticsTestData>
+  testData: ReturnType<typeof createRecurringTaskAnalyticsTestData>,
 ): Promise<{
   completionStats: { success: boolean; error?: string };
   patternDistribution: { success: boolean; error?: string };
@@ -711,7 +720,7 @@ export const testRecurringTaskAnalytics = async (
   const results = {
     completionStats: { success: false },
     patternDistribution: { success: false },
-    timelineGeneration: { success: false }
+    timelineGeneration: { success: false },
   };
 
   try {
@@ -720,19 +729,21 @@ export const testRecurringTaskAnalytics = async (
     results.completionStats.success = stats.totalRecurringTasks >= 0;
 
     // Test pattern distribution
-    const distribution = await recurringTaskService.getRecurringTaskPatternDistribution();
+    const distribution =
+      await recurringTaskService.getRecurringTaskPatternDistribution();
     results.patternDistribution.success = Object.keys(distribution).length > 0;
 
     // Test timeline generation (using one of the test tasks)
-    const timeline = await recurringTaskService.getRecurringTaskTimeline(testData.completedTask.id);
+    const timeline = await recurringTaskService.getRecurringTaskTimeline(
+      testData.completedTask.id,
+    );
     results.timelineGeneration.success = timeline.length > 0;
-
   } catch (error) {
-    console.error('Analytics test error:', error);
+    console.error("Analytics test error:", error);
     if (error instanceof Error) {
-      if (error.message.includes('completion')) {
+      if (error.message.includes("completion")) {
         results.completionStats.error = error.message;
-      } else if (error.message.includes('distribution')) {
+      } else if (error.message.includes("distribution")) {
         results.patternDistribution.error = error.message;
       } else {
         results.timelineGeneration.error = error.message;

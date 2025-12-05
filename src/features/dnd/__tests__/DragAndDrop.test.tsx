@@ -1,15 +1,20 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import { DragAndDropProvider, DraggableTask, DroppableContainer, DragPreview } from '../';
-import { createMockTask } from '../../../../utils/dndTestUtils';
-import { useDragAndDrop } from '../DragAndDropProvider';
+import React from "react";
+import { render, screen, fireEvent } from "@testing-library/react";
+import {
+  DragAndDropProvider,
+  DraggableTask,
+  DroppableContainer,
+  DragPreview,
+} from "../";
+import { createMockTask } from "../../../../utils/dndTestUtils";
+import { useDragAndDrop } from "../DragAndDropProvider";
 
-jest.mock('../DragAndDropProvider', () => ({
-  ...jest.requireActual('../DragAndDropProvider'),
-  useDragAndDrop: jest.fn()
+jest.mock("../DragAndDropProvider", () => ({
+  ...jest.requireActual("../DragAndDropProvider"),
+  useDragAndDrop: jest.fn(),
 }));
 
-describe('DragAndDrop Components', () => {
+describe("DragAndDrop Components", () => {
   const mockTask = createMockTask();
   const mockUseDragAndDrop = {
     draggedTask: null,
@@ -19,7 +24,7 @@ describe('DragAndDrop Components', () => {
     setDragSource: jest.fn(),
     handleDrop: jest.fn(),
     handleDragStart: jest.fn(),
-    handleDragEnd: jest.fn()
+    handleDragEnd: jest.fn(),
   };
 
   beforeEach(() => {
@@ -30,61 +35,61 @@ describe('DragAndDrop Components', () => {
     jest.clearAllMocks();
   });
 
-  describe('DraggableTask', () => {
-    it('should render children', () => {
+  describe("DraggableTask", () => {
+    it("should render children", () => {
       render(
         <DragAndDropProvider>
           <DraggableTask task={mockTask}>
             <div>Test Content</div>
           </DraggableTask>
-        </DragAndDropProvider>
+        </DragAndDropProvider>,
       );
 
-      expect(screen.getByText('Test Content')).toBeInTheDocument();
+      expect(screen.getByText("Test Content")).toBeInTheDocument();
     });
 
-    it('should have draggable attribute', () => {
+    it("should have draggable attribute", () => {
       render(
         <DragAndDropProvider>
           <DraggableTask task={mockTask}>
             <div>Test Content</div>
           </DraggableTask>
-        </DragAndDropProvider>
+        </DragAndDropProvider>,
       );
 
-      const draggableElement = screen.getByText('Test Content').parentElement;
-      expect(draggableElement).toHaveAttribute('draggable', 'true');
+      const draggableElement = screen.getByText("Test Content").parentElement;
+      expect(draggableElement).toHaveAttribute("draggable", "true");
     });
   });
 
-  describe('DroppableContainer', () => {
-    it('should render children', () => {
+  describe("DroppableContainer", () => {
+    it("should render children", () => {
       render(
         <DragAndDropProvider>
           <DroppableContainer id="test-container">
             <div>Drop Zone</div>
           </DroppableContainer>
-        </DragAndDropProvider>
+        </DragAndDropProvider>,
       );
 
-      expect(screen.getByText('Drop Zone')).toBeInTheDocument();
+      expect(screen.getByText("Drop Zone")).toBeInTheDocument();
     });
   });
 
-  describe('DragPreview', () => {
-    it('should not render when not dragging', () => {
+  describe("DragPreview", () => {
+    it("should not render when not dragging", () => {
       render(
         <DragAndDropProvider>
           <DragPreview />
-        </DragAndDropProvider>
+        </DragAndDropProvider>,
       );
 
       expect(screen.queryByText(mockTask.title)).not.toBeInTheDocument();
     });
   });
 
-  describe('DragAndDropProvider', () => {
-    it('should provide context to children', () => {
+  describe("DragAndDropProvider", () => {
+    it("should provide context to children", () => {
       const TestComponent = () => {
         const context = useDragAndDrop();
         return <div>Context provided</div>;
@@ -93,10 +98,10 @@ describe('DragAndDrop Components', () => {
       render(
         <DragAndDropProvider>
           <TestComponent />
-        </DragAndDropProvider>
+        </DragAndDropProvider>,
       );
 
-      expect(screen.getByText('Context provided')).toBeInTheDocument();
+      expect(screen.getByText("Context provided")).toBeInTheDocument();
     });
   });
 });

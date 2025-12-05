@@ -2,12 +2,27 @@
  * Recurring Task Generator Service
  * Advanced task generation with validation, optimization, and conflict resolution
  */
-import { Task, RecurringTaskConfig, RecurringTaskInstance } from '../types/task';
-import { RecurringPattern, TaskStatus } from '../types/enums';
-import { addDays, addWeeks, addMonths, addYears, isBefore, isAfter, startOfDay, endOfDay, isEqual, format } from 'date-fns';
-import { recurringPatternManager } from './recurringPatternManager';
-import { recurringTaskService } from './recurringTaskService';
-import { recurringTaskScheduler } from './recurringTaskScheduler';
+import {
+  Task,
+  RecurringTaskConfig,
+  RecurringTaskInstance,
+} from "../types/task";
+import { RecurringPattern, TaskStatus } from "../types/enums";
+import {
+  addDays,
+  addWeeks,
+  addMonths,
+  addYears,
+  isBefore,
+  isAfter,
+  startOfDay,
+  endOfDay,
+  isEqual,
+  format,
+} from "date-fns";
+import { recurringPatternManager } from "./recurringPatternManager";
+import { recurringTaskService } from "./recurringTaskService";
+import { recurringTaskScheduler } from "./recurringTaskScheduler";
 
 /**
  * Generation Configuration Interface
@@ -16,8 +31,8 @@ interface GenerationConfig {
   maxInstancesPerTask: number;
   maxFutureYears: number;
   batchSize: number;
-  conflictResolution: 'skip' | 'overwrite' | 'merge';
-  validationLevel: 'basic' | 'strict' | 'none';
+  conflictResolution: "skip" | "overwrite" | "merge";
+  validationLevel: "basic" | "strict" | "none";
   performanceThreshold: number;
 }
 
@@ -39,9 +54,9 @@ export class RecurringTaskGenerator {
       maxInstancesPerTask: 50,
       maxFutureYears: 5,
       batchSize: 5,
-      conflictResolution: 'skip',
-      validationLevel: 'basic',
-      performanceThreshold: 7
+      conflictResolution: "skip",
+      validationLevel: "basic",
+      performanceThreshold: 7,
     };
   }
 
@@ -61,7 +76,7 @@ export class RecurringTaskGenerator {
   initialize(config?: Partial<GenerationConfig>): void {
     this.generationConfig = {
       ...this.generationConfig,
-      ...config
+      ...config,
     };
   }
 
@@ -71,13 +86,13 @@ export class RecurringTaskGenerator {
   async generateRecurringTaskInstances(
     taskId: string,
     config: RecurringTaskConfig,
-    forceRegenerate: boolean = false
+    forceRegenerate: boolean = false,
   ): Promise<RecurringTaskInstance[]> {
     // Add to generation queue
     this.generationQueue.push({
       taskId,
       config,
-      forceRegenerate
+      forceRegenerate,
     });
 
     // Process queue if not already processing
@@ -99,23 +114,33 @@ export class RecurringTaskGenerator {
 
     try {
       while (this.generationQueue.length > 0) {
-        const batch = this.generationQueue.splice(0, this.generationConfig.batchSize);
+        const batch = this.generationQueue.splice(
+          0,
+          this.generationConfig.batchSize,
+        );
 
         await Promise.all(
           batch.map(async ({ taskId, config, forceRegenerate }) => {
             try {
-              await this.generateInstancesForTask(taskId, config, forceRegenerate);
+              await this.generateInstancesForTask(
+                taskId,
+                config,
+                forceRegenerate,
+              );
             } catch (error) {
-              console.error(`Failed to generate instances for task ${taskId}:`, error);
+              console.error(
+                `Failed to generate instances for task ${taskId}:`,
+                error,
+              );
             }
-          })
+          }),
         );
 
         // Small delay between batches
-        await new Promise(resolve => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 50));
       }
     } catch (error) {
-      console.error('Error processing generation queue:', error);
+      console.error("Error processing generation queue:", error);
     } finally {
       this.isGenerating = false;
     }
@@ -127,13 +152,15 @@ export class RecurringTaskGenerator {
   private async generateInstancesForTask(
     taskId: string,
     config: RecurringTaskConfig,
-    forceRegenerate: boolean = false
+    forceRegenerate: boolean = false,
   ): Promise<void> {
     try {
       // Validate configuration
       const validation = this.validateGenerationConfig(config);
       if (!validation.valid) {
-        throw new Error(`Invalid generation config: ${validation.errors.join(', ')}`);
+        throw new Error(
+          `Invalid generation config: ${validation.errors.join(", ")}`,
+        );
       }
 
       // Get the task
@@ -157,7 +184,6 @@ export class RecurringTaskGenerator {
       } else {
         await this.generateMissingInstances(task, optimizedConfig);
       }
-
     } catch (error) {
       console.error(`Error generating instances for task ${taskId}:`, error);
       throw error;
@@ -167,7 +193,10 @@ export class RecurringTaskGenerator {
   /**
    * Regenerate all instances for a task
    */
-  private async regenerateAllInstances(task: Task, config: RecurringTaskConfig): Promise<void> {
+  private async regenerateAllInstances(
+    task: Task,
+    config: RecurringTaskConfig,
+  ): Promise<void> {
     console.log(`Regenerating all instances for task: ${task.id}`);
 
     try {
@@ -176,7 +205,6 @@ export class RecurringTaskGenerator {
 
       // Generate new instances
       await this.generateNewInstances(task, config);
-
     } catch (error) {
       console.error(`Error regenerating instances for task ${task.id}:`, error);
       throw error;
@@ -186,23 +214,32 @@ export class RecurringTaskGenerator {
   /**
    * Generate missing instances for a task
    */
-  private async generateMissingInstances(task: Task, config: RecurringTaskConfig): Promise<void> {
+  private async generateMissingInstances(
+    task: Task,
+    config: RecurringTaskConfig,
+  ): Promise<void> {
     try {
       // Get current instances
-      const currentInstances = recurringTaskService.getRecurringInstances(task.id);
+      const currentInstances = recurringTaskService.getRecurringInstances(
+        task.id,
+      );
 
       // Find the most recent instance
       const recentInstance = currentInstances
-        .filter(instance => instance.dueDate)
-        .sort((a, b) => (b.dueDate?.getTime() || 0) - (a.dueDate?.getTime() || 0))[0];
+        .filter((instance) => instance.dueDate)
+        .sort(
+          (a, b) => (b.dueDate?.getTime() || 0) - (a.dueDate?.getTime() || 0),
+        )[0];
 
       const startDate = recentInstance?.dueDate || task.dueDate || new Date();
 
       // Generate missing future instances
       await this.generateFutureInstances(task, config, startDate);
-
     } catch (error) {
-      console.error(`Error generating missing instances for task ${task.id}:`, error);
+      console.error(
+        `Error generating missing instances for task ${task.id}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -210,9 +247,12 @@ export class RecurringTaskGenerator {
   /**
    * Generate new instances for a task
    */
-  private async generateNewInstances(task: Task, config: RecurringTaskConfig): Promise<void> {
+  private async generateNewInstances(
+    task: Task,
+    config: RecurringTaskConfig,
+  ): Promise<void> {
     if (!task.dueDate) {
-      throw new Error('Task must have a due date for instance generation');
+      throw new Error("Task must have a due date for instance generation");
     }
 
     try {
@@ -220,7 +260,7 @@ export class RecurringTaskGenerator {
       const instances = recurringPatternManager.generateRecurringDatesAdvanced(
         startDate,
         config,
-        this.generationConfig.maxInstancesPerTask
+        this.generationConfig.maxInstancesPerTask,
       );
 
       // Create instances (skip the original task)
@@ -229,9 +269,11 @@ export class RecurringTaskGenerator {
           await this.createRecurringInstance(task, instance, config);
         }
       }
-
     } catch (error) {
-      console.error(`Error generating new instances for task ${task.id}:`, error);
+      console.error(
+        `Error generating new instances for task ${task.id}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -242,7 +284,7 @@ export class RecurringTaskGenerator {
   private async generateFutureInstances(
     task: Task,
     config: RecurringTaskConfig,
-    startDate: Date
+    startDate: Date,
   ): Promise<void> {
     try {
       const now = new Date();
@@ -250,7 +292,10 @@ export class RecurringTaskGenerator {
       let generatedCount = 0;
 
       while (generatedCount < this.generationConfig.maxInstancesPerTask) {
-        const nextDate = recurringPatternManager.calculateNextOccurrence(currentDate, config);
+        const nextDate = recurringPatternManager.calculateNextOccurrence(
+          currentDate,
+          config,
+        );
 
         // Stop if we hit end conditions
         if (this.shouldStopGenerating(nextDate, config, generatedCount + 1)) {
@@ -260,15 +305,22 @@ export class RecurringTaskGenerator {
         // Only generate future instances
         if (isAfter(nextDate, now) || isEqual(nextDate, now)) {
           // Check if this instance already exists
-          const existingInstance = await this.findExistingInstance(task.id, nextDate);
+          const existingInstance = await this.findExistingInstance(
+            task.id,
+            nextDate,
+          );
           if (!existingInstance) {
-            await this.createRecurringInstance(task, {
-              id: `${task.id}-instance-${Date.now()}`,
-              date: nextDate,
-              isGenerated: true,
-              originalDate: config.startDate || task.dueDate || new Date(),
-              occurrenceNumber: generatedCount + 1
-            }, config);
+            await this.createRecurringInstance(
+              task,
+              {
+                id: `${task.id}-instance-${Date.now()}`,
+                date: nextDate,
+                isGenerated: true,
+                originalDate: config.startDate || task.dueDate || new Date(),
+                occurrenceNumber: generatedCount + 1,
+              },
+              config,
+            );
 
             generatedCount++;
           }
@@ -276,9 +328,11 @@ export class RecurringTaskGenerator {
 
         currentDate = nextDate;
       }
-
     } catch (error) {
-      console.error(`Error generating future instances for task ${task.id}:`, error);
+      console.error(
+        `Error generating future instances for task ${task.id}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -286,15 +340,24 @@ export class RecurringTaskGenerator {
   /**
    * Find existing instance by date
    */
-  private async findExistingInstance(taskId: string, date: Date): Promise<Task | null> {
+  private async findExistingInstance(
+    taskId: string,
+    date: Date,
+  ): Promise<Task | null> {
     try {
       const instances = recurringTaskService.getRecurringInstances(taskId);
-      return instances.find(instance =>
-        instance.dueDate &&
-        isEqual(startOfDay(instance.dueDate), startOfDay(date))
-      ) || null;
+      return (
+        instances.find(
+          (instance) =>
+            instance.dueDate &&
+            isEqual(startOfDay(instance.dueDate), startOfDay(date)),
+        ) || null
+      );
     } catch (error) {
-      console.error(`Error finding existing instance for task ${taskId}:`, error);
+      console.error(
+        `Error finding existing instance for task ${taskId}:`,
+        error,
+      );
       return null;
     }
   }
@@ -305,14 +368,14 @@ export class RecurringTaskGenerator {
   private async createRecurringInstance(
     task: Task,
     instance: RecurringInstance,
-    config: RecurringTaskConfig
+    config: RecurringTaskConfig,
   ): Promise<Task> {
     try {
       const dueDate = instance.date;
       const instanceId = `${task.id}-instance-${instance.occurrenceNumber}`;
 
       // Create the instance task
-      const newTask: Omit<Task, 'id'> = {
+      const newTask: Omit<Task, "id"> = {
         ...task,
         id: instanceId,
         title: `${task.title} (Recurring)`,
@@ -323,22 +386,29 @@ export class RecurringTaskGenerator {
           isRecurringInstance: true,
           instanceNumber: instance.occurrenceNumber,
           recurringInstanceId: instance.id,
-          recurringConfig: config
+          recurringConfig: config,
         },
         createdAt: new Date(),
         updatedAt: new Date(),
         completed: false,
-        status: 'active' as TaskStatus
+        status: "active" as TaskStatus,
       };
 
       // Create the task
-      const createdTask = await recurringTaskService.createRecurringTask(newTask, config);
+      const createdTask = await recurringTaskService.createRecurringTask(
+        newTask,
+        config,
+      );
 
-      console.log(`Generated recurring instance ${instanceId} for task ${task.id}`);
+      console.log(
+        `Generated recurring instance ${instanceId} for task ${task.id}`,
+      );
       return createdTask;
-
     } catch (error) {
-      console.error(`Error creating recurring instance for task ${task.id}:`, error);
+      console.error(
+        `Error creating recurring instance for task ${task.id}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -352,16 +422,20 @@ export class RecurringTaskGenerator {
 
       // Delete all generated instances (keep the original task)
       const instanceIds = instances
-        .filter(instance => instance.id !== taskId)
-        .map(instance => instance.id);
+        .filter((instance) => instance.id !== taskId)
+        .map((instance) => instance.id);
 
       if (instanceIds.length > 0) {
         await recurringTaskService.deleteRecurringInstances(instanceIds);
-        console.log(`Deleted ${instanceIds.length} existing instances for task ${taskId}`);
+        console.log(
+          `Deleted ${instanceIds.length} existing instances for task ${taskId}`,
+        );
       }
-
     } catch (error) {
-      console.error(`Error deleting existing instances for task ${taskId}:`, error);
+      console.error(
+        `Error deleting existing instances for task ${taskId}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -372,7 +446,7 @@ export class RecurringTaskGenerator {
   private shouldStopGenerating(
     nextDate: Date,
     config: RecurringTaskConfig,
-    currentCount: number
+    currentCount: number,
   ): boolean {
     // Check max occurrences
     if (config.maxOccurrences && currentCount >= config.maxOccurrences) {
@@ -385,7 +459,10 @@ export class RecurringTaskGenerator {
     }
 
     // Check future limit
-    const futureLimit = addYears(new Date(), this.generationConfig.maxFutureYears);
+    const futureLimit = addYears(
+      new Date(),
+      this.generationConfig.maxFutureYears,
+    );
     if (isAfter(nextDate, futureLimit)) {
       return true;
     }
@@ -396,54 +473,65 @@ export class RecurringTaskGenerator {
   /**
    * Validate generation configuration
    */
-  private validateGenerationConfig(config: RecurringTaskConfig): { valid: boolean; errors: string[] } {
+  private validateGenerationConfig(config: RecurringTaskConfig): {
+    valid: boolean;
+    errors: string[];
+  } {
     const errors: string[] = [];
 
     if (!config.pattern) {
-      errors.push('Pattern is required');
+      errors.push("Pattern is required");
     }
 
     if (config.interval && config.interval < 1) {
-      errors.push('Interval must be at least 1');
+      errors.push("Interval must be at least 1");
     }
 
     if (config.maxOccurrences && config.maxOccurrences < 1) {
-      errors.push('Maximum occurrences must be at least 1');
+      errors.push("Maximum occurrences must be at least 1");
     }
 
     if (config.endDate && isBefore(new Date(config.endDate), new Date())) {
-      errors.push('End date cannot be in the past');
+      errors.push("End date cannot be in the past");
     }
 
     return {
       valid: errors.length === 0,
-      errors
+      errors,
     };
   }
 
   /**
    * Optimize generation configuration
    */
-  private optimizeGenerationConfig(config: RecurringTaskConfig): RecurringTaskConfig {
+  private optimizeGenerationConfig(
+    config: RecurringTaskConfig,
+  ): RecurringTaskConfig {
     // Get pattern complexity
-    const complexity = recurringPatternManager.getPatternComplexityScore(config);
+    const complexity =
+      recurringPatternManager.getPatternComplexityScore(config);
 
     // For high complexity patterns, limit the number of instances
     let maxOccurrences = config.maxOccurrences;
     if (complexity >= this.generationConfig.performanceThreshold) {
-      maxOccurrences = Math.min(maxOccurrences || this.generationConfig.maxInstancesPerTask, 20);
+      maxOccurrences = Math.min(
+        maxOccurrences || this.generationConfig.maxInstancesPerTask,
+        20,
+      );
     }
 
     return {
       ...config,
-      maxOccurrences
+      maxOccurrences,
     };
   }
 
   /**
    * Get generated instances for a task
    */
-  private getGeneratedInstancesForTask(taskId: string): RecurringTaskInstance[] {
+  private getGeneratedInstancesForTask(
+    taskId: string,
+  ): RecurringTaskInstance[] {
     try {
       const instances = recurringTaskService.getRecurringInstances(taskId);
       return instances.map((instance, index) => ({
@@ -454,10 +542,13 @@ export class RecurringTaskGenerator {
         originalTaskId: instance.customFields?.originalTaskId || taskId,
         occurrenceNumber: index + 1,
         status: instance.status,
-        completed: instance.completed
+        completed: instance.completed,
       }));
     } catch (error) {
-      console.error(`Error getting generated instances for task ${taskId}:`, error);
+      console.error(
+        `Error getting generated instances for task ${taskId}:`,
+        error,
+      );
       return [];
     }
   }
@@ -467,7 +558,7 @@ export class RecurringTaskGenerator {
    */
   async generateInstancesForAllRecurringTasks(): Promise<void> {
     try {
-      console.log('Generating instances for all recurring tasks...');
+      console.log("Generating instances for all recurring tasks...");
 
       // Get all recurring tasks
       const recurringTasks = await recurringTaskService.getRecurringTasks();
@@ -477,15 +568,19 @@ export class RecurringTaskGenerator {
         if (task.recurringPattern && task.customFields?.recurringConfig) {
           await this.generateRecurringTaskInstances(
             task.id,
-            task.customFields.recurringConfig
+            task.customFields.recurringConfig,
           );
         }
       }
 
-      console.log(`Generated instances for ${recurringTasks.length} recurring tasks`);
-
+      console.log(
+        `Generated instances for ${recurringTasks.length} recurring tasks`,
+      );
     } catch (error) {
-      console.error('Error generating instances for all recurring tasks:', error);
+      console.error(
+        "Error generating instances for all recurring tasks:",
+        error,
+      );
       throw error;
     }
   }
@@ -495,28 +590,32 @@ export class RecurringTaskGenerator {
    */
   async generateInstancesForOverdueTasks(): Promise<void> {
     try {
-      console.log('Generating instances for overdue recurring tasks...');
+      console.log("Generating instances for overdue recurring tasks...");
 
       // Get overdue instances
-      const overdueInstances = await recurringTaskService.getOverdueRecurringInstances();
+      const overdueInstances =
+        await recurringTaskService.getOverdueRecurringInstances();
 
       // For each overdue instance, generate next instances
       for (const instance of overdueInstances) {
         const originalTask = await recurringTaskService.getRecurringTask(
-          instance.customFields?.originalTaskId
+          instance.customFields?.originalTaskId,
         );
 
-        if (originalTask && originalTask.recurringPattern && !originalTask.customFields?.isPaused) {
+        if (
+          originalTask &&
+          originalTask.recurringPattern &&
+          !originalTask.customFields?.isPaused
+        ) {
           await this.generateRecurringTaskInstances(
             originalTask.id,
             originalTask.customFields.recurringConfig,
-            true // Force regenerate
+            true, // Force regenerate
           );
         }
       }
-
     } catch (error) {
-      console.error('Error generating instances for overdue tasks:', error);
+      console.error("Error generating instances for overdue tasks:", error);
       throw error;
     }
   }
@@ -524,29 +623,37 @@ export class RecurringTaskGenerator {
   /**
    * Generate instances for upcoming tasks
    */
-  async generateInstancesForUpcomingTasks(daysAhead: number = 30): Promise<void> {
+  async generateInstancesForUpcomingTasks(
+    daysAhead: number = 30,
+  ): Promise<void> {
     try {
-      console.log(`Generating instances for upcoming recurring tasks (next ${daysAhead} days)...`);
+      console.log(
+        `Generating instances for upcoming recurring tasks (next ${daysAhead} days)...`,
+      );
 
       // Get upcoming instances
-      const upcomingInstances = await recurringTaskService.getUpcomingRecurringInstances(daysAhead);
+      const upcomingInstances =
+        await recurringTaskService.getUpcomingRecurringInstances(daysAhead);
 
       // For each upcoming instance, ensure we have enough future instances
       for (const instance of upcomingInstances) {
         const originalTask = await recurringTaskService.getRecurringTask(
-          instance.customFields?.originalTaskId
+          instance.customFields?.originalTaskId,
         );
 
-        if (originalTask && originalTask.recurringPattern && !originalTask.customFields?.isPaused) {
+        if (
+          originalTask &&
+          originalTask.recurringPattern &&
+          !originalTask.customFields?.isPaused
+        ) {
           await this.generateRecurringTaskInstances(
             originalTask.id,
-            originalTask.customFields.recurringConfig
+            originalTask.customFields.recurringConfig,
           );
         }
       }
-
     } catch (error) {
-      console.error('Error generating instances for upcoming tasks:', error);
+      console.error("Error generating instances for upcoming tasks:", error);
       throw error;
     }
   }
@@ -569,7 +676,7 @@ export class RecurringTaskGenerator {
       averageInstancesPerTask: 0,
       generationTime: 0,
       queueLength: this.generationQueue.length,
-      isGenerating: this.isGenerating
+      isGenerating: this.isGenerating,
     };
   }
 
@@ -586,16 +693,20 @@ export class RecurringTaskGenerator {
       queueLength: this.generationQueue.length,
       isGenerating: this.isGenerating,
       averageGenerationTime: 0, // Would track in real implementation
-      lastGenerated: null // Would track in real implementation
+      lastGenerated: null, // Would track in real implementation
     };
   }
 
   /**
    * Clean up old generated instances
    */
-  async cleanupOldGeneratedInstances(maxAgeDays: number = 365): Promise<number> {
+  async cleanupOldGeneratedInstances(
+    maxAgeDays: number = 365,
+  ): Promise<number> {
     try {
-      console.log(`Cleaning up old generated instances (older than ${maxAgeDays} days)...`);
+      console.log(
+        `Cleaning up old generated instances (older than ${maxAgeDays} days)...`,
+      );
 
       const cutoffDate = addDays(new Date(), -maxAgeDays);
       let deletedCount = 0;
@@ -609,7 +720,11 @@ export class RecurringTaskGenerator {
 
         // Delete old completed instances
         for (const instance of instances) {
-          if (instance.completed && instance.dueDate && isBefore(instance.dueDate, cutoffDate)) {
+          if (
+            instance.completed &&
+            instance.dueDate &&
+            isBefore(instance.dueDate, cutoffDate)
+          ) {
             await recurringTaskService.deleteRecurringInstances([instance.id]);
             deletedCount++;
           }
@@ -618,9 +733,8 @@ export class RecurringTaskGenerator {
 
       console.log(`Cleaned up ${deletedCount} old generated instances`);
       return deletedCount;
-
     } catch (error) {
-      console.error('Error cleaning up old generated instances:', error);
+      console.error("Error cleaning up old generated instances:", error);
       return 0;
     }
   }
@@ -630,7 +744,7 @@ export class RecurringTaskGenerator {
    */
   async optimizeInstanceGeneration(): Promise<void> {
     try {
-      console.log('Optimizing instance generation...');
+      console.log("Optimizing instance generation...");
 
       // Get all recurring tasks
       const recurringTasks = await recurringTaskService.getRecurringTasks();
@@ -639,9 +753,8 @@ export class RecurringTaskGenerator {
       for (const task of recurringTasks) {
         await this.optimizeTaskGeneration(task);
       }
-
     } catch (error) {
-      console.error('Error optimizing instance generation:', error);
+      console.error("Error optimizing instance generation:", error);
       throw error;
     }
   }
@@ -657,11 +770,14 @@ export class RecurringTaskGenerator {
       if (!config) return;
 
       // Get pattern complexity
-      const complexity = recurringPatternManager.getPatternComplexityScore(config);
+      const complexity =
+        recurringPatternManager.getPatternComplexityScore(config);
 
       // For high complexity patterns, consider reducing instance count
       if (complexity >= this.generationConfig.performanceThreshold) {
-        console.warn(`Optimizing high complexity task ${task.id} (score: ${complexity})`);
+        console.warn(
+          `Optimizing high complexity task ${task.id} (score: ${complexity})`,
+        );
 
         // Get current instances
         const instances = recurringTaskService.getRecurringInstances(task.id);
@@ -670,15 +786,22 @@ export class RecurringTaskGenerator {
         if (instances.length > 30) {
           const optimizedConfig = {
             ...config,
-            maxOccurrences: Math.min(config.maxOccurrences || 50, 25)
+            maxOccurrences: Math.min(config.maxOccurrences || 50, 25),
           };
 
           // Update task with optimized config and regenerate
-          await recurringTaskService.updateRecurringTask(task.id, {}, optimizedConfig);
-          await this.generateRecurringTaskInstances(task.id, optimizedConfig, true);
+          await recurringTaskService.updateRecurringTask(
+            task.id,
+            {},
+            optimizedConfig,
+          );
+          await this.generateRecurringTaskInstances(
+            task.id,
+            optimizedConfig,
+            true,
+          );
         }
       }
-
     } catch (error) {
       console.error(`Error optimizing generation for task ${task.id}:`, error);
     }
@@ -687,17 +810,19 @@ export class RecurringTaskGenerator {
   /**
    * Get generation recommendations
    */
-  async getGenerationRecommendations(): Promise<Array<{
-    taskId: string;
-    recommendation: string;
-    severity: 'low' | 'medium' | 'high';
-    details: any;
-  }>> {
+  async getGenerationRecommendations(): Promise<
+    Array<{
+      taskId: string;
+      recommendation: string;
+      severity: "low" | "medium" | "high";
+      details: any;
+    }>
+  > {
     try {
       const recommendations: Array<{
         taskId: string;
         recommendation: string;
-        severity: 'low' | 'medium' | 'high';
+        severity: "low" | "medium" | "high";
         details: any;
       }> = [];
 
@@ -708,20 +833,25 @@ export class RecurringTaskGenerator {
       for (const task of recurringTasks) {
         const config = task.customFields?.recurringConfig;
         if (config) {
-          const complexity = recurringPatternManager.getPatternComplexityScore(config);
+          const complexity =
+            recurringPatternManager.getPatternComplexityScore(config);
           const instances = recurringTaskService.getRecurringInstances(task.id);
 
           // High complexity with many instances
-          if (complexity >= this.generationConfig.performanceThreshold && instances.length > 20) {
+          if (
+            complexity >= this.generationConfig.performanceThreshold &&
+            instances.length > 20
+          ) {
             recommendations.push({
               taskId: task.id,
-              recommendation: 'High complexity pattern with many instances may impact performance',
-              severity: 'high',
+              recommendation:
+                "High complexity pattern with many instances may impact performance",
+              severity: "high",
               details: {
                 complexityScore: complexity,
                 instanceCount: instances.length,
-                pattern: config.pattern
-              }
+                pattern: config.pattern,
+              },
             });
           }
 
@@ -729,34 +859,39 @@ export class RecurringTaskGenerator {
           if (instances.length > 100) {
             recommendations.push({
               taskId: task.id,
-              recommendation: 'Very large number of instances may cause performance issues',
-              severity: 'high',
+              recommendation:
+                "Very large number of instances may cause performance issues",
+              severity: "high",
               details: {
                 instanceCount: instances.length,
-                pattern: config.pattern
-              }
+                pattern: config.pattern,
+              },
             });
           }
 
           // No end condition with many instances
-          if (!config.endDate && !config.maxOccurrences && instances.length > 50) {
+          if (
+            !config.endDate &&
+            !config.maxOccurrences &&
+            instances.length > 50
+          ) {
             recommendations.push({
               taskId: task.id,
-              recommendation: 'No end condition with many instances - consider adding limits',
-              severity: 'medium',
+              recommendation:
+                "No end condition with many instances - consider adding limits",
+              severity: "medium",
               details: {
                 instanceCount: instances.length,
-                pattern: config.pattern
-              }
+                pattern: config.pattern,
+              },
             });
           }
         }
       }
 
       return recommendations;
-
     } catch (error) {
-      console.error('Error getting generation recommendations:', error);
+      console.error("Error getting generation recommendations:", error);
       return [];
     }
   }
@@ -764,12 +899,15 @@ export class RecurringTaskGenerator {
   /**
    * Start background generation
    */
-  startBackgroundGeneration(intervalMinutes: number = 120): { stop: () => void } {
+  startBackgroundGeneration(intervalMinutes: number = 120): {
+    stop: () => void;
+  } {
     let intervalId: NodeJS.Timeout;
 
     const generator = () => {
-      this.generateInstancesForAllRecurringTasks()
-        .catch(error => console.error('Background generation error:', error));
+      this.generateInstancesForAllRecurringTasks().catch((error) =>
+        console.error("Background generation error:", error),
+      );
     };
 
     // Initial run
@@ -781,7 +919,7 @@ export class RecurringTaskGenerator {
     return {
       stop: () => {
         clearInterval(intervalId);
-      }
+      },
     };
   }
 
@@ -798,7 +936,7 @@ export class RecurringTaskGenerator {
       isGenerating: this.isGenerating,
       queueLength: this.generationQueue.length,
       lastGeneration: null, // Would track in real implementation
-      nextGeneration: null // Would track in real implementation
+      nextGeneration: null, // Would track in real implementation
     };
   }
 
@@ -808,25 +946,23 @@ export class RecurringTaskGenerator {
   generatePreviewInstances(
     startDate: Date,
     config: RecurringTaskConfig,
-    count: number = 5
+    count: number = 5,
   ): RecurringTaskInstance[] {
     try {
-      return recurringPatternManager.generateRecurringDatesAdvanced(
-        startDate,
-        config,
-        count
-      ).map((instance, index) => ({
-        id: `preview-${index}`,
-        taskId: 'preview',
-        date: instance.date,
-        isGenerated: instance.isGenerated,
-        originalTaskId: 'preview',
-        occurrenceNumber: index + 1,
-        status: 'active' as TaskStatus,
-        completed: false
-      }));
+      return recurringPatternManager
+        .generateRecurringDatesAdvanced(startDate, config, count)
+        .map((instance, index) => ({
+          id: `preview-${index}`,
+          taskId: "preview",
+          date: instance.date,
+          isGenerated: instance.isGenerated,
+          originalTaskId: "preview",
+          occurrenceNumber: index + 1,
+          status: "active" as TaskStatus,
+          completed: false,
+        }));
     } catch (error) {
-      console.error('Error generating preview instances:', error);
+      console.error("Error generating preview instances:", error);
       return [];
     }
   }
@@ -834,7 +970,10 @@ export class RecurringTaskGenerator {
   /**
    * Validate instance generation capability
    */
-  validateInstanceGeneration(task: Task, config: RecurringTaskConfig): {
+  validateInstanceGeneration(
+    task: Task,
+    config: RecurringTaskConfig,
+  ): {
     canGenerate: boolean;
     reason?: string;
     warnings?: string[];
@@ -843,22 +982,23 @@ export class RecurringTaskGenerator {
       if (!task.recurringPattern) {
         return {
           canGenerate: false,
-          reason: 'Task is not a recurring task'
+          reason: "Task is not a recurring task",
         };
       }
 
       if (task.customFields?.isPaused) {
         return {
           canGenerate: false,
-          reason: 'Recurring task is paused'
+          reason: "Recurring task is paused",
         };
       }
 
-      const validation = recurringPatternManager.validatePatternConfigAdvanced(config);
+      const validation =
+        recurringPatternManager.validatePatternConfigAdvanced(config);
       if (!validation.valid) {
         return {
           canGenerate: false,
-          reason: `Invalid configuration: ${validation.errors.join(', ')}`
+          reason: `Invalid configuration: ${validation.errors.join(", ")}`,
         };
       }
 
@@ -867,27 +1007,26 @@ export class RecurringTaskGenerator {
       if (config.maxOccurrences && instances.length >= config.maxOccurrences) {
         return {
           canGenerate: false,
-          reason: 'Maximum occurrences reached'
+          reason: "Maximum occurrences reached",
         };
       }
 
       if (config.endDate && new Date(config.endDate) < new Date()) {
         return {
           canGenerate: false,
-          reason: 'End date has passed'
+          reason: "End date has passed",
         };
       }
 
       return {
         canGenerate: true,
-        warnings: validation.warnings
+        warnings: validation.warnings,
       };
-
     } catch (error) {
-      console.error('Error validating instance generation:', error);
+      console.error("Error validating instance generation:", error);
       return {
         canGenerate: false,
-        reason: 'Validation error'
+        reason: "Validation error",
       };
     }
   }

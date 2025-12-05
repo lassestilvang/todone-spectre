@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { ViewType } from '../../types/enums';
-import { ListView } from './ListView';
-import { BoardView } from './BoardView';
-import { CalendarView } from './CalendarView';
-import { ViewSwitcher } from './ViewSwitcher';
-import { useTasks } from '../../hooks/useTasks';
-import { useListView } from '../../hooks/useListView';
-import { useBoardView } from '../../hooks/useBoardView';
-import { useCalendarView } from '../../hooks/useCalendarView';
+import React, { useState } from "react";
+import { ViewType } from "../../types/enums";
+import { ListView } from "./ListView";
+import { BoardView } from "./BoardView";
+import { CalendarView } from "./CalendarView";
+import { ViewSwitcher } from "./ViewSwitcher";
+import { useTasks } from "../../hooks/useTasks";
+import { useListView } from "../../hooks/useListView";
+import { useBoardView } from "../../hooks/useBoardView";
+import { useCalendarView } from "../../hooks/useCalendarView";
 
 interface ViewLayoutProps {
   initialView?: ViewType;
@@ -119,9 +119,7 @@ export const ViewLayout: React.FC<ViewLayoutProps> = ({
         />
       </div>
 
-      <div className="view-content">
-        {renderView()}
-      </div>
+      <div className="view-content">{renderView()}</div>
     </div>
   );
 };

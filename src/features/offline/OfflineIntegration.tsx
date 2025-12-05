@@ -2,27 +2,27 @@
  * Comprehensive Offline Integration Component
  * Integrates all offline functionality with the existing Todone application
  */
-import React, { useState, useEffect } from 'react';
-import { useOfflineTasks } from '../../hooks/useOfflineTasks';
-import { useOfflineDataPersistence } from '../../hooks/useOfflineDataPersistence';
-import { useOfflineSync } from '../../hooks/useOfflineSync';
-import { useOfflineStore } from '../../store/useOfflineStore';
-import { Task } from '../../types/task';
-import { OfflineIndicator } from './OfflineIndicator';
-import { OfflineQueue } from './OfflineQueue';
-import { OfflineSync } from './OfflineSync';
-import { OfflineSettings } from './OfflineSettings';
+import React, { useState, useEffect } from "react";
+import { useOfflineTasks } from "../../hooks/useOfflineTasks";
+import { useOfflineDataPersistence } from "../../hooks/useOfflineDataPersistence";
+import { useOfflineSync } from "../../hooks/useOfflineSync";
+import { useOfflineStore } from "../../store/useOfflineStore";
+import { Task } from "../../types/task";
+import { OfflineIndicator } from "./OfflineIndicator";
+import { OfflineQueue } from "./OfflineQueue";
+import { OfflineSync } from "./OfflineSync";
+import { OfflineSettings } from "./OfflineSettings";
 
 export const OfflineIntegration: React.FC = () => {
-  const [demoTask, setDemoTask] = useState<Omit<Task, 'id'>>({
-    title: 'Sample Offline Task',
-    description: 'This task will be created offline and synced when online',
-    status: 'todo',
-    priority: 'medium',
-    projectId: 'demo-project',
+  const [demoTask, setDemoTask] = useState<Omit<Task, "id">>({
+    title: "Sample Offline Task",
+    description: "This task will be created offline and synced when online",
+    status: "todo",
+    priority: "medium",
+    projectId: "demo-project",
     createdAt: new Date(),
     updatedAt: new Date(),
-    completed: false
+    completed: false,
   });
 
   // Offline task management
@@ -34,7 +34,7 @@ export const OfflineIntegration: React.FC = () => {
     deleteTaskOffline,
     toggleCompletionOffline,
     processOfflineQueue,
-    hasPendingOperations
+    hasPendingOperations,
   } = useOfflineTasks();
 
   // Offline data persistence
@@ -43,7 +43,7 @@ export const OfflineIntegration: React.FC = () => {
     pendingOperations: pendingDataOperations,
     syncOfflineData,
     needsSync: needsDataSync,
-    storageStats
+    storageStats,
   } = useOfflineDataPersistence();
 
   // Offline sync
@@ -53,7 +53,7 @@ export const OfflineIntegration: React.FC = () => {
     pendingOperations,
     syncAll,
     needsSync,
-    getComprehensiveOfflineStatus
+    getComprehensiveOfflineStatus,
   } = useOfflineSync();
 
   // Offline store
@@ -65,7 +65,9 @@ export const OfflineIntegration: React.FC = () => {
       const task = await createTaskOffline(demoTask);
       alert(`Task created offline: ${task.title} (ID: ${task.id})`);
     } catch (error) {
-      alert(`Failed to create task offline: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(
+        `Failed to create task offline: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 
@@ -73,9 +75,11 @@ export const OfflineIntegration: React.FC = () => {
   const handleProcessQueue = async () => {
     try {
       await processOfflineQueue();
-      alert('Offline queue processed successfully!');
+      alert("Offline queue processed successfully!");
     } catch (error) {
-      alert(`Failed to process queue: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(
+        `Failed to process queue: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 
@@ -83,9 +87,11 @@ export const OfflineIntegration: React.FC = () => {
   const handleSyncAll = async () => {
     try {
       await syncAll();
-      alert('All offline data synced successfully!');
+      alert("All offline data synced successfully!");
     } catch (error) {
-      alert(`Failed to sync: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      alert(
+        `Failed to sync: ${error instanceof Error ? error.message : "Unknown error"}`,
+      );
     }
   };
 
@@ -93,7 +99,7 @@ export const OfflineIntegration: React.FC = () => {
   const handleToggleNetwork = () => {
     const newStatus = !offlineStore.status.isOffline;
     offlineStore.simulateNetworkChange(newStatus);
-    alert(`Network status changed to: ${newStatus ? 'Offline' : 'Online'}`);
+    alert(`Network status changed to: ${newStatus ? "Offline" : "Online"}`);
   };
 
   return (
@@ -106,8 +112,10 @@ export const OfflineIntegration: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <div className="text-sm text-gray-600 mb-1">Network Status</div>
-            <div className={`text-2xl font-bold ${isOffline ? 'text-red-600' : 'text-green-600'}`}>
-              {isOffline ? 'OFFLINE' : 'ONLINE'}
+            <div
+              className={`text-2xl font-bold ${isOffline ? "text-red-600" : "text-green-600"}`}
+            >
+              {isOffline ? "OFFLINE" : "ONLINE"}
             </div>
           </div>
 
@@ -121,7 +129,7 @@ export const OfflineIntegration: React.FC = () => {
           <div className="bg-white p-4 rounded-lg shadow-sm">
             <div className="text-sm text-gray-600 mb-1">Last Synced</div>
             <div className="text-2xl font-bold text-purple-600">
-              {lastSynced ? lastSynced.toLocaleString() : 'Never'}
+              {lastSynced ? lastSynced.toLocaleString() : "Never"}
             </div>
           </div>
         </div>
@@ -188,16 +196,22 @@ export const OfflineIntegration: React.FC = () => {
 
       {/* Storage Statistics */}
       <div className="mb-6 p-4 bg-white rounded-lg shadow-sm">
-        <h2 className="text-xl font-semibold mb-4">Offline Storage Statistics</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          Offline Storage Statistics
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <div className="text-sm text-gray-600 mb-1">Tasks in Storage</div>
-            <div className="text-xl font-bold text-blue-600">{storageStats.taskCount}</div>
+            <div className="text-xl font-bold text-blue-600">
+              {storageStats.taskCount}
+            </div>
           </div>
 
           <div>
             <div className="text-sm text-gray-600 mb-1">Queue Size</div>
-            <div className="text-xl font-bold text-green-600">{storageStats.queueSize}</div>
+            <div className="text-xl font-bold text-green-600">
+              {storageStats.queueSize}
+            </div>
           </div>
 
           <div>
@@ -211,7 +225,9 @@ export const OfflineIntegration: React.FC = () => {
 
       {/* Comprehensive Status */}
       <div className="p-4 bg-gray-50 rounded-lg">
-        <h2 className="text-xl font-semibold mb-4">Comprehensive Offline Status</h2>
+        <h2 className="text-xl font-semibold mb-4">
+          Comprehensive Offline Status
+        </h2>
         <div className="bg-white p-4 rounded-lg shadow-sm">
           <pre className="text-sm overflow-x-auto">
             {JSON.stringify(getComprehensiveOfflineStatus(), null, 2)}

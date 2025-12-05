@@ -1,6 +1,11 @@
-import { MobileConfig, MobilePreferences, MobileState, MobileDeviceInfo } from '../../../../types/mobileTypes';
-import { MobileService } from '../../../../services/mobileService';
-import { MobileConfigService } from '../../../../services/mobileConfigService';
+import {
+  MobileConfig,
+  MobilePreferences,
+  MobileState,
+  MobileDeviceInfo,
+} from "../../../../types/mobileTypes";
+import { MobileService } from "../../../../services/mobileService";
+import { MobileConfigService } from "../../../../services/mobileConfigService";
 
 // Mock mobile service for testing
 export class MockMobileService implements Partial<MobileService> {
@@ -15,11 +20,11 @@ export class MockMobileService implements Partial<MobileService> {
   private getDefaultMockState(): MobileState {
     return {
       isMobile: true,
-      deviceType: 'phone',
-      orientation: 'portrait',
+      deviceType: "phone",
+      orientation: "portrait",
       isTablet: false,
       screenDimensions: { width: 375, height: 812, scale: 2 },
-      networkStatus: 'online',
+      networkStatus: "online",
       batteryLevel: 0.85,
       isLowPowerMode: false,
     };
@@ -27,12 +32,12 @@ export class MockMobileService implements Partial<MobileService> {
 
   private getDefaultMockDeviceInfo(): MobileDeviceInfo {
     return {
-      deviceId: 'mock-device-id-12345',
-      deviceName: 'Mock Device',
-      systemName: 'MockOS',
-      systemVersion: '1.0.0',
-      appVersion: '1.0.0',
-      buildNumber: '1',
+      deviceId: "mock-device-id-12345",
+      deviceName: "Mock Device",
+      systemName: "MockOS",
+      systemVersion: "1.0.0",
+      appVersion: "1.0.0",
+      buildNumber: "1",
       isEmulator: true,
       hasNotch: true,
       batteryLevel: 85,
@@ -74,7 +79,7 @@ export class MockMobileService implements Partial<MobileService> {
     // Mock haptic feedback - do nothing in tests
   }
 
-  public async checkNetworkStatus(): Promise<'online' | 'offline' | 'unknown'> {
+  public async checkNetworkStatus(): Promise<"online" | "offline" | "unknown"> {
     return this.mockState.networkStatus;
   }
 
@@ -82,7 +87,7 @@ export class MockMobileService implements Partial<MobileService> {
     return this.mockState.isMobile;
   }
 
-  public getCurrentDeviceType(): 'phone' | 'tablet' | 'unknown' {
+  public getCurrentDeviceType(): "phone" | "tablet" | "unknown" {
     return this.mockState.deviceType;
   }
 
@@ -104,22 +109,22 @@ export class MockMobileConfigService implements Partial<MobileConfigService> {
   private getDefaultMockConfig(): MobileConfig {
     return {
       darkMode: false,
-      primaryColor: '#6200EE',
-      secondaryColor: '#03DAC6',
-      accentColor: '#FFC107',
-      backgroundColor: '#FFFFFF',
-      textColor: '#333333',
-      fontSize: 'medium',
-      animationQuality: 'high',
+      primaryColor: "#6200EE",
+      secondaryColor: "#03DAC6",
+      accentColor: "#FFC107",
+      backgroundColor: "#FFFFFF",
+      textColor: "#333333",
+      fontSize: "medium",
+      animationQuality: "high",
       enableHapticFeedback: true,
       enableSwipeGestures: true,
       enableTouchFeedback: true,
       maxTasksPerView: 20,
-      defaultView: 'list',
-      syncFrequency: 'automatic',
+      defaultView: "list",
+      syncFrequency: "automatic",
       offlineMode: false,
       batterySaverMode: false,
-      performanceMode: 'balanced',
+      performanceMode: "balanced",
       notificationPreferences: {
         taskReminders: true,
         projectUpdates: true,
@@ -132,8 +137,8 @@ export class MockMobileConfigService implements Partial<MobileConfigService> {
 
   private getDefaultMockPreferences(): MobilePreferences {
     return {
-      preferredView: 'list',
-      lastActiveTab: 'tasks',
+      preferredView: "list",
+      lastActiveTab: "tasks",
       tutorialCompleted: false,
       onboardingCompleted: false,
       featureFlags: {
@@ -145,11 +150,11 @@ export class MockMobileConfigService implements Partial<MobileConfigService> {
         reducedMotion: false,
         highContrast: false,
         screenReaderEnabled: false,
-        fontSizeAdjustment: 'normal',
+        fontSizeAdjustment: "normal",
       },
       cacheSettings: {
         cacheEnabled: true,
-        cacheSize: 'medium',
+        cacheSize: "medium",
         clearCacheOnExit: false,
       },
     };
@@ -167,7 +172,9 @@ export class MockMobileConfigService implements Partial<MobileConfigService> {
     this.mockConfig = { ...this.mockConfig, ...updates };
   }
 
-  public async updatePreferences(updates: Partial<MobilePreferences>): Promise<void> {
+  public async updatePreferences(
+    updates: Partial<MobilePreferences>,
+  ): Promise<void> {
     this.mockPreferences = { ...this.mockPreferences, ...updates };
   }
 
@@ -175,7 +182,9 @@ export class MockMobileConfigService implements Partial<MobileConfigService> {
     this.mockConfig.darkMode = !this.mockConfig.darkMode;
   }
 
-  public async setThemeConfig(themeConfig: Partial<MobileConfig>): Promise<void> {
+  public async setThemeConfig(
+    themeConfig: Partial<MobileConfig>,
+  ): Promise<void> {
     this.mockConfig = { ...this.mockConfig, ...themeConfig };
   }
 
@@ -191,9 +200,11 @@ export class MockMobileConfigService implements Partial<MobileConfigService> {
     };
   }
 
-  public async setPerformanceMode(mode: 'high' | 'balanced' | 'battery_saver'): Promise<void> {
+  public async setPerformanceMode(
+    mode: "high" | "balanced" | "battery_saver",
+  ): Promise<void> {
     this.mockConfig.performanceMode = mode;
-    this.mockConfig.batterySaverMode = mode === 'battery_saver';
+    this.mockConfig.batterySaverMode = mode === "battery_saver";
   }
 
   public async initialize(): Promise<void> {
@@ -206,14 +217,16 @@ export class MockMobileConfigService implements Partial<MobileConfigService> {
 }
 
 // Mobile test data generators
-export const generateMockMobileState = (overrides: Partial<MobileState> = {}): MobileState => {
+export const generateMockMobileState = (
+  overrides: Partial<MobileState> = {},
+): MobileState => {
   const defaultState: MobileState = {
     isMobile: true,
-    deviceType: 'phone',
-    orientation: 'portrait',
+    deviceType: "phone",
+    orientation: "portrait",
     isTablet: false,
     screenDimensions: { width: 375, height: 812, scale: 2 },
-    networkStatus: 'online',
+    networkStatus: "online",
     batteryLevel: 0.85,
     isLowPowerMode: false,
   };
@@ -221,25 +234,27 @@ export const generateMockMobileState = (overrides: Partial<MobileState> = {}): M
   return { ...defaultState, ...overrides };
 };
 
-export const generateMockMobileConfig = (overrides: Partial<MobileConfig> = {}): MobileConfig => {
+export const generateMockMobileConfig = (
+  overrides: Partial<MobileConfig> = {},
+): MobileConfig => {
   const defaultConfig: MobileConfig = {
     darkMode: false,
-    primaryColor: '#6200EE',
-    secondaryColor: '#03DAC6',
-    accentColor: '#FFC107',
-    backgroundColor: '#FFFFFF',
-    textColor: '#333333',
-    fontSize: 'medium',
-    animationQuality: 'high',
+    primaryColor: "#6200EE",
+    secondaryColor: "#03DAC6",
+    accentColor: "#FFC107",
+    backgroundColor: "#FFFFFF",
+    textColor: "#333333",
+    fontSize: "medium",
+    animationQuality: "high",
     enableHapticFeedback: true,
     enableSwipeGestures: true,
     enableTouchFeedback: true,
     maxTasksPerView: 20,
-    defaultView: 'list',
-    syncFrequency: 'automatic',
+    defaultView: "list",
+    syncFrequency: "automatic",
     offlineMode: false,
     batterySaverMode: false,
-    performanceMode: 'balanced',
+    performanceMode: "balanced",
     notificationPreferences: {
       taskReminders: true,
       projectUpdates: true,
@@ -252,10 +267,12 @@ export const generateMockMobileConfig = (overrides: Partial<MobileConfig> = {}):
   return { ...defaultConfig, ...overrides };
 };
 
-export const generateMockMobilePreferences = (overrides: Partial<MobilePreferences> = {}): MobilePreferences => {
+export const generateMockMobilePreferences = (
+  overrides: Partial<MobilePreferences> = {},
+): MobilePreferences => {
   const defaultPreferences: MobilePreferences = {
-    preferredView: 'list',
-    lastActiveTab: 'tasks',
+    preferredView: "list",
+    lastActiveTab: "tasks",
     tutorialCompleted: false,
     onboardingCompleted: false,
     featureFlags: {
@@ -267,11 +284,11 @@ export const generateMockMobilePreferences = (overrides: Partial<MobilePreferenc
       reducedMotion: false,
       highContrast: false,
       screenReaderEnabled: false,
-      fontSizeAdjustment: 'normal',
+      fontSizeAdjustment: "normal",
     },
     cacheSettings: {
       cacheEnabled: true,
-      cacheSize: 'medium',
+      cacheSize: "medium",
       clearCacheOnExit: false,
     },
   };
@@ -279,14 +296,16 @@ export const generateMockMobilePreferences = (overrides: Partial<MobilePreferenc
   return { ...defaultPreferences, ...overrides };
 };
 
-export const generateMockDeviceInfo = (overrides: Partial<MobileDeviceInfo> = {}): MobileDeviceInfo => {
+export const generateMockDeviceInfo = (
+  overrides: Partial<MobileDeviceInfo> = {},
+): MobileDeviceInfo => {
   const defaultDeviceInfo: MobileDeviceInfo = {
-    deviceId: 'mock-device-id',
-    deviceName: 'Test Device',
-    systemName: 'TestOS',
-    systemVersion: '1.0.0',
-    appVersion: '1.0.0',
-    buildNumber: '1',
+    deviceId: "mock-device-id",
+    deviceName: "Test Device",
+    systemName: "TestOS",
+    systemVersion: "1.0.0",
+    appVersion: "1.0.0",
+    buildNumber: "1",
     isEmulator: true,
     hasNotch: true,
     batteryLevel: 85,
@@ -300,48 +319,48 @@ export const generateMockDeviceInfo = (overrides: Partial<MobileDeviceInfo> = {}
 export const mobileTestScenarios = {
   onlineHighBattery: {
     mobileState: generateMockMobileState({
-      networkStatus: 'online',
+      networkStatus: "online",
       batteryLevel: 0.95,
       isLowPowerMode: false,
     }),
-    description: 'Online with high battery',
+    description: "Online with high battery",
   },
 
   offlineLowBattery: {
     mobileState: generateMockMobileState({
-      networkStatus: 'offline',
+      networkStatus: "offline",
       batteryLevel: 0.15,
       isLowPowerMode: true,
     }),
-    description: 'Offline with low battery',
+    description: "Offline with low battery",
   },
 
   tabletLandscape: {
     mobileState: generateMockMobileState({
-      deviceType: 'tablet',
-      orientation: 'landscape',
+      deviceType: "tablet",
+      orientation: "landscape",
       isTablet: true,
       screenDimensions: { width: 1024, height: 768, scale: 2 },
     }),
-    description: 'Tablet in landscape mode',
+    description: "Tablet in landscape mode",
   },
 
   darkModePerformance: {
     mobileConfig: generateMockMobileConfig({
       darkMode: true,
-      performanceMode: 'high',
-      animationQuality: 'high',
+      performanceMode: "high",
+      animationQuality: "high",
     }),
-    description: 'Dark mode with high performance',
+    description: "Dark mode with high performance",
   },
 
   batterySaverMode: {
     mobileConfig: generateMockMobileConfig({
-      performanceMode: 'battery_saver',
-      animationQuality: 'low',
+      performanceMode: "battery_saver",
+      animationQuality: "low",
       batterySaverMode: true,
     }),
-    description: 'Battery saver mode',
+    description: "Battery saver mode",
   },
 };
 
@@ -352,7 +371,7 @@ export const renderMobileComponent = async (
   mockServices: {
     mobileService?: MockMobileService;
     mobileConfigService?: MockMobileConfigService;
-  } = {}
+  } = {},
 ) => {
   // This would be implemented with your testing library
   // For example, with React Testing Library:
@@ -381,15 +400,15 @@ export const testMobileIntegration = async (
     enablePerformanceOptimization?: boolean;
     enableNetworkMonitoring?: boolean;
     enableBatteryMonitoring?: boolean;
-  } = {}
+  } = {},
 ) => {
   // This would test the mobile integration functionality
-  console.log('Testing mobile integration with config:', integrationConfig);
+  console.log("Testing mobile integration with config:", integrationConfig);
 
   // Mock implementation would go here
   return {
     success: true,
-    message: 'Mobile integration test completed',
+    message: "Mobile integration test completed",
     config: integrationConfig,
   };
 };
@@ -398,7 +417,7 @@ export const testMobileIntegration = async (
 export const measureMobilePerformance = async (
   testName: string,
   testFunction: () => Promise<void>,
-  iterations: number = 5
+  iterations: number = 5,
 ) => {
   const startTime = Date.now();
 

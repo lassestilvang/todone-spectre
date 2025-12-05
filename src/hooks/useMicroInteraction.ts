@@ -1,10 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
-import { microInteractionService } from '../services/microInteractionService';
-import { microInteractionUtils } from '../utils/microInteractionUtils';
+import { useState, useEffect, useCallback } from "react";
+import { microInteractionService } from "../services/microInteractionService";
+import { microInteractionUtils } from "../utils/microInteractionUtils";
 
 export const useMicroInteraction = () => {
   const [microInteractionState, setMicroInteractionState] = useState(
-    microInteractionService.getState()
+    microInteractionService.getState(),
   );
 
   const triggerMicroInteraction = useCallback((type: string) => {
@@ -24,7 +24,9 @@ export const useMicroInteraction = () => {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = microInteractionService.subscribe(setMicroInteractionState);
+    const unsubscribe = microInteractionService.subscribe(
+      setMicroInteractionState,
+    );
     return () => unsubscribe();
   }, []);
 
@@ -33,6 +35,6 @@ export const useMicroInteraction = () => {
     triggerMicroInteraction,
     enableMicroInteractions,
     setMicroInteractionConfig,
-    getMicroInteractionConfig
+    getMicroInteractionConfig,
   };
 };

@@ -1,10 +1,10 @@
 module.exports = {
   // Production build configuration
   build: {
-    outDir: 'dist',
+    outDir: "dist",
     emptyOutDir: true,
     sourcemap: false,
-    minify: 'terser',
+    minify: "terser",
     terserOptions: {
       compress: {
         drop_console: true,
@@ -14,8 +14,8 @@ module.exports = {
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom', 'react-router-dom'],
-          utils: ['lodash', 'date-fns'],
+          vendor: ["react", "react-dom", "react-router-dom"],
+          utils: ["lodash", "date-fns"],
         },
       },
     },
@@ -24,7 +24,7 @@ module.exports = {
   // Server configuration
   server: {
     port: 3000,
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     strictPort: true,
     hmr: {
       overlay: false,
@@ -33,25 +33,25 @@ module.exports = {
 
   // Optimization
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom', 'zustand'],
+    include: ["react", "react-dom", "react-router-dom", "zustand"],
   },
 
   // Environment variables
   define: {
-    'process.env.NODE_ENV': JSON.stringify('production'),
-    'process.env.VITE_API_URL': JSON.stringify(
-      process.env.VITE_API_URL || 'https://api.todone.com',
+    "process.env.NODE_ENV": JSON.stringify("production"),
+    "process.env.VITE_API_URL": JSON.stringify(
+      process.env.VITE_API_URL || "https://api.todone.com",
     ),
-    'process.env.VITE_AUTH_SECRET': JSON.stringify(
-      process.env.VITE_AUTH_SECRET || 'default-secret',
+    "process.env.VITE_AUTH_SECRET": JSON.stringify(
+      process.env.VITE_AUTH_SECRET || "default-secret",
     ),
   },
 
   // Performance budget
   performance: {
-    chunks: 'warn',
+    chunks: "warn",
     assetFilter: function (assetFilename) {
-      return assetFilename.endsWith('.js');
+      return assetFilename.endsWith(".js");
     },
   },
 };

@@ -1,5 +1,13 @@
-import React from 'react';
-import { Box, Text, VStack, HStack, Badge, Divider, useColorModeValue } from '@chakra-ui/react';
+import React from "react";
+import {
+  Box,
+  Text,
+  VStack,
+  HStack,
+  Badge,
+  Divider,
+  useColorModeValue,
+} from "@chakra-ui/react";
 
 interface PreviewData {
   title?: string;
@@ -23,10 +31,10 @@ export const NaturalLanguagePreview: React.FC<NaturalLanguagePreviewProps> = ({
   previewData,
   onConfirm,
   onCancel,
-  isLoading = false
+  isLoading = false,
 }) => {
-  const bgColor = useColorModeValue('white', 'gray.800');
-  const borderColor = useColorModeValue('gray.200', 'gray.600');
+  const bgColor = useColorModeValue("white", "gray.800");
+  const borderColor = useColorModeValue("gray.200", "gray.600");
 
   return (
     <Box
@@ -38,13 +46,19 @@ export const NaturalLanguagePreview: React.FC<NaturalLanguagePreviewProps> = ({
       boxShadow="sm"
     >
       <VStack align="stretch" spacing={4}>
-        <Text fontSize="lg" fontWeight="bold">Task Preview</Text>
+        <Text fontSize="lg" fontWeight="bold">
+          Task Preview
+        </Text>
 
         <Divider />
 
         <HStack justifyContent="space-between">
-          <Text fontSize="sm" fontWeight="medium">Original Text:</Text>
-          <Text fontSize="sm" fontStyle="italic">{previewData.rawText}</Text>
+          <Text fontSize="sm" fontWeight="medium">
+            Original Text:
+          </Text>
+          <Text fontSize="sm" fontStyle="italic">
+            {previewData.rawText}
+          </Text>
         </HStack>
 
         <Divider />
@@ -52,32 +66,47 @@ export const NaturalLanguagePreview: React.FC<NaturalLanguagePreviewProps> = ({
         <VStack align="stretch" spacing={3}>
           {previewData.title && (
             <HStack>
-              <Text fontSize="sm" fontWeight="medium">Title:</Text>
+              <Text fontSize="sm" fontWeight="medium">
+                Title:
+              </Text>
               <Text fontSize="sm">{previewData.title}</Text>
             </HStack>
           )}
 
           {previewData.description && (
             <HStack align="start">
-              <Text fontSize="sm" fontWeight="medium">Description:</Text>
-              <Text fontSize="sm" whiteSpace="pre-wrap">{previewData.description}</Text>
+              <Text fontSize="sm" fontWeight="medium">
+                Description:
+              </Text>
+              <Text fontSize="sm" whiteSpace="pre-wrap">
+                {previewData.description}
+              </Text>
             </HStack>
           )}
 
           {previewData.dueDate && (
             <HStack>
-              <Text fontSize="sm" fontWeight="medium">Due Date:</Text>
+              <Text fontSize="sm" fontWeight="medium">
+                Due Date:
+              </Text>
               <Text fontSize="sm">{previewData.dueDate}</Text>
             </HStack>
           )}
 
           {previewData.priority && (
             <HStack>
-              <Text fontSize="sm" fontWeight="medium">Priority:</Text>
-              <Badge colorScheme={
-                previewData.priority.toLowerCase() === 'high' ? 'red' :
-                previewData.priority.toLowerCase() === 'medium' ? 'yellow' : 'green'
-              }>
+              <Text fontSize="sm" fontWeight="medium">
+                Priority:
+              </Text>
+              <Badge
+                colorScheme={
+                  previewData.priority.toLowerCase() === "high"
+                    ? "red"
+                    : previewData.priority.toLowerCase() === "medium"
+                      ? "yellow"
+                      : "green"
+                }
+              >
                 {previewData.priority}
               </Badge>
             </HStack>
@@ -85,7 +114,9 @@ export const NaturalLanguagePreview: React.FC<NaturalLanguagePreviewProps> = ({
 
           {previewData.labels && previewData.labels.length > 0 && (
             <HStack align="start">
-              <Text fontSize="sm" fontWeight="medium">Labels:</Text>
+              <Text fontSize="sm" fontWeight="medium">
+                Labels:
+              </Text>
               <HStack wrap="wrap">
                 {previewData.labels.map((label, index) => (
                   <Badge key={index} colorScheme="blue" mr={1} mb={1}>
@@ -98,7 +129,9 @@ export const NaturalLanguagePreview: React.FC<NaturalLanguagePreviewProps> = ({
 
           {previewData.project && (
             <HStack>
-              <Text fontSize="sm" fontWeight="medium">Project:</Text>
+              <Text fontSize="sm" fontWeight="medium">
+                Project:
+              </Text>
               <Text fontSize="sm">{previewData.project}</Text>
             </HStack>
           )}
@@ -137,4 +170,4 @@ export const NaturalLanguagePreview: React.FC<NaturalLanguagePreviewProps> = ({
 };
 
 // Add Button import
-import { Button } from '@chakra-ui/react';
+import { Button } from "@chakra-ui/react";

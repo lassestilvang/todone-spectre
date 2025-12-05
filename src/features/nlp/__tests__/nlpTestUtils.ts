@@ -1,26 +1,30 @@
-import { ParseResult } from '../../../hooks/useNlpParser';
+import { ParseResult } from "../../../hooks/useNlpParser";
 
 /**
  * Generates test data for NLP parsing
  */
-export function generateTestParseData(overrides: Partial<ParseResult> = {}): ParseResult {
+export function generateTestParseData(
+  overrides: Partial<ParseResult> = {},
+): ParseResult {
   return {
-    title: 'Test task title',
-    description: 'This is a test task description',
-    dueDate: 'December 31, 2023',
-    priority: 'medium',
-    labels: ['test', 'demo'],
-    project: 'Test Project',
-    rawText: 'Create a test task for the demo project due by December 31, 2023',
+    title: "Test task title",
+    description: "This is a test task description",
+    dueDate: "December 31, 2023",
+    priority: "medium",
+    labels: ["test", "demo"],
+    project: "Test Project",
+    rawText: "Create a test task for the demo project due by December 31, 2023",
     confidence: 85,
-    ...overrides
+    ...overrides,
   };
 }
 
 /**
  * Generates mock NLP service responses
  */
-export function generateMockNlpResponse(overrides: Partial<ParseResult> = {}): ParseResult {
+export function generateMockNlpResponse(
+  overrides: Partial<ParseResult> = {},
+): ParseResult {
   return generateTestParseData(overrides);
 }
 
@@ -29,16 +33,16 @@ export function generateMockNlpResponse(overrides: Partial<ParseResult> = {}): P
  */
 export function generateTestInputTexts(): string[] {
   return [
-    'Create a high priority task to finish the project proposal by Friday with labels important and work',
-    'Schedule a meeting with the team tomorrow at 2pm to discuss Q3 goals',
-    'Add a low priority task to research new design trends for the marketing project',
-    'Remind me to call mom on her birthday next week and buy a gift',
-    'Set up a weekly review every Monday at 9am for project status updates',
-    'Buy groceries for the week including milk, eggs, and bread',
-    'Prepare presentation slides for the client meeting on Thursday',
-    'Review and respond to important emails from the manager',
-    'Update the project documentation with new API changes',
-    'Test the new feature implementation before the demo'
+    "Create a high priority task to finish the project proposal by Friday with labels important and work",
+    "Schedule a meeting with the team tomorrow at 2pm to discuss Q3 goals",
+    "Add a low priority task to research new design trends for the marketing project",
+    "Remind me to call mom on her birthday next week and buy a gift",
+    "Set up a weekly review every Monday at 9am for project status updates",
+    "Buy groceries for the week including milk, eggs, and bread",
+    "Prepare presentation slides for the client meeting on Thursday",
+    "Review and respond to important emails from the manager",
+    "Update the project documentation with new API changes",
+    "Test the new feature implementation before the demo",
   ];
 }
 
@@ -48,35 +52,38 @@ export function generateTestInputTexts(): string[] {
 export function generateExpectedParseResults(): ParseResult[] {
   return [
     {
-      title: 'finish the project proposal',
+      title: "finish the project proposal",
       description: undefined,
-      dueDate: 'Friday',
-      priority: 'high',
-      labels: ['important', 'work'],
+      dueDate: "Friday",
+      priority: "high",
+      labels: ["important", "work"],
       project: undefined,
-      rawText: 'Create a high priority task to finish the project proposal by Friday with labels important and work',
-      confidence: 75
+      rawText:
+        "Create a high priority task to finish the project proposal by Friday with labels important and work",
+      confidence: 75,
     },
     {
-      title: 'meeting with the team',
-      description: 'to discuss Q3 goals',
-      dueDate: 'tomorrow at 2pm',
-      priority: 'medium',
+      title: "meeting with the team",
+      description: "to discuss Q3 goals",
+      dueDate: "tomorrow at 2pm",
+      priority: "medium",
       labels: undefined,
       project: undefined,
-      rawText: 'Schedule a meeting with the team tomorrow at 2pm to discuss Q3 goals',
-      confidence: 65
+      rawText:
+        "Schedule a meeting with the team tomorrow at 2pm to discuss Q3 goals",
+      confidence: 65,
     },
     {
-      title: 'research new design trends',
+      title: "research new design trends",
       description: undefined,
       dueDate: undefined,
-      priority: 'low',
+      priority: "low",
       labels: undefined,
-      project: 'marketing project',
-      rawText: 'Add a low priority task to research new design trends for the marketing project',
-      confidence: 60
-    }
+      project: "marketing project",
+      rawText:
+        "Add a low priority task to research new design trends for the marketing project",
+      confidence: 60,
+    },
   ];
 }
 
@@ -88,9 +95,8 @@ export class MockNlpParserService {
   private responseIndex = 0;
 
   constructor(mockResponses: ParseResult[] = []) {
-    this.mockResponses = mockResponses.length > 0
-      ? mockResponses
-      : [generateMockNlpResponse()];
+    this.mockResponses =
+      mockResponses.length > 0 ? mockResponses : [generateMockNlpResponse()];
   }
 
   async parse(text: string): Promise<ParseResult> {
@@ -103,7 +109,7 @@ export class MockNlpParserService {
 
     return {
       ...response,
-      rawText: text
+      rawText: text,
     };
   }
 
@@ -120,23 +126,34 @@ export class MockNlpParserService {
 /**
  * Test validation utilities
  */
-export function validateParseResult(result: ParseResult, expected: Partial<ParseResult>) {
+export function validateParseResult(
+  result: ParseResult,
+  expected: Partial<ParseResult>,
+) {
   const errors: string[] = [];
 
   if (expected.title && result.title !== expected.title) {
-    errors.push(`Title mismatch: expected "${expected.title}", got "${result.title}"`);
+    errors.push(
+      `Title mismatch: expected "${expected.title}", got "${result.title}"`,
+    );
   }
 
   if (expected.priority && result.priority !== expected.priority) {
-    errors.push(`Priority mismatch: expected "${expected.priority}", got "${result.priority}"`);
+    errors.push(
+      `Priority mismatch: expected "${expected.priority}", got "${result.priority}"`,
+    );
   }
 
   if (expected.dueDate && result.dueDate !== expected.dueDate) {
-    errors.push(`Due date mismatch: expected "${expected.dueDate}", got "${result.dueDate}"`);
+    errors.push(
+      `Due date mismatch: expected "${expected.dueDate}", got "${result.dueDate}"`,
+    );
   }
 
   if (expected.project && result.project !== expected.project) {
-    errors.push(`Project mismatch: expected "${expected.project}", got "${result.project}"`);
+    errors.push(
+      `Project mismatch: expected "${expected.project}", got "${result.project}"`,
+    );
   }
 
   if (expected.labels && result.labels) {
@@ -144,13 +161,15 @@ export function validateParseResult(result: ParseResult, expected: Partial<Parse
     const resultLabels = new Set(result.labels);
 
     if (!setsAreEqual(expectedLabels, resultLabels)) {
-      errors.push(`Labels mismatch: expected ${Array.from(expectedLabels)}, got ${Array.from(resultLabels)}`);
+      errors.push(
+        `Labels mismatch: expected ${Array.from(expectedLabels)}, got ${Array.from(resultLabels)}`,
+      );
     }
   }
 
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 }
 

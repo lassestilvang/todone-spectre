@@ -1,4 +1,4 @@
-import { PerformanceConfig } from '../types/performance';
+import { PerformanceConfig } from "../types/performance";
 
 class PerformanceConfigService {
   private config: PerformanceConfig;
@@ -18,7 +18,7 @@ class PerformanceConfigService {
       enableMemoryTracking: true,
       enableNetworkMonitoring: false,
       dataRetentionDays: 30,
-      alertThreshold: 80
+      alertThreshold: 80,
     };
   }
 
@@ -39,12 +39,12 @@ class PerformanceConfigService {
   subscribe(listener: (config: PerformanceConfig) => void): () => void {
     this.listeners.push(listener);
     return () => {
-      this.listeners = this.listeners.filter(l => l !== listener);
+      this.listeners = this.listeners.filter((l) => l !== listener);
     };
   }
 
   private notifyListeners(): void {
-    this.listeners.forEach(listener => listener(this.config));
+    this.listeners.forEach((listener) => listener(this.config));
   }
 }
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import { SearchResult } from '../../types/search';
+import React from "react";
+import { SearchResult } from "../../types/search";
 
 interface SearchResultsProps {
   results: SearchResult[];
@@ -8,7 +8,7 @@ interface SearchResultsProps {
 
 export const SearchResults: React.FC<SearchResultsProps> = ({
   results,
-  onSelect
+  onSelect,
 }) => {
   const handleResultClick = (result: SearchResult) => {
     if (onSelect) {
@@ -18,9 +18,7 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
 
   if (results.length === 0) {
     return (
-      <div className="p-4 text-center text-gray-500">
-        No results found
-      </div>
+      <div className="p-4 text-center text-gray-500">No results found</div>
     );
   }
 
@@ -36,7 +34,9 @@ export const SearchResults: React.FC<SearchResultsProps> = ({
             <div className="flex-1">
               <div className="font-medium text-sm">{result.title}</div>
               {result.subtitle && (
-                <div className="text-xs text-gray-500 truncate">{result.subtitle}</div>
+                <div className="text-xs text-gray-500 truncate">
+                  {result.subtitle}
+                </div>
               )}
             </div>
             {result.type && (

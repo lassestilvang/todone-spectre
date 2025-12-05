@@ -1,7 +1,7 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { devtools } from 'zustand/middleware';
-import { FilterState, Filter } from '../types/store';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
+import { FilterState, Filter } from "../types/store";
 
 export const useFilterStore = create<FilterState>()(
   devtools(
@@ -9,11 +9,13 @@ export const useFilterStore = create<FilterState>()(
       (set, get) => ({
         filters: [],
         currentFilterId: null,
-        searchQuery: '',
+        searchQuery: "",
         filterError: null,
 
         // CRUD Operations
-        addFilter: (filterData: Omit<Filter, 'id' | 'createdAt' | 'updatedAt'>) => {
+        addFilter: (
+          filterData: Omit<Filter, "id" | "createdAt" | "updatedAt">,
+        ) => {
           const newFilter: Filter = {
             ...filterData,
             id: Math.random().toString(36).substr(2, 9),
@@ -25,7 +27,10 @@ export const useFilterStore = create<FilterState>()(
           }));
         },
 
-        updateFilter: (id: string, updates: Partial<Omit<Filter, 'id' | 'createdAt'>>) => {
+        updateFilter: (
+          id: string,
+          updates: Partial<Omit<Filter, "id" | "createdAt">>,
+        ) => {
           set((state) => ({
             filters: state.filters.map((filter) =>
               filter.id === id
@@ -34,7 +39,7 @@ export const useFilterStore = create<FilterState>()(
                     ...updates,
                     updatedAt: new Date(),
                   }
-                : filter
+                : filter,
             ),
           }));
         },
@@ -42,7 +47,8 @@ export const useFilterStore = create<FilterState>()(
         deleteFilter: (id: string) => {
           set((state) => ({
             filters: state.filters.filter((filter) => filter.id !== id),
-            currentFilterId: state.currentFilterId === id ? null : state.currentFilterId,
+            currentFilterId:
+              state.currentFilterId === id ? null : state.currentFilterId,
           }));
         },
 
@@ -55,7 +61,7 @@ export const useFilterStore = create<FilterState>()(
                     favorite: !filter.favorite,
                     updatedAt: new Date(),
                   }
-                : filter
+                : filter,
             ),
           }));
         },
@@ -79,34 +85,34 @@ export const useFilterStore = create<FilterState>()(
         initializeSampleFilters: () => {
           const sampleFilters: Filter[] = [
             {
-              id: 'filter-1',
-              name: 'High Priority',
+              id: "filter-1",
+              name: "High Priority",
               criteria: {
-                priority: 'high'
+                priority: "high",
               },
-              color: '#EF4444',
+              color: "#EF4444",
               favorite: true,
               createdAt: new Date(),
               updatedAt: new Date(),
             },
             {
-              id: 'filter-2',
-              name: 'In Progress',
+              id: "filter-2",
+              name: "In Progress",
               criteria: {
-                status: 'in-progress'
+                status: "in-progress",
               },
-              color: '#F59E0B',
+              color: "#F59E0B",
               favorite: false,
               createdAt: new Date(),
               updatedAt: new Date(),
             },
             {
-              id: 'filter-3',
-              name: 'Overdue',
+              id: "filter-3",
+              name: "Overdue",
               criteria: {
-                dueDate: 'overdue'
+                dueDate: "overdue",
               },
-              color: '#DC2626',
+              color: "#DC2626",
               favorite: false,
               createdAt: new Date(),
               updatedAt: new Date(),
@@ -118,9 +124,9 @@ export const useFilterStore = create<FilterState>()(
 
         // Filter operations
         getFiltersByCriteria: (criteria: Record<string, any>) => {
-          return get().filters.filter(filter => {
-            return Object.entries(criteria).every(([key, value]) =>
-              filter.criteria[key] === value
+          return get().filters.filter((filter) => {
+            return Object.entries(criteria).every(
+              ([key, value]) => filter.criteria[key] === value,
             );
           });
         },
@@ -131,11 +137,11 @@ export const useFilterStore = create<FilterState>()(
         },
       }),
       {
-        name: 'todone-filters-storage',
+        name: "todone-filters-storage",
         storage: createJSONStorage(() => localStorage),
-      }
-    )
-  )
+      },
+    ),
+  ),
 );
 
 // Helper function to create localStorage

@@ -1,11 +1,15 @@
-import { useState, useEffect } from 'react';
-import { mobileConfigService } from '../services/mobileConfigService';
-import { mobileUtils } from '../utils/mobileUtils';
-import { MobileConfig, MobilePreferences } from '../types/mobileTypes';
+import { useState, useEffect } from "react";
+import { mobileConfigService } from "../services/mobileConfigService";
+import { mobileUtils } from "../utils/mobileUtils";
+import { MobileConfig, MobilePreferences } from "../types/mobileTypes";
 
 export const useMobileConfig = () => {
-  const [mobileConfig, setMobileConfig] = useState<MobileConfig>(mobileConfigService.getConfig());
-  const [mobilePreferences, setMobilePreferences] = useState<MobilePreferences>(mobileConfigService.getPreferences());
+  const [mobileConfig, setMobileConfig] = useState<MobileConfig>(
+    mobileConfigService.getConfig(),
+  );
+  const [mobilePreferences, setMobilePreferences] = useState<MobilePreferences>(
+    mobileConfigService.getPreferences(),
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -23,8 +27,8 @@ export const useMobileConfig = () => {
         setMobilePreferences(preferences);
         setLoading(false);
       } catch (err) {
-        console.error('Failed to initialize mobile config:', err);
-        setError('Failed to load mobile configuration');
+        console.error("Failed to initialize mobile config:", err);
+        setError("Failed to load mobile configuration");
         setLoading(false);
       }
     };
@@ -34,9 +38,11 @@ export const useMobileConfig = () => {
 
   useEffect(() => {
     // Set up listener for config changes
-    const configChangeListener = mobileUtils.addConfigChangeListener((newConfig) => {
-      setMobileConfig(newConfig);
-    });
+    const configChangeListener = mobileUtils.addConfigChangeListener(
+      (newConfig) => {
+        setMobileConfig(newConfig);
+      },
+    );
 
     return () => {
       if (configChangeListener) {
@@ -45,25 +51,29 @@ export const useMobileConfig = () => {
     };
   }, []);
 
-  const updateConfig = async (updates: Partial<MobileConfig>): Promise<void> => {
+  const updateConfig = async (
+    updates: Partial<MobileConfig>,
+  ): Promise<void> => {
     try {
       await mobileConfigService.updateConfig(updates);
       const updatedConfig = mobileConfigService.getConfig();
       setMobileConfig(updatedConfig);
     } catch (err) {
-      console.error('Failed to update mobile config:', err);
-      setError('Failed to update configuration');
+      console.error("Failed to update mobile config:", err);
+      setError("Failed to update configuration");
     }
   };
 
-  const updatePreferences = async (updates: Partial<MobilePreferences>): Promise<void> => {
+  const updatePreferences = async (
+    updates: Partial<MobilePreferences>,
+  ): Promise<void> => {
     try {
       await mobileConfigService.updatePreferences(updates);
       const updatedPreferences = mobileConfigService.getPreferences();
       setMobilePreferences(updatedPreferences);
     } catch (err) {
-      console.error('Failed to update mobile preferences:', err);
-      setError('Failed to update preferences');
+      console.error("Failed to update mobile preferences:", err);
+      setError("Failed to update preferences");
     }
   };
 
@@ -91,7 +101,9 @@ export const useMobileConfig = () => {
     setMobileConfig(updatedConfig);
   };
 
-  const setPerformanceMode = async (mode: 'high' | 'balanced' | 'battery_saver'): Promise<void> => {
+  const setPerformanceMode = async (
+    mode: "high" | "balanced" | "battery_saver",
+  ): Promise<void> => {
     await mobileConfigService.setPerformanceMode(mode);
     const updatedConfig = mobileConfigService.getConfig();
     setMobileConfig(updatedConfig);
@@ -119,7 +131,7 @@ export const useMobileConfig = () => {
     reducedMotion?: boolean;
     highContrast?: boolean;
     screenReaderEnabled?: boolean;
-    fontSizeAdjustment?: 'small' | 'normal' | 'large' | 'extra_large';
+    fontSizeAdjustment?: "small" | "normal" | "large" | "extra_large";
   }): Promise<void> => {
     await mobileConfigService.setAccessibilityPreferences(preferences);
     const updatedPreferences = mobileConfigService.getPreferences();
@@ -152,7 +164,9 @@ export const useMobileConfig = () => {
     return mobileConfig.darkMode;
   };
 
-  const isPerformanceMode = (mode: 'high' | 'balanced' | 'battery_saver'): boolean => {
+  const isPerformanceMode = (
+    mode: "high" | "balanced" | "battery_saver",
+  ): boolean => {
     return mobileConfig.performanceMode === mode;
   };
 

@@ -1,4 +1,4 @@
-import { Task, TaskStatus, PriorityLevel } from '../types/task';
+import { Task, TaskStatus, PriorityLevel } from "../types/task";
 
 /**
  * Task validation functions
@@ -7,13 +7,15 @@ import { Task, TaskStatus, PriorityLevel } from '../types/task';
 /**
  * Validate task title
  */
-export const validateTaskTitle = (title: string): { valid: boolean; message?: string } => {
+export const validateTaskTitle = (
+  title: string,
+): { valid: boolean; message?: string } => {
   if (!title || title.trim().length === 0) {
-    return { valid: false, message: 'Task title is required' };
+    return { valid: false, message: "Task title is required" };
   }
 
   if (title.length > 255) {
-    return { valid: false, message: 'Task title cannot exceed 255 characters' };
+    return { valid: false, message: "Task title cannot exceed 255 characters" };
   }
 
   return { valid: true };
@@ -22,9 +24,14 @@ export const validateTaskTitle = (title: string): { valid: boolean; message?: st
 /**
  * Validate task description
  */
-export const validateTaskDescription = (description?: string): { valid: boolean; message?: string } => {
+export const validateTaskDescription = (
+  description?: string,
+): { valid: boolean; message?: string } => {
   if (description && description.length > 5000) {
-    return { valid: false, message: 'Task description cannot exceed 5000 characters' };
+    return {
+      valid: false,
+      message: "Task description cannot exceed 5000 characters",
+    };
   }
 
   return { valid: true };
@@ -33,10 +40,17 @@ export const validateTaskDescription = (description?: string): { valid: boolean;
 /**
  * Validate task priority
  */
-export const validateTaskPriority = (priority: PriorityLevel): { valid: boolean; message?: string } => {
-  const validPriorities: PriorityLevel[] = ['low', 'medium', 'high', 'critical'];
+export const validateTaskPriority = (
+  priority: PriorityLevel,
+): { valid: boolean; message?: string } => {
+  const validPriorities: PriorityLevel[] = [
+    "low",
+    "medium",
+    "high",
+    "critical",
+  ];
   if (!validPriorities.includes(priority)) {
-    return { valid: false, message: 'Invalid priority level' };
+    return { valid: false, message: "Invalid priority level" };
   }
 
   return { valid: true };
@@ -45,10 +59,17 @@ export const validateTaskPriority = (priority: PriorityLevel): { valid: boolean;
 /**
  * Validate task status
  */
-export const validateTaskStatus = (status: TaskStatus): { valid: boolean; message?: string } => {
-  const validStatuses: TaskStatus[] = ['todo', 'in-progress', 'completed', 'archived'];
+export const validateTaskStatus = (
+  status: TaskStatus,
+): { valid: boolean; message?: string } => {
+  const validStatuses: TaskStatus[] = [
+    "todo",
+    "in-progress",
+    "completed",
+    "archived",
+  ];
   if (!validStatuses.includes(status)) {
-    return { valid: false, message: 'Invalid task status' };
+    return { valid: false, message: "Invalid task status" };
   }
 
   return { valid: true };
@@ -57,8 +78,10 @@ export const validateTaskStatus = (status: TaskStatus): { valid: boolean; messag
 /**
  * Validate complete task data
  */
-export const validateTask = (task: Partial<Task>): { valid: boolean; message?: string } => {
-  const titleValidation = validateTaskTitle(task.title || '');
+export const validateTask = (
+  task: Partial<Task>,
+): { valid: boolean; message?: string } => {
+  const titleValidation = validateTaskTitle(task.title || "");
   if (!titleValidation.valid) return titleValidation;
 
   const descriptionValidation = validateTaskDescription(task.description);
@@ -88,16 +111,16 @@ export const transformApiTask = (apiTask: any): Task => {
   return {
     id: apiTask.id,
     title: apiTask.title,
-    description: apiTask.description || '',
-    status: apiTask.status || 'todo',
-    priority: apiTask.priority || 'medium',
+    description: apiTask.description || "",
+    status: apiTask.status || "todo",
+    priority: apiTask.priority || "medium",
     dueDate: apiTask.dueDate ? new Date(apiTask.dueDate) : null,
     createdAt: new Date(apiTask.createdAt),
     updatedAt: new Date(apiTask.updatedAt),
     completedAt: apiTask.completedAt ? new Date(apiTask.completedAt) : null,
     completed: apiTask.completed || false,
     projectId: apiTask.projectId,
-    order: apiTask.order || 0
+    order: apiTask.order || 0,
   };
 };
 
@@ -112,23 +135,25 @@ export const transformTaskToApi = (task: Partial<Task>): any => {
     dueDate: task.dueDate?.toISOString(),
     createdAt: task.createdAt?.toISOString(),
     updatedAt: task.updatedAt?.toISOString(),
-    completedAt: task.completedAt?.toISOString()
+    completedAt: task.completedAt?.toISOString(),
   };
 };
 
 /**
  * Create default task object
  */
-export const createDefaultTask = (overrides: Partial<Task> = {}): Omit<Task, 'id' | 'createdAt' | 'updatedAt' | 'completed'> => {
+export const createDefaultTask = (
+  overrides: Partial<Task> = {},
+): Omit<Task, "id" | "createdAt" | "updatedAt" | "completed"> => {
   return {
-    title: '',
-    description: '',
-    status: 'todo',
-    priority: 'medium',
+    title: "",
+    description: "",
+    status: "todo",
+    priority: "medium",
     dueDate: null,
     projectId: undefined,
     order: 0,
-    ...overrides
+    ...overrides,
   };
 };
 
@@ -141,10 +166,10 @@ export const createDefaultTask = (overrides: Partial<Task> = {}): Omit<Task, 'id
  */
 export const compareTasksByPriority = (a: Task, b: Task): number => {
   const priorityOrder: Record<PriorityLevel, number> = {
-    'critical': 1,
-    'high': 2,
-    'medium': 3,
-    'low': 4
+    critical: 1,
+    high: 2,
+    medium: 3,
+    low: 4,
   };
 
   return (priorityOrder[a.priority] || 0) - (priorityOrder[b.priority] || 0);
@@ -175,10 +200,10 @@ export const compareTasksByCreationDate = (a: Task, b: Task): number => {
  */
 export const getNextStatus = (currentStatus: TaskStatus): TaskStatus => {
   const statusWorkflow: Record<TaskStatus, TaskStatus> = {
-    'todo': 'in-progress',
-    'in-progress': 'completed',
-    'completed': 'archived',
-    'archived': 'archived' // No further progression
+    todo: "in-progress",
+    "in-progress": "completed",
+    completed: "archived",
+    archived: "archived", // No further progression
   };
 
   return statusWorkflow[currentStatus] || currentStatus;
@@ -189,10 +214,10 @@ export const getNextStatus = (currentStatus: TaskStatus): TaskStatus => {
  */
 export const getPreviousStatus = (currentStatus: TaskStatus): TaskStatus => {
   const statusWorkflow: Record<TaskStatus, TaskStatus> = {
-    'todo': 'todo', // No previous status
-    'in-progress': 'todo',
-    'completed': 'in-progress',
-    'archived': 'completed'
+    todo: "todo", // No previous status
+    "in-progress": "todo",
+    completed: "in-progress",
+    archived: "completed",
   };
 
   return statusWorkflow[currentStatus] || currentStatus;
@@ -220,13 +245,13 @@ export const isTaskOverdue = (task: Task): boolean => {
  */
 export const getPriorityColor = (priority: PriorityLevel): string => {
   const priorityColors: Record<PriorityLevel, string> = {
-    'low': 'text-green-600 bg-green-100',
-    'medium': 'text-blue-600 bg-blue-100',
-    'high': 'text-yellow-600 bg-yellow-100',
-    'critical': 'text-red-600 bg-red-100'
+    low: "text-green-600 bg-green-100",
+    medium: "text-blue-600 bg-blue-100",
+    high: "text-yellow-600 bg-yellow-100",
+    critical: "text-red-600 bg-red-100",
   };
 
-  return priorityColors[priority] || 'text-gray-600 bg-gray-100';
+  return priorityColors[priority] || "text-gray-600 bg-gray-100";
 };
 
 /**
@@ -234,13 +259,13 @@ export const getPriorityColor = (priority: PriorityLevel): string => {
  */
 export const getStatusColor = (status: TaskStatus): string => {
   const statusColors: Record<TaskStatus, string> = {
-    'todo': 'text-gray-600 bg-gray-100',
-    'in-progress': 'text-blue-600 bg-blue-100',
-    'completed': 'text-green-600 bg-green-100',
-    'archived': 'text-purple-600 bg-purple-100'
+    todo: "text-gray-600 bg-gray-100",
+    "in-progress": "text-blue-600 bg-blue-100",
+    completed: "text-green-600 bg-green-100",
+    archived: "text-purple-600 bg-purple-100",
   };
 
-  return statusColors[status] || 'text-gray-600 bg-gray-100';
+  return statusColors[status] || "text-gray-600 bg-gray-100";
 };
 
 /**
@@ -250,9 +275,10 @@ export const filterTasksBySearch = (tasks: Task[], query: string): Task[] => {
   if (!query) return tasks;
 
   const lowerQuery = query.toLowerCase();
-  return tasks.filter(task =>
-    task.title.toLowerCase().includes(lowerQuery) ||
-    (task.description && task.description.toLowerCase().includes(lowerQuery))
+  return tasks.filter(
+    (task) =>
+      task.title.toLowerCase().includes(lowerQuery) ||
+      (task.description && task.description.toLowerCase().includes(lowerQuery)),
   );
 };
 
@@ -261,20 +287,27 @@ export const filterTasksBySearch = (tasks: Task[], query: string): Task[] => {
  */
 export const sortTasks = (
   tasks: Task[],
-  sortBy: 'priority' | 'dueDate' | 'createdAt' = 'priority',
-  direction: 'asc' | 'desc' = 'asc'
+  sortBy: "priority" | "dueDate" | "createdAt" = "priority",
+  direction: "asc" | "desc" = "asc",
 ): Task[] => {
   const sortedTasks = [...tasks];
 
   switch (sortBy) {
-    case 'priority':
-      sortedTasks.sort((a, b) => compareTasksByPriority(a, b) * (direction === 'asc' ? 1 : -1));
+    case "priority":
+      sortedTasks.sort(
+        (a, b) => compareTasksByPriority(a, b) * (direction === "asc" ? 1 : -1),
+      );
       break;
-    case 'dueDate':
-      sortedTasks.sort((a, b) => compareTasksByDueDate(a, b) * (direction === 'asc' ? 1 : -1));
+    case "dueDate":
+      sortedTasks.sort(
+        (a, b) => compareTasksByDueDate(a, b) * (direction === "asc" ? 1 : -1),
+      );
       break;
-    case 'createdAt':
-      sortedTasks.sort((a, b) => compareTasksByCreationDate(a, b) * (direction === 'asc' ? 1 : -1));
+    case "createdAt":
+      sortedTasks.sort(
+        (a, b) =>
+          compareTasksByCreationDate(a, b) * (direction === "asc" ? 1 : -1),
+      );
       break;
   }
 

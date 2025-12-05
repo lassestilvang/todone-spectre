@@ -2,17 +2,23 @@ interface AnimationConfig {
   duration: number;
   easing: string;
   delay?: number;
-  type: 'fade' | 'slide' | 'scale' | 'bounce' | 'flip' | 'zoom' | 'rotate';
+  type: "fade" | "slide" | "scale" | "bounce" | "flip" | "zoom" | "rotate";
 }
 
 interface AnimationFunctionParams {
   config: AnimationConfig;
 }
 
-const animationRegistry: Record<string, (params: AnimationFunctionParams) => Promise<void>> = {};
+const animationRegistry: Record<
+  string,
+  (params: AnimationFunctionParams) => Promise<void>
+> = {};
 
 export const animationUtils = {
-  registerAnimation: (name: string, fn: (params: AnimationFunctionParams) => Promise<void>) => {
+  registerAnimation: (
+    name: string,
+    fn: (params: AnimationFunctionParams) => Promise<void>,
+  ) => {
     animationRegistry[name] = fn;
   },
 
@@ -23,108 +29,111 @@ export const animationUtils = {
   getAnimationConfig: (name: string): AnimationConfig => {
     const baseConfig: AnimationConfig = {
       duration: 300,
-      easing: 'easeInOut',
-      type: 'fade'
+      easing: "easeInOut",
+      type: "fade",
     };
 
-    if (name.includes('task')) {
-      if (name === 'task-complete') {
+    if (name.includes("task")) {
+      if (name === "task-complete") {
         return {
           ...baseConfig,
           duration: 300,
-          type: 'scale',
-          easing: [0.4, 0, 0.2, 1]
+          type: "scale",
+          easing: [0.4, 0, 0.2, 1],
         };
-      } else if (name === 'task-overdue') {
+      } else if (name === "task-overdue") {
         return {
           ...baseConfig,
           duration: 400,
-          type: 'scale',
-          easing: [0.4, 0, 0.2, 1]
+          type: "scale",
+          easing: [0.4, 0, 0.2, 1],
         };
-      } else if (name === 'task-archive') {
+      } else if (name === "task-archive") {
         return {
           ...baseConfig,
           duration: 350,
-          type: 'fade',
-          easing: 'easeInOut'
+          type: "fade",
+          easing: "easeInOut",
         };
-      } else if (name === 'task-restore') {
+      } else if (name === "task-restore") {
         return {
           ...baseConfig,
           duration: 250,
-          type: 'slide',
-          easing: 'easeOut'
+          type: "slide",
+          easing: "easeOut",
         };
-      } else if (name === 'task-priority') {
+      } else if (name === "task-priority") {
         return {
           ...baseConfig,
           duration: 200,
-          type: 'bounce',
-          easing: [0.4, 0, 0.2, 1]
+          type: "bounce",
+          easing: [0.4, 0, 0.2, 1],
         };
       } else {
         return {
           ...baseConfig,
           duration: 200,
-          type: 'slide'
+          type: "slide",
         };
       }
-    } else if (name.includes('view')) {
-      if (name === 'view-slide') {
+    } else if (name.includes("view")) {
+      if (name === "view-slide") {
         return {
           ...baseConfig,
           duration: 350,
-          type: 'slide',
-          easing: 'easeInOut'
+          type: "slide",
+          easing: "easeInOut",
         };
-      } else if (name === 'view-scale') {
+      } else if (name === "view-scale") {
         return {
           ...baseConfig,
           duration: 300,
-          type: 'scale',
-          easing: 'easeInOut'
+          type: "scale",
+          easing: "easeInOut",
         };
-      } else if (name === 'view-flip') {
+      } else if (name === "view-flip") {
         return {
           ...baseConfig,
           duration: 400,
-          type: 'flip',
-          easing: 'easeInOut'
+          type: "flip",
+          easing: "easeInOut",
         };
-      } else if (name === 'view-zoom') {
+      } else if (name === "view-zoom") {
         return {
           ...baseConfig,
           duration: 350,
-          type: 'zoom',
-          easing: [0.4, 0, 0.2, 1]
+          type: "zoom",
+          easing: [0.4, 0, 0.2, 1],
         };
-      } else if (name === 'view-rotate') {
+      } else if (name === "view-rotate") {
         return {
           ...baseConfig,
           duration: 400,
-          type: 'rotate',
-          easing: 'easeInOut'
+          type: "rotate",
+          easing: "easeInOut",
         };
       } else {
         return {
           ...baseConfig,
           duration: 300,
-          type: 'fade'
+          type: "fade",
         };
       }
-    } else if (name === 'init') {
+    } else if (name === "init") {
       return {
         ...baseConfig,
         duration: 100,
-        type: 'fade'
+        type: "fade",
       };
     }
 
     return baseConfig;
   },
 
-  executeAnimation: async (name: string, config: Partial<AnimationConfig> = {}) => {
+  executeAnimation: async (
+    name: string,
+    config: Partial<AnimationConfig> = {},
+  ) => {
     const animationFn = animationRegistry[name];
     if (!animationFn) {
       console.warn(`Animation "${name}" not found in registry`);
@@ -133,9 +142,9 @@ export const animationUtils = {
 
     const fullConfig: AnimationConfig = {
       duration: 300,
-      easing: 'easeInOut',
-      type: 'fade',
-      ...config
+      easing: "easeInOut",
+      type: "fade",
+      ...config,
     };
 
     try {
@@ -144,114 +153,114 @@ export const animationUtils = {
       console.error(`Failed to execute animation "${name}":`, error);
       throw error;
     }
-  }
+  },
 };
 
 // Register default animations
-animationUtils.registerAnimation('task-appear', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("task-appear", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('task-complete', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("task-complete", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('task-overdue', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("task-overdue", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('task-archive', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("task-archive", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('task-restore', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("task-restore", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('task-priority', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("task-priority", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('view-transition', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("view-transition", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('view-slide', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("view-slide", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('view-scale', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("view-scale", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('view-flip', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("view-flip", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('view-zoom', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("view-zoom", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('view-rotate', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("view-rotate", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('init', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("init", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('micro-click', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("micro-click", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerAnimation('micro-hover', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerAnimation("micro-hover", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerInteraction('focus', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerInteraction("focus", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerInteraction('drag', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerInteraction("drag", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });
 
-animationUtils.registerInteraction('tap', async ({ config }) => {
-  return new Promise(resolve => {
+animationUtils.registerInteraction("tap", async ({ config }) => {
+  return new Promise((resolve) => {
     setTimeout(() => resolve(), config.duration);
   });
 });

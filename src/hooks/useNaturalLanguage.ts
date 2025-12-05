@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { nlpService } from '../services/nlpService';
+import { useState, useCallback } from "react";
+import { nlpService } from "../services/nlpService";
 
 interface ParseResult {
   title?: string;
@@ -23,33 +23,37 @@ export const useNaturalLanguage = (options: UseNaturalLanguageOptions = {}) => {
   const [error, setError] = useState<Error | null>(null);
   const [lastResult, setLastResult] = useState<ParseResult | null>(null);
 
-  const parseNaturalLanguage = useCallback(async (text: string) => {
-    try {
-      setIsLoading(true);
-      setError(null);
+  const parseNaturalLanguage = useCallback(
+    async (text: string) => {
+      try {
+        setIsLoading(true);
+        setError(null);
 
-      if (!text?.trim()) {
-        throw new Error('Empty text provided for natural language parsing');
+        if (!text?.trim()) {
+          throw new Error("Empty text provided for natural language parsing");
+        }
+
+        const result = await nlpService.parseNaturalLanguage(text);
+        setLastResult(result);
+
+        if (options.debug) {
+          console.log("Natural Language Parsing Result:", result);
+        }
+
+        options.onParseComplete?.(result);
+        return result;
+      } catch (err) {
+        const error =
+          err instanceof Error ? err : new Error("Unknown parsing error");
+        setError(error);
+        options.onError?.(error);
+        throw error;
+      } finally {
+        setIsLoading(false);
       }
-
-      const result = await nlpService.parseNaturalLanguage(text);
-      setLastResult(result);
-
-      if (options.debug) {
-        console.log('Natural Language Parsing Result:', result);
-      }
-
-      options.onParseComplete?.(result);
-      return result;
-    } catch (err) {
-      const error = err instanceof Error ? err : new Error('Unknown parsing error');
-      setError(error);
-      options.onError?.(error);
-      throw error;
-    } finally {
-      setIsLoading(false);
-    }
-  }, [options]);
+    },
+    [options],
+  );
 
   const clearError = useCallback(() => {
     setError(null);
@@ -67,6 +71,6 @@ export const useNaturalLanguage = (options: UseNaturalLanguageOptions = {}) => {
     error,
     lastResult,
     clearError,
-    reset
+    reset,
   };
 };

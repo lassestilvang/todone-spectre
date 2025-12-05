@@ -1,4 +1,10 @@
-export type PerformanceStatus = 'inactive' | 'monitoring' | 'optimal' | 'warning' | 'critical' | 'error';
+export type PerformanceStatus =
+  | "inactive"
+  | "monitoring"
+  | "optimal"
+  | "warning"
+  | "critical"
+  | "error";
 
 export interface PerformanceMetrics {
   loadTime: number;

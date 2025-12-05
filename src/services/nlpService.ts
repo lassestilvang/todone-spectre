@@ -1,5 +1,10 @@
-import { parseDateFromText, extractPriority, extractLabels, extractProject } from '../utils/nlpUtils';
-import { matchPatterns } from '../utils/nlpPatternUtils';
+import {
+  parseDateFromText,
+  extractPriority,
+  extractLabels,
+  extractProject,
+} from "../utils/nlpUtils";
+import { matchPatterns } from "../utils/nlpPatternUtils";
 
 interface ParsedTaskData {
   title: string;
@@ -24,22 +29,22 @@ export class NlpService {
     this.options = {
       debug: false,
       strictMode: false,
-      ...options
+      ...options,
     };
   }
 
   async parseNaturalLanguage(text: string): Promise<ParsedTaskData> {
-    if (!text || typeof text !== 'string') {
-      throw new Error('Invalid input text');
+    if (!text || typeof text !== "string") {
+      throw new Error("Invalid input text");
     }
 
     const trimmedText = text.trim();
     if (!trimmedText) {
-      throw new Error('Empty input text');
+      throw new Error("Empty input text");
     }
 
     if (this.options.debug) {
-      console.log('NLP Service - Input text:', trimmedText);
+      console.log("NLP Service - Input text:", trimmedText);
     }
 
     // Extract basic task information
@@ -62,7 +67,7 @@ export class NlpService {
       dueDate,
       priority,
       labels,
-      project
+      project,
     });
 
     const result: ParsedTaskData = {
@@ -73,11 +78,11 @@ export class NlpService {
       labels,
       project,
       rawText: trimmedText,
-      confidence
+      confidence,
     };
 
     if (this.options.debug) {
-      console.log('NLP Service - Parsed result:', result);
+      console.log("NLP Service - Parsed result:", result);
     }
 
     return result;
@@ -88,7 +93,7 @@ export class NlpService {
     const titlePatterns = [
       /^(create|add|make|schedule|set up|remind me)\s+(?:a|an|the)?\s+(.+?)(?:\s+(?:by|due|on|at|for|with|to)|$)/i,
       /^(?:task|reminder|event|meeting|appointment):\s*(.+)/i,
-      /^(.+?)(?:\s+(?:by|due|on|at|for|with|to)|$)/i
+      /^(.+?)(?:\s+(?:by|due|on|at|for|with|to)|$)/i,
     ];
 
     for (const pattern of titlePatterns) {
@@ -105,7 +110,9 @@ export class NlpService {
 
   private extractDescription(text: string, title: string): string | undefined {
     // Remove title from text
-    const textWithoutTitle = text.replace(new RegExp(escapeRegExp(title), 'i'), '').trim();
+    const textWithoutTitle = text
+      .replace(new RegExp(escapeRegExp(title), "i"), "")
+      .trim();
 
     // If there's remaining text after removing title, use it as description
     if (textWithoutTitle && textWithoutTitle.length > 0) {
@@ -115,7 +122,9 @@ export class NlpService {
     return undefined;
   }
 
-  private calculateConfidence(parsedData: Omit<ParsedTaskData, 'rawText' | 'confidence'>): number {
+  private calculateConfidence(
+    parsedData: Omit<ParsedTaskData, "rawText" | "confidence">,
+  ): number {
     let confidence = 50; // Base confidence
 
     // Increase confidence for each successfully parsed field
@@ -132,7 +141,7 @@ export class NlpService {
 }
 
 function escapeRegExp(string: string) {
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 export const nlpService = new NlpService();

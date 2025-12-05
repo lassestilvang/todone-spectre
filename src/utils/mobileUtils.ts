@@ -1,8 +1,19 @@
-import { Platform, NetInfo, Linking, Alert, Vibration, Share } from 'react-native';
-import DeviceInfo from 'react-native-device-info';
-import { mobileService } from '../services/mobileService';
-import { mobileConfigService } from '../services/mobileConfigService';
-import { MobileConfig, MobileDeviceInfo, MobileState } from '../types/mobileTypes';
+import {
+  Platform,
+  NetInfo,
+  Linking,
+  Alert,
+  Vibration,
+  Share,
+} from "react-native";
+import DeviceInfo from "react-native-device-info";
+import { mobileService } from "../services/mobileService";
+import { mobileConfigService } from "../services/mobileConfigService";
+import {
+  MobileConfig,
+  MobileDeviceInfo,
+  MobileState,
+} from "../types/mobileTypes";
 
 export class MobileUtils {
   private static instance: MobileUtils;
@@ -34,19 +45,23 @@ export class MobileUtils {
     }, 1000); // Check for config changes every second
   }
 
-  public addConfigChangeListener(listener: (config: MobileConfig) => void): () => void {
+  public addConfigChangeListener(
+    listener: (config: MobileConfig) => void,
+  ): () => void {
     this.configChangeListeners.push(listener);
     return () => {
-      this.configChangeListeners = this.configChangeListeners.filter(l => l !== listener);
+      this.configChangeListeners = this.configChangeListeners.filter(
+        (l) => l !== listener,
+      );
     };
   }
 
   private notifyConfigChangeListeners(config: MobileConfig): void {
-    this.configChangeListeners.forEach(listener => {
+    this.configChangeListeners.forEach((listener) => {
       try {
         listener(config);
       } catch (error) {
-        console.error('Config change listener failed:', error);
+        console.error("Config change listener failed:", error);
       }
     });
   }
@@ -59,7 +74,7 @@ export class MobileUtils {
       const state = await NetInfo.fetch();
       return state.isConnected ?? false;
     } catch (error) {
-      console.error('Network connectivity check failed:', error);
+      console.error("Network connectivity check failed:", error);
       return false;
     }
   }
@@ -70,14 +85,14 @@ export class MobileUtils {
 
   public async openNetworkSettings(): Promise<void> {
     try {
-      if (Platform.OS === 'ios') {
-        await Linking.openURL('App-Prefs:root=WIFI');
-      } else if (Platform.OS === 'android') {
+      if (Platform.OS === "ios") {
+        await Linking.openURL("App-Prefs:root=WIFI");
+      } else if (Platform.OS === "android") {
         await Linking.openSettings();
       }
     } catch (error) {
-      console.error('Failed to open network settings:', error);
-      Alert.alert('Unable to open network settings');
+      console.error("Failed to open network settings:", error);
+      Alert.alert("Unable to open network settings");
     }
   }
 
@@ -90,7 +105,7 @@ export class MobileUtils {
 
   public async getDeviceId(): Promise<string> {
     const deviceInfo = await this.getDeviceInfo();
-    return deviceInfo?.deviceId || 'unknown';
+    return deviceInfo?.deviceId || "unknown";
   }
 
   public async isEmulator(): Promise<boolean> {
@@ -114,18 +129,18 @@ export class MobileUtils {
     return mobileService.isMobileDevice();
   }
 
-  public getDeviceType(): 'phone' | 'tablet' | 'unknown' {
+  public getDeviceType(): "phone" | "tablet" | "unknown" {
     return mobileService.getCurrentDeviceType();
   }
 
   public isPortrait(): boolean {
     const state = this.getMobileState();
-    return state.orientation === 'portrait';
+    return state.orientation === "portrait";
   }
 
   public isLandscape(): boolean {
     const state = this.getMobileState();
-    return state.orientation === 'landscape';
+    return state.orientation === "landscape";
   }
 
   /**
@@ -133,10 +148,11 @@ export class MobileUtils {
    */
   public formatDate(dateString: string | Date): string {
     try {
-      const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
+      const date =
+        typeof dateString === "string" ? new Date(dateString) : dateString;
 
       if (isNaN(date.getTime())) {
-        return 'Invalid date';
+        return "Invalid date";
       }
 
       // Format based on mobile config
@@ -144,52 +160,54 @@ export class MobileUtils {
 
       if (config.darkMode) {
         // Use 24-hour format for dark mode
-        return date.toLocaleString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
+        return date.toLocaleString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
           hour12: false,
         });
       } else {
         // Use 12-hour format for light mode
-        return date.toLocaleString('en-US', {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: '2-digit',
+        return date.toLocaleString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit",
         });
       }
     } catch (error) {
-      console.error('Date formatting failed:', error);
-      return 'Invalid date';
+      console.error("Date formatting failed:", error);
+      return "Invalid date";
     }
   }
 
   public formatTime(dateString: string | Date): string {
     try {
-      const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
+      const date =
+        typeof dateString === "string" ? new Date(dateString) : dateString;
 
       if (isNaN(date.getTime())) {
-        return '--:--';
+        return "--:--";
       }
 
-      return date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
+      return date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
         hour12: false,
       });
     } catch (error) {
-      console.error('Time formatting failed:', error);
-      return '--:--';
+      console.error("Time formatting failed:", error);
+      return "--:--";
     }
   }
 
   public formatRelativeTime(dateString: string | Date): string {
     try {
-      const date = typeof dateString === 'string' ? new Date(dateString) : dateString;
+      const date =
+        typeof dateString === "string" ? new Date(dateString) : dateString;
       const now = new Date();
       const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
@@ -208,23 +226,25 @@ export class MobileUtils {
         return this.formatDate(date);
       }
     } catch (error) {
-      console.error('Relative time formatting failed:', error);
-      return 'Unknown time';
+      console.error("Relative time formatting failed:", error);
+      return "Unknown time";
     }
   }
 
   /**
    * User interaction utilities
    */
-  public async triggerHapticFeedback(type: 'selection' | 'impact' | 'notification' = 'selection'): Promise<void> {
+  public async triggerHapticFeedback(
+    type: "selection" | "impact" | "notification" = "selection",
+  ): Promise<void> {
     const config = mobileConfigService.getConfig();
     if (config.enableHapticFeedback) {
       await mobileService.triggerHapticFeedback(type);
 
       // Also trigger vibration as fallback
-      if (type === 'impact') {
+      if (type === "impact") {
         Vibration.vibrate(20);
-      } else if (type === 'notification') {
+      } else if (type === "notification") {
         Vibration.vibrate([0, 50, 20, 50]);
       } else {
         Vibration.vibrate(10);
@@ -240,12 +260,14 @@ export class MobileUtils {
     try {
       await Share.share({
         title: content.title,
-        message: content.url ? `${content.message}\n\n${content.url}` : content.message,
+        message: content.url
+          ? `${content.message}\n\n${content.url}`
+          : content.message,
         url: content.url,
       });
     } catch (error) {
-      console.error('Sharing failed:', error);
-      Alert.alert('Sharing failed', 'Unable to share content');
+      console.error("Sharing failed:", error);
+      Alert.alert("Sharing failed", "Unable to share content");
     }
   }
 
@@ -269,9 +291,18 @@ export class MobileUtils {
     const config = mobileConfigService.getConfig();
 
     return {
-      shouldReduceAnimations: state.batteryLevel < 0.2 || state.isLowPowerMode || config.animationQuality === 'low',
-      shouldDisableHaptics: state.batteryLevel < 0.15 || state.isLowPowerMode || !config.enableHapticFeedback,
-      shouldLimitSync: state.batteryLevel < 0.25 || state.networkStatus === 'offline' || state.isLowPowerMode,
+      shouldReduceAnimations:
+        state.batteryLevel < 0.2 ||
+        state.isLowPowerMode ||
+        config.animationQuality === "low",
+      shouldDisableHaptics:
+        state.batteryLevel < 0.15 ||
+        state.isLowPowerMode ||
+        !config.enableHapticFeedback,
+      shouldLimitSync:
+        state.batteryLevel < 0.25 ||
+        state.networkStatus === "offline" ||
+        state.isLowPowerMode,
     };
   }
 
@@ -284,11 +315,11 @@ export class MobileUtils {
       if (supported) {
         await Linking.openURL(url);
       } else {
-        Alert.alert('Cannot open URL', `Unable to open: ${url}`);
+        Alert.alert("Cannot open URL", `Unable to open: ${url}`);
       }
     } catch (error) {
-      console.error('Failed to open URL:', error);
-      Alert.alert('Error', 'Failed to open the link');
+      console.error("Failed to open URL:", error);
+      Alert.alert("Error", "Failed to open the link");
     }
   }
 
@@ -297,7 +328,7 @@ export class MobileUtils {
       const url = await Linking.getInitialURL();
       return url;
     } catch (error) {
-      console.error('Failed to get initial URL:', error);
+      console.error("Failed to get initial URL:", error);
       return null;
     }
   }
@@ -311,22 +342,28 @@ export class MobileUtils {
       await DeviceInfo.clearCache();
 
       // Notify about cache clearance
-      this.triggerHapticFeedback('notification');
-      Alert.alert('Cache cleared', 'Mobile cache has been cleared successfully');
+      this.triggerHapticFeedback("notification");
+      Alert.alert(
+        "Cache cleared",
+        "Mobile cache has been cleared successfully",
+      );
     } catch (error) {
-      console.error('Failed to clear mobile cache:', error);
-      Alert.alert('Error', 'Failed to clear cache');
+      console.error("Failed to clear mobile cache:", error);
+      Alert.alert("Error", "Failed to clear cache");
     }
   }
 
   /**
    * Error handling and logging utilities
    */
-  public logMobileError(error: Error, context: string = 'Mobile'): void {
+  public logMobileError(error: Error, context: string = "Mobile"): void {
     console.error(`[${context} Error]`, error.message, error.stack);
 
     // Additional mobile-specific error handling could go here
-    if (error.message.includes('network') || error.message.includes('offline')) {
+    if (
+      error.message.includes("network") ||
+      error.message.includes("offline")
+    ) {
       // Handle network errors specifically
       this.handleNetworkError();
     }
@@ -335,12 +372,12 @@ export class MobileUtils {
   private handleNetworkError(): void {
     // Implement network error handling
     Alert.alert(
-      'Network Error',
-      'Please check your internet connection and try again',
+      "Network Error",
+      "Please check your internet connection and try again",
       [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Open Settings', onPress: () => this.openNetworkSettings() },
-      ]
+        { text: "Cancel", style: "cancel" },
+        { text: "Open Settings", onPress: () => this.openNetworkSettings() },
+      ],
     );
   }
 
@@ -348,26 +385,26 @@ export class MobileUtils {
    * Utility functions for mobile development
    */
   public isIOS(): boolean {
-    return Platform.OS === 'ios';
+    return Platform.OS === "ios";
   }
 
   public isAndroid(): boolean {
-    return Platform.OS === 'android';
+    return Platform.OS === "android";
   }
 
   public isWeb(): boolean {
-    return Platform.OS === 'web';
+    return Platform.OS === "web";
   }
 
-  public getPlatform(): 'ios' | 'android' | 'web' | 'other' {
-    if (Platform.OS === 'ios') return 'ios';
-    if (Platform.OS === 'android') return 'android';
-    if (Platform.OS === 'web') return 'web';
-    return 'other';
+  public getPlatform(): "ios" | "android" | "web" | "other" {
+    if (Platform.OS === "ios") return "ios";
+    if (Platform.OS === "android") return "android";
+    if (Platform.OS === "web") return "web";
+    return "other";
   }
 
   public async delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   public cleanup(): void {

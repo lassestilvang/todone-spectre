@@ -1,6 +1,6 @@
-import { Project } from '../types/project';
-import { ApiResponse } from '../types/api';
-import { API_BASE_URL } from '../config/app.config';
+import { Project } from "../types/project";
+import { ApiResponse } from "../types/api";
+import { API_BASE_URL } from "../config/app.config";
 
 /**
  * Project API Service - Handles all API communication for project CRUD operations
@@ -21,7 +21,7 @@ export class ProjectApi {
     return {
       ...rest,
       createdAt: projectData.createdAt?.toISOString(),
-      updatedAt: projectData.updatedAt?.toISOString()
+      updatedAt: projectData.updatedAt?.toISOString(),
     };
   }
 
@@ -33,9 +33,9 @@ export class ProjectApi {
       ...responseData,
       id: responseData.id,
       name: responseData.name,
-      description: responseData.description || '',
-      color: responseData.color || '#3b82f6',
-      viewType: responseData.viewType || 'list',
+      description: responseData.description || "",
+      color: responseData.color || "#3b82f6",
+      viewType: responseData.viewType || "list",
       favorite: responseData.favorite || false,
       shared: responseData.shared || false,
       createdAt: new Date(responseData.createdAt),
@@ -47,23 +47,25 @@ export class ProjectApi {
       labelIds: responseData.labelIds || [],
       memberIds: responseData.memberIds || [],
       ownerId: responseData.ownerId || null,
-      status: responseData.status || 'active',
-      visibility: responseData.visibility || 'private',
+      status: responseData.status || "active",
+      visibility: responseData.visibility || "private",
       settings: responseData.settings || {
         allowComments: true,
         allowAttachments: true,
         taskCreationRestricted: false,
-        maxTaskSize: 100
+        maxTaskSize: 100,
       },
       customFields: responseData.customFields || {},
-      metadata: responseData.metadata || {}
+      metadata: responseData.metadata || {},
     };
   }
 
   /**
    * Handle API errors with retry logic
    */
-  private async handleApiRequest<T>(requestFn: () => Promise<Response>): Promise<ApiResponse<T>> {
+  private async handleApiRequest<T>(
+    requestFn: () => Promise<Response>,
+  ): Promise<ApiResponse<T>> {
     const MAX_RETRIES = 3;
     let retryCount = 0;
 
@@ -75,58 +77,61 @@ export class ProjectApi {
           const errorData = await response.json().catch(() => ({}));
           return {
             success: false,
-            message: errorData.message || `HTTP error! status: ${response.status}`,
-            data: null
+            message:
+              errorData.message || `HTTP error! status: ${response.status}`,
+            data: null,
           };
         }
 
         const data = await response.json();
         return {
           success: true,
-          message: 'Success',
-          data: data
+          message: "Success",
+          data: data,
         };
       } catch (error) {
         retryCount++;
         if (retryCount >= MAX_RETRIES) {
           return {
             success: false,
-            message: error instanceof Error ? error.message : 'Unknown error',
-            data: null
+            message: error instanceof Error ? error.message : "Unknown error",
+            data: null,
           };
         }
         // Exponential backoff
-        await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+        await new Promise((resolve) => setTimeout(resolve, 1000 * retryCount));
       }
     }
 
     return {
       success: false,
-      message: 'Max retries exceeded',
-      data: null
+      message: "Max retries exceeded",
+      data: null,
     };
   }
 
   /**
    * Create a new project
    */
-  async createProject(projectData: Omit<Project, 'id'>): Promise<ApiResponse<Project>> {
+  async createProject(
+    projectData: Omit<Project, "id">,
+  ): Promise<ApiResponse<Project>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(this.transformRequest(projectData))
+          body: JSON.stringify(this.transformRequest(projectData)),
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -134,8 +139,9 @@ export class ProjectApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to create project',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to create project",
+        data: null,
       };
     }
   }
@@ -147,17 +153,17 @@ export class ProjectApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${projectId}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -165,8 +171,9 @@ export class ProjectApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch project',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to fetch project",
+        data: null,
       };
     }
   }
@@ -178,17 +185,19 @@ export class ProjectApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((project: any) => this.transformResponse(project))
+          data: response.data.map((project: any) =>
+            this.transformResponse(project),
+          ),
         };
       }
 
@@ -196,8 +205,9 @@ export class ProjectApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch projects',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to fetch projects",
+        data: null,
       };
     }
   }
@@ -205,23 +215,26 @@ export class ProjectApi {
   /**
    * Update a project
    */
-  async updateProject(projectId: string, projectData: Partial<Project>): Promise<ApiResponse<Project>> {
+  async updateProject(
+    projectId: string,
+    projectData: Partial<Project>,
+  ): Promise<ApiResponse<Project>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${projectId}`, {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(this.transformRequest(projectData))
+          body: JSON.stringify(this.transformRequest(projectData)),
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -229,8 +242,9 @@ export class ProjectApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to update project',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to update project",
+        data: null,
       };
     }
   }
@@ -242,23 +256,24 @@ export class ProjectApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${projectId}`, {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       return {
         success: response.success,
         message: response.message,
-        data: undefined
+        data: undefined,
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to delete project',
-        data: undefined
+        message:
+          error instanceof Error ? error.message : "Failed to delete project",
+        data: undefined,
       };
     }
   }

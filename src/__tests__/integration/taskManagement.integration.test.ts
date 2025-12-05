@@ -1,11 +1,11 @@
-import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
-import { taskApi } from '../../api/taskApi';
-import { TodoneDatabase } from '../../database/db';
-import { Task } from '../../types/task';
+import { describe, test, expect, vi, beforeEach, afterEach } from "vitest";
+import { taskApi } from "../../api/taskApi";
+import { TodoneDatabase } from "../../database/db";
+import { Task } from "../../types/task";
 
 // Mock the database
-vi.mock('../../database/db');
-vi.mock('../../api/taskApi');
+vi.mock("../../database/db");
+vi.mock("../../api/taskApi");
 
 // Mock localStorage
 const localStorageMock = (() => {
@@ -21,77 +21,79 @@ const localStorageMock = (() => {
     },
     clear: () => {
       store = {};
-    }
+    },
   };
 })();
 
-Object.defineProperty(window, 'localStorage', {
-  value: localStorageMock
+Object.defineProperty(window, "localStorage", {
+  value: localStorageMock,
 });
 
-describe('Task Management Integration Tests', () => {
+describe("Task Management Integration Tests", () => {
   const mockTask: Task = {
-    id: 'task-1',
-    title: 'Test Task',
-    description: 'Test task description',
-    status: 'todo',
-    priority: 'medium',
+    id: "task-1",
+    title: "Test Task",
+    description: "Test task description",
+    status: "todo",
+    priority: "medium",
     completed: false,
     createdAt: new Date(),
     updatedAt: new Date(),
-    projectId: 'project-1',
-    order: 0
+    projectId: "project-1",
+    order: 0,
   };
 
   const mockDatabaseTask = {
     id: 1,
-    content: 'Test Task',
-    projectId: 'project-1',
+    content: "Test Task",
+    projectId: "project-1",
     sectionId: null,
-    priority: 'medium',
+    priority: "medium",
     dueDate: null,
     completed: false,
     createdDate: new Date(),
     parentTaskId: null,
-    order: 0
+    order: 0,
   };
 
   beforeEach(() => {
     // Set up auth token
-    localStorage.setItem('token', 'test-token');
+    localStorage.setItem("token", "test-token");
 
     // Mock database methods
     (TodoneDatabase.prototype.tasks.add as any).mockResolvedValue(1);
     (TodoneDatabase.prototype.tasks.put as any).mockResolvedValue(1);
     (TodoneDatabase.prototype.tasks.delete as any).mockResolvedValue(undefined);
-    (TodoneDatabase.prototype.tasks.get as any).mockResolvedValue(mockDatabaseTask);
+    (TodoneDatabase.prototype.tasks.get as any).mockResolvedValue(
+      mockDatabaseTask,
+    );
     (TodoneDatabase.prototype.tasks.where as any).mockReturnValue({
-      toArray: vi.fn().mockResolvedValue([mockDatabaseTask])
+      toArray: vi.fn().mockResolvedValue([mockDatabaseTask]),
     });
 
     // Mock API responses
-    vi.spyOn(taskApi, 'createTask').mockResolvedValue({
+    vi.spyOn(taskApi, "createTask").mockResolvedValue({
       success: true,
-      message: 'Task created successfully',
-      data: mockTask
+      message: "Task created successfully",
+      data: mockTask,
     });
 
-    vi.spyOn(taskApi, 'getTask').mockResolvedValue({
+    vi.spyOn(taskApi, "getTask").mockResolvedValue({
       success: true,
-      message: 'Task retrieved successfully',
-      data: mockTask
+      message: "Task retrieved successfully",
+      data: mockTask,
     });
 
-    vi.spyOn(taskApi, 'updateTask').mockResolvedValue({
+    vi.spyOn(taskApi, "updateTask").mockResolvedValue({
       success: true,
-      message: 'Task updated successfully',
-      data: { ...mockTask, title: 'Updated Task' }
+      message: "Task updated successfully",
+      data: { ...mockTask, title: "Updated Task" },
     });
 
-    vi.spyOn(taskApi, 'deleteTask').mockResolvedValue({
+    vi.spyOn(taskApi, "deleteTask").mockResolvedValue({
       success: true,
-      message: 'Task deleted successfully',
-      data: undefined
+      message: "Task deleted successfully",
+      data: undefined,
     });
   });
 
@@ -99,21 +101,21 @@ describe('Task Management Integration Tests', () => {
     vi.restoreAllMocks();
   });
 
-  test('Task creation → API → Database → UI update flow', async () => {
+  test("Task creation → API → Database → UI update flow", async () => {
     // Mock database instance
     const db = new TodoneDatabase();
 
     // Test task creation flow
     const createResponse = await taskApi.createTask({
-      title: 'Test Task',
-      description: 'Test task description',
-      status: 'todo',
-      priority: 'medium',
+      title: "Test Task",
+      description: "Test task description",
+      status: "todo",
+      priority: "medium",
       completed: false,
       createdAt: new Date(),
       updatedAt: new Date(),
-      projectId: 'project-1',
-      order: 0
+      projectId: "project-1",
+      order: 0,
     });
 
     expect(createResponse.success).toBe(true);
@@ -121,15 +123,15 @@ describe('Task Management Integration Tests', () => {
 
     // Simulate database sync
     const dbTask = await db.tasks.add({
-      content: 'Test Task',
-      projectId: 'project-1',
+      content: "Test Task",
+      projectId: "project-1",
       sectionId: null,
-      priority: 'medium',
+      priority: "medium",
       dueDate: null,
       completed: false,
       createdDate: new Date(),
       parentTaskId: null,
-      order: 0
+      order: 0,
     });
 
     expect(dbTask).toBe(1);
@@ -139,9 +141,9 @@ describe('Task Management Integration Tests', () => {
     expect(savedTask).toEqual(mockDatabaseTask);
   });
 
-  test('Task retrieval → API → Database consistency', async () => {
+  test("Task retrieval → API → Database consistency", async () => {
     // Test task retrieval flow
-    const getResponse = await taskApi.getTask('task-1');
+    const getResponse = await taskApi.getTask("task-1");
     expect(getResponse.success).toBe(true);
     expect(getResponse.data).toEqual(mockTask);
 
@@ -152,29 +154,31 @@ describe('Task Management Integration Tests', () => {
     expect(dbTask.projectId).toBe(mockTask.projectId);
   });
 
-  test('Task update → API → Database sync', async () => {
+  test("Task update → API → Database sync", async () => {
     // Test task update flow
-    const updatedTask = { ...mockTask, title: 'Updated Task' };
-    const updateResponse = await taskApi.updateTask('task-1', { title: 'Updated Task' });
+    const updatedTask = { ...mockTask, title: "Updated Task" };
+    const updateResponse = await taskApi.updateTask("task-1", {
+      title: "Updated Task",
+    });
 
     expect(updateResponse.success).toBe(true);
-    expect(updateResponse.data?.title).toBe('Updated Task');
+    expect(updateResponse.data?.title).toBe("Updated Task");
 
     // Simulate database update
     const db = new TodoneDatabase();
     await db.tasks.put({
       ...mockDatabaseTask,
-      content: 'Updated Task'
+      content: "Updated Task",
     });
 
     // Verify database sync
     const dbTask = await db.tasks.get(1);
-    expect(dbTask.content).toBe('Updated Task');
+    expect(dbTask.content).toBe("Updated Task");
   });
 
-  test('Task deletion → API → Database cleanup', async () => {
+  test("Task deletion → API → Database cleanup", async () => {
     // Test task deletion flow
-    const deleteResponse = await taskApi.deleteTask('task-1');
+    const deleteResponse = await taskApi.deleteTask("task-1");
     expect(deleteResponse.success).toBe(true);
 
     // Simulate database cleanup
@@ -186,61 +190,61 @@ describe('Task Management Integration Tests', () => {
     expect(deletedTask).toBeUndefined();
   });
 
-  test('Error handling in task creation flow', async () => {
+  test("Error handling in task creation flow", async () => {
     // Mock API error
-    vi.spyOn(taskApi, 'createTask').mockResolvedValueOnce({
+    vi.spyOn(taskApi, "createTask").mockResolvedValueOnce({
       success: false,
-      message: 'Failed to create task',
-      data: null
+      message: "Failed to create task",
+      data: null,
     });
 
     const createResponse = await taskApi.createTask({
-      title: 'Test Task',
-      description: 'Test task description',
-      status: 'todo',
-      priority: 'medium',
+      title: "Test Task",
+      description: "Test task description",
+      status: "todo",
+      priority: "medium",
       completed: false,
       createdAt: new Date(),
       updatedAt: new Date(),
-      projectId: 'project-1',
-      order: 0
+      projectId: "project-1",
+      order: 0,
     });
 
     expect(createResponse.success).toBe(false);
-    expect(createResponse.message).toBe('Failed to create task');
+    expect(createResponse.message).toBe("Failed to create task");
   });
 
-  test('Data consistency between API and database', async () => {
+  test("Data consistency between API and database", async () => {
     // Create task via API
     const createResponse = await taskApi.createTask({
-      title: 'Consistency Test',
-      description: 'Testing data consistency',
-      status: 'todo',
-      priority: 'high',
+      title: "Consistency Test",
+      description: "Testing data consistency",
+      status: "todo",
+      priority: "high",
       completed: false,
       createdAt: new Date(),
       updatedAt: new Date(),
-      projectId: 'project-1',
-      order: 0
+      projectId: "project-1",
+      order: 0,
     });
 
     // Add to database
     const db = new TodoneDatabase();
     await db.tasks.add({
       id: 2,
-      content: 'Consistency Test',
-      projectId: 'project-1',
+      content: "Consistency Test",
+      projectId: "project-1",
       sectionId: null,
-      priority: 'high',
+      priority: "high",
       dueDate: null,
       completed: false,
       createdDate: new Date(),
       parentTaskId: null,
-      order: 0
+      order: 0,
     });
 
     // Retrieve from both sources
-    const apiTask = (await taskApi.getTask('task-1')).data;
+    const apiTask = (await taskApi.getTask("task-1")).data;
     const dbTask = await db.tasks.get(2);
 
     // Verify consistency
@@ -249,14 +253,14 @@ describe('Task Management Integration Tests', () => {
     expect(apiTask?.projectId).toBe(dbTask?.projectId);
   });
 
-  test('Performance impact of task operations', async () => {
+  test("Performance impact of task operations", async () => {
     const startTime = performance.now();
 
     // Perform multiple operations
     await taskApi.createTask(mockTask);
-    await taskApi.getTask('task-1');
-    await taskApi.updateTask('task-1', { title: 'Updated' });
-    await taskApi.getTask('task-1');
+    await taskApi.getTask("task-1");
+    await taskApi.updateTask("task-1", { title: "Updated" });
+    await taskApi.getTask("task-1");
 
     const endTime = performance.now();
     const duration = endTime - startTime;

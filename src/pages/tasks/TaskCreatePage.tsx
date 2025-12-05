@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import TaskForm from '../../features/tasks/TaskForm';
-import RecurringTaskForm from '../../features/recurring/RecurringTaskForm';
-import { useTasks } from '../../hooks/useTasks';
-import { useRecurringTaskIntegration } from '../../hooks/useRecurringTaskIntegration';
-import { ArrowLeftIcon } from '@heroicons/react/outline';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import TaskForm from "../../features/tasks/TaskForm";
+import RecurringTaskForm from "../../features/recurring/RecurringTaskForm";
+import { useTasks } from "../../hooks/useTasks";
+import { useRecurringTaskIntegration } from "../../hooks/useRecurringTaskIntegration";
+import { ArrowLeftIcon } from "@heroicons/react/outline";
 
 const TaskCreatePage: React.FC = () => {
   const navigate = useNavigate();
@@ -15,18 +15,18 @@ const TaskCreatePage: React.FC = () => {
   const handleSubmit = async (taskData: any) => {
     try {
       await createTask(taskData);
-      navigate('/tasks');
+      navigate("/tasks");
     } catch (error) {
-      console.error('Failed to create task:', error);
+      console.error("Failed to create task:", error);
     }
   };
 
   const handleRecurringSubmit = async (taskData: any, config: any) => {
     try {
       await createRecurringTaskIntegrated(taskData, config);
-      navigate('/tasks');
+      navigate("/tasks");
     } catch (error) {
-      console.error('Failed to create recurring task:', error);
+      console.error("Failed to create recurring task:", error);
     }
   };
 
@@ -34,7 +34,7 @@ const TaskCreatePage: React.FC = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="mb-6">
         <button
-          onClick={() => navigate('/tasks')}
+          onClick={() => navigate("/tasks")}
           className="flex items-center space-x-2 text-blue-600 hover:text-blue-800"
         >
           <ArrowLeftIcon className="w-5 h-5" />
@@ -46,7 +46,7 @@ const TaskCreatePage: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm p-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">
-              {isRecurring ? 'Create New Recurring Task' : 'Create New Task'}
+              {isRecurring ? "Create New Recurring Task" : "Create New Task"}
             </h1>
             <div className="flex items-center space-x-2">
               <label className="flex items-center space-x-2 text-sm text-gray-600">
@@ -64,12 +64,12 @@ const TaskCreatePage: React.FC = () => {
           {isRecurring ? (
             <RecurringTaskForm
               onSubmit={handleRecurringSubmit}
-              onCancel={() => navigate('/tasks')}
+              onCancel={() => navigate("/tasks")}
             />
           ) : (
             <TaskForm
               onSubmit={handleSubmit}
-              onCancel={() => navigate('/tasks')}
+              onCancel={() => navigate("/tasks")}
             />
           )}
         </div>

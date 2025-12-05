@@ -16,57 +16,59 @@ export function matchPatterns(text: string): PatternMatchResult {
   // Date patterns
   const datePatterns = [
     {
-      regex: /(?:on|by|due|for)\s+(?:the\s+)?(\d{1,2}(?:st|nd|rd|th)?\s+(?:of\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December)[^,]*(?:,?\s+\d{4})?/i,
-      extract: (match: RegExpMatchArray) => match[0].trim()
+      regex:
+        /(?:on|by|due|for)\s+(?:the\s+)?(\d{1,2}(?:st|nd|rd|th)?\s+(?:of\s+)?(?:January|February|March|April|May|June|July|August|September|October|November|December)[^,]*(?:,?\s+\d{4})?/i,
+      extract: (match: RegExpMatchArray) => match[0].trim(),
     },
     {
       regex: /(?:on|by|due|for)\s+(?:the\s+)?(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})/i,
-      extract: (match: RegExpMatchArray) => match[1]
+      extract: (match: RegExpMatchArray) => match[1],
     },
     {
-      regex: /(?:today|tomorrow|yesterday|next\s+(?:week|month|year)|this\s+(?:week|month|year))/i,
-      extract: (match: RegExpMatchArray) => match[0].trim()
-    }
+      regex:
+        /(?:today|tomorrow|yesterday|next\s+(?:week|month|year)|this\s+(?:week|month|year))/i,
+      extract: (match: RegExpMatchArray) => match[0].trim(),
+    },
   ];
 
   // Priority patterns
   const priorityPatterns = [
     {
       regex: /\b(high|urgent|important|critical|asap)\b/i,
-      priority: 'high'
+      priority: "high",
     },
     {
       regex: /\b(medium|normal|standard|regular)\b/i,
-      priority: 'medium'
+      priority: "medium",
     },
     {
       regex: /\b(low|minor|trivial|whenever|sometime)\b/i,
-      priority: 'low'
-    }
+      priority: "low",
+    },
   ];
 
   // Label patterns
   const labelPatterns = [
     {
       regex: /#(\w+)/g,
-      extract: (match: RegExpMatchArray) => match[1].toLowerCase()
+      extract: (match: RegExpMatchArray) => match[1].toLowerCase(),
     },
     {
       regex: /(?:label|tag|category):\s*([^\s,;]+)/gi,
-      extract: (match: RegExpMatchArray) => match[1].toLowerCase()
-    }
+      extract: (match: RegExpMatchArray) => match[1].toLowerCase(),
+    },
   ];
 
   // Project patterns
   const projectPatterns = [
     {
       regex: /(?:project|for|in):\s*([^\s,;]+)/i,
-      extract: (match: RegExpMatchArray) => match[1].trim()
+      extract: (match: RegExpMatchArray) => match[1].trim(),
     },
     {
       regex: /(?:for\s+the\s+)?(?:project|task|work)\s+([^\s,;]+)/i,
-      extract: (match: RegExpMatchArray) => match[1].trim()
-    }
+      extract: (match: RegExpMatchArray) => match[1].trim(),
+    },
   ];
 
   // Match dates
@@ -114,7 +116,10 @@ export function matchPatterns(text: string): PatternMatchResult {
 /**
  * Enhanced pattern matching with context
  */
-export function matchPatternsWithContext(text: string, context: any = {}): PatternMatchResult {
+export function matchPatternsWithContext(
+  text: string,
+  context: any = {},
+): PatternMatchResult {
   const basicResult = matchPatterns(text);
 
   // Apply context-based enhancements
@@ -133,25 +138,29 @@ export function matchPatternsWithContext(text: string, context: any = {}): Patte
  * Pattern-based text classification
  */
 export function classifyTextPattern(text: string): string {
-  if (!text) return 'unknown';
+  if (!text) return "unknown";
 
   const patterns = [
     {
-      regex: /\b(create|add|make|schedule|set up|remind me)\b.*\b(task|reminder|event|meeting|appointment)\b/i,
-      type: 'task_creation'
+      regex:
+        /\b(create|add|make|schedule|set up|remind me)\b.*\b(task|reminder|event|meeting|appointment)\b/i,
+      type: "task_creation",
     },
     {
-      regex: /\b(update|modify|change|edit|revise)\b.*\b(task|reminder|event)\b/i,
-      type: 'task_update'
+      regex:
+        /\b(update|modify|change|edit|revise)\b.*\b(task|reminder|event)\b/i,
+      type: "task_update",
     },
     {
-      regex: /\b(delete|remove|cancel|complete|finish)\b.*\b(task|reminder|event)\b/i,
-      type: 'task_deletion'
+      regex:
+        /\b(delete|remove|cancel|complete|finish)\b.*\b(task|reminder|event)\b/i,
+      type: "task_deletion",
     },
     {
-      regex: /\b(show|list|display|view)\b.*\b(tasks|reminders|events|schedule)\b/i,
-      type: 'task_query'
-    }
+      regex:
+        /\b(show|list|display|view)\b.*\b(tasks|reminders|events|schedule)\b/i,
+      type: "task_query",
+    },
   ];
 
   for (const pattern of patterns) {
@@ -160,5 +169,5 @@ export function classifyTextPattern(text: string): string {
     }
   }
 
-  return 'unknown';
+  return "unknown";
 }

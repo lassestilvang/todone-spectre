@@ -1,15 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { useCollaboration } from '../../hooks/useCollaboration';
-import { useProjects } from '../../hooks/useProjects';
-import { Project } from '../../types/project';
-import { CollaborationActivity } from '../../types/collaboration';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Users, Activity, Settings, Check, X, Edit, Trash2, Folder, File } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { useCollaboration } from "../../hooks/useCollaboration";
+import { useProjects } from "../../hooks/useProjects";
+import { Project } from "../../types/project";
+import { CollaborationActivity } from "../../types/collaboration";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Plus,
+  Users,
+  Activity,
+  Settings,
+  Check,
+  X,
+  Edit,
+  Trash2,
+  Folder,
+  File,
+} from "lucide-react";
 
 interface ProjectCollaborationIntegrationProps {
   teamId: string;
@@ -18,29 +41,33 @@ interface ProjectCollaborationIntegrationProps {
   onProjectCreated?: (project: Project) => void;
 }
 
-export const ProjectCollaborationIntegration: React.FC<ProjectCollaborationIntegrationProps> = ({
+export const ProjectCollaborationIntegration: React.FC<
+  ProjectCollaborationIntegrationProps
+> = ({
   teamId,
   showProjectCreation = true,
   showActivityFeed = true,
-  onProjectCreated
+  onProjectCreated,
 }) => {
-  const { teams, members, createTeam, addMemberToTeam, updateTeamSettings } = useCollaboration();
-  const { projects, createProject, updateProject, deleteProject } = useProjects();
-  const [newProjectName, setNewProjectName] = useState('');
-  const [newProjectDescription, setNewProjectDescription] = useState('');
+  const { teams, members, createTeam, addMemberToTeam, updateTeamSettings } =
+    useCollaboration();
+  const { projects, createProject, updateProject, deleteProject } =
+    useProjects();
+  const [newProjectName, setNewProjectName] = useState("");
+  const [newProjectDescription, setNewProjectDescription] = useState("");
   const [selectedTeamMembers, setSelectedTeamMembers] = useState<string[]>([]);
   const [activityFeed, setActivityFeed] = useState<CollaborationActivity[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Get current team
-  const currentTeam = teams.find(team => team.id === teamId);
-  const teamMembers = members.filter(member => member.teamId === teamId);
+  const currentTeam = teams.find((team) => team.id === teamId);
+  const teamMembers = members.filter((member) => member.teamId === teamId);
 
   // Create a new project with collaboration context
   const handleCreateProject = async () => {
     if (!newProjectName.trim()) {
-      setError('Project name is required');
+      setError("Project name is required");
       return;
     }
 
@@ -49,36 +76,40 @@ export const ProjectCollaborationIntegration: React.FC<ProjectCollaborationInteg
       setError(null);
 
       // Create the project
-      const newProjectData: Omit<Project, 'id'> = {
+      const newProjectData: Omit<Project, "id"> = {
         name: newProjectName,
         description: newProjectDescription || undefined,
-        status: 'active',
+        status: "active",
         createdAt: new Date(),
         updatedAt: new Date(),
         teamId,
-        memberIds: selectedTeamMembers.length > 0 ? selectedTeamMembers : undefined
+        memberIds:
+          selectedTeamMembers.length > 0 ? selectedTeamMembers : undefined,
       };
 
       const createdProject = await createProject(newProjectData);
 
       // Create collaboration activity
-      const activityData: Omit<CollaborationActivity, 'id'> = {
+      const activityData: Omit<CollaborationActivity, "id"> = {
         teamId,
-        userId: 'current-user', // This would be the current user ID in a real app
+        userId: "current-user", // This would be the current user ID in a real app
         action: `created project "${createdProject.name}"`,
-        type: 'project',
+        type: "project",
         timestamp: new Date(),
         entityId: createdProject.id,
-        entityType: 'project'
+        entityType: "project",
       };
 
       // In a real implementation, we would call the collaboration API to create this activity
       // For now, we'll just add it to our local state
-      setActivityFeed(prev => [activityData as CollaborationActivity, ...prev]);
+      setActivityFeed((prev) => [
+        activityData as CollaborationActivity,
+        ...prev,
+      ]);
 
       // Reset form
-      setNewProjectName('');
-      setNewProjectDescription('');
+      setNewProjectName("");
+      setNewProjectDescription("");
       setSelectedTeamMembers([]);
 
       if (onProjectCreated) {
@@ -87,7 +118,7 @@ export const ProjectCollaborationIntegration: React.FC<ProjectCollaborationInteg
 
       setLoading(false);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create project');
+      setError(err instanceof Error ? err.message : "Failed to create project");
       setLoading(false);
     }
   };
@@ -95,37 +126,40 @@ export const ProjectCollaborationIntegration: React.FC<ProjectCollaborationInteg
   // Handle project deletion with collaboration tracking
   const handleProjectDeletion = async (projectId: string) => {
     try {
-      const projectToDelete = projects.find(p => p.id === projectId);
+      const projectToDelete = projects.find((p) => p.id === projectId);
       if (!projectToDelete) return;
 
       await deleteProject(projectId);
 
       // Create collaboration activity for project deletion
-      const activityData: Omit<CollaborationActivity, 'id'> = {
+      const activityData: Omit<CollaborationActivity, "id"> = {
         teamId,
-        userId: 'current-user',
+        userId: "current-user",
         action: `deleted project "${projectToDelete.name}"`,
-        type: 'project',
+        type: "project",
         timestamp: new Date(),
         entityId: projectId,
-        entityType: 'project'
+        entityType: "project",
       };
 
-      setActivityFeed(prev => [activityData as CollaborationActivity, ...prev]);
+      setActivityFeed((prev) => [
+        activityData as CollaborationActivity,
+        ...prev,
+      ]);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete project');
+      setError(err instanceof Error ? err.message : "Failed to delete project");
     }
   };
 
   // Filter projects by team context
-  const teamProjects = projects.filter(project => project.teamId === teamId);
+  const teamProjects = projects.filter((project) => project.teamId === teamId);
 
   // Toggle team member selection for project
   const toggleTeamMemberSelection = (memberId: string) => {
-    setSelectedTeamMembers(prev =>
+    setSelectedTeamMembers((prev) =>
       prev.includes(memberId)
-        ? prev.filter(id => id !== memberId)
-        : [...prev, memberId]
+        ? prev.filter((id) => id !== memberId)
+        : [...prev, memberId],
     );
   };
 
@@ -136,7 +170,9 @@ export const ProjectCollaborationIntegration: React.FC<ProjectCollaborationInteg
         <Card>
           <CardHeader>
             <CardTitle>Create New Project</CardTitle>
-            <CardDescription>Create projects for team collaboration</CardDescription>
+            <CardDescription>
+              Create projects for team collaboration
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -164,12 +200,16 @@ export const ProjectCollaborationIntegration: React.FC<ProjectCollaborationInteg
             <div className="space-y-2">
               <Label>Team Members</Label>
               <div className="grid grid-cols-2 gap-2">
-                {teamMembers.map(member => (
+                {teamMembers.map((member) => (
                   <div key={member.id} className="flex items-center space-x-2">
                     <Checkbox
                       id={`member-${member.id}`}
-                      checked={selectedTeamMembers.includes(member.userId || member.id)}
-                      onCheckedChange={() => toggleTeamMemberSelection(member.userId || member.id)}
+                      checked={selectedTeamMembers.includes(
+                        member.userId || member.id,
+                      )}
+                      onCheckedChange={() =>
+                        toggleTeamMemberSelection(member.userId || member.id)
+                      }
                     />
                     <Label htmlFor={`member-${member.id}`} className="text-sm">
                       {member.user?.name || member.id}
@@ -184,7 +224,7 @@ export const ProjectCollaborationIntegration: React.FC<ProjectCollaborationInteg
               disabled={loading || !newProjectName.trim()}
               className="w-full"
             >
-              {loading ? 'Creating...' : 'Create Project'}
+              {loading ? "Creating..." : "Create Project"}
             </Button>
 
             {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -203,14 +243,19 @@ export const ProjectCollaborationIntegration: React.FC<ProjectCollaborationInteg
             <p className="text-gray-500">No projects found for this team.</p>
           ) : (
             <div className="space-y-4">
-              {teamProjects.map(project => (
-                <div key={project.id} className="flex items-center justify-between p-3 border rounded-lg">
+              {teamProjects.map((project) => (
+                <div
+                  key={project.id}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
                   <div className="flex items-center space-x-3">
                     <Folder className="w-5 h-5 text-blue-500" />
                     <div className="flex-1 min-w-0">
                       <h4 className="font-medium truncate">{project.name}</h4>
                       {project.description && (
-                        <p className="text-sm text-gray-500 truncate">{project.description}</p>
+                        <p className="text-sm text-gray-500 truncate">
+                          {project.description}
+                        </p>
                       )}
                       <div className="flex items-center space-x-2 mt-1">
                         <Badge variant="secondary" className="text-xs">
@@ -246,7 +291,9 @@ export const ProjectCollaborationIntegration: React.FC<ProjectCollaborationInteg
         <Card>
           <CardHeader>
             <CardTitle>Project Activity Feed</CardTitle>
-            <CardDescription>Recent project-related collaboration activities</CardDescription>
+            <CardDescription>
+              Recent project-related collaboration activities
+            </CardDescription>
           </CardHeader>
           <CardContent>
             {activityFeed.length === 0 ? (
@@ -254,19 +301,25 @@ export const ProjectCollaborationIntegration: React.FC<ProjectCollaborationInteg
             ) : (
               <div className="space-y-4">
                 {activityFeed.map((activity, index) => (
-                  <div key={index} className="flex items-start space-x-3 p-3 border rounded-lg">
+                  <div
+                    key={index}
+                    className="flex items-start space-x-3 p-3 border rounded-lg"
+                  >
                     <div className="flex-shrink-0">
                       <Activity className="w-5 h-5 text-gray-400" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm">
-                        <span className="font-medium">Team Member</span> {activity.action}
+                        <span className="font-medium">Team Member</span>{" "}
+                        {activity.action}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
                         {activity.timestamp.toLocaleString()}
                       </p>
                       {activity.details && (
-                        <p className="text-xs text-gray-400 mt-1">{activity.details}</p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          {activity.details}
+                        </p>
                       )}
                     </div>
                   </div>

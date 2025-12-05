@@ -1,6 +1,6 @@
-import { Task } from '../types/task';
-import { ApiResponse } from '../types/api';
-import { API_BASE_URL } from '../config/app.config';
+import { Task } from "../types/task";
+import { ApiResponse } from "../types/api";
+import { API_BASE_URL } from "../config/app.config";
 
 /**
  * Task API Service - Handles all API communication for task CRUD operations
@@ -23,7 +23,7 @@ export class TaskApi {
       dueDate: taskData.dueDate?.toISOString(),
       createdAt: taskData.createdAt?.toISOString(),
       updatedAt: taskData.updatedAt?.toISOString(),
-      completedAt: taskData.completedAt?.toISOString()
+      completedAt: taskData.completedAt?.toISOString(),
     };
   }
 
@@ -35,23 +35,27 @@ export class TaskApi {
       ...responseData,
       id: responseData.id,
       title: responseData.title,
-      description: responseData.description || '',
-      status: responseData.status || 'todo',
-      priority: responseData.priority || 'medium',
+      description: responseData.description || "",
+      status: responseData.status || "todo",
+      priority: responseData.priority || "medium",
       dueDate: responseData.dueDate ? new Date(responseData.dueDate) : null,
       createdAt: new Date(responseData.createdAt),
       updatedAt: new Date(responseData.updatedAt),
-      completedAt: responseData.completedAt ? new Date(responseData.completedAt) : null,
+      completedAt: responseData.completedAt
+        ? new Date(responseData.completedAt)
+        : null,
       completed: responseData.completed || false,
       projectId: responseData.projectId,
-      order: responseData.order || 0
+      order: responseData.order || 0,
     };
   }
 
   /**
    * Handle API errors with retry logic
    */
-  private async handleApiRequest<T>(requestFn: () => Promise<Response>): Promise<ApiResponse<T>> {
+  private async handleApiRequest<T>(
+    requestFn: () => Promise<Response>,
+  ): Promise<ApiResponse<T>> {
     const MAX_RETRIES = 3;
     let retryCount = 0;
 
@@ -63,58 +67,59 @@ export class TaskApi {
           const errorData = await response.json().catch(() => ({}));
           return {
             success: false,
-            message: errorData.message || `HTTP error! status: ${response.status}`,
-            data: null
+            message:
+              errorData.message || `HTTP error! status: ${response.status}`,
+            data: null,
           };
         }
 
         const data = await response.json();
         return {
           success: true,
-          message: 'Success',
-          data: data
+          message: "Success",
+          data: data,
         };
       } catch (error) {
         retryCount++;
         if (retryCount >= MAX_RETRIES) {
           return {
             success: false,
-            message: error instanceof Error ? error.message : 'Unknown error',
-            data: null
+            message: error instanceof Error ? error.message : "Unknown error",
+            data: null,
           };
         }
         // Exponential backoff
-        await new Promise(resolve => setTimeout(resolve, 1000 * retryCount));
+        await new Promise((resolve) => setTimeout(resolve, 1000 * retryCount));
       }
     }
 
     return {
       success: false,
-      message: 'Max retries exceeded',
-      data: null
+      message: "Max retries exceeded",
+      data: null,
     };
   }
 
   /**
    * Create a new task
    */
-  async createTask(taskData: Omit<Task, 'id'>): Promise<ApiResponse<Task>> {
+  async createTask(taskData: Omit<Task, "id">): Promise<ApiResponse<Task>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}`, {
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(this.transformRequest(taskData))
+          body: JSON.stringify(this.transformRequest(taskData)),
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -122,8 +127,9 @@ export class TaskApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to create task',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to create task",
+        data: null,
       };
     }
   }
@@ -135,17 +141,17 @@ export class TaskApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${taskId}`, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -153,8 +159,9 @@ export class TaskApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch task',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to fetch task",
+        data: null,
       };
     }
   }
@@ -171,17 +178,17 @@ export class TaskApi {
 
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(url, {
-          method: 'GET',
+          method: "GET",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((task: any) => this.transformResponse(task))
+          data: response.data.map((task: any) => this.transformResponse(task)),
         };
       }
 
@@ -189,8 +196,9 @@ export class TaskApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to fetch tasks',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to fetch tasks",
+        data: null,
       };
     }
   }
@@ -198,23 +206,26 @@ export class TaskApi {
   /**
    * Update a task
    */
-  async updateTask(taskId: string, taskData: Partial<Task>): Promise<ApiResponse<Task>> {
+  async updateTask(
+    taskId: string,
+    taskData: Partial<Task>,
+  ): Promise<ApiResponse<Task>> {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${taskId}`, {
-          method: 'PUT',
+          method: "PUT",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
-          body: JSON.stringify(this.transformRequest(taskData))
+          body: JSON.stringify(this.transformRequest(taskData)),
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -222,8 +233,9 @@ export class TaskApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to update task',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to update task",
+        data: null,
       };
     }
   }
@@ -235,23 +247,24 @@ export class TaskApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${taskId}`, {
-          method: 'DELETE',
+          method: "DELETE",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       return {
         success: response.success,
         message: response.message,
-        data: undefined
+        data: undefined,
       };
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to delete task',
-        data: undefined
+        message:
+          error instanceof Error ? error.message : "Failed to delete task",
+        data: undefined,
       };
     }
   }
@@ -263,17 +276,17 @@ export class TaskApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${taskId}/complete`, {
-          method: 'PATCH',
+          method: "PATCH",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -281,8 +294,9 @@ export class TaskApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to complete task',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to complete task",
+        data: null,
       };
     }
   }
@@ -294,17 +308,17 @@ export class TaskApi {
     try {
       const response = await this.handleApiRequest<Response>(async () => {
         return await fetch(`${this.baseUrl}/${taskId}/reopen`, {
-          method: 'PATCH',
+          method: "PATCH",
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
       });
 
       if (response.success && response.data) {
         return {
           ...response,
-          data: this.transformResponse(response.data)
+          data: this.transformResponse(response.data),
         };
       }
 
@@ -312,8 +326,9 @@ export class TaskApi {
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Failed to reopen task',
-        data: null
+        message:
+          error instanceof Error ? error.message : "Failed to reopen task",
+        data: null,
       };
     }
   }

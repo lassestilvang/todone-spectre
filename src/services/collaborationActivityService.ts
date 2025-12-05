@@ -1,7 +1,7 @@
-import { CollaborationActivity } from '../types/collaboration';
-import { ApiResponse } from '../types/api';
-import { collaborationApi } from '../api/collaborationApi';
-import { useCollaborationStore } from '../store/useCollaborationStore';
+import { CollaborationActivity } from "../types/collaboration";
+import { ApiResponse } from "../types/api";
+import { collaborationApi } from "../api/collaborationApi";
+import { useCollaborationStore } from "../store/useCollaborationStore";
 
 /**
  * Collaboration Activity Service - Handles all collaboration activity-related business logic
@@ -19,7 +19,8 @@ export class CollaborationActivityService {
    */
   public static getInstance(): CollaborationActivityService {
     if (!CollaborationActivityService.instance) {
-      CollaborationActivityService.instance = new CollaborationActivityService();
+      CollaborationActivityService.instance =
+        new CollaborationActivityService();
     }
     return CollaborationActivityService.instance;
   }
@@ -29,55 +30,71 @@ export class CollaborationActivityService {
    */
   private validateActivity(activityData: Partial<CollaborationActivity>): void {
     if (!activityData.userId) {
-      throw new Error('User ID is required');
+      throw new Error("User ID is required");
     }
 
     if (!activityData.teamId) {
-      throw new Error('Team ID is required');
+      throw new Error("Team ID is required");
     }
 
     if (!activityData.action || activityData.action.trim().length === 0) {
-      throw new Error('Activity action is required');
+      throw new Error("Activity action is required");
     }
 
     if (activityData.action.length > 500) {
-      throw new Error('Activity action cannot exceed 500 characters');
+      throw new Error("Activity action cannot exceed 500 characters");
     }
 
-    if (activityData.type && !['message', 'file', 'task', 'other', 'member_added', 'member_removed', 'settings_updated'].includes(activityData.type)) {
-      throw new Error('Invalid activity type');
+    if (
+      activityData.type &&
+      ![
+        "message",
+        "file",
+        "task",
+        "other",
+        "member_added",
+        "member_removed",
+        "settings_updated",
+      ].includes(activityData.type)
+    ) {
+      throw new Error("Invalid activity type");
     }
   }
 
   /**
    * Create a new activity
    */
-  async createActivity(activityData: Omit<CollaborationActivity, 'id' | 'timestamp'>): Promise<CollaborationActivity> {
+  async createActivity(
+    activityData: Omit<CollaborationActivity, "id" | "timestamp">,
+  ): Promise<CollaborationActivity> {
     this.validateActivity(activityData);
 
-    const newActivity: Omit<CollaborationActivity, 'id'> = {
+    const newActivity: Omit<CollaborationActivity, "id"> = {
       ...activityData,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
     try {
-      const response: ApiResponse<CollaborationActivity> = await collaborationApi.createActivity(newActivity);
+      const response: ApiResponse<CollaborationActivity> =
+        await collaborationApi.createActivity(newActivity);
 
       if (response.success && response.data) {
         // Update team activity count
-        const currentTeam = this.collaborationStore.teams.find(team => team.id === activityData.teamId);
+        const currentTeam = this.collaborationStore.teams.find(
+          (team) => team.id === activityData.teamId,
+        );
         if (currentTeam) {
           this.collaborationStore.updateTeam(activityData.teamId, {
-            activityCount: (currentTeam.activityCount || 0) + 1
+            activityCount: (currentTeam.activityCount || 0) + 1,
           });
         }
 
         return response.data;
       } else {
-        throw new Error(response.message || 'Failed to create activity');
+        throw new Error(response.message || "Failed to create activity");
       }
     } catch (error) {
-      console.error('Error creating activity:', error);
+      console.error("Error creating activity:", error);
       throw error;
     }
   }
@@ -87,15 +104,16 @@ export class CollaborationActivityService {
    */
   async getActivitiesByTeam(teamId: string): Promise<CollaborationActivity[]> {
     try {
-      const response: ApiResponse<CollaborationActivity[]> = await collaborationApi.getActivitiesByTeam(teamId);
+      const response: ApiResponse<CollaborationActivity[]> =
+        await collaborationApi.getActivitiesByTeam(teamId);
 
       if (response.success && response.data) {
         return response.data;
       } else {
-        throw new Error(response.message || 'Failed to fetch activities');
+        throw new Error(response.message || "Failed to fetch activities");
       }
     } catch (error) {
-      console.error('Error fetching activities:', error);
+      console.error("Error fetching activities:", error);
       throw error;
     }
   }
@@ -103,17 +121,22 @@ export class CollaborationActivityService {
   /**
    * Get recent activities across all teams
    */
-  async getRecentActivities(limit: number = 10): Promise<CollaborationActivity[]> {
+  async getRecentActivities(
+    limit: number = 10,
+  ): Promise<CollaborationActivity[]> {
     try {
-      const response: ApiResponse<CollaborationActivity[]> = await collaborationApi.getRecentActivities(limit);
+      const response: ApiResponse<CollaborationActivity[]> =
+        await collaborationApi.getRecentActivities(limit);
 
       if (response.success && response.data) {
         return response.data;
       } else {
-        throw new Error(response.message || 'Failed to fetch recent activities');
+        throw new Error(
+          response.message || "Failed to fetch recent activities",
+        );
       }
     } catch (error) {
-      console.error('Error fetching recent activities:', error);
+      console.error("Error fetching recent activities:", error);
       throw error;
     }
   }
@@ -123,15 +146,16 @@ export class CollaborationActivityService {
    */
   async getActivitiesByUser(userId: string): Promise<CollaborationActivity[]> {
     try {
-      const response: ApiResponse<CollaborationActivity[]> = await collaborationApi.getActivitiesByUser(userId);
+      const response: ApiResponse<CollaborationActivity[]> =
+        await collaborationApi.getActivitiesByUser(userId);
 
       if (response.success && response.data) {
         return response.data;
       } else {
-        throw new Error(response.message || 'Failed to fetch user activities');
+        throw new Error(response.message || "Failed to fetch user activities");
       }
     } catch (error) {
-      console.error('Error fetching user activities:', error);
+      console.error("Error fetching user activities:", error);
       throw error;
     }
   }
@@ -141,13 +165,14 @@ export class CollaborationActivityService {
    */
   async deleteActivity(activityId: string): Promise<void> {
     try {
-      const response: ApiResponse<void> = await collaborationApi.deleteActivity(activityId);
+      const response: ApiResponse<void> =
+        await collaborationApi.deleteActivity(activityId);
 
       if (!response.success) {
-        throw new Error(response.message || 'Failed to delete activity');
+        throw new Error(response.message || "Failed to delete activity");
       }
     } catch (error) {
-      console.error('Error deleting activity:', error);
+      console.error("Error deleting activity:", error);
       throw error;
     }
   }
@@ -155,15 +180,22 @@ export class CollaborationActivityService {
   /**
    * Filter activities by type
    */
-  filterActivitiesByType(activities: CollaborationActivity[], type: CollaborationActivity['type']): CollaborationActivity[] {
-    return activities.filter(activity => activity.type === type);
+  filterActivitiesByType(
+    activities: CollaborationActivity[],
+    type: CollaborationActivity["type"],
+  ): CollaborationActivity[] {
+    return activities.filter((activity) => activity.type === type);
   }
 
   /**
    * Filter activities by date range
    */
-  filterActivitiesByDateRange(activities: CollaborationActivity[], startDate: Date, endDate: Date): CollaborationActivity[] {
-    return activities.filter(activity => {
+  filterActivitiesByDateRange(
+    activities: CollaborationActivity[],
+    startDate: Date,
+    endDate: Date,
+  ): CollaborationActivity[] {
+    return activities.filter((activity) => {
       const activityDate = new Date(activity.timestamp);
       return activityDate >= startDate && activityDate <= endDate;
     });
@@ -172,19 +204,24 @@ export class CollaborationActivityService {
   /**
    * Sort activities by timestamp (newest first)
    */
-  sortActivitiesByTimestamp(activities: CollaborationActivity[]): CollaborationActivity[] {
-    return [...activities].sort((a, b) =>
-      new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  sortActivitiesByTimestamp(
+    activities: CollaborationActivity[],
+  ): CollaborationActivity[] {
+    return [...activities].sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
     );
   }
 
   /**
    * Group activities by date
    */
-  groupActivitiesByDate(activities: CollaborationActivity[]): Record<string, CollaborationActivity[]> {
+  groupActivitiesByDate(
+    activities: CollaborationActivity[],
+  ): Record<string, CollaborationActivity[]> {
     const grouped: Record<string, CollaborationActivity[]> = {};
 
-    activities.forEach(activity => {
+    activities.forEach((activity) => {
       const date = new Date(activity.timestamp);
       const dateKey = date.toDateString();
 
@@ -209,10 +246,13 @@ export class CollaborationActivityService {
     const byType: Record<string, number> = {};
     const byUser: Record<string, number> = {};
     const recent = [...activities]
-      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      )
       .slice(0, 5);
 
-    activities.forEach(activity => {
+    activities.forEach((activity) => {
       byType[activity.type] = (byType[activity.type] || 0) + 1;
       byUser[activity.userId] = (byUser[activity.userId] || 0) + 1;
     });
@@ -221,17 +261,22 @@ export class CollaborationActivityService {
       total: activities.length,
       byType,
       byUser,
-      recent
+      recent,
     };
   }
 
   /**
    * Search activities by content
    */
-  searchActivities(activities: CollaborationActivity[], searchTerm: string): CollaborationActivity[] {
-    return activities.filter(activity =>
-      activity.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (activity.details && activity.details.toLowerCase().includes(searchTerm.toLowerCase()))
+  searchActivities(
+    activities: CollaborationActivity[],
+    searchTerm: string,
+  ): CollaborationActivity[] {
+    return activities.filter(
+      (activity) =>
+        activity.action.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (activity.details &&
+          activity.details.toLowerCase().includes(searchTerm.toLowerCase())),
     );
   }
 
@@ -255,4 +300,5 @@ export class CollaborationActivityService {
 }
 
 // Singleton instance
-export const collaborationActivityService = CollaborationActivityService.getInstance();
+export const collaborationActivityService =
+  CollaborationActivityService.getInstance();

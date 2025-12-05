@@ -1,26 +1,34 @@
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
-import App from './App';
-import LoginPage from './pages/auth/LoginPage';
-import RegisterPage from './pages/auth/RegisterPage';
-import ForgotPasswordPage from './pages/auth/ForgotPasswordPage';
-import DashboardPage from './pages/DashboardPage';
-import AuthLayout from './features/auth/AuthLayout';
-import TasksPage from './pages/tasks/TasksPage';
-import TaskDetailPage from './pages/tasks/TaskDetailPage';
-import TaskCreatePage from './pages/tasks/TaskCreatePage';
-import RecurringTasksPage from './pages/tasks/RecurringTasksPage';
-import InboxPage from './pages/InboxPage';
-import TodayPage from './pages/TodayPage';
-import UpcomingPage from './pages/UpcomingPage';
-import FiltersPage from './pages/FiltersPage';
-import LabelsPage from './pages/LabelsPage';
-import { useAuth } from './hooks/useAuth';
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
+import App from "./App";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
+import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
+import DashboardPage from "./pages/DashboardPage";
+import AuthLayout from "./features/auth/AuthLayout";
+import TasksPage from "./pages/tasks/TasksPage";
+import TaskDetailPage from "./pages/tasks/TaskDetailPage";
+import TaskCreatePage from "./pages/tasks/TaskCreatePage";
+import RecurringTasksPage from "./pages/tasks/RecurringTasksPage";
+import InboxPage from "./pages/InboxPage";
+import TodayPage from "./pages/TodayPage";
+import UpcomingPage from "./pages/UpcomingPage";
+import FiltersPage from "./pages/FiltersPage";
+import LabelsPage from "./pages/LabelsPage";
+import { useAuth } from "./hooks/useAuth";
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
@@ -34,7 +42,11 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
+    );
   }
 
   if (isAuthenticated) {
@@ -46,15 +58,15 @@ const PublicRoute = ({ children }: { children: React.ReactNode }) => {
 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <App />,
     children: [
       {
-        path: '/',
+        path: "/",
         element: <Navigate to="/dashboard" replace />,
       },
       {
-        path: '/dashboard',
+        path: "/dashboard",
         element: (
           <ProtectedRoute>
             <DashboardPage />
@@ -62,7 +74,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/tasks',
+        path: "/tasks",
         element: (
           <ProtectedRoute>
             <TasksPage />
@@ -70,7 +82,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/tasks/create',
+        path: "/tasks/create",
         element: (
           <ProtectedRoute>
             <TaskCreatePage />
@@ -78,7 +90,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/tasks/recurring',
+        path: "/tasks/recurring",
         element: (
           <ProtectedRoute>
             <RecurringTasksPage />
@@ -86,7 +98,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/tasks/:taskId',
+        path: "/tasks/:taskId",
         element: (
           <ProtectedRoute>
             <TaskDetailPage />
@@ -94,7 +106,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/inbox',
+        path: "/inbox",
         element: (
           <ProtectedRoute>
             <InboxPage />
@@ -102,7 +114,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/today',
+        path: "/today",
         element: (
           <ProtectedRoute>
             <TodayPage />
@@ -110,7 +122,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/upcoming',
+        path: "/upcoming",
         element: (
           <ProtectedRoute>
             <UpcomingPage />
@@ -118,7 +130,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/filters',
+        path: "/filters",
         element: (
           <ProtectedRoute>
             <FiltersPage />
@@ -126,7 +138,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/labels',
+        path: "/labels",
         element: (
           <ProtectedRoute>
             <LabelsPage />
@@ -134,19 +146,23 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: '/auth',
-        element: <PublicRoute><AuthLayout /></PublicRoute>,
+        path: "/auth",
+        element: (
+          <PublicRoute>
+            <AuthLayout />
+          </PublicRoute>
+        ),
         children: [
           {
-            path: 'login',
+            path: "login",
             element: <LoginPage />,
           },
           {
-            path: 'register',
+            path: "register",
             element: <RegisterPage />,
           },
           {
-            path: 'forgot-password',
+            path: "forgot-password",
             element: <ForgotPasswordPage />,
           },
         ],

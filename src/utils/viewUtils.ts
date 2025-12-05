@@ -1,5 +1,5 @@
-import { Task, TaskStatus } from '../types/task';
-import { isToday, isFutureDate } from './dateUtils';
+import { Task, TaskStatus } from "../types/task";
+import { isToday, isFutureDate } from "./dateUtils";
 
 /**
  * View utilities for Todone application
@@ -9,15 +9,17 @@ import { isToday, isFutureDate } from './dateUtils';
 /**
  * Group tasks by status
  */
-export const groupTasksByStatus = (tasks: Task[]): Record<TaskStatus, Task[]> => {
+export const groupTasksByStatus = (
+  tasks: Task[],
+): Record<TaskStatus, Task[]> => {
   const grouped: Record<TaskStatus, Task[]> = {
-    'todo': [],
-    'in-progress': [],
-    'completed': [],
-    'archived': []
+    todo: [],
+    "in-progress": [],
+    completed: [],
+    archived: [],
   };
 
-  tasks.forEach(task => {
+  tasks.forEach((task) => {
     grouped[task.status].push(task);
   });
 
@@ -30,8 +32,8 @@ export const groupTasksByStatus = (tasks: Task[]): Record<TaskStatus, Task[]> =>
 export const groupTasksByProject = (tasks: Task[]): Record<string, Task[]> => {
   const grouped: Record<string, Task[]> = {};
 
-  tasks.forEach(task => {
-    const projectId = task.projectId || 'no-project';
+  tasks.forEach((task) => {
+    const projectId = task.projectId || "no-project";
     if (!grouped[projectId]) {
       grouped[projectId] = [];
     }
@@ -44,7 +46,9 @@ export const groupTasksByProject = (tasks: Task[]): Record<string, Task[]> => {
 /**
  * Group tasks by due date period
  */
-export const groupTasksByDatePeriod = (tasks: Task[]): {
+export const groupTasksByDatePeriod = (
+  tasks: Task[],
+): {
   overdue: Task[];
   today: Task[];
   nextWeek: Task[];
@@ -61,7 +65,7 @@ export const groupTasksByDatePeriod = (tasks: Task[]): {
   const oneWeekLater = new Date(today);
   oneWeekLater.setDate(today.getDate() + 7);
 
-  tasks.forEach(task => {
+  tasks.forEach((task) => {
     if (!task.dueDate) {
       future.push(task);
       return;
@@ -87,32 +91,33 @@ export const groupTasksByDatePeriod = (tasks: Task[]): {
  */
 export const sortViewTasks = (
   tasks: Task[],
-  sortBy: 'priority' | 'dueDate' | 'createdAt' = 'priority',
-  sortDirection: 'asc' | 'desc' = 'asc'
+  sortBy: "priority" | "dueDate" | "createdAt" = "priority",
+  sortDirection: "asc" | "desc" = "asc",
 ): Task[] => {
   const priorityOrder: Record<string, number> = {
-    'critical': 1,
-    'high': 2,
-    'medium': 3,
-    'low': 4
+    critical: 1,
+    high: 2,
+    medium: 3,
+    low: 4,
   };
 
   return [...tasks].sort((a, b) => {
     let comparison = 0;
 
     switch (sortBy) {
-      case 'priority':
-        comparison = (priorityOrder[a.priority] || 5) - (priorityOrder[b.priority] || 5);
+      case "priority":
+        comparison =
+          (priorityOrder[a.priority] || 5) - (priorityOrder[b.priority] || 5);
         break;
-      case 'dueDate':
+      case "dueDate":
         comparison = (a.dueDate?.getTime() || 0) - (b.dueDate?.getTime() || 0);
         break;
-      case 'createdAt':
+      case "createdAt":
         comparison = a.createdAt.getTime() - b.createdAt.getTime();
         break;
     }
 
-    return sortDirection === 'asc' ? comparison : -comparison;
+    return sortDirection === "asc" ? comparison : -comparison;
   });
 };
 
@@ -122,35 +127,36 @@ export const sortViewTasks = (
 export const filterViewTasks = (
   tasks: Task[],
   filters: {
-    status?: TaskStatus | 'all';
-    priority?: string | 'all';
+    status?: TaskStatus | "all";
+    priority?: string | "all";
     searchQuery?: string;
-    completed?: boolean | 'all';
-  } = {}
+    completed?: boolean | "all";
+  } = {},
 ): Task[] => {
   let result = [...tasks];
 
   // Filter by status
-  if (filters.status && filters.status !== 'all') {
-    result = result.filter(task => task.status === filters.status);
+  if (filters.status && filters.status !== "all") {
+    result = result.filter((task) => task.status === filters.status);
   }
 
   // Filter by priority
-  if (filters.priority && filters.priority !== 'all') {
-    result = result.filter(task => task.priority === filters.priority);
+  if (filters.priority && filters.priority !== "all") {
+    result = result.filter((task) => task.priority === filters.priority);
   }
 
   // Filter by completion status
-  if (filters.completed !== 'all' && filters.completed !== undefined) {
-    result = result.filter(task => task.completed === filters.completed);
+  if (filters.completed !== "all" && filters.completed !== undefined) {
+    result = result.filter((task) => task.completed === filters.completed);
   }
 
   // Filter by search query
   if (filters.searchQuery) {
     const query = filters.searchQuery.toLowerCase();
-    result = result.filter(task =>
-      task.title.toLowerCase().includes(query) ||
-      (task.description && task.description.toLowerCase().includes(query))
+    result = result.filter(
+      (task) =>
+        task.title.toLowerCase().includes(query) ||
+        (task.description && task.description.toLowerCase().includes(query)),
     );
   }
 
@@ -160,7 +166,9 @@ export const filterViewTasks = (
 /**
  * Get view statistics
  */
-export const getViewStatistics = (tasks: Task[]): {
+export const getViewStatistics = (
+  tasks: Task[],
+): {
   total: number;
   completed: number;
   active: number;
@@ -177,20 +185,20 @@ export const getViewStatistics = (tasks: Task[]): {
     active: 0,
     overdue: 0,
     byStatus: {
-      'todo': 0,
-      'in-progress': 0,
-      'completed': 0,
-      'archived': 0
+      todo: 0,
+      "in-progress": 0,
+      completed: 0,
+      archived: 0,
     },
     byPriority: {
-      'critical': 0,
-      'high': 0,
-      'medium': 0,
-      'low': 0
-    }
+      critical: 0,
+      high: 0,
+      medium: 0,
+      low: 0,
+    },
   };
 
-  tasks.forEach(task => {
+  tasks.forEach((task) => {
     // Count by status
     statistics.byStatus[task.status]++;
 
@@ -230,10 +238,10 @@ export const getTaskUrgencyScore = (task: Task): number => {
 
   // Priority weights
   const priorityWeights: Record<string, number> = {
-    'critical': 4,
-    'high': 3,
-    'medium': 2,
-    'low': 1
+    critical: 4,
+    high: 3,
+    medium: 2,
+    low: 1,
   };
 
   // Calculate urgency score (0-100)
@@ -248,42 +256,48 @@ export const getTaskUrgencyScore = (task: Task): number => {
 /**
  * Format task count for display
  */
-export const formatTaskCount = (count: number, singular: string, plural: string): string => {
+export const formatTaskCount = (
+  count: number,
+  singular: string,
+  plural: string,
+): string => {
   return count === 1 ? `${count} ${singular}` : `${count} ${plural}`;
 };
 
 /**
  * Get empty state message for view
  */
-export const getEmptyStateMessage = (viewType: 'inbox' | 'today' | 'upcoming'): {
+export const getEmptyStateMessage = (
+  viewType: "inbox" | "today" | "upcoming",
+): {
   title: string;
   description: string;
   cta?: string;
 } => {
   switch (viewType) {
-    case 'inbox':
+    case "inbox":
       return {
-        title: 'No tasks in your inbox',
-        description: 'Start by creating a new task',
-        cta: 'Create Task'
+        title: "No tasks in your inbox",
+        description: "Start by creating a new task",
+        cta: "Create Task",
       };
-    case 'today':
+    case "today":
       return {
-        title: 'No tasks due today',
-        description: 'Great job! You\'re all caught up.',
-        cta: 'View Upcoming Tasks'
+        title: "No tasks due today",
+        description: "Great job! You're all caught up.",
+        cta: "View Upcoming Tasks",
       };
-    case 'upcoming':
+    case "upcoming":
       return {
-        title: 'No upcoming tasks',
-        description: 'Plan ahead by scheduling future tasks',
-        cta: 'Create Upcoming Task'
+        title: "No upcoming tasks",
+        description: "Plan ahead by scheduling future tasks",
+        cta: "Create Upcoming Task",
       };
     default:
       return {
-        title: 'No tasks found',
-        description: 'Try adjusting your filters',
-        cta: 'Reset Filters'
+        title: "No tasks found",
+        description: "Try adjusting your filters",
+        cta: "Reset Filters",
       };
   }
 };
