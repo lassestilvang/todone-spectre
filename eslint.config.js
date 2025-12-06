@@ -5,6 +5,7 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import prettierConfig from "eslint-plugin-prettier";
 import prettierRecommended from "eslint-config-prettier";
 import tseslint from "typescript-eslint";
+import stylistic from "@stylistic/eslint-plugin";
 
 export default [
   js.configs.recommended,
@@ -45,6 +46,7 @@ export default [
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
       prettier: prettierConfig,
+      "@stylistic": stylistic,
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
@@ -56,18 +58,18 @@ export default [
       "no-debugger": "warn",
       "no-duplicate-imports": "error",
       "no-empty-pattern": "error",
-      "no-extra-semi": "error",
       "no-irregular-whitespace": "error",
-      "no-multiple-empty-lines": ["error", { max: 1 }],
-      "no-trailing-spaces": "error",
       "no-var": "error",
       "prefer-const": "error",
-      semi: ["error", "always"],
-      "comma-dangle": ["error", "always-multiline"],
-      "object-curly-spacing": ["error", "always"],
-      "array-bracket-spacing": ["error", "never"],
       "@typescript-eslint/no-require-imports": "off",
       "@typescript-eslint/no-explicit-any": "warn",
+      "@stylistic/array-bracket-spacing": ["error", "never"],
+      "@stylistic/comma-dangle": ["error", "always-multiline"],
+      "@stylistic/no-extra-semi": "error",
+      "@stylistic/no-multiple-empty-lines": ["error", { max: 1 }],
+      "@stylistic/no-trailing-spaces": "error",
+      "@stylistic/object-curly-spacing": ["error", "always"],
+      "@stylistic/semi": ["error", "always"],
     },
   },
 ];

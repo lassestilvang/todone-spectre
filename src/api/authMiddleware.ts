@@ -4,8 +4,8 @@ import {
   validateToken,
   refreshToken as refreshAuthToken,
   clearSession,
+  TokenExpiredError,
 } from "../utils/auth";
-import { TokenExpiredError } from "../utils/auth";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
