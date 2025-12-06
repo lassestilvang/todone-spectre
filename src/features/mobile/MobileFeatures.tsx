@@ -45,7 +45,7 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
   const { triggerHapticFeedback } = useMobile();
   const [activeFeatures, setActiveFeatures] = useState<string[]>(featureSet);
   const [featureStatus, setFeatureStatus] = useState<Record<string, boolean>>(
-    {},
+    {}
   );
 
   useEffect(() => {
@@ -81,29 +81,29 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
       let newStatus: boolean;
 
       switch (feature) {
-      case "performance":
-        newStatus = !featureStatus[feature];
-        await setPerformanceMode(newStatus ? "high" : "balanced");
-        await triggerHapticFeedback("selection");
-        break;
+        case "performance":
+          newStatus = !featureStatus[feature];
+          await setPerformanceMode(newStatus ? "high" : "balanced");
+          await triggerHapticFeedback("selection");
+          break;
 
-      case "accessibility":
-        newStatus = !featureStatus[feature];
-        await setAccessibilityPreferences({
-          reducedMotion: newStatus,
-        });
-        await triggerHapticFeedback("selection");
-        break;
+        case "accessibility":
+          newStatus = !featureStatus[feature];
+          await setAccessibilityPreferences({
+            reducedMotion: newStatus,
+          });
+          await triggerHapticFeedback("selection");
+          break;
 
-      case "theme":
-        newStatus = !featureStatus[feature];
-        await toggleDarkMode();
-        await triggerHapticFeedback("selection");
-        break;
+        case "theme":
+          newStatus = !featureStatus[feature];
+          await toggleDarkMode();
+          await triggerHapticFeedback("selection");
+          break;
 
-      default:
-        newStatus = !featureStatus[feature];
-        await triggerHapticFeedback("selection");
+        default:
+          newStatus = !featureStatus[feature];
+          await triggerHapticFeedback("selection");
       }
 
       setFeatureStatus((prev) => ({
@@ -122,70 +122,70 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
 
   const getFeatureInfo = (feature: string) => {
     switch (feature) {
-    case "performance":
-      return {
-        icon: "speed",
-        label: "Performance Mode",
-        description:
+      case "performance":
+        return {
+          icon: "speed",
+          label: "Performance Mode",
+          description:
             mobileConfig.performanceMode === "high"
               ? "High Performance"
               : "Balanced Performance",
-        color:
+          color:
             mobileConfig.performanceMode === "high"
               ? "#4CAF50"
               : mobileConfig.secondaryColor,
-      };
+        };
 
-    case "accessibility":
-      return {
-        icon: "accessibility",
-        label: "Accessibility",
-        description: mobilePreferences.accessibility.reducedMotion
+      case "accessibility":
+        return {
+          icon: "accessibility",
+          label: "Accessibility",
+          description: mobilePreferences.accessibility.reducedMotion
             ? "Reduced Motion"
             : "Standard Motion",
-        color: mobilePreferences.accessibility.reducedMotion
+          color: mobilePreferences.accessibility.reducedMotion
             ? "#FF9800"
             : mobileConfig.secondaryColor,
-      };
+        };
 
-    case "network":
-      return {
-        icon: mobileState.networkStatus === "online" ? "wifi" : "wifi-off",
-        label: "Network",
-        description:
+      case "network":
+        return {
+          icon: mobileState.networkStatus === "online" ? "wifi" : "wifi-off",
+          label: "Network",
+          description:
             mobileState.networkStatus === "online" ? "Online" : "Offline",
-        color: mobileState.networkStatus === "online" ? "#4CAF50" : "#F44336",
-      };
+          color: mobileState.networkStatus === "online" ? "#4CAF50" : "#F44336",
+        };
 
-    case "battery":
-      return {
-        icon: mobileState.isLowPowerMode ? "battery-saver" : "battery-full",
-        label: "Battery",
-        description: mobileState.isLowPowerMode
+      case "battery":
+        return {
+          icon: mobileState.isLowPowerMode ? "battery-saver" : "battery-full",
+          label: "Battery",
+          description: mobileState.isLowPowerMode
             ? "Battery Saver"
             : "Normal Power",
-        color: mobileState.isLowPowerMode
+          color: mobileState.isLowPowerMode
             ? "#FF9800"
             : mobileConfig.secondaryColor,
-      };
+        };
 
-    case "theme":
-      return {
-        icon: mobileConfig.darkMode ? "dark-mode" : "light-mode",
-        label: "Theme",
-        description: mobileConfig.darkMode ? "Dark Mode" : "Light Mode",
-        color: mobileConfig.darkMode
+      case "theme":
+        return {
+          icon: mobileConfig.darkMode ? "dark-mode" : "light-mode",
+          label: "Theme",
+          description: mobileConfig.darkMode ? "Dark Mode" : "Light Mode",
+          color: mobileConfig.darkMode
             ? "#BB86FC"
             : mobileConfig.secondaryColor,
-      };
+        };
 
-    default:
-      return {
-        icon: "help",
-        label: "Unknown",
-        description: "Unknown feature",
-        color: mobileConfig.secondaryColor,
-      };
+      default:
+        return {
+          icon: "help",
+          label: "Unknown",
+          description: "Unknown feature",
+          color: mobileConfig.secondaryColor,
+        };
     }
   };
 
@@ -272,8 +272,11 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
   const optimizationLevel =
     optimizationScore >= 80
       ? "Excellent"
-    optimizationScore >= 60 ? 'Good' :
-      optimizationScore >= 40 ? 'Fair' : 'Needs Improvement';
+      : optimizationScore >= 60
+        ? "Good"
+        : optimizationScore >= 40
+          ? "Fair"
+          : "Needs Improvement";
 
   return (
     <View
@@ -457,73 +460,87 @@ export const MobileFeatureStatus: React.FC<{
 
   const getFeatureStatus = () => {
     switch (feature) {
-    case "performance":
-      return {
-        status: mobileConfig.performanceMode,
-        icon:
+      case "performance":
+        return {
+          status: mobileConfig.performanceMode,
+          icon:
             mobileConfig.performanceMode === "high"
               ? "trending-up"
-          mobileConfig.performanceMode === 'battery_saver' ? 'battery-saver' : 'balance',
-        color:
+              : mobileConfig.performanceMode === "battery_saver"
+                ? "battery-saver"
+                : "balance",
+          color:
             mobileConfig.performanceMode === "high"
               ? "#4CAF50"
-          mobileConfig.performanceMode === 'battery_saver' ? '#FF9800' : mobileConfig.secondaryColor,
-      };
+              : mobileConfig.performanceMode === "battery_saver"
+                ? "#FF9800"
+                : mobileConfig.secondaryColor,
+        };
 
-    case "accessibility":
-      return {
-        status: mobilePreferences.accessibility.reducedMotion
+      case "accessibility":
+        return {
+          status: mobilePreferences.accessibility.reducedMotion
             ? "reduced_motion"
             : "standard",
-        icon: mobilePreferences.accessibility.reducedMotion
+          icon: mobilePreferences.accessibility.reducedMotion
             ? "accessibility"
             : "accessible",
-        color: mobilePreferences.accessibility.reducedMotion
+          color: mobilePreferences.accessibility.reducedMotion
             ? "#FF9800"
             : mobileConfig.secondaryColor,
-      };
+        };
 
-    case "network":
-      return {
-        status: mobileState.networkStatus,
-        icon:
+      case "network":
+        return {
+          status: mobileState.networkStatus,
+          icon:
             mobileState.networkStatus === "online"
               ? "wifi"
-          mobileState.networkStatus === 'offline' ? 'wifi-off' : 'help',
-        color:
+              : mobileState.networkStatus === "offline"
+                ? "wifi-off"
+                : "help",
+          color:
             mobileState.networkStatus === "online"
               ? "#4CAF50"
-          mobileState.networkStatus === 'offline' ? '#F44336' : mobileConfig.secondaryColor,
-      };
+              : mobileState.networkStatus === "offline"
+                ? "#F44336"
+                : mobileConfig.secondaryColor,
+        };
 
-    case "battery":
-      return {
-        status: mobileState.isLowPowerMode ? "battery_saver" : "normal",
-        icon: mobileState.isLowPowerMode
+      case "battery":
+        return {
+          status: mobileState.isLowPowerMode ? "battery_saver" : "normal",
+          icon: mobileState.isLowPowerMode
             ? "battery-saver"
-          mobileState.batteryLevel > 0.8 ? 'battery-full' :
-            mobileState.batteryLevel > 0.5 ? 'battery-60' :
-              mobileState.batteryLevel > 0.3 ? 'battery-50' : 'battery-30',
-        color: mobileState.isLowPowerMode
+            : mobileState.batteryLevel > 0.8
+              ? "battery-full"
+              : mobileState.batteryLevel > 0.5
+                ? "battery-60"
+                : mobileState.batteryLevel > 0.3
+                  ? "battery-50"
+                  : "battery-30",
+          color: mobileState.isLowPowerMode
             ? "#FF9800"
-          mobileState.batteryLevel < 0.2 ? '#F44336' : mobileConfig.secondaryColor,
-      };
+            : mobileState.batteryLevel < 0.2
+              ? "#F44336"
+              : mobileConfig.secondaryColor,
+        };
 
-    case "theme":
-      return {
-        status: mobileConfig.darkMode ? "dark" : "light",
-        icon: mobileConfig.darkMode ? "dark-mode" : "light-mode",
-        color: mobileConfig.darkMode
+      case "theme":
+        return {
+          status: mobileConfig.darkMode ? "dark" : "light",
+          icon: mobileConfig.darkMode ? "dark-mode" : "light-mode",
+          color: mobileConfig.darkMode
             ? "#BB86FC"
             : mobileConfig.secondaryColor,
-      };
+        };
 
-    default:
-      return {
-        status: "unknown",
-        icon: "help",
-        color: mobileConfig.secondaryColor,
-      };
+      default:
+        return {
+          status: "unknown",
+          icon: "help",
+          color: mobileConfig.secondaryColor,
+        };
     }
   };
 
