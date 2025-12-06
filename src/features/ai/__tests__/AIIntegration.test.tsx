@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, renderHook, act } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { AIIntegration } from "../AIIntegration";
 import {
@@ -52,7 +52,7 @@ describe("AI Integration Tests", () => {
     jest.clearAllMocks();
 
     // Mock store implementations
-    useAIStore.mockReturnValue({
+    (useAIStore as jest.Mock).mockReturnValue({
       aiAssistantEnabled: true,
       enableAIAssistant: jest.fn(),
       disableAIAssistant: jest.fn(),
@@ -61,7 +61,7 @@ describe("AI Integration Tests", () => {
       recordAIUsage: jest.fn(),
     });
 
-    useTaskStore.mockReturnValue({
+    (useTaskStore as jest.Mock).mockReturnValue({
       tasks: [mockTask],
     });
   });
@@ -76,8 +76,8 @@ describe("AI Integration Tests", () => {
     });
 
     it("should show AI disabled message when AI is disabled", () => {
-      useAIStore.mockReturnValue({
-        ...useAIStore(),
+      (useAIStore as jest.Mock).mockReturnValue({
+        ...(useAIStore as jest.Mock)(),
         aiAssistantEnabled: false,
       });
 
@@ -168,7 +168,7 @@ describe("AI Integration Tests", () => {
       const mockSetAIError = jest.fn();
       const mockRecordAIUsage = jest.fn();
 
-      useAIStore.mockReturnValue({
+      (useAIStore as jest.Mock).mockReturnValue({
         aiAssistantEnabled: true,
         setAILoading: mockSetAILoading,
         setAIError: mockSetAIError,
@@ -198,14 +198,14 @@ describe("AI Integration Tests", () => {
       const originalError = console.error;
       console.error = jest.fn();
 
-      useAIStore.mockReturnValue({
+      (useAIStore as jest.Mock).mockReturnValue({
         aiAssistantEnabled: true,
         setAILoading: jest.fn(),
         setAIError: mockSetAIError,
         recordAIUsage: mockRecordAIUsage,
       });
 
-      useTaskStore.mockReturnValue({
+      (useTaskStore as jest.Mock).mockReturnValue({
         tasks: [], // Empty tasks to trigger error
       });
 
@@ -227,7 +227,7 @@ describe("AI Integration Tests", () => {
     it("should provide refresh functionality", async () => {
       const mockRecordAIUsage = jest.fn();
 
-      useAIStore.mockReturnValue({
+      (useAIStore as jest.Mock).mockReturnValue({
         aiAssistantEnabled: true,
         setAILoading: jest.fn(),
         setAIError: jest.fn(),
@@ -256,7 +256,7 @@ describe("AI Integration Tests", () => {
 
   describe("Integration Scenarios", () => {
     it("should handle task not found scenario", () => {
-      useTaskStore.mockReturnValue({
+      (useTaskStore as jest.Mock).mockReturnValue({
         tasks: [], // No tasks
       });
 
@@ -268,7 +268,7 @@ describe("AI Integration Tests", () => {
     it("should show error when AI feature fails to initialize", async () => {
       const mockSetAIError = jest.fn();
 
-      useAIStore.mockReturnValue({
+      (useAIStore as jest.Mock).mockReturnValue({
         aiAssistantEnabled: true,
         setAILoading: jest.fn(),
         setAIError: mockSetAIError,

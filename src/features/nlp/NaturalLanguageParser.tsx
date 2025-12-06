@@ -148,7 +148,9 @@ export const NaturalLanguageParser: React.FC<NaturalLanguageParserProps> = ({
               colorScheme={
                 parsedResult.priority.toLowerCase() === "high"
                   ? "red"
-                parsedResult.priority.toLowerCase() === 'medium' ? 'yellow' : 'green'
+                  : parsedResult.priority.toLowerCase() === "medium"
+                    ? "yellow"
+                    : "green"
               }
             >
               {parsedResult.priority}

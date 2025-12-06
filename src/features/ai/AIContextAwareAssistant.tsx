@@ -818,7 +818,7 @@ export const AIContextAwareAssistant: React.FC<
               <div className="no-suggestions-subtext">
                 {mode === "task"
                   ? "Task appears to be well-aligned with current context"
-                  mode === 'project' ? 'Project is properly contextualized' : 'Global context looks good'}
+                  : mode === 'project' ? 'Project is properly contextualized' : 'Global context looks good'}
               </div>
             </div>
           ) : (

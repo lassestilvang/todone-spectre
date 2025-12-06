@@ -62,7 +62,7 @@ export const AINaturalLanguageTaskCreator: React.FC<
 
   useEffect(() => {
     if (lastResult) {
-      setParseResult(this.enhanceParseResult(lastResult));
+      setParseResult(enhanceParseResult(lastResult));
       recordAIUsage(true);
     }
   }, [lastResult, recordAIUsage]);
@@ -77,9 +77,9 @@ export const AINaturalLanguageTaskCreator: React.FC<
     // Add additional AI-generated suggestions
     const enhanced: NLPParseResult = {
       ...baseResult,
-      suggestedNextSteps: this.generateNextSteps(baseResult),
-      estimatedDuration: this.estimateDuration(baseResult),
-      relatedTasks: this.suggestRelatedTasks(baseResult),
+      suggestedNextSteps: generateNextSteps(baseResult),
+      estimatedDuration: estimateDuration(baseResult),
+      relatedTasks: suggestRelatedTasks(baseResult),
     };
 
     return enhanced;
@@ -384,7 +384,7 @@ export const AINaturalLanguageTaskCreator: React.FC<
               <span className="confidence-description">
                 {parseResult.confidence >= 80
                   ? "High"
-                  parseResult.confidence >= 60 ? 'Medium' : 'Low'} confidence
+                  : parseResult.confidence >= 60 ? 'Medium' : 'Low'} confidence
               </span>
             </div>
           </div>

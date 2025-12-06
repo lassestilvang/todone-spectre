@@ -511,8 +511,7 @@ export const CollaborationDashboard: React.FC<CollaborationDashboardProps> = ({
                   </div>
                 </div>
               </CardHeader>
-            </CardHeader>
-            <CardContent>
+              <CardContent>
               <div className="space-y-4">
                 {filteredActivities.length === 0 ? (
                   <p className="text-muted-foreground text-sm">No activities found matching your criteria</p>
