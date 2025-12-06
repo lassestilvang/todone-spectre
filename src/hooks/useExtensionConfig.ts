@@ -1,28 +1,38 @@
-import { useState, useEffect, useContext, useCallback } from 'react';
-import { ExtensionConfig, ExtensionConfigContextType } from '../types/extensionTypes';
-import { extensionConfigService } from '../services';
-import { createContext } from 'react';
+import React from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
+import {
+  ExtensionConfig,
+  ExtensionConfigContextType,
+} from "../types/extensionTypes";
+import { extensionConfigService } from "../services";
+import { createContext } from "react";
 
 /**
  * Extension Config Context - Provides extension configuration and update functions
  */
-export const ExtensionConfigContext = createContext<ExtensionConfigContextType>({
-  config: {
-    pageIntegrationEnabled: true,
-    autoSyncEnabled: true,
-    syncInterval: 300000,
-    showNotifications: true,
-    theme: 'system'
-  },
-  updateConfig: async () => {},
-  resetConfig: async () => {}
-});
+export const ExtensionConfigContext = createContext<ExtensionConfigContextType>(
+  {
+    config: {
+      pageIntegrationEnabled: true,
+      autoSyncEnabled: true,
+      syncInterval: 300000,
+      showNotifications: true,
+      theme: "system",
+    },
+    updateConfig: async () => {},
+    resetConfig: async () => {},
+  }
+);
 
 /**
  * Extension Config Provider - Provides extension config context to components
  */
-export const ExtensionConfigProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [config, setConfig] = useState<ExtensionConfig>(extensionConfigService.getConfig());
+export const ExtensionConfigProvider: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
+  const [config, setConfig] = useState<ExtensionConfig>(
+    extensionConfigService.getConfig()
+  );
 
   useEffect(() => {
     // Initialize config service
@@ -40,20 +50,23 @@ export const ExtensionConfigProvider: React.FC<{ children: React.ReactNode }> = 
     };
   }, []);
 
-  const updateConfig = useCallback(async (configUpdate: Partial<ExtensionConfig>) => {
-    await extensionConfigService.updateConfig(configUpdate);
-    setConfig(extensionConfigService.getConfig());
-  }, []);
+  const updateConfig = useCallback(
+    async (configUpdate: Partial<ExtensionConfig>) => {
+      await extensionConfigService.updateConfig(configUpdate);
+      setConfig(extensionConfigService.getConfig());
+    },
+    []
+  );
 
   const resetConfig = useCallback(async () => {
     await extensionConfigService.resetConfig();
     setConfig(extensionConfigService.getConfig());
   }, []);
 
-  return (
-    <ExtensionConfigContext.Provider value={{ config, updateConfig, resetConfig }}>
-      {children}
-    </ExtensionConfigContext.Provider>
+  return React.createElement(
+    ExtensionConfigContext.Provider,
+    { value: { config, updateConfig, resetConfig } },
+    children
   );
 };
 
@@ -64,7 +77,9 @@ export const useExtensionConfig = (): ExtensionConfigContextType => {
   const context = useContext(ExtensionConfigContext);
 
   if (!context) {
-    throw new Error('useExtensionConfig must be used within an ExtensionConfigProvider');
+    throw new Error(
+      "useExtensionConfig must be used within an ExtensionConfigProvider"
+    );
   }
 
   return context;
@@ -73,7 +88,9 @@ export const useExtensionConfig = (): ExtensionConfigContextType => {
 /**
  * useExtensionConfigValue Hook - Custom hook for accessing specific config values
  */
-export const useExtensionConfigValue = <K extends keyof ExtensionConfig>(key: K): ExtensionConfig[K] => {
+export const useExtensionConfigValue = <K extends keyof ExtensionConfig>(
+  key: K
+): ExtensionConfig[K] => {
   const { config } = useExtensionConfig();
   return config[key];
 };
@@ -91,7 +108,7 @@ export const useExtensionConfigUpdate = () => {
       value: ExtensionConfig[K]
     ) => {
       await updateConfig({ [key]: value } as Partial<ExtensionConfig>);
-    }
+    },
   };
 };
 
@@ -103,13 +120,13 @@ export const usePageIntegration = () => {
 
   const togglePageIntegration = useCallback(async () => {
     await updateConfig({
-      pageIntegrationEnabled: !config.pageIntegrationEnabled
+      pageIntegrationEnabled: !config.pageIntegrationEnabled,
     });
   }, [config.pageIntegrationEnabled, updateConfig]);
 
   return {
     isPageIntegrationEnabled: config.pageIntegrationEnabled,
-    togglePageIntegration
+    togglePageIntegration,
   };
 };
 
@@ -121,21 +138,24 @@ export const useAutoSync = () => {
 
   const toggleAutoSync = useCallback(async () => {
     await updateConfig({
-      autoSyncEnabled: !config.autoSyncEnabled
+      autoSyncEnabled: !config.autoSyncEnabled,
     });
   }, [config.autoSyncEnabled, updateConfig]);
 
-  const setSyncInterval = useCallback(async (interval: number) => {
-    await updateConfig({
-      syncInterval: interval
-    });
-  }, [updateConfig]);
+  const setSyncInterval = useCallback(
+    async (interval: number) => {
+      await updateConfig({
+        syncInterval: interval,
+      });
+    },
+    [updateConfig]
+  );
 
   return {
     isAutoSyncEnabled: config.autoSyncEnabled,
     syncInterval: config.syncInterval,
     toggleAutoSync,
-    setSyncInterval
+    setSyncInterval,
   };
 };
 
@@ -145,15 +165,18 @@ export const useAutoSync = () => {
 export const useExtensionTheme = () => {
   const { config, updateConfig } = useExtensionConfig();
 
-  const setTheme = useCallback(async (theme: ExtensionConfig['theme']) => {
-    await updateConfig({
-      theme
-    });
-  }, [updateConfig]);
+  const setTheme = useCallback(
+    async (theme: ExtensionConfig["theme"]) => {
+      await updateConfig({
+        theme,
+      });
+    },
+    [updateConfig]
+  );
 
   return {
     currentTheme: config.theme,
-    setTheme
+    setTheme,
   };
 };
 
@@ -165,12 +188,12 @@ export const useExtensionNotifications = () => {
 
   const toggleNotifications = useCallback(async () => {
     await updateConfig({
-      showNotifications: !config.showNotifications
+      showNotifications: !config.showNotifications,
     });
   }, [config.showNotifications, updateConfig]);
 
   return {
     areNotificationsEnabled: config.showNotifications,
-    toggleNotifications
+    toggleNotifications,
   };
 };

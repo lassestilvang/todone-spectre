@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useCollaborationStore } from '../store/useCollaborationStore';
-import { collaborationActivityService } from '../services/collaborationActivityService';
-import { CollaborationActivity } from '../types/collaboration';
+import { useState, useEffect, useCallback } from "react";
+import { useCollaborationStore } from "../store/useCollaborationStore";
+import { collaborationActivityService } from "../services/collaborationActivityService";
+import { CollaborationActivity } from "../types/collaboration";
 
 /**
  * Custom hook for managing collaboration activity state and operations
@@ -13,7 +13,7 @@ export const useCollaborationActivity = (teamId?: string) => {
     updateActivity,
     deleteActivity,
     selectedActivityIds,
-    setSelectedActivityIds
+    setSelectedActivityIds,
   } = useCollaborationStore();
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -29,10 +29,13 @@ export const useCollaborationActivity = (teamId?: string) => {
     try {
       setLoading(true);
       setError(null);
-      const fetchedActivities = await collaborationActivityService.getActivitiesByTeam(teamId);
+      const fetchedActivities =
+        await collaborationActivityService.getActivitiesByTeam(teamId);
       // Activities are automatically added to store via service
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch activities');
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch activities"
+      );
     } finally {
       setLoading(false);
     }
@@ -41,118 +44,167 @@ export const useCollaborationActivity = (teamId?: string) => {
   /**
    * Create a new activity
    */
-  const createActivity = useCallback(async (activityData: Omit<CollaborationActivity, 'id' | 'timestamp'>): Promise<CollaborationActivity> => {
-    try {
-      setLoading(true);
-      setError(null);
-      const newActivity = await collaborationActivityService.createActivity(activityData);
-      return newActivity;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create activity');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const createActivity = useCallback(
+    async (
+      activityData: Omit<CollaborationActivity, "id" | "timestamp">
+    ): Promise<CollaborationActivity> => {
+      try {
+        setLoading(true);
+        setError(null);
+        const newActivity =
+          await collaborationActivityService.createActivity(activityData);
+        return newActivity;
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to create activity"
+        );
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
   /**
    * Update an existing activity
    */
-  const updateActivityWithState = useCallback(async (activityId: string, updates: Partial<CollaborationActivity>): Promise<CollaborationActivity> => {
-    try {
-      setLoading(true);
-      setError(null);
+  const updateActivityWithState = useCallback(
+    async (
+      activityId: string,
+      updates: Partial<CollaborationActivity>
+    ): Promise<CollaborationActivity> => {
+      try {
+        setLoading(true);
+        setError(null);
 
-      // Optimistic update
-      const currentActivity = activities.find(a => a.id === activityId);
-      if (currentActivity) {
-        updateActivity(activityId, updates);
+        // Optimistic update
+        const currentActivity = activities.find((a) => a.id === activityId);
+        if (currentActivity) {
+          updateActivity(activityId, updates);
+        }
+
+        // Call service to update on backend
+        const updatedActivity =
+          await collaborationActivityService.createActivity({
+            ...currentActivity,
+            ...updates,
+            timestamp: new Date(),
+          } as any);
+
+        return updatedActivity;
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to update activity"
+        );
+        throw err;
+      } finally {
+        setLoading(false);
       }
-
-      // Call service to update on backend
-      const updatedActivity = await collaborationActivityService.createActivity({
-        ...currentActivity,
-        ...updates,
-        timestamp: new Date()
-      } as any);
-
-      return updatedActivity;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update activity');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [activities, updateActivity]);
+    },
+    [activities, updateActivity]
+  );
 
   /**
    * Delete an activity
    */
-  const deleteActivityWithState = useCallback(async (activityId: string): Promise<void> => {
-    try {
-      setLoading(true);
-      setError(null);
+  const deleteActivityWithState = useCallback(
+    async (activityId: string): Promise<void> => {
+      try {
+        setLoading(true);
+        setError(null);
 
-      // Optimistic update
-      deleteActivity(activityId);
+        // Optimistic update
+        deleteActivity(activityId);
 
-      // Call service to delete on backend
-      await collaborationActivityService.deleteActivity(activityId);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete activity');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, [deleteActivity]);
+        // Call service to delete on backend
+        await collaborationActivityService.deleteActivity(activityId);
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to delete activity"
+        );
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [deleteActivity]
+  );
 
   /**
    * Get recent activities across all teams
    */
-  const getRecentActivities = useCallback(async (limit: number = 10): Promise<CollaborationActivity[]> => {
-    try {
-      setLoading(true);
-      setError(null);
-      const recentActivities = await collaborationActivityService.getRecentActivities(limit);
-      return recentActivities;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch recent activities');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const getRecentActivities = useCallback(
+    async (limit: number = 10): Promise<CollaborationActivity[]> => {
+      try {
+        setLoading(true);
+        setError(null);
+        const recentActivities =
+          await collaborationActivityService.getRecentActivities(limit);
+        return recentActivities;
+      } catch (err) {
+        setError(
+          err instanceof Error
+            ? err.message
+            : "Failed to fetch recent activities"
+        );
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
   /**
    * Get activities by user
    */
-  const getActivitiesByUser = useCallback(async (userId: string): Promise<CollaborationActivity[]> => {
-    try {
-      setLoading(true);
-      setError(null);
-      const userActivities = await collaborationActivityService.getActivitiesByUser(userId);
-      return userActivities;
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch user activities');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const getActivitiesByUser = useCallback(
+    async (userId: string): Promise<CollaborationActivity[]> => {
+      try {
+        setLoading(true);
+        setError(null);
+        const userActivities =
+          await collaborationActivityService.getActivitiesByUser(userId);
+        return userActivities;
+      } catch (err) {
+        setError(
+          err instanceof Error ? err.message : "Failed to fetch user activities"
+        );
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
   /**
    * Filter activities by type
    */
-  const filterActivitiesByType = useCallback((type: CollaborationActivity['type']): CollaborationActivity[] => {
-    return collaborationActivityService.filterActivitiesByType(activities, type);
-  }, [activities]);
+  const filterActivitiesByType = useCallback(
+    (type: CollaborationActivity["type"]): CollaborationActivity[] => {
+      return collaborationActivityService.filterActivitiesByType(
+        activities,
+        type
+      );
+    },
+    [activities]
+  );
 
   /**
    * Filter activities by date range
    */
-  const filterActivitiesByDateRange = useCallback((startDate: Date, endDate: Date): CollaborationActivity[] => {
-    return collaborationActivityService.filterActivitiesByDateRange(activities, startDate, endDate);
-  }, [activities]);
+  const filterActivitiesByDateRange = useCallback(
+    (startDate: Date, endDate: Date): CollaborationActivity[] => {
+      return collaborationActivityService.filterActivitiesByDateRange(
+        activities,
+        startDate,
+        endDate
+      );
+    },
+    [activities]
+  );
 
   /**
    * Sort activities by timestamp (newest first)
@@ -164,7 +216,10 @@ export const useCollaborationActivity = (teamId?: string) => {
   /**
    * Group activities by date
    */
-  const groupActivitiesByDate = useCallback(): Record<string, CollaborationActivity[]> => {
+  const groupActivitiesByDate = useCallback((): Record<
+    string,
+    CollaborationActivity[]
+  > => {
     return collaborationActivityService.groupActivitiesByDate(activities);
   }, [activities]);
 
@@ -183,16 +238,25 @@ export const useCollaborationActivity = (teamId?: string) => {
   /**
    * Search activities by content
    */
-  const searchActivities = useCallback((searchTerm: string): CollaborationActivity[] => {
-    return collaborationActivityService.searchActivities(activities, searchTerm);
-  }, [activities]);
+  const searchActivities = useCallback(
+    (searchTerm: string): CollaborationActivity[] => {
+      return collaborationActivityService.searchActivities(
+        activities,
+        searchTerm
+      );
+    },
+    [activities]
+  );
 
   /**
    * Format activity for display
    */
-  const formatActivityForDisplay = useCallback((activity: CollaborationActivity): string => {
-    return collaborationActivityService.formatActivityForDisplay(activity);
-  }, []);
+  const formatActivityForDisplay = useCallback(
+    (activity: CollaborationActivity): string => {
+      return collaborationActivityService.formatActivityForDisplay(activity);
+    },
+    []
+  );
 
   /**
    * Refresh activity data
@@ -246,6 +310,6 @@ export const useCollaborationActivity = (teamId?: string) => {
     refreshActivityData,
 
     // Selection
-    setSelectedActivityIds
+    setSelectedActivityIds,
   };
 };
