@@ -156,13 +156,13 @@ describe("Task Management Integration Tests", () => {
 
   test("Task update → API → Database sync", async () => {
     // Test task update flow
-    const updatedTask = { ...mockTask, title: "Updated Task" };
     const updateResponse = await taskApi.updateTask("task-1", {
       title: "Updated Task",
     });
 
     expect(updateResponse.success).toBe(true);
     expect(updateResponse.data?.title).toBe("Updated Task");
+    expect(updateResponse.data).toBeDefined(); // Ensure response data is valid
 
     // Simulate database update
     const db = new TodoneDatabase();
@@ -216,7 +216,7 @@ describe("Task Management Integration Tests", () => {
 
   test("Data consistency between API and database", async () => {
     // Create task via API
-    const createResponse = await taskApi.createTask({
+    await taskApi.createTask({
       title: "Consistency Test",
       description: "Testing data consistency",
       status: "todo",

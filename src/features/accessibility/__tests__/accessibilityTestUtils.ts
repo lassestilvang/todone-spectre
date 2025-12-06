@@ -587,5 +587,4 @@ const accessibilityTestUtils: AccessibilityTestUtils = {
   },
 };
 
-
 export { accessibilityTestUtils };

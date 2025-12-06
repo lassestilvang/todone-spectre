@@ -25,7 +25,7 @@ describe("TaskApi", () => {
 
   describe("transformRequest", () => {
     it("should transform task data for API requests", () => {
-      // @ts-ignore - testing private method
+      // @ts-expect-error - testing private method
       const result = taskApi.transformRequest(mockTask);
       expect(result).toBeDefined();
       expect(result.dueDate).toBeUndefined(); // No dueDate in mock
@@ -38,7 +38,7 @@ describe("TaskApi", () => {
         dueDate: new Date("2023-01-01"),
         completedAt: new Date("2023-01-02"),
       };
-      // @ts-ignore - testing private method
+      // @ts-expect-error - testing private method
       const result = taskApi.transformRequest(taskWithDates);
       expect(result.dueDate).toBe("2023-01-01T00:00:00.000Z");
       expect(result.completedAt).toBe("2023-01-02T00:00:00.000Z");
@@ -55,7 +55,7 @@ describe("TaskApi", () => {
         createdAt: "2023-01-01T00:00:00.000Z",
         updatedAt: "2023-01-02T00:00:00.000Z",
       };
-      // @ts-ignore - testing private method
+      // @ts-expect-error - testing private method
       const result = taskApi.transformResponse(apiResponse);
       expect(result).toBeDefined();
       expect(result.id).toBe("test-1");
@@ -75,7 +75,7 @@ describe("TaskApi", () => {
         dueDate: null,
         completedAt: null,
       };
-      // @ts-ignore - testing private method
+      // @ts-expect-error - testing private method
       const result = taskApi.transformResponse(apiResponse);
       expect(result.dueDate).toBeNull();
       expect(result.completedAt).toBeNull();
@@ -85,7 +85,7 @@ describe("TaskApi", () => {
   describe("handleApiRequest", () => {
     it("should handle successful API requests", async () => {
       const mockResponse = { success: true, data: { test: "data" } };
-      // @ts-ignore - testing private method
+      // @ts-expect-error - testing private method
       const result = await taskApi.handleApiRequest(async () => {
         return {
           ok: true,
@@ -98,7 +98,7 @@ describe("TaskApi", () => {
     });
 
     it("should handle failed API requests", async () => {
-      // @ts-ignore - testing private method
+      // @ts-expect-error - testing private method
       const result = await taskApi.handleApiRequest(async () => {
         return {
           ok: false,
@@ -113,7 +113,7 @@ describe("TaskApi", () => {
 
     it("should retry failed requests up to MAX_RETRIES", async () => {
       let callCount = 0;
-      // @ts-ignore - testing private method
+      // @ts-expect-error - testing private method
       const result = await taskApi.handleApiRequest(async () => {
         callCount++;
         if (callCount < 3) {
@@ -226,8 +226,8 @@ describe("TaskApi", () => {
             priority: "medium",
             createdAt: "2023-01-01T00:00:00.000Z",
             updatedAt: "2023-01-02T00:00:00.000Z",
-          }
-        ]
+          },
+        ],
       });
 
       const result = await taskApi.getTasks();

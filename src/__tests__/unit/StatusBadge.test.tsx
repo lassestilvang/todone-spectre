@@ -95,7 +95,7 @@ describe("StatusBadge Component", () => {
     });
 
     it("should handle undefined status gracefully", () => {
-      // @ts-ignore - testing edge case
+      // @ts-expect-error - testing edge case
       const { container } = render(<StatusBadge status={undefined} />);
       expect(container.firstChild).toBeInTheDocument();
     });

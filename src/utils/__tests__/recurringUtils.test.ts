@@ -3,55 +3,22 @@
  * Ensures proper integration with existing services and utilities
  */
 
-import { describe, expect, test, beforeAll } from "@jest/globals";
+import { describe, expect, test } from "@jest/globals";
 import {
   generateRecurringTaskInstances,
   calculateNextOccurrence,
   getRecurringTaskStatistics,
-  shouldGenerateNewInstance,
-  createRecurringTaskInstance,
   validateRecurringTaskConfig,
-  formatRecurringTaskInfo,
-  getFutureRecurringInstances,
-  getCompletedRecurringInstances,
-  isDateInRecurringPattern,
-  getDaysUntilNextRecurringInstance,
-  getRecurringConfigFromTask,
-  updateRecurringConfigInTask,
-  getDefaultRecurringConfig,
-  isRecurringInstance,
-  getOriginalTaskId,
 } from "../recurringUtils";
 import {
   normalizeRecurringPatternConfig,
   getPatternFrequencyDescription,
-  getCustomPatternFrequencyDescription,
   getDayName,
   getDayNumber,
   isValidPatternConfig,
-  getPatternValidationErrors,
-  arePatternsEqual,
-  mergePatternConfigs,
-  getPatternPresetById,
-  getAllPatternPresets,
-  createPatternFromPreset,
-  calculatePatternDurationInDays,
-  calculateCustomPatternDurationInDays,
-  getPatternEndDate,
-  doesPatternIncludeWeekends,
-  getPatternInstancesForMonth,
-  isDateInPattern,
-  isDateInCustomPattern,
-  isDateInPositionalMonthlyPattern,
-  getPatternConfigAsString,
   createPatternConfig,
   getPatternComplexityScore,
 } from "../recurringPatternUtils";
-import {
-  RecurringPattern,
-  TaskRepeatFrequency,
-  TaskRepeatEnd,
-} from "../../types/enums";
 import {
   Task,
   RecurringTaskConfig,

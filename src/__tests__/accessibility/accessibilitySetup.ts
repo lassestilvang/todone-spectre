@@ -1,6 +1,60 @@
 import { configureAxe } from "jest-axe";
 import { vi } from "vitest";
 
+// Type definitions for accessibility APIs
+interface ScreenReaderAPI {
+  speak: (text: string) => void;
+  announce: (text: string) => void;
+  isRunning: () => boolean;
+  setLanguage: (language: string) => void;
+  getCurrentLanguage: () => string;
+  pause: () => void;
+  resume: () => void;
+  stop: () => void;
+}
+
+interface KeyboardNavigationAPI {
+  isKeyboardNavigationEnabled: () => boolean;
+  getCurrentFocus: () => HTMLElement | null;
+  setFocus: (element: HTMLElement) => void;
+  trapFocus: (container: HTMLElement) => void;
+  releaseFocus: () => void;
+  getFocusableElements: (container: HTMLElement) => HTMLElement[];
+  handleTabKey: (event: KeyboardEvent) => void;
+  handleEscapeKey: (event: KeyboardEvent) => void;
+  handleArrowKeys: (event: KeyboardEvent) => void;
+}
+
+interface ReducedMotionAPI {
+  prefersReducedMotion: () => boolean;
+  setReducedMotion: (enabled: boolean) => void;
+  getAnimationState: () => "normal" | "reduced";
+  pauseAnimations: () => void;
+  resumeAnimations: () => void;
+}
+
+interface ColorContrastAPI {
+  checkContrastRatio: (foreground: string, background: string) => boolean;
+  getContrastRatio: () => number;
+  isAACompliant: () => boolean;
+  isAAACompliant: () => boolean;
+  suggestBetterColors: () => { foreground: string; background: string };
+}
+
+interface WindowAccessibility {
+  screenReader: ScreenReaderAPI;
+  keyboardNav: KeyboardNavigationAPI;
+  reducedMotion: ReducedMotionAPI;
+  colorContrast: ColorContrastAPI;
+}
+
+// Extend Window interface to include accessibility APIs
+declare global {
+  interface Window {
+    __accessibility__: WindowAccessibility;
+  }
+}
+
 // Configure axe for accessibility testing
 export const axe = configureAxe({
   rules: {
@@ -39,8 +93,8 @@ export const axe = configureAxe({
 });
 
 // Mock screen reader APIs
-export const mockScreenReaderAPI = () => {
-  const mockAPI = {
+export const mockScreenReaderAPI = (): ScreenReaderAPI => {
+  const mockAPI: ScreenReaderAPI = {
     speak: vi.fn(),
     announce: vi.fn(),
     isRunning: vi.fn().mockReturnValue(true),

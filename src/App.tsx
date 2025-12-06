@@ -1,10 +1,10 @@
 import { BrowserRouter as Router } from "react-router-dom";
 import "./styles/global.css";
-import { AuthProvider } from "../features/auth/AuthProvider";
-import { KeyboardProvider } from "../features/keyboard/KeyboardProvider";
-import { KeyboardShortcuts } from "../features/keyboard/KeyboardShortcuts";
-import { KeyboardHelp } from "../features/keyboard/KeyboardHelp";
-import { default as AppRouter } from "../router";
+import { AuthProvider } from "./features/auth/AuthProvider";
+import { KeyboardProvider } from "./features/keyboard/KeyboardProvider";
+import { KeyboardShortcuts } from "./features/keyboard/KeyboardShortcuts";
+import { KeyboardHelp } from "./features/keyboard/KeyboardHelp";
+import { default as AppRouter } from "./router";
 
 function App() {
   return (

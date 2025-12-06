@@ -147,10 +147,7 @@ export class SyncEngine {
   }
 
   // Conflict resolution strategy
-  async resolveConflict(
-    localItem: any,
-    remoteItem: any,
-  ): Promise<any> {
+  async resolveConflict(localItem: any, remoteItem: any): Promise<any> {
     console.log(`Resolving conflict for record`);
 
     // Simple conflict resolution: prefer remote changes for most fields,
@@ -159,8 +156,7 @@ export class SyncEngine {
 
     // For user-specific fields, prefer local changes
     resolvedItem.settings = localItem.settings || remoteItem.settings;
-    resolvedItem.preferences =
-      localItem.preferences || remoteItem.preferences;
+    resolvedItem.preferences = localItem.preferences || remoteItem.preferences;
 
     // For tasks, prefer local completion status if it's more recent
     if (localItem.completed !== remoteItem.completed) {

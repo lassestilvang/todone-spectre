@@ -20,10 +20,23 @@ interface AccessibilityTestOptions {
   includeBestPractices?: boolean;
 }
 
+interface AxeViolationNode {
+  html: string;
+  target: string[];
+  failureSummary: string;
+}
+
+interface AxeViolation {
+  id: string;
+  description: string;
+  help: string;
+  nodes: AxeViolationNode[];
+}
+
 interface AccessibilityTestResult {
   component: string;
   testName: string;
-  violations: any[];
+  violations: AxeViolation[];
   passed: boolean;
   timestamp: string;
   duration: number;
@@ -62,10 +75,7 @@ class AccessibilityTestRunner {
       const { container } = render(component);
 
       // Configure axe rules
-      const axeRules = this.getAxeRules(
-        includeWCAG21AA,
-        includeBestPractices,
-      );
+      const axeRules = this.getAxeRules(includeWCAG21AA, includeBestPractices);
 
       // Run axe-core analysis
       const results = await axe(container, {

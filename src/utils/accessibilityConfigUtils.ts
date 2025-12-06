@@ -4,7 +4,7 @@ import {
 } from "../services/accessibilityConfigService";
 
 interface AccessibilityConfigUtils {
-  validateConfigStructure: (config: any) => {
+  validateConfigStructure: (config: unknown) => {
     isValid: boolean;
     errors: string[];
   };
@@ -25,7 +25,7 @@ interface AccessibilityConfigUtils {
   getConfigDiff: (
     oldConfig: AccessibilityConfig,
     newConfig: AccessibilityConfig,
-  ) => Record<string, { oldValue: any; newValue: any }>;
+  ) => Record<string, { oldValue: unknown; newValue: unknown }>;
   applyConfigPreset: (presetName: string) => AccessibilityConfig;
   getAvailablePresets: () => string[];
   validateFeatureDefaults: (featureDefaults: Record<string, boolean>) => {
@@ -79,7 +79,7 @@ const defaultPresets: Record<string, Partial<AccessibilityConfig>> = {
 
 const accessibilityConfigUtils: AccessibilityConfigUtils = {
   validateConfigStructure: (
-    config: any,
+    config: unknown,
   ): { isValid: boolean; errors: string[] } => {
     const errors: string[] = [];
     const requiredFields = [
@@ -205,8 +205,8 @@ const accessibilityConfigUtils: AccessibilityConfigUtils = {
   getConfigDiff: (
     oldConfig: AccessibilityConfig,
     newConfig: AccessibilityConfig,
-  ): Record<string, { oldValue: any; newValue: any }> => {
-    const diff: Record<string, { oldValue: any; newValue: any }> = {};
+  ): Record<string, { oldValue: unknown; newValue: unknown }> => {
+    const diff: Record<string, { oldValue: unknown; newValue: unknown }> = {};
 
     Object.keys(oldConfig).forEach((key) => {
       const typedKey = key as keyof AccessibilityConfig;

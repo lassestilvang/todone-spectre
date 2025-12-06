@@ -38,7 +38,7 @@ export const validateToken = (token: string): UserPayload => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as UserPayload;
     return decoded;
-  } catch (error) {
+  } catch {
     throw new Error("Invalid or expired token");
   }
 };
@@ -46,7 +46,7 @@ export const validateToken = (token: string): UserPayload => {
 export const decodeToken = (token: string): UserPayload | null => {
   try {
     return jwt.decode(token) as UserPayload | null;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -129,7 +129,7 @@ export const isAuthenticated = (): boolean => {
   try {
     validateToken(token);
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 };

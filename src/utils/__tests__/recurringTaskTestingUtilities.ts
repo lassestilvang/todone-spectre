@@ -15,7 +15,7 @@ import {
   createMockRecurringConfig,
 } from "./recurringTestUtils";
 import { validateRecurringTaskConfiguration } from "../recurringValidationUtils";
-import { RecurringTaskConfig, Task } from "../../types/task";
+import { Task } from "../../types/task";
 import { RecurringPattern } from "../../types/enums";
 
 /**
@@ -339,7 +339,7 @@ export class RecurringTaskTestingSuite {
       try {
         await this.mockTaskService.getRecurringTask("non-existent-id");
         integrationTests.errorHandlingTest.success = false;
-      } catch (error) {
+      } catch {
         integrationTests.errorHandlingTest.success = true;
       }
     } catch (error) {

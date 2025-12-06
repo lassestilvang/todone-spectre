@@ -176,15 +176,11 @@ describe("Core Components Accessibility Tests", () => {
     });
 
     it("should trap focus within modal", () => {
-      const handleClose = jest.fn();
-      render(
-        <Modal isOpen={true} onClose={handleClose}>
+      const { container } = render(
+        <Modal isOpen={true} onClose={() => {}}>
           Modal Content
         </Modal>,
       );
-
-      const dialog = screen.getByRole("dialog");
-      const closeButton = screen.getByLabelText("Close modal");
 
       // Focus should be trapped within modal
       expect(window.__accessibility__.keyboardNav.trapFocus).toHaveBeenCalled();

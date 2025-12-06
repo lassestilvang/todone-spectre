@@ -186,8 +186,8 @@ describe("Comprehensive Integration Tests - Cross-Feature Scenarios", () => {
     });
 
     // Mock database
-    (TodoneDatabase.prototype.tasks.add as any).mockResolvedValue(1);
-    (TodoneDatabase.prototype.tasks.get as any).mockResolvedValue({
+    const mockTasksAdd = vi.fn().mockResolvedValue(1);
+    const mockTasksGet = vi.fn().mockResolvedValue({
       id: 1,
       content: mockTask.title,
       projectId: mockTask.projectId,
@@ -199,6 +199,10 @@ describe("Comprehensive Integration Tests - Cross-Feature Scenarios", () => {
       parentTaskId: null,
       order: 0,
     });
+
+    // Assign mocks to database prototype
+    TodoneDatabase.prototype.tasks.add = mockTasksAdd;
+    TodoneDatabase.prototype.tasks.get = mockTasksGet;
   });
 
   afterEach(() => {

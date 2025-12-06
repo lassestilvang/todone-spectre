@@ -45,9 +45,9 @@ export class CalendarSyncUtils {
    */
   static filterEventsByCalendarType(
     events: CalendarEventType[],
-    calendarType: string,
+    // calendarType: string,
   ): CalendarEventType[] {
-    return events.filter((event) => {
+    return events.filter(() => {
       // This would typically check against calendar metadata
       // For now, we'll implement a simple filter
       return true;

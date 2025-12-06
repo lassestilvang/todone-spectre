@@ -9,8 +9,7 @@ import {
   RecurringTaskConfig,
   RecurringPatternConfig,
 } from "../../types/task";
-import { RecurringPattern, TaskStatus, PriorityLevel } from "../../types/enums";
-import { addDays, addWeeks, addMonths, addYears } from "date-fns";
+import { addDays, addWeeks, addMonths } from "date-fns";
 import { validateRecurringTaskConfiguration } from "../recurringValidationUtils";
 import { recurringPatternService } from "../../services/recurringPatternService";
 import { recurringTaskService } from "../../services/recurringTaskService";
@@ -240,7 +239,7 @@ export const validateTestRecurringTask = (
 export const testRecurringPatternGeneration = async (
   config: RecurringPatternConfig,
   expectedCount: number,
-): Promise<{ success: boolean; actualCount: number; instances: any[] }> => {
+): Promise<{ success: boolean; actualCount: number; instances: unknown[] }> => {
   try {
     const startDate = new Date();
     const instances = recurringPatternService.generateRecurringDates(
@@ -343,7 +342,6 @@ export const createRecurringTaskPerformanceTest = async (
   memoryUsage: number;
   success: boolean;
 }> => {
-  const startTime = performance.now();
   let memoryStart = 0;
 
   if (typeof performance.memory !== "undefined") {
@@ -377,14 +375,12 @@ export const createRecurringTaskPerformanceTest = async (
 
     // Test instance generation performance
     const generationStart = performance.now();
-    let totalInstances = 0;
 
     for (const task of createdTasks) {
-      const instances = await recurringTaskService.generateRecurringInstances(
+      await recurringTaskService.generateRecurringInstances(
         task,
         task.customFields?.recurringConfig || mockConfig,
       );
-      totalInstances += instances.length;
     }
 
     const generationTime = performance.now() - generationStart;

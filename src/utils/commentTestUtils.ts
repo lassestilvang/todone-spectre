@@ -44,7 +44,9 @@ export class CommentTestUtils {
     return Array.from({ length: count }, (_, i) => ({
       id: `notification_${i + 1}`,
       commentId: `comment_${i + 1}`,
-      type: ["mention", "reply", "like", "dislike"][i % 4] as any,
+      type: ["mention", "reply", "like", "dislike"][
+        i % 4
+      ] as CommentNotification["type"],
       userId: `user_${(i % 2) + 1}`,
       read: i % 2 === 0, // Every other notification is read
       createdAt: new Date(Date.now() - i * 1800000), // Each notification 30 minutes apart

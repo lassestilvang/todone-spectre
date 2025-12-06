@@ -1,4 +1,8 @@
-import { EmptyStateConfig, EmptyStateTemplateType } from '../types/emptyStateTypes';
+import React from "react";
+import {
+  EmptyStateConfig,
+  EmptyStateTemplateType,
+} from "../types/emptyStateTypes";
 
 /**
  * Generate default empty state configuration based on template type
@@ -6,53 +10,56 @@ import { EmptyStateConfig, EmptyStateTemplateType } from '../types/emptyStateTyp
  * @returns Default empty state configuration
  */
 export const generateDefaultEmptyStateConfig = (
-  templateType: EmptyStateTemplateType['type']
+  templateType: EmptyStateTemplateType["type"],
 ): EmptyStateConfig => {
   switch (templateType) {
-    case 'tasks':
+    case "tasks":
       return {
-        title: 'No tasks found',
-        description: 'Create your first task to get started with your productivity journey',
+        title: "No tasks found",
+        description:
+          "Create your first task to get started with your productivity journey",
         icon: null,
         actions: null,
-        show: true
+        show: true,
       };
 
-    case 'projects':
+    case "projects":
       return {
-        title: 'No projects yet',
-        description: 'Start organizing your work by creating your first project',
+        title: "No projects yet",
+        description:
+          "Start organizing your work by creating your first project",
         icon: null,
         actions: null,
-        show: true
+        show: true,
       };
 
-    case 'calendar':
+    case "calendar":
       return {
-        title: 'Empty calendar',
-        description: 'Schedule your first event or task to populate your calendar',
+        title: "Empty calendar",
+        description:
+          "Schedule your first event or task to populate your calendar",
         icon: null,
         actions: null,
-        show: true
+        show: true,
       };
 
-    case 'search':
+    case "search":
       return {
-        title: 'No results found',
-        description: 'Try adjusting your search criteria or create new content',
+        title: "No results found",
+        description: "Try adjusting your search criteria or create new content",
         icon: null,
         actions: null,
-        show: true
+        show: true,
       };
 
-    case 'custom':
+    case "custom":
     default:
       return {
-        title: 'No content available',
-        description: 'There is nothing to display here yet',
+        title: "No content available",
+        description: "There is nothing to display here yet",
         icon: null,
         actions: null,
-        show: true
+        show: true,
       };
   }
 };
@@ -63,7 +70,7 @@ export const generateDefaultEmptyStateConfig = (
  * @returns Generated empty state key
  */
 export const createEmptyStateKey = (componentName: string): string => {
-  return `empty-state-${componentName.toLowerCase().replace(/\s+/g, '-')}`;
+  return `empty-state-${componentName.toLowerCase().replace(/\s+/g, "-")}`;
 };
 
 /**
@@ -74,9 +81,9 @@ export const createEmptyStateKey = (componentName: string): string => {
 export const validateEmptyStateConfig = (config: EmptyStateConfig): boolean => {
   return (
     config &&
-    typeof config.title === 'string' &&
-    typeof config.description === 'string' &&
-    typeof config.show === 'boolean'
+    typeof config.title === "string" &&
+    typeof config.description === "string" &&
+    typeof config.show === "boolean"
   );
 };
 
@@ -88,28 +95,28 @@ export const validateEmptyStateConfig = (config: EmptyStateConfig): boolean => {
  */
 export const mergeEmptyStateConfigs = (
   baseConfig: EmptyStateConfig,
-  overrideConfig: Partial<EmptyStateConfig>
+  overrideConfig: Partial<EmptyStateConfig>,
 ): EmptyStateConfig => {
   return {
     ...baseConfig,
     ...overrideConfig,
-    show: overrideConfig.show !== undefined ? overrideConfig.show : baseConfig.show
+    show:
+      overrideConfig.show !== undefined ? overrideConfig.show : baseConfig.show,
   };
 };
 
-/**
- * Get empty state icon based on type
- * @param type Type of empty state
- * @returns React node for icon or null
- */
 export const getEmptyStateIcon = (type: string): JSX.Element | null => {
-  const iconMap: Record<string, JSX.Element> = {
-    tasks: <span className="empty-state-icon">📝</span>,
-    projects: <span className="empty-state-icon">🗂️</span>,
-    calendar: <span className="empty-state-icon">📅</span>,
-    search: <span className="empty-state-icon">🔍</span>,
-    default: <span className="empty-state-icon">🤷</span>
+  const iconMap: Record<string, string> = {
+    tasks: "📝",
+    projects: "🗂️",
+    calendar: "📅",
+    search: "🔍",
+    default: "🤷",
   };
 
-  return iconMap[type] || iconMap.default;
+  return React.createElement(
+    "span",
+    { className: "empty-state-icon" },
+    iconMap[type] || iconMap.default,
+  );
 };

@@ -154,13 +154,13 @@ describe("DatabaseUtils", () => {
 
   describe("getTablesForTransaction", () => {
     it("should return all tables when none specified", () => {
-      // @ts-ignore - testing private method
+      // @ts-expect-error - testing private method
       const tables = dbUtils.getTablesForTransaction({ mode: "readwrite" });
       expect(tables.length).toBe(8); // All tables
     });
 
     it("should return only specified tables", () => {
-      // @ts-ignore - testing private method
+      // @ts-expect-error - testing private method
       const tables = dbUtils.getTablesForTransaction({
         mode: "readwrite",
         tables: ["users", "projects"],
@@ -170,7 +170,7 @@ describe("DatabaseUtils", () => {
 
     it("should throw error for unknown table", () => {
       expect(() => {
-        // @ts-ignore - testing private method
+        // @ts-expect-error - testing private method
         dbUtils.getTablesForTransaction({
           mode: "readwrite",
           tables: ["unknown-table"],
@@ -213,14 +213,14 @@ describe("DatabaseUtils", () => {
 
   describe("getTable", () => {
     it("should return correct table for valid table names", () => {
-      // @ts-ignore - testing private method
+      // @ts-expect-error - testing private method
       const usersTable = dbUtils.getTable("users");
       expect(usersTable).toBe(mockDb.users);
     });
 
     it("should throw error for unknown table", () => {
       expect(() => {
-        // @ts-ignore - testing private method
+        // @ts-expect-error - testing private method
         dbUtils.getTable("unknown-table");
       }).toThrow("Unknown table: unknown-table");
     });

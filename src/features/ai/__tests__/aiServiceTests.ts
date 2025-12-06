@@ -52,8 +52,7 @@ describe("AI Service Tests", () => {
     });
   });
 
-  describe("AI Utility Functions Tests", () => {
-  });
+  describe("AI Utility Functions Tests", () => {});
 
   describe("Mock Service Tests", () => {
     it("should create AI service mock with correct methods", () => {
@@ -97,6 +96,5 @@ describe("AI Service Tests", () => {
     });
   });
 
-  describe("Integration Tests", () => {
-  });
+  describe("Integration Tests", () => {});
 });

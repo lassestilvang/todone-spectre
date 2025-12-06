@@ -203,7 +203,7 @@ describe("Keyboard Navigation Accessibility Tests", () => {
 
   describe("Focus Management Tests", () => {
     it("should manage focus in modal dialogs", () => {
-      render(
+      const { container } = render(
         <FocusTrapTestComponent>
           <button>First Button</button>
           <button>Second Button</button>
@@ -215,6 +215,10 @@ describe("Keyboard Navigation Accessibility Tests", () => {
       const dialog = screen.getByRole("dialog");
       const buttons = screen.getAllByRole("button");
       const input = screen.getByRole("textbox");
+
+      // Verify dialog has proper ARIA attributes
+      expect(dialog).toHaveAttribute("aria-modal", "true");
+      expect(dialog).toHaveAttribute("aria-labelledby", "focus-trap-title");
 
       // Focus should be trapped within dialog
       buttons[0].focus();

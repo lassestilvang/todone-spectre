@@ -14,11 +14,9 @@ describe("Animation System Integration Tests", () => {
 
   beforeEach(() => {
     // Mock animation utilities
-    vi.spyOn(animationUtils, "getAnimationFunction").mockImplementation(
-      () => {
-        return mockAnimationFunction;
-      },
-    );
+    vi.spyOn(animationUtils, "getAnimationFunction").mockImplementation(() => {
+      return mockAnimationFunction;
+    });
 
     // Reset animation service state
     animationService.initialize();
@@ -174,7 +172,9 @@ describe("Animation System Integration Tests", () => {
 
   test("Animation state management and subscriptions", async () => {
     // Test state subscription
-    const states: any[] = [];
+    const states: Array<{
+      config: { duration?: number; easing?: string; type?: string };
+    }> = [];
     const unsubscribe = animationService.subscribe((state) => {
       states.push(state);
     });

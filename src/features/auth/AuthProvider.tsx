@@ -26,7 +26,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     checkAuth: storeCheckAuth,
   } = useAuthStore();
 
-
   useEffect(() => {
     const initializeAuth = async () => {
       try {

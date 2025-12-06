@@ -6,7 +6,6 @@ import {
   TeamMemberStatistics,
   TeamActivityStatistics,
 } from "../types/collaboration";
-import { User } from "../types/user";
 
 /**
  * Collaboration Utilities - Helper functions for collaboration features

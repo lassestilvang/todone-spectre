@@ -1,8 +1,6 @@
 import "@testing-library/jest-dom/vitest";
 import { vi } from "vitest";
-import {
-  cleanupAccessibilityTests,
-} from "./accessibility/accessibilitySetup";
+import { cleanupAccessibilityTests } from "./accessibility/accessibilitySetup";
 
 // Mock localStorage
 const localStorageMock = (() => {

@@ -1,9 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { TEST_USER, login } from "./utils/auth";
-import {
-  generateRandomTask,
-  generateRandomProject,
-} from "./utils/testData";
+import { generateRandomTask, generateRandomProject } from "./utils/testData";
 
 test.describe("Performance Monitoring", () => {
   test("Performance monitoring: Complete complex workflows → Check performance metrics", async ({

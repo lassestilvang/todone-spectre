@@ -50,8 +50,13 @@ jest.mock("../../features/accessibility/AccessibilitySettings.tsx", () => ({
     ) : null,
 }));
 
+interface TaskFormData {
+  title: string;
+  description?: string;
+}
+
 jest.mock("../../features/tasks/TaskForm.tsx", () => ({
-  TaskForm: ({ onSubmit }: { onSubmit: (data: any) => void }) => (
+  TaskForm: ({ onSubmit }: { onSubmit: (data: TaskFormData) => void }) => (
     <form
       onSubmit={(e) => {
         e.preventDefault();
@@ -68,8 +73,17 @@ jest.mock("../../features/tasks/TaskForm.tsx", () => ({
   ),
 }));
 
+interface ProjectFormData {
+  name: string;
+  description?: string;
+}
+
 jest.mock("../../features/projects/ProjectForm.tsx", () => ({
-  ProjectForm: ({ onSubmit }: { onSubmit: (data: any) => void }) => (
+  ProjectForm: ({
+    onSubmit,
+  }: {
+    onSubmit: (data: ProjectFormData) => void;
+  }) => (
     <form
       onSubmit={(e) => {
         e.preventDefault();
@@ -86,8 +100,16 @@ jest.mock("../../features/projects/ProjectForm.tsx", () => ({
   ),
 }));
 
+interface CommentFormData {
+  text: string;
+}
+
 jest.mock("../../features/comments/CommentForm.tsx", () => ({
-  CommentForm: ({ onSubmit }: { onSubmit: (data: any) => void }) => (
+  CommentForm: ({
+    onSubmit,
+  }: {
+    onSubmit: (data: CommentFormData) => void;
+  }) => (
     <form
       onSubmit={(e) => {
         e.preventDefault();
@@ -124,8 +146,10 @@ describe("Feature Components Accessibility Tests", () => {
     });
 
     it("should have accessible buttons with proper labels", () => {
-      render(<AccessibilityControls />);
+      const { container } = render(<AccessibilityControls />);
+
       const buttons = screen.getAllByRole("button");
+      expect(buttons.length).toBe(3); // Should have 3 buttons
 
       expect(
         screen.getByLabelText("Toggle high contrast mode"),

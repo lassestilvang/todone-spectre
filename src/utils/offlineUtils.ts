@@ -190,7 +190,7 @@ export function validateDataForOfflineStorage(data: any): boolean {
     // Check if data can be serialized
     JSON.stringify(data);
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
@@ -212,8 +212,8 @@ export function decompressDataFromStorage(compressedData: string): any {
   try {
     const decodedString = decodeURIComponent(atob(compressedData));
     return JSON.parse(decodedString);
-  } catch (error) {
-    console.error("Failed to decompress data:", error);
+  } catch {
+    console.error("Failed to decompress data");
     return null;
   }
 }

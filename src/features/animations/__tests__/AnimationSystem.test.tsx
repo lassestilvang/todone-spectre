@@ -7,7 +7,6 @@ import { ViewAnimation } from "../ViewAnimation";
 import { AnimationProvider, useAnimationContext } from "../AnimationProvider";
 
 describe("Animation System Integration Tests", () => {
-
   describe("AnimationSystemIntegration", () => {
     it("should render children correctly", () => {
       render(

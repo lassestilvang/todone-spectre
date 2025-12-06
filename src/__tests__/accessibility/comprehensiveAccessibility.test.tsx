@@ -412,7 +412,10 @@ describe("Comprehensive Accessibility Testing Suite - WCAG 2.1 AA Compliance", (
 
       themes.forEach(() => {
         // Set theme colors
-        window.__accessibility__.colorContrast.checkContrastRatio("#000000", "#FFFFFF");
+        window.__accessibility__.colorContrast.checkContrastRatio(
+          "#000000",
+          "#FFFFFF",
+        );
 
         // All themes should pass AA compliance
         expect(window.__accessibility__.colorContrast.isAACompliant()).toBe(

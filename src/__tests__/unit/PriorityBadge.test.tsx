@@ -89,7 +89,7 @@ describe("PriorityBadge Component", () => {
     });
 
     it("should handle undefined priority gracefully", () => {
-      // @ts-ignore - testing edge case
+      // @ts-expect-error - testing edge case
       const { container } = render(<PriorityBadge priority={undefined} />);
       expect(container.firstChild).toBeInTheDocument();
     });

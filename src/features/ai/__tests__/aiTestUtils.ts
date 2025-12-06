@@ -1,4 +1,3 @@
-
 export class AITestUtils {
   static createMockTask(overrides: any = {}): any {
     return {
@@ -117,7 +116,6 @@ export class AITestUtils {
       },
     ].slice(0, count);
   }
-
 
   static createAIServiceMock() {
     return {

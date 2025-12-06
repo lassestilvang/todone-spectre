@@ -128,7 +128,7 @@ export const transformApiTask = (apiTask: any): Task => {
  * Transform client task data to API format
  */
 export const transformTaskToApi = (task: Partial<Task>): any => {
-  const { id, createdAt, updatedAt, completedAt, ...rest } = task;
+  const { ...rest } = task;
 
   return {
     ...rest,

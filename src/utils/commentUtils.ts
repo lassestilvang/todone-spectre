@@ -1,5 +1,5 @@
-import { Comment } from '../types/common';
-import { formatDistanceToNow, format } from 'date-fns';
+import { Comment } from "../types/common";
+import { formatDistanceToNow, format } from "date-fns";
 
 /**
  * Comment utility functions
@@ -16,16 +16,19 @@ export class CommentUtils {
    * Format comment timestamp as full date
    */
   static formatCommentDate(timestamp: Date): string {
-    return format(timestamp, 'MMMM d, yyyy h:mm a');
+    return format(timestamp, "MMMM d, yyyy h:mm a");
   }
 
   /**
    * Generate a comment preview (first 100 characters)
    */
-  static generateCommentPreview(content: string, maxLength: number = 100): string {
-    if (!content) return '';
+  static generateCommentPreview(
+    content: string,
+    maxLength: number = 100,
+  ): string {
+    if (!content) return "";
     return content.length > maxLength
-      ? content.substring(0, maxLength) + '...'
+      ? content.substring(0, maxLength) + "..."
       : content;
   }
 
@@ -35,7 +38,7 @@ export class CommentUtils {
   static extractMentions(content: string): string[] {
     const mentionRegex = /@(\w+)/g;
     const matches = content.match(mentionRegex) || [];
-    return matches.map(mention => mention.substring(1));
+    return matches.map((mention) => mention.substring(1));
   }
 
   /**
@@ -44,7 +47,7 @@ export class CommentUtils {
   static extractHashtags(content: string): string[] {
     const hashtagRegex = /#(\w+)/g;
     const matches = content.match(hashtagRegex) || [];
-    return matches.map(hashtag => hashtag.substring(1));
+    return matches.map((hashtag) => hashtag.substring(1));
   }
 
   /**
@@ -59,29 +62,29 @@ export class CommentUtils {
    * Format comment content with basic markdown support
    */
   static formatCommentContent(content: string): string {
-    if (!content) return '';
+    if (!content) return "";
 
     let formatted = content;
 
     // Replace newlines with HTML line breaks
-    formatted = formatted.replace(/\n/g, '<br>');
+    formatted = formatted.replace(/\n/g, "<br>");
 
     // Simple URL detection and linking
     formatted = formatted.replace(
       /(https?:\/\/[^\s]+)/g,
-      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>'
+      '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>',
     );
 
     // Simple mention formatting
     formatted = formatted.replace(
       /@(\w+)/g,
-      '<span class="mention">@$1</span>'
+      '<span class="mention">@$1</span>',
     );
 
     // Simple hashtag formatting
     formatted = formatted.replace(
       /#(\w+)/g,
-      '<span class="hashtag">#$1</span>'
+      '<span class="hashtag">#$1</span>',
     );
 
     return formatted;
@@ -93,7 +96,7 @@ export class CommentUtils {
   static groupCommentsByDate(comments: Comment[]): Record<string, Comment[]> {
     const grouped: Record<string, Comment[]> = {};
 
-    comments.forEach(comment => {
+    comments.forEach((comment) => {
       const date = new Date(comment.timestamp);
       const dateKey = date.toDateString();
 
@@ -111,12 +114,12 @@ export class CommentUtils {
    */
   static sortComments(
     comments: Comment[],
-    direction: 'asc' | 'desc' = 'desc'
+    direction: "asc" | "desc" = "desc",
   ): Comment[] {
     return [...comments].sort((a, b) => {
       const dateA = new Date(a.timestamp).getTime();
       const dateB = new Date(b.timestamp).getTime();
-      return direction === 'desc' ? dateB - dateA : dateA - dateB;
+      return direction === "desc" ? dateB - dateA : dateA - dateB;
     });
   }
 
@@ -124,7 +127,7 @@ export class CommentUtils {
    * Filter comments by user
    */
   static filterCommentsByUser(comments: Comment[], userId: string): Comment[] {
-    return comments.filter(comment => comment.user === userId);
+    return comments.filter((comment) => comment.user === userId);
   }
 
   /**
@@ -141,18 +144,24 @@ export class CommentUtils {
         total: 0,
         byUser: {},
         recent: [],
-        averageLength: 0
+        averageLength: 0,
       };
     }
 
     const byUser: Record<string, number> = {};
     const recent = [...comments]
-      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .sort(
+        (a, b) =>
+          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+      )
       .slice(0, 5);
 
-    const totalLength = comments.reduce((sum, comment) => sum + comment.content.length, 0);
+    const totalLength = comments.reduce(
+      (sum, comment) => sum + comment.content.length,
+      0,
+    );
 
-    comments.forEach(comment => {
+    comments.forEach((comment) => {
       byUser[comment.user] = (byUser[comment.user] || 0) + 1;
     });
 
@@ -160,7 +169,7 @@ export class CommentUtils {
       total: comments.length,
       byUser,
       recent,
-      averageLength: Math.round(totalLength / comments.length)
+      averageLength: Math.round(totalLength / comments.length),
     };
   }
 
@@ -168,12 +177,12 @@ export class CommentUtils {
    * Create a comment summary
    */
   static createCommentSummary(comments: Comment[]): string {
-    if (comments.length === 0) return 'No comments';
+    if (comments.length === 0) return "No comments";
 
     const stats = this.getCommentStatistics(comments);
 
     if (comments.length === 1) {
-      return '1 comment';
+      return "1 comment";
     }
 
     return `${comments.length} comments from ${Object.keys(stats.byUser).length} users`;
@@ -200,12 +209,12 @@ export class CommentUtils {
     isValid: boolean;
     error?: string;
   } {
-    if (!content || content.trim() === '') {
-      return { isValid: false, error: 'Comment cannot be empty' };
+    if (!content || content.trim() === "") {
+      return { isValid: false, error: "Comment cannot be empty" };
     }
 
     if (content.length > 500) {
-      return { isValid: false, error: 'Comment cannot exceed 500 characters' };
+      return { isValid: false, error: "Comment cannot exceed 500 characters" };
     }
 
     return { isValid: true };
@@ -217,9 +226,9 @@ export class CommentUtils {
   static sanitizeCommentContent(content: string): string {
     // Basic XSS protection
     return content
-      .replace(/</g, '<')
-      .replace(/>/g, '>')
-      .replace(/"/g, '"')
-      .replace(/'/g, ''');
+      .replace(/</g, "<")
+      .replace(/>/g, ">")
+      .replace(/"/g, """)
+      .replace(/'/g, "'");
   }
 }

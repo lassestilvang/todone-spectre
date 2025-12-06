@@ -1,8 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { TEST_USER, login } from "../e2e/utils/auth";
-import {
-  generatePerformanceTestData,
-} from "./utils/testDataGenerators";
+import { generatePerformanceTestData } from "./utils/testDataGenerators";
 
 test.describe("Comprehensive Performance Benchmarking Suite", () => {
   test("Complete performance benchmarking across all critical paths", async ({

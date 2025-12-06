@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { useAccessibilityContext } from "./AccessibilityProvider";
-import {
-  Switch,
-} from "../../components/ui";
+import { Switch } from "../../components/ui";
 import {
   Contrast,
   TextSize,

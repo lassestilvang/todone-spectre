@@ -125,9 +125,7 @@ test.describe("Offline Workflow", () => {
 });
 
 test.describe("Offline Collaboration Scenarios", () => {
-  test("Offline team collaboration with sync conflicts", async ({
-    page,
-  }) => {
+  test("Offline team collaboration with sync conflicts", async ({ page }) => {
     await login(page, TEST_USER);
 
     // Create a team and task while online

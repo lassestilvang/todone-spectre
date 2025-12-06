@@ -100,7 +100,7 @@ export const authApi = createAuthMiddleware();
 export const makeAuthRequest = async <T>(
   method: "get" | "post" | "put" | "patch" | "delete",
   url: string,
-  data?: any,
+  data?: unknown,
   config?: AxiosRequestConfig,
 ): Promise<T> => {
   try {

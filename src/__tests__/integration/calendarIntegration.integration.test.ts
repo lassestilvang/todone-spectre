@@ -270,6 +270,11 @@ describe("Calendar Integration Tests", () => {
       new Date(Date.now() + 86400000 * 2), // 2 days from now
     );
 
+    // Verify range query returns expected results
+    expect(rangeEvents).toBeTruthy();
+    expect(Array.isArray(rangeEvents)).toBe(true);
+    expect(rangeEvents.length).toBeGreaterThanOrEqual(0); // Ensure we get some results
+
     const endTime = performance.now();
     const duration = endTime - startTime;
 

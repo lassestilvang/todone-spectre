@@ -95,7 +95,6 @@ export const setupAnimationTestEnvironment = () => {
   animationUtils.registerAnimation("test-animation", async ({ config }) => {
     return new Promise((resolve) => setTimeout(resolve, config.duration));
   });
-
 };
 
 export const cleanupAnimationTestEnvironment = () => {

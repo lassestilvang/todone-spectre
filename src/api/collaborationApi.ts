@@ -20,7 +20,9 @@ export class CollaborationApi {
   /**
    * Transform team data for API requests
    */
-  private transformTeamRequest(teamData: Partial<CollaborationTeam>): any {
+  private transformTeamRequest(
+    teamData: Partial<CollaborationTeam>,
+  ): Record<string, unknown> {
     const { id, createdAt, updatedAt, members, ...rest } = teamData;
 
     return {
@@ -33,25 +35,31 @@ export class CollaborationApi {
   /**
    * Transform API response to CollaborationTeam object
    */
-  private transformTeamResponse(responseData: any): CollaborationTeam {
+  private transformTeamResponse(
+    responseData: Record<string, unknown>,
+  ): CollaborationTeam {
     return {
       ...responseData,
-      id: responseData.id,
-      name: responseData.name,
-      description: responseData.description || "",
-      privacySetting: responseData.privacySetting || "team-only",
-      ownerId: responseData.ownerId,
-      createdAt: new Date(responseData.createdAt),
-      updatedAt: new Date(responseData.updatedAt),
-      memberCount: responseData.memberCount || 0,
-      activityCount: responseData.activityCount || 0,
+      id: responseData.id as string,
+      name: responseData.name as string,
+      description: (responseData.description || "") as string,
+      privacySetting: (responseData.privacySetting ||
+        "team-only") as CollaborationTeam["privacySetting"],
+      ownerId: responseData.ownerId as string,
+      createdAt: new Date(responseData.createdAt as string),
+      updatedAt: new Date(responseData.updatedAt as string),
+      memberCount: (responseData.memberCount || 0) as number,
+      activityCount: (responseData.activityCount || 0) as number,
       members:
-        responseData.members?.map((member: any) =>
-          this.transformMemberResponse(member),
+        ((responseData.members as Array<Record<string, unknown>>) || [])?.map(
+          (member: Record<string, unknown>) =>
+            this.transformMemberResponse(member),
         ) || [],
-      projectIds: responseData.projectIds || [],
+      projectIds: (responseData.projectIds || []) as string[],
       settings: responseData.settings
-        ? this.transformSettingsResponse(responseData.settings)
+        ? this.transformSettingsResponse(
+            responseData.settings as Record<string, unknown>,
+          )
         : undefined,
     };
   }
@@ -61,7 +69,7 @@ export class CollaborationApi {
    */
   private transformMemberRequest(
     memberData: Partial<CollaborationMember>,
-  ): any {
+  ): Record<string, unknown> {
     const { id, joinedAt, lastActive, ...rest } = memberData;
 
     return {
@@ -74,18 +82,21 @@ export class CollaborationApi {
   /**
    * Transform API response to CollaborationMember object
    */
-  private transformMemberResponse(responseData: any): CollaborationMember {
+  private transformMemberResponse(
+    responseData: Record<string, unknown>,
+  ): CollaborationMember {
     return {
       ...responseData,
-      id: responseData.id,
-      teamId: responseData.teamId,
-      userId: responseData.userId,
-      user: responseData.user,
-      role: responseData.role || "member",
-      status: responseData.status || "active",
-      joinedAt: new Date(responseData.joinedAt),
+      id: responseData.id as string,
+      teamId: responseData.teamId as string,
+      userId: responseData.userId as string,
+      user: responseData.user as unknown,
+      role: (responseData.role || "member") as CollaborationMember["role"],
+      status: (responseData.status ||
+        "active") as CollaborationMember["status"],
+      joinedAt: new Date(responseData.joinedAt as string),
       lastActive: responseData.lastActive
-        ? new Date(responseData.lastActive)
+        ? new Date(responseData.lastActive as string)
         : undefined,
     };
   }
@@ -95,7 +106,7 @@ export class CollaborationApi {
    */
   private transformSettingsRequest(
     settingsData: Partial<CollaborationSettings>,
-  ): any {
+  ): Record<string, unknown> {
     const { teamId, updatedAt, ...rest } = settingsData;
 
     return {
@@ -107,33 +118,39 @@ export class CollaborationApi {
   /**
    * Transform API response to CollaborationSettings object
    */
-  private transformSettingsResponse(responseData: any): CollaborationSettings {
+  private transformSettingsResponse(
+    responseData: Record<string, unknown>,
+  ): CollaborationSettings {
     return {
       ...responseData,
-      teamId: responseData.teamId,
-      notificationSettings: responseData.notificationSettings || {
-        emailNotifications: true,
-        pushNotifications: true,
-        mentionNotifications: true,
-        dailyDigest: false,
-      },
-      permissionSettings: responseData.permissionSettings || {
-        allowGuestInvites: false,
-        allowPublicSharing: false,
-        requireAdminApproval: true,
-        allowMemberInvites: false,
-      },
-      privacySettings: responseData.privacySettings || {
-        visibleToPublic: false,
-        searchable: false,
-        allowExternalAccess: false,
-      },
-      integrationSettings: responseData.integrationSettings || {
-        calendarIntegration: false,
-        taskIntegration: false,
-        fileIntegration: false,
-      },
-      updatedAt: new Date(responseData.updatedAt),
+      teamId: responseData.teamId as string,
+      notificationSettings:
+        (responseData.notificationSettings as CollaborationSettings["notificationSettings"]) || {
+          emailNotifications: true,
+          pushNotifications: true,
+          mentionNotifications: true,
+          dailyDigest: false,
+        },
+      permissionSettings:
+        (responseData.permissionSettings as CollaborationSettings["permissionSettings"]) || {
+          allowGuestInvites: false,
+          allowPublicSharing: false,
+          requireAdminApproval: true,
+          allowMemberInvites: false,
+        },
+      privacySettings:
+        (responseData.privacySettings as CollaborationSettings["privacySettings"]) || {
+          visibleToPublic: false,
+          searchable: false,
+          allowExternalAccess: false,
+        },
+      integrationSettings:
+        (responseData.integrationSettings as CollaborationSettings["integrationSettings"]) || {
+          calendarIntegration: false,
+          taskIntegration: false,
+          fileIntegration: false,
+        },
+      updatedAt: new Date(responseData.updatedAt as string),
     };
   }
 
@@ -142,7 +159,7 @@ export class CollaborationApi {
    */
   private transformActivityRequest(
     activityData: Partial<CollaborationActivity>,
-  ): any {
+  ): Record<string, unknown> {
     const { id, timestamp, ...rest } = activityData;
 
     return {
@@ -154,19 +171,21 @@ export class CollaborationApi {
   /**
    * Transform API response to CollaborationActivity object
    */
-  private transformActivityResponse(responseData: any): CollaborationActivity {
+  private transformActivityResponse(
+    responseData: Record<string, unknown>,
+  ): CollaborationActivity {
     return {
       ...responseData,
-      id: responseData.id,
-      teamId: responseData.teamId,
-      userId: responseData.userId,
-      user: responseData.user,
-      action: responseData.action,
-      type: responseData.type || "other",
-      timestamp: new Date(responseData.timestamp),
-      details: responseData.details,
-      entityId: responseData.entityId,
-      entityType: responseData.entityType,
+      id: responseData.id as string,
+      teamId: responseData.teamId as string,
+      userId: responseData.userId as string,
+      user: responseData.user as unknown,
+      action: responseData.action as string,
+      type: (responseData.type || "other") as CollaborationActivity["type"],
+      timestamp: new Date(responseData.timestamp as string),
+      details: responseData.details as unknown,
+      entityId: responseData.entityId as string,
+      entityType: responseData.entityType as string,
     };
   }
 
@@ -305,7 +324,7 @@ export class CollaborationApi {
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((team: any) =>
+          data: response.data.map((team: Record<string, unknown>) =>
             this.transformTeamResponse(team),
           ),
         };
@@ -522,7 +541,7 @@ export class CollaborationApi {
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((member: any) =>
+          data: response.data.map((member: Record<string, unknown>) =>
             this.transformMemberResponse(member),
           ),
         };
@@ -671,7 +690,7 @@ export class CollaborationApi {
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((activity: any) =>
+          data: response.data.map((activity: Record<string, unknown>) =>
             this.transformActivityResponse(activity),
           ),
         };
@@ -707,7 +726,7 @@ export class CollaborationApi {
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((activity: any) =>
+          data: response.data.map((activity: Record<string, unknown>) =>
             this.transformActivityResponse(activity),
           ),
         };
@@ -745,7 +764,7 @@ export class CollaborationApi {
       if (response.success && response.data) {
         return {
           ...response,
-          data: response.data.map((activity: any) =>
+          data: response.data.map((activity: Record<string, unknown>) =>
             this.transformActivityResponse(activity),
           ),
         };

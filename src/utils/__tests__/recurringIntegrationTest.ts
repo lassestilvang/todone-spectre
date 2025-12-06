@@ -364,9 +364,9 @@ export const runRecurringTaskHealthCheck = async (): Promise<{
 
     // Check if hooks are available
     try {
-      const testHook = useRecurringTasks();
-      if (!testHook || typeof testHook !== "object") {
-        issues.push("useRecurringTasks hook not working properly");
+      // Check if hook is available - we can't call it directly in non-React context
+      if (typeof useRecurringTasks !== "function") {
+        issues.push("useRecurringTasks hook not available");
       }
     } catch (error) {
       issues.push(`useRecurringTasks hook error: ${error.message}`);

@@ -56,7 +56,7 @@ export const mockLoginResponse = (user: MockUser) => {
   };
 };
 
-export const mockAuthApiResponse = (data: any, status: number = 200) => {
+export const mockAuthApiResponse = (data: unknown, status: number = 200) => {
   return {
     data,
     status,
