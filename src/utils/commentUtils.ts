@@ -18,9 +18,10 @@ export class CommentUtils {
   static sanitizeCommentContent(content: string): string {
     // Basic XSS protection
     return content
-      .replace(/</g, "<")
-      .replace(/>/g, ">")
-      .replace(/"/g, '"')
-      .replace(/'/g, "'");
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
   }
 }
