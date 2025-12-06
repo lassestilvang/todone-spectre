@@ -56,7 +56,7 @@ export class CollaborationComponentTests {
       getTeamStats: jest.fn().mockReturnValue({
         memberCount: members.length,
         activityCount: activities.length,
-        adminCount: members.filter(m => m.role === 'admin').length
+        adminCount: members.filter((m: any) => m.role === 'admin').length
       })
     });
 
