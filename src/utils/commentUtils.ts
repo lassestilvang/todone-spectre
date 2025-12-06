@@ -20,7 +20,7 @@ export class CommentUtils {
     return content
       .replace(/</g, "<")
       .replace(/>/g, ">")
-      .replace(/"/g, """)
+      .replace(/"/g, '"')
       .replace(/'/g, "'");
   }
 }
