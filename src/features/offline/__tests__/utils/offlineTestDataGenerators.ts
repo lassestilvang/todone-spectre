@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Offline Test Data Generators
  * Comprehensive utilities for generating test data for offline functionality

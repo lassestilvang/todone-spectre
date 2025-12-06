@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { InboxView } from "../features/views/InboxView";
 import { useInbox } from "../hooks/useInbox";
 
-export const InboxPage: React.FC = () => {
+const InboxPage: React.FC = () => {
   const navigate = useNavigate();
   const { isLoading, error, getProcessedTasks, getStatistics } = useInbox();
 
@@ -17,3 +17,6 @@ export const InboxPage: React.FC = () => {
     </div>
   );
 };
+
+export { InboxPage };
+export default InboxPage;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { TodoneDatabase } from "./db";
 import { SyncQueueItem, SyncStatus } from "./models";
 

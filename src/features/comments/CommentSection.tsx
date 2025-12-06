@@ -99,4 +99,5 @@ const CommentSection: React.FC<CommentSectionProps> = ({ taskId }) => {
   );
 };
 
+export { CommentSection };
 export default CommentSection;

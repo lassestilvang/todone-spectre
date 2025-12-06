@@ -63,4 +63,5 @@ const CommentDisplay: React.FC<CommentDisplayProps> = ({
   );
 };
 
+export { CommentDisplay };
 export default CommentDisplay;

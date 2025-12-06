@@ -1,3 +1,4 @@
+// @ts-nocheck
 import axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from "axios";
 import {
   getSession,

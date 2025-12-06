@@ -154,4 +154,5 @@ const TemplateTaskIntegration: React.FC<TemplateTaskIntegrationProps> = ({
   );
 };
 
+export { TemplateTaskIntegration };
 export default TemplateTaskIntegration;

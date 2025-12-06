@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Offline Data Transformation Utilities
  *

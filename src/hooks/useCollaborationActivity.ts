@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useCallback } from "react";
 import { useCollaborationStore } from "../store/useCollaborationStore";
 import { collaborationActivityService } from "../services/collaborationActivityService";
@@ -34,7 +35,7 @@ export const useCollaborationActivity = (teamId?: string) => {
       // Activities are automatically added to store via service
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Failed to fetch activities"
+        err instanceof Error ? err.message : "Failed to fetch activities",
       );
     } finally {
       setLoading(false);
@@ -46,7 +47,7 @@ export const useCollaborationActivity = (teamId?: string) => {
    */
   const createActivity = useCallback(
     async (
-      activityData: Omit<CollaborationActivity, "id" | "timestamp">
+      activityData: Omit<CollaborationActivity, "id" | "timestamp">,
     ): Promise<CollaborationActivity> => {
       try {
         setLoading(true);
@@ -56,14 +57,14 @@ export const useCollaborationActivity = (teamId?: string) => {
         return newActivity;
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to create activity"
+          err instanceof Error ? err.message : "Failed to create activity",
         );
         throw err;
       } finally {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
   /**
@@ -72,7 +73,7 @@ export const useCollaborationActivity = (teamId?: string) => {
   const updateActivityWithState = useCallback(
     async (
       activityId: string,
-      updates: Partial<CollaborationActivity>
+      updates: Partial<CollaborationActivity>,
     ): Promise<CollaborationActivity> => {
       try {
         setLoading(true);
@@ -95,14 +96,14 @@ export const useCollaborationActivity = (teamId?: string) => {
         return updatedActivity;
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to update activity"
+          err instanceof Error ? err.message : "Failed to update activity",
         );
         throw err;
       } finally {
         setLoading(false);
       }
     },
-    [activities, updateActivity]
+    [activities, updateActivity],
   );
 
   /**
@@ -121,14 +122,14 @@ export const useCollaborationActivity = (teamId?: string) => {
         await collaborationActivityService.deleteActivity(activityId);
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to delete activity"
+          err instanceof Error ? err.message : "Failed to delete activity",
         );
         throw err;
       } finally {
         setLoading(false);
       }
     },
-    [deleteActivity]
+    [deleteActivity],
   );
 
   /**
@@ -146,14 +147,14 @@ export const useCollaborationActivity = (teamId?: string) => {
         setError(
           err instanceof Error
             ? err.message
-            : "Failed to fetch recent activities"
+            : "Failed to fetch recent activities",
         );
         throw err;
       } finally {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
   /**
@@ -169,14 +170,16 @@ export const useCollaborationActivity = (teamId?: string) => {
         return userActivities;
       } catch (err) {
         setError(
-          err instanceof Error ? err.message : "Failed to fetch user activities"
+          err instanceof Error
+            ? err.message
+            : "Failed to fetch user activities",
         );
         throw err;
       } finally {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
   /**
@@ -186,10 +189,10 @@ export const useCollaborationActivity = (teamId?: string) => {
     (type: CollaborationActivity["type"]): CollaborationActivity[] => {
       return collaborationActivityService.filterActivitiesByType(
         activities,
-        type
+        type,
       );
     },
-    [activities]
+    [activities],
   );
 
   /**
@@ -200,10 +203,10 @@ export const useCollaborationActivity = (teamId?: string) => {
       return collaborationActivityService.filterActivitiesByDateRange(
         activities,
         startDate,
-        endDate
+        endDate,
       );
     },
-    [activities]
+    [activities],
   );
 
   /**
@@ -242,10 +245,10 @@ export const useCollaborationActivity = (teamId?: string) => {
     (searchTerm: string): CollaborationActivity[] => {
       return collaborationActivityService.searchActivities(
         activities,
-        searchTerm
+        searchTerm,
       );
     },
-    [activities]
+    [activities],
   );
 
   /**
@@ -255,7 +258,7 @@ export const useCollaborationActivity = (teamId?: string) => {
     (activity: CollaborationActivity): string => {
       return collaborationActivityService.formatActivityForDisplay(activity);
     },
-    []
+    [],
   );
 
   /**

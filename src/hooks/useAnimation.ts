@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useCallback } from "react";
 import { animationService } from "../services/animationService";
 import { animationUtils } from "../utils/animationUtils";

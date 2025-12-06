@@ -101,4 +101,5 @@ const CommentItemWithActions: React.FC<CommentItemWithActionsProps> = ({
   );
 };
 
+export { CommentItemWithActions };
 export default CommentItemWithActions;

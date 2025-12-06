@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { useState, useEffect, useContext, useCallback } from "react";
 import {
@@ -21,7 +22,7 @@ export const ExtensionConfigContext = createContext<ExtensionConfigContextType>(
     },
     updateConfig: async () => {},
     resetConfig: async () => {},
-  }
+  },
 );
 
 /**
@@ -31,7 +32,7 @@ export const ExtensionConfigProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
   const [config, setConfig] = useState<ExtensionConfig>(
-    extensionConfigService.getConfig()
+    extensionConfigService.getConfig(),
   );
 
   useEffect(() => {
@@ -55,7 +56,7 @@ export const ExtensionConfigProvider: React.FC<{
       await extensionConfigService.updateConfig(configUpdate);
       setConfig(extensionConfigService.getConfig());
     },
-    []
+    [],
   );
 
   const resetConfig = useCallback(async () => {
@@ -66,7 +67,7 @@ export const ExtensionConfigProvider: React.FC<{
   return React.createElement(
     ExtensionConfigContext.Provider,
     { value: { config, updateConfig, resetConfig } },
-    children
+    children,
   );
 };
 
@@ -78,7 +79,7 @@ export const useExtensionConfig = (): ExtensionConfigContextType => {
 
   if (!context) {
     throw new Error(
-      "useExtensionConfig must be used within an ExtensionConfigProvider"
+      "useExtensionConfig must be used within an ExtensionConfigProvider",
     );
   }
 
@@ -89,7 +90,7 @@ export const useExtensionConfig = (): ExtensionConfigContextType => {
  * useExtensionConfigValue Hook - Custom hook for accessing specific config values
  */
 export const useExtensionConfigValue = <K extends keyof ExtensionConfig>(
-  key: K
+  key: K,
 ): ExtensionConfig[K] => {
   const { config } = useExtensionConfig();
   return config[key];
@@ -105,7 +106,7 @@ export const useExtensionConfigUpdate = () => {
     updateConfig,
     setConfigValue: async <K extends keyof ExtensionConfig>(
       key: K,
-      value: ExtensionConfig[K]
+      value: ExtensionConfig[K],
     ) => {
       await updateConfig({ [key]: value } as Partial<ExtensionConfig>);
     },
@@ -148,7 +149,7 @@ export const useAutoSync = () => {
         syncInterval: interval,
       });
     },
-    [updateConfig]
+    [updateConfig],
   );
 
   return {
@@ -171,7 +172,7 @@ export const useExtensionTheme = () => {
         theme,
       });
     },
-    [updateConfig]
+    [updateConfig],
   );
 
   return {

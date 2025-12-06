@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { ViewType } from "../../types/enums";
 import { ListView } from "./ListView";

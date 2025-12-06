@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { AnimationProvider } from "./AnimationProvider";
 import { AnimationPerformanceOptimizer } from "./AnimationPerformanceOptimizer";

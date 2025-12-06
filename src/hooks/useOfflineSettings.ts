@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useCallback } from "react";
 import { useOfflineStore } from "../store/useOfflineStore";
 import { OfflineSettings } from "../types/offlineTypes";

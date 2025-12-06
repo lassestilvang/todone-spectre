@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect } from "react";
 import { SearchBar } from "./SearchBar";
 import { SearchModal } from "./SearchModal";

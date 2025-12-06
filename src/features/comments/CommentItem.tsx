@@ -185,4 +185,5 @@ const CommentItem: React.FC<CommentItemProps> = ({
   );
 };
 
+export { CommentItem };
 export default CommentItem;

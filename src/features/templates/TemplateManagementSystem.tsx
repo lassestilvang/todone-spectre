@@ -445,4 +445,5 @@ const TemplateManagementSystem: React.FC<TemplateManagementSystemProps> = ({
   );
 };
 
+export { TemplateManagementSystem };
 export default TemplateManagementSystem;

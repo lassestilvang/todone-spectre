@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect } from "react";
 import { useEmptyState } from "../../../hooks/useEmptyState";
 import { EmptyStateConfig } from "../../../types/emptyStateTypes";

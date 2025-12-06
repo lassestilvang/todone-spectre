@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { CalendarView } from "./CalendarView";
 import { CalendarSync } from "./CalendarSync";

@@ -91,4 +91,5 @@ const CommentManagement: React.FC<CommentManagementProps> = ({
   );
 };
 
+export { CommentManagement };
 export default CommentManagement;

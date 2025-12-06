@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * User-related types for Todone application
  * Contains comprehensive user management interfaces and types

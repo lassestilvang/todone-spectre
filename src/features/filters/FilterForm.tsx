@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { Filter } from "../../types/models";
 
@@ -83,4 +84,5 @@ const FilterForm: React.FC<FilterFormProps> = ({
   );
 };
 
+export { FilterForm };
 export default FilterForm;

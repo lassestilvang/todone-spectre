@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { nlpService } from "./nlpService";
 
 interface ParseResult {

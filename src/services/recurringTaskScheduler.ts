@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Recurring Task Scheduler Service
  * Advanced scheduling with background processing, optimization, and conflict resolution

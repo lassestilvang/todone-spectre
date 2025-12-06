@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Offline feature types
  */

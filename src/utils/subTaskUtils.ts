@@ -111,7 +111,6 @@ export const buildTaskHierarchy = (
   rootTaskId: string,
 ): Task[] => {
   const taskMap = new Map<string, Task>();
-  const hierarchy: Task[] = [];
 
   // Create a map of all tasks
   tasks.forEach((task) => {

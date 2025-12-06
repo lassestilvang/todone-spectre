@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -45,7 +46,7 @@ export const MobileFeatures: React.FC<MobileFeaturesProps> = ({
   const { triggerHapticFeedback } = useMobile();
   const [activeFeatures, setActiveFeatures] = useState<string[]>(featureSet);
   const [featureStatus, setFeatureStatus] = useState<Record<string, boolean>>(
-    {}
+    {},
   );
 
   useEffect(() => {

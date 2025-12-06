@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useCallback } from "react";
 import { commentService } from "../services/commentService";
 

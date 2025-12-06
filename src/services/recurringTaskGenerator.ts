@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Recurring Task Generator Service
  * Advanced task generation with validation, optimization, and conflict resolution

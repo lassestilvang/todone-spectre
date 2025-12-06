@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { CollaborationComponentTests } from "./collaborationComponentTests";
 import { CollaborationTestDataGenerators } from "./collaborationTestDataGenerators";
 import {

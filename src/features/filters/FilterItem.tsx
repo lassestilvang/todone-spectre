@@ -53,4 +53,5 @@ const FilterItem: React.FC<FilterItemProps> = ({
   );
 };
 
+export { FilterItem };
 export default FilterItem;

@@ -116,4 +116,5 @@ const FiltersPage: React.FC = () => {
   );
 };
 
+export { FiltersPage };
 export default FiltersPage;

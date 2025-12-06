@@ -124,4 +124,5 @@ const RegisterForm: React.FC = () => {
   );
 };
 
+export { RegisterForm };
 export default RegisterForm;

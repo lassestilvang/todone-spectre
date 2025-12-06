@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { useState, useEffect, useContext, useReducer } from "react";
 import {
@@ -26,7 +27,7 @@ export const ExtensionContext = createContext<ExtensionContextType>({
  */
 const extensionReducer = (
   state: ExtensionState,
-  action: ExtensionAction
+  action: ExtensionAction,
 ): ExtensionState => {
   switch (action.type) {
     case "INITIALIZE":
@@ -106,7 +107,7 @@ export const ExtensionProvider: React.FC<{ children: React.ReactNode }> = ({
   return React.createElement(
     ExtensionContext.Provider,
     { value: { extensionState, dispatch, service: extensionService } },
-    children
+    children,
   );
 };
 

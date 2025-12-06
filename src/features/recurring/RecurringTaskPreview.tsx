@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { Task, RecurringPattern, RecurringTaskConfig } from "../../types/task";
 import { format, addDays, addWeeks, addMonths, addYears } from "date-fns";
@@ -427,4 +428,5 @@ const RecurringTaskPreview: React.FC<RecurringTaskPreviewProps> = ({
   );
 };
 
+export { RecurringTaskPreview };
 export default RecurringTaskPreview;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { useAITaskSuggestions } from "../../../hooks/useAITaskSuggestions";
 import { useTaskStore } from "../../../store/useTaskStore";

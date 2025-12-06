@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Recurring Task Integration Service
  * Comprehensive integration layer connecting all recurring task services

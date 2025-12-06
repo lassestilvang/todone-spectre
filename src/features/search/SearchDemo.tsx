@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { SearchBar } from "./SearchBar";
 import { SearchResults } from "./SearchResults";

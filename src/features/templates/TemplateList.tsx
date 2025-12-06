@@ -120,4 +120,5 @@ const TemplateList: React.FC<TemplateListProps> = ({
   );
 };
 
+export { TemplateList };
 export default TemplateList;

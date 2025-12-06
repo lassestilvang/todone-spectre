@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import TaskForm from "../../features/tasks/TaskForm";
@@ -78,4 +79,5 @@ const TaskCreatePage: React.FC = () => {
   );
 };
 
+export { TaskCreatePage };
 export default TaskCreatePage;

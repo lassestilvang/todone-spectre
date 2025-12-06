@@ -1,0 +1,31 @@
+export const DropdownMenu = () => null;
+DropdownMenu.Content = () => null;
+DropdownMenu.Item = () => null;
+DropdownMenu.Trigger = () => null;
+DropdownMenu.Separator = () => null;
+DropdownMenu.CheckboxItem = () => null;
+DropdownMenu.RadioItem = () => null;
+DropdownMenu.Label = () => null;
+DropdownMenu.ShortcutLabel = () => null;
+DropdownMenu.Group = () => null;
+DropdownMenu.Portal = () => null;
+DropdownMenu.Sub = () => null;
+DropdownMenu.SubContent = () => null;
+DropdownMenu.SubTrigger = () => null;
+DropdownMenu.RadioGroup = () => null;
+
+// Named exports for individual components
+export const DropdownMenuTrigger = () => null;
+export const DropdownMenuContent = () => null;
+export const DropdownMenuItem = () => null;
+export const DropdownMenuLabel = () => null;
+export const DropdownMenuSeparator = () => null;
+export const DropdownMenuCheckboxItem = () => null;
+export const DropdownMenuRadioItem = () => null;
+export const DropdownMenuShortcut = () => null;
+export const DropdownMenuGroup = () => null;
+export const DropdownMenuPortal = () => null;
+export const DropdownMenuSub = () => null;
+export const DropdownMenuSubContent = () => null;
+export const DropdownMenuSubTrigger = () => null;
+export const DropdownMenuRadioGroup = () => null;

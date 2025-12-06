@@ -42,4 +42,5 @@ const SocialLoginButtons: React.FC = () => {
   );
 };
 
+export { SocialLoginButtons };
 export default SocialLoginButtons;

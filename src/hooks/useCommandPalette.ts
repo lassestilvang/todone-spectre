@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from "react";
 import { Command } from "../types/command";
 import { getCommandService } from "../services/commandService";

@@ -33,4 +33,5 @@ const FilterList: React.FC<FilterListProps> = ({
   );
 };
 
+export { FilterList };
 export default FilterList;

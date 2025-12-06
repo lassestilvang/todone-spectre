@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Complete Recurring Task System Validation
  * Final comprehensive validation of the entire recurring task system

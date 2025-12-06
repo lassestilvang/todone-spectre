@@ -76,4 +76,5 @@ const CommentFormWithValidation: React.FC<CommentFormWithValidationProps> = ({
   );
 };
 
+export { CommentFormWithValidation };
 export default CommentFormWithValidation;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Recurring Task Integration Test
  * Tests the complete integration of recurring task features

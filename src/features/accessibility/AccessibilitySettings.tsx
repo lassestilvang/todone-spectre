@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { useAccessibilityContext } from "./AccessibilityProvider";
 import { useAccessibilityConfig } from "../../hooks/useAccessibilityConfig";

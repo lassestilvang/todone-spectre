@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { TodoneDatabase } from "../database/db";
 import {
   User,

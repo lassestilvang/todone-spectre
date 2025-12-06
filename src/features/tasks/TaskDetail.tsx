@@ -190,4 +190,5 @@ const TaskDetail: React.FC<TaskDetailProps> = ({
   );
 };
 
+export { TaskDetail };
 export default TaskDetail;

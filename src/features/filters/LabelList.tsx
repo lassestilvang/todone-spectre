@@ -33,4 +33,5 @@ const LabelList: React.FC<LabelListProps> = ({
   );
 };
 
+export { LabelList };
 export default LabelList;

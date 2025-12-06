@@ -17,4 +17,5 @@ const AuthLayout: React.FC = () => {
   );
 };
 
+export { AuthLayout };
 export default AuthLayout;

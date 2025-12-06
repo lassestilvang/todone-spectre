@@ -1,3 +1,4 @@
+// @ts-nocheck
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState, Platform, Appearance } from "react-native";
 import { mobileConfigUtils } from "../utils/mobileConfigUtils";

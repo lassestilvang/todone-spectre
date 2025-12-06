@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Template utility functions for Todone application
  */

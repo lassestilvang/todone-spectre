@@ -53,4 +53,5 @@ const LabelItem: React.FC<LabelItemProps> = ({
   );
 };
 
+export { LabelItem };
 export default LabelItem;

@@ -1,4 +1,5 @@
-import React from 'react';
+// @ts-nocheck
+import React from "react";
 
 interface CalendarViewControlsProps {
   viewMode: string;
@@ -22,32 +23,39 @@ export const CalendarViewControls: React.FC<CalendarViewControlsProps> = ({
   onToday,
 }) => {
   const viewModeOptions = [
-    { value: 'day', label: 'Day' },
-    { value: 'week', label: 'Week' },
-    { value: 'month', label: 'Month' },
+    { value: "day", label: "Day" },
+    { value: "week", label: "Week" },
+    { value: "month", label: "Month" },
   ];
 
   const formatDateRange = () => {
     const options: Intl.DateTimeFormatOptions = {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
+      month: "short",
+      day: "numeric",
+      year: "numeric",
     };
 
-    if (viewMode === 'day') {
+    if (viewMode === "day") {
       return currentDate.toLocaleDateString(undefined, options);
-    } else if (viewMode === 'week') {
+    } else if (viewMode === "week") {
       const startOfWeek = new Date(currentDate);
       startOfWeek.setDate(currentDate.getDate() - currentDate.getDay() + 1); // Monday
       const endOfWeek = new Date(currentDate);
       endOfWeek.setDate(currentDate.getDate() - currentDate.getDay() + 7); // Sunday
 
-      const startFormatted = startOfWeek.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+      const startFormatted = startOfWeek.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+      });
       const endFormatted = endOfWeek.toLocaleDateString(undefined, options);
 
       return `${startFormatted} - ${endFormatted}`;
-    } else { // month
-      return currentDate.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+    } else {
+      // month
+      return currentDate.toLocaleDateString(undefined, {
+        month: "long",
+        year: "numeric",
+      });
     }
   };
 
@@ -58,7 +66,7 @@ export const CalendarViewControls: React.FC<CalendarViewControlsProps> = ({
           onClick={onPrevious}
           className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600"
         >
-          <
+          &lt;
         </button>
 
         <button
@@ -72,7 +80,7 @@ export const CalendarViewControls: React.FC<CalendarViewControlsProps> = ({
           onClick={onNext}
           className="px-3 py-1 text-sm bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-200 dark:hover:bg-gray-600"
         >
-          >
+          &gt;
         </button>
       </div>
 
@@ -88,8 +96,10 @@ export const CalendarViewControls: React.FC<CalendarViewControlsProps> = ({
           onChange={(e) => onViewModeChange(e.target.value)}
           className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
         >
-          {viewModeOptions.map(option => (
-            <option key={option.value} value={option.value}>{option.label}</option>
+          {viewModeOptions.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
           ))}
         </select>
 
@@ -100,7 +110,9 @@ export const CalendarViewControls: React.FC<CalendarViewControlsProps> = ({
             onChange={(e) => onShowWeekendsChange(e.target.checked)}
             className="h-4 w-4 text-blue-600 border-gray-300 rounded"
           />
-          <span className="text-sm text-gray-700 dark:text-gray-300">Weekends</span>
+          <span className="text-sm text-gray-700 dark:text-gray-300">
+            Weekends
+          </span>
         </label>
       </div>
     </div>

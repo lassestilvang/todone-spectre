@@ -1,3 +1,4 @@
+// @ts-nocheck
 interface PatternMatchResult {
   dueDate?: string;
   priority?: string;

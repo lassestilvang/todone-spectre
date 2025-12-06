@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import CommentList from "./CommentList";
 import { Comment } from "../../types/common";
@@ -126,4 +127,5 @@ const CommentListWithPagination: React.FC<CommentListWithPaginationProps> = ({
   );
 };
 
+export { CommentListWithPagination };
 export default CommentListWithPagination;

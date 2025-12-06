@@ -116,4 +116,5 @@ const LabelsPage: React.FC = () => {
   );
 };
 
+export { LabelsPage };
 export default LabelsPage;

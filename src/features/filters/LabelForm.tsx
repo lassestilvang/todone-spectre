@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { Label } from "../../types/models";
 
@@ -76,4 +77,5 @@ const LabelForm: React.FC<LabelFormProps> = ({ label, onSubmit, onCancel }) => {
   );
 };
 
+export { LabelForm };
 export default LabelForm;

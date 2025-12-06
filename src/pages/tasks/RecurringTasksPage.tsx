@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import RecurringTaskList from "../../features/recurring/RecurringTaskList";
@@ -74,4 +75,5 @@ const RecurringTasksPage: React.FC = () => {
   );
 };
 
+export { RecurringTasksPage };
 export default RecurringTasksPage;

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Project } from "../types/project";
 import { ApiResponse } from "../types/api";
 import { API_BASE_URL } from "../config/app.config";

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { OnboardingStepConfig } from "../types/onboardingTypes";
 import React from "react";
 

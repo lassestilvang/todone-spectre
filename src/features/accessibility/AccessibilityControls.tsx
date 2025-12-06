@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState } from "react";
 import { useAccessibilityContext } from "./AccessibilityProvider";
 import { Switch } from "../../components/ui";

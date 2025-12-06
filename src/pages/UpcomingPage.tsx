@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { UpcomingView } from "../features/views/UpcomingView";
 import { useUpcoming } from "../hooks/useUpcoming";
 
-export const UpcomingPage: React.FC = () => {
+const UpcomingPage: React.FC = () => {
   const navigate = useNavigate();
   const { isLoading, error, getProcessedTasks, getStatistics } = useUpcoming();
 
@@ -17,3 +17,6 @@ export const UpcomingPage: React.FC = () => {
     </div>
   );
 };
+
+export { UpcomingPage };
+export default UpcomingPage;

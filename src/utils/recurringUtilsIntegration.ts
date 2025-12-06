@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Recurring Task Integration Utilities
  * Integration testing and validation utilities

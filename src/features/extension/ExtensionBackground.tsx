@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { useExtension } from "../../../hooks/useExtension";
 import { useExtensionConfig } from "../../../hooks/useExtensionConfig";

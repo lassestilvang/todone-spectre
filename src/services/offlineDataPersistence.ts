@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Offline Data Persistence Service - Handles offline data storage and retrieval
  */

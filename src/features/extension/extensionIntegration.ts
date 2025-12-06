@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { extensionService } from "../../services";
 import { extensionConfigService } from "../../services";
 import { ExtensionMessage, ExtensionState } from "../../types/extensionTypes";

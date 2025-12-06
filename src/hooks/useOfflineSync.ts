@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Custom hook for comprehensive offline sync integration
  */

@@ -39,4 +39,5 @@ const PriorityBadge: React.FC<PriorityBadgeProps> = ({
   );
 };
 
+export { PriorityBadge };
 export default PriorityBadge;

@@ -64,7 +64,7 @@ export const useUsers = () => {
         setLoading(false);
       }
     },
-    [users]
+    [users],
   );
 
   /**
@@ -78,12 +78,12 @@ export const useUsers = () => {
 
         const response: ApiResponse<User> = await userApi.updateUser(
           userId,
-          updates
+          updates,
         );
 
         if (response.success && response.data) {
           setUsers((prev) =>
-            prev.map((user) => (user.id === userId ? response.data : user))
+            prev.map((user) => (user.id === userId ? response.data : user)),
           );
           return response.data;
         } else {
@@ -96,7 +96,7 @@ export const useUsers = () => {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
   /**
@@ -108,7 +108,7 @@ export const useUsers = () => {
       // For now, we'll return all users as a placeholder
       return users;
     },
-    [users]
+    [users],
   );
 
   // Initial fetch

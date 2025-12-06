@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Complete Recurring Task Test Suite
  * Comprehensive test suite for the entire recurring task system

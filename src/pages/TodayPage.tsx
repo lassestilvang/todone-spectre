@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { TodayView } from "../features/views/TodayView";
 import { useToday } from "../hooks/useToday";
 
-export const TodayPage: React.FC = () => {
+const TodayPage: React.FC = () => {
   const navigate = useNavigate();
   const { isLoading, error, getProcessedTasks, getStatistics } = useToday();
 
@@ -17,3 +17,6 @@ export const TodayPage: React.FC = () => {
     </div>
   );
 };
+
+export { TodayPage };
+export default TodayPage;

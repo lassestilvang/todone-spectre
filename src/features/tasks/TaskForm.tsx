@@ -249,4 +249,5 @@ const TaskForm: React.FC<TaskFormProps> = ({
   );
 };
 
+export { TaskForm };
 export default TaskForm;

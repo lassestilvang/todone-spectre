@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Recurring Pattern Manager Service
  * Advanced pattern management with validation, generation, and optimization

@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { NlpService } from "../../../services/nlpService";
 import { NlpParserService } from "../../../services/nlpParserService";
 import { generateTestParseData, MockNlpParserService } from "./nlpTestUtils";

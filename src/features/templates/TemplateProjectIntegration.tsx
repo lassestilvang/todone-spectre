@@ -159,4 +159,5 @@ const TemplateProjectIntegration: React.FC<TemplateProjectIntegrationProps> = ({
   );
 };
 
+export { TemplateProjectIntegration };
 export default TemplateProjectIntegration;

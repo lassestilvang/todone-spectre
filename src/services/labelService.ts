@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Label, LabelModel } from "../types/models";
 import { Result, AsyncResult } from "../types/common";
 

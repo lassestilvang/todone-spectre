@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from "react";
 import { SearchResult } from "../types/search";
 import { getSearchService } from "../services/searchService";

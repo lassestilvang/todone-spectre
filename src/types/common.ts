@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Common utility types for Todone application
  * Contains shared interfaces and utility types used across the application

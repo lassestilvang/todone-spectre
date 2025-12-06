@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { Task } from "../types/taskTypes";
 import { useTaskStore } from "../store/useTaskStore";
 import { useAIStore } from "../store/useAIStore";

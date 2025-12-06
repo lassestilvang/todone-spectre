@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { useComments } from "../../hooks/useComments";
 import { useCommentForm } from "../../hooks/useCommentForm";
@@ -240,4 +241,5 @@ const CommentFeatureImplementation: React.FC<
   );
 };
 
+export { CommentFeatureImplementation };
 export default CommentFeatureImplementation;

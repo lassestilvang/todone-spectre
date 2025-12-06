@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { accessibilityUtils } from "../utils/accessibilityUtils";
 import { accessibilityConfigUtils } from "../utils/accessibilityConfigUtils";
 

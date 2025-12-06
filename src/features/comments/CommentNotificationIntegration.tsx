@@ -25,4 +25,5 @@ const CommentNotificationIntegration: React.FC = () => {
   );
 };
 
+export { CommentNotificationIntegration };
 export default CommentNotificationIntegration;

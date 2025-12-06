@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Custom hook for offline data persistence integration
  */

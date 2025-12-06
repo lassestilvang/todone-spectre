@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from "react";
-import { useKeyboardShortcuts } from "../../../hooks/useKeyboardShortcuts";
-import { KeyboardShortcut } from "../../../types/keyboard";
+import { useKeyboardShortcuts } from "../../hooks/useKeyboardShortcuts";
+import { KeyboardShortcut } from "../../types/keyboard";
 
 interface KeyboardShortcutsProps {
   children: React.ReactNode;

@@ -108,4 +108,5 @@ const TemplateItem: React.FC<TemplateItemProps> = ({
   );
 };
 
+export { TemplateItem };
 export default TemplateItem;

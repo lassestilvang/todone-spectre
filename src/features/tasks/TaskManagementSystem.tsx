@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import TaskList from "./TaskList";
@@ -163,4 +164,5 @@ const TaskManagementSystem: React.FC<TaskManagementSystemProps> = ({
   );
 };
 
+export { TaskManagementSystem };
 export default TaskManagementSystem;

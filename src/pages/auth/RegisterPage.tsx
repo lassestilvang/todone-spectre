@@ -9,4 +9,5 @@ const RegisterPage: React.FC = () => {
   );
 };
 
+export { RegisterPage };
 export default RegisterPage;

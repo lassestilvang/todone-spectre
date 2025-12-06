@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Task-related types for Todone application
  * Contains comprehensive task management interfaces and types

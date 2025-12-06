@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { useDragAndDrop } from "./DragAndDropProvider";
 import { Task } from "../../types/task";

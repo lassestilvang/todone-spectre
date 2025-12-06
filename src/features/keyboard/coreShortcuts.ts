@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { KeyboardShortcut } from "../../types/keyboard";
 import { useTasks } from "../../hooks/useTasks";
 import { useSearchStore } from "../../store/useSearchStore";

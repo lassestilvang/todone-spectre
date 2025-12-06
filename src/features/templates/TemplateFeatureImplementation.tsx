@@ -288,4 +288,5 @@ const TemplateFeatureImplementation: React.FC<
   );
 };
 
+export { TemplateFeatureImplementation };
 export default TemplateFeatureImplementation;

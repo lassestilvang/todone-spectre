@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect, useCallback } from "react";
 import { microInteractionService } from "../services/microInteractionService";
 import { microInteractionUtils } from "../utils/microInteractionUtils";

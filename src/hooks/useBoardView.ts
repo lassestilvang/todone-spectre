@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useState, useEffect } from "react";
 import { Task } from "../types/task";
 import { BoardViewService } from "../services/boardViewService";

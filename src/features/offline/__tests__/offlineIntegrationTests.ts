@@ -63,7 +63,7 @@ describe("Offline Features Integration Tests", () => {
 
     // Mock the sync service
     (OfflineSyncService.getInstance as jest.Mock).mockReturnValue(
-      mockSyncService
+      mockSyncService,
     );
   });
 
@@ -75,7 +75,7 @@ describe("Offline Features Integration Tests", () => {
     it("should render all offline components", () => {
       render(React.createElement(OfflineIntegration, {}));
       expect(
-        screen.getByText("Offline Integration Dashboard")
+        screen.getByText("Offline Integration Dashboard"),
       ).toBeInTheDocument();
       expect(screen.getByText("Offline Status")).toBeInTheDocument();
       expect(screen.getByText("Offline Queue")).toBeInTheDocument();
@@ -135,13 +135,13 @@ describe("Offline Features Integration Tests", () => {
           showDetails: true,
           showAdvancedStats: true,
           showConnectionHistory: true,
-        })
+        }),
       );
 
       expect(
         screen.getByText(
-          "You are online. All changes are syncing automatically."
-        )
+          "You are online. All changes are syncing automatically.",
+        ),
       ).toBeInTheDocument();
       expect(screen.getByText("Excellent connection")).toBeInTheDocument();
     });
@@ -159,12 +159,12 @@ describe("Offline Features Integration Tests", () => {
       (useOfflineStore as jest.Mock).mockReturnValue(offlineMockStore);
 
       render(
-        React.createElement(OfflineIndicatorEnhanced, { showDetails: true })
+        React.createElement(OfflineIndicatorEnhanced, { showDetails: true }),
       );
       expect(
         screen.getByText(
-          "You are offline. Changes will sync when you reconnect."
-        )
+          "You are offline. Changes will sync when you reconnect.",
+        ),
       ).toBeInTheDocument();
     });
   });
@@ -195,7 +195,9 @@ describe("Offline Features Integration Tests", () => {
       (useOfflineStore as jest.Mock).mockReturnValue(queueMockStore);
 
       render(
-        React.createElement(OfflineQueueEnhanced, { showAdvancedFilters: true })
+        React.createElement(OfflineQueueEnhanced, {
+          showAdvancedFilters: true,
+        }),
       );
       expect(screen.getByText("Create Task")).toBeInTheDocument();
       expect(screen.getByText("pending")).toBeInTheDocument();
@@ -215,7 +217,7 @@ describe("Offline Features Integration Tests", () => {
   describe("Enhanced Offline Sync", () => {
     it("should display sync status and handle operations", () => {
       render(
-        React.createElement(OfflineSyncEnhanced, { showAdvancedStats: true })
+        React.createElement(OfflineSyncEnhanced, { showAdvancedStats: true }),
       );
       expect(screen.getByText("Ready to sync")).toBeInTheDocument();
       expect(screen.getByText("Sync Now")).toBeInTheDocument();
@@ -238,7 +240,7 @@ describe("Offline Features Integration Tests", () => {
       render(
         React.createElement(OfflineSettingsEnhanced, {
           showAdvancedOptions: true,
-        })
+        }),
       );
       expect(screen.getByText("General")).toBeInTheDocument();
       expect(screen.getByText("Advanced")).toBeInTheDocument();
@@ -264,7 +266,7 @@ describe("Offline Features Integration Tests", () => {
       render(
         React.createElement(OfflineSyncEnhanced, {
           showConflictResolution: true,
-        })
+        }),
       );
 
       const detectButton = screen.getByText("Detect Conflicts");
@@ -290,7 +292,7 @@ describe("Offline Features Integration Tests", () => {
       render(
         React.createElement(OfflineSettingsEnhanced, {
           showPerformanceTuning: true,
-        })
+        }),
       );
 
       const perfTab = screen.getByText("Performance");

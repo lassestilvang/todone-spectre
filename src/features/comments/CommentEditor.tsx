@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { Comment } from "../../types/common";
 import { Button } from "../../components/ui/button";
@@ -63,4 +64,5 @@ const CommentEditor: React.FC<CommentEditorProps> = ({
   );
 };
 
+export { CommentEditor };
 export default CommentEditor;

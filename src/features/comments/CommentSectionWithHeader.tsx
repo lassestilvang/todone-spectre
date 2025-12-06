@@ -102,4 +102,5 @@ const CommentSectionWithHeader: React.FC<CommentSectionWithHeaderProps> = ({
   );
 };
 
+export { CommentSectionWithHeader };
 export default CommentSectionWithHeader;

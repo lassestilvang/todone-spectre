@@ -657,4 +657,5 @@ const RecurringTaskScheduler: React.FC<RecurringTaskSchedulerProps> = ({
   );
 };
 
+export { RecurringTaskScheduler };
 export default RecurringTaskScheduler;

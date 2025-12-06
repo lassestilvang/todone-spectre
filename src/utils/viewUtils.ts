@@ -1,5 +1,4 @@
 import { Task, TaskStatus } from "../types/task";
-import { isToday, isFutureDate } from "./dateUtils";
 
 /**
  * View utilities for Todone application

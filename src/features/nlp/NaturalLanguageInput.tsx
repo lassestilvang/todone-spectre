@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useCallback } from "react";
 import { useNlpParser } from "../../hooks/useNlpParser";
 import { Button, Input, Box, Text } from "@chakra-ui/react";

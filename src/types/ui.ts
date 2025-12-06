@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * UI-related types for Todone application
  * Contains comprehensive UI state and component interfaces

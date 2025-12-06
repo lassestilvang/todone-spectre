@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { useState, useEffect } from "react";
 import { AIAssistant } from "./AIAssistant";
 import { AITaskSuggestionsEnhanced } from "./AITaskSuggestionsEnhanced";

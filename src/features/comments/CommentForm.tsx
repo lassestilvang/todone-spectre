@@ -61,4 +61,5 @@ const CommentForm: React.FC<CommentFormProps> = ({
   );
 };
 
+export { CommentForm };
 export default CommentForm;

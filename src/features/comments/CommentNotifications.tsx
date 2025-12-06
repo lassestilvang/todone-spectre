@@ -176,4 +176,5 @@ function getNotificationMessage(notification: CommentNotification): string {
   }
 }
 
+export { CommentNotifications };
 export default CommentNotifications;

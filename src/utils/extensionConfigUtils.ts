@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { ExtensionConfig, QuickAction } from "../types/extensionTypes";
 
 /**

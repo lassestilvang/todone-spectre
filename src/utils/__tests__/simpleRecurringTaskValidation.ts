@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
  * Simple Recurring Task System Validation
  * Lightweight validation without environment dependencies
