@@ -1,8 +1,8 @@
 // @ts-nocheck
-import React, { useState, useEffect } from 'react';
-import { useOfflineStore } from '../../store/useOfflineStore';
-import { useOfflineSettings } from '../../hooks/useOfflineSettings';
-import { OfflineSettings } from '../../types/offlineTypes';
+import React, { useState, useEffect } from "react";
+import { useOfflineStore } from "../../store/useOfflineStore";
+import { useOfflineSettings } from "../../hooks/useOfflineSettings";
+import { OfflineSettings } from "../../types/offlineTypes";
 
 interface OfflineSettingsEnhancedProps {
   onSettingsChange?: (settings: OfflineSettings) => void;
@@ -14,20 +14,33 @@ interface OfflineSettingsEnhancedProps {
   showPerformanceTuning?: boolean;
 }
 
-export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = ({
+export const OfflineSettingsEnhanced: React.FC<
+  OfflineSettingsEnhancedProps
+> = ({
   onSettingsChange,
   onSave,
   onCancel,
   onReset,
   showAdvancedOptions = true,
   showStorageManagement = true,
-  showPerformanceTuning = true
+  showPerformanceTuning = true,
 }) => {
   const { settings, updateSettings, resetToDefaults } = useOfflineSettings();
-  const { isOffline, pendingChanges, queue, sync, storageUsage, performanceMetrics } = useOfflineStore();
-  const [formSettings, setFormSettings] = useState<Partial<OfflineSettings>>({});
+  const {
+    isOffline,
+    pendingChanges,
+    queue,
+    sync,
+    storageUsage,
+    performanceMetrics,
+  } = useOfflineStore();
+  const [formSettings, setFormSettings] = useState<Partial<OfflineSettings>>(
+    {},
+  );
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'general' | 'advanced' | 'storage' | 'performance'>('general');
+  const [activeTab, setActiveTab] = useState<
+    "general" | "advanced" | "storage" | "performance"
+  >("general");
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   useEffect(() => {
@@ -46,23 +59,26 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
       enableEncryption: settings.enableEncryption,
       syncPriority: settings.syncPriority,
       autoRetryFailedItems: settings.autoRetryFailedItems,
-      retryStrategy: settings.retryStrategy
+      retryStrategy: settings.retryStrategy,
     });
   }, [settings]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+  ) => {
     const { name, value, type } = e.target;
-    const newValue = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+    const newValue =
+      type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
 
-    setFormSettings(prev => ({
+    setFormSettings((prev) => ({
       ...prev,
-      [name]: type === 'number' ? parseInt(newValue as string) : newValue
+      [name]: type === "number" ? parseInt(newValue as string) : newValue,
     }));
 
     if (onSettingsChange) {
       onSettingsChange({
         ...settings,
-        [name]: newValue
+        [name]: newValue,
       });
     }
   };
@@ -77,7 +93,7 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
 
       setIsEditing(false);
     } catch (error) {
-      console.error('Failed to save offline settings:', error);
+      console.error("Failed to save offline settings:", error);
     }
   };
 
@@ -97,7 +113,7 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
       enableEncryption: settings.enableEncryption,
       syncPriority: settings.syncPriority,
       autoRetryFailedItems: settings.autoRetryFailedItems,
-      retryStrategy: settings.retryStrategy
+      retryStrategy: settings.retryStrategy,
     });
 
     if (onCancel) {
@@ -117,44 +133,44 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
 
       setShowResetConfirm(false);
     } catch (error) {
-      console.error('Failed to reset settings:', error);
+      console.error("Failed to reset settings:", error);
     }
   };
 
   const getConflictResolutionLabel = (value: string) => {
     switch (value) {
-      case 'local-wins':
-        return 'Local Changes Win';
-      case 'remote-wins':
-        return 'Remote Changes Win';
-      case 'manual':
-        return 'Manual Resolution';
-      case 'timestamp':
-        return 'Newest Changes Win';
+      case "local-wins":
+        return "Local Changes Win";
+      case "remote-wins":
+        return "Remote Changes Win";
+      case "manual":
+        return "Manual Resolution";
+      case "timestamp":
+        return "Newest Changes Win";
       default:
-        return 'Unknown';
+        return "Unknown";
     }
   };
 
   const getRetryStrategyLabel = (value: string) => {
     switch (value) {
-      case 'linear':
-        return 'Linear Backoff';
-      case 'exponential':
-        return 'Exponential Backoff';
-      case 'immediate':
-        return 'Immediate Retry';
+      case "linear":
+        return "Linear Backoff";
+      case "exponential":
+        return "Exponential Backoff";
+      case "immediate":
+        return "Immediate Retry";
       default:
-        return 'Unknown';
+        return "Unknown";
     }
   };
 
   const formatBytes = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
+    if (bytes === 0) return "0 Bytes";
     const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
   return (
@@ -164,31 +180,31 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
       {/* Tab Navigation */}
       <div className="settings-tabs">
         <button
-          className={`tab-button ${activeTab === 'general' ? 'active' : ''}`}
-          onClick={() => setActiveTab('general')}
+          className={`tab-button ${activeTab === "general" ? "active" : ""}`}
+          onClick={() => setActiveTab("general")}
         >
           General
         </button>
         {showAdvancedOptions && (
           <button
-            className={`tab-button ${activeTab === 'advanced' ? 'active' : ''}`}
-            onClick={() => setActiveTab('advanced')}
+            className={`tab-button ${activeTab === "advanced" ? "active" : ""}`}
+            onClick={() => setActiveTab("advanced")}
           >
             Advanced
           </button>
         )}
         {showStorageManagement && (
           <button
-            className={`tab-button ${activeTab === 'storage' ? 'active' : ''}`}
-            onClick={() => setActiveTab('storage')}
+            className={`tab-button ${activeTab === "storage" ? "active" : ""}`}
+            onClick={() => setActiveTab("storage")}
           >
             Storage
           </button>
         )}
         {showPerformanceTuning && (
           <button
-            className={`tab-button ${activeTab === 'performance' ? 'active' : ''}`}
-            onClick={() => setActiveTab('performance')}
+            className={`tab-button ${activeTab === "performance" ? "active" : ""}`}
+            onClick={() => setActiveTab("performance")}
           >
             Performance
           </button>
@@ -197,7 +213,7 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
 
       <div className="offline-settings-content">
         {/* General Settings Tab */}
-        {activeTab === 'general' && (
+        {activeTab === "general" && (
           <>
             <div className="offline-settings-section">
               <h4>Sync Behavior</h4>
@@ -288,7 +304,7 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
                   <select
                     id="conflictResolution"
                     name="conflictResolution"
-                    value={formSettings.conflictResolution || 'timestamp'}
+                    value={formSettings.conflictResolution || "timestamp"}
                     onChange={handleInputChange}
                     disabled={!isEditing}
                   >
@@ -351,7 +367,7 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
         )}
 
         {/* Advanced Settings Tab */}
-        {showAdvancedOptions && activeTab === 'advanced' && (
+        {showAdvancedOptions && activeTab === "advanced" && (
           <>
             <div className="offline-settings-section">
               <h4>Retry Behavior</h4>
@@ -400,7 +416,7 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
                   <select
                     id="retryStrategy"
                     name="retryStrategy"
-                    value={formSettings.retryStrategy || 'exponential'}
+                    value={formSettings.retryStrategy || "exponential"}
                     onChange={handleInputChange}
                     disabled={!isEditing}
                   >
@@ -460,7 +476,7 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
                   <select
                     id="syncPriority"
                     name="syncPriority"
-                    value={formSettings.syncPriority || 'medium'}
+                    value={formSettings.syncPriority || "medium"}
                     onChange={handleInputChange}
                     disabled={!isEditing}
                   >
@@ -517,18 +533,22 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
         )}
 
         {/* Storage Management Tab */}
-        {showStorageManagement && activeTab === 'storage' && (
+        {showStorageManagement && activeTab === "storage" && (
           <div className="storage-management-section">
             <h4>Storage Management</h4>
 
             <div className="storage-stats">
               <div className="storage-stat">
                 <span className="stat-label">Used Storage:</span>
-                <span className="stat-value">{formatBytes(storageUsage.used)}</span>
+                <span className="stat-value">
+                  {formatBytes(storageUsage.used)}
+                </span>
               </div>
               <div className="storage-stat">
                 <span className="stat-label">Available Storage:</span>
-                <span className="stat-value">{formatBytes(storageUsage.available)}</span>
+                <span className="stat-value">
+                  {formatBytes(storageUsage.available)}
+                </span>
               </div>
               <div className="storage-stat">
                 <span className="stat-label">Usage Percentage:</span>
@@ -564,22 +584,28 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
         )}
 
         {/* Performance Tuning Tab */}
-        {showPerformanceTuning && activeTab === 'performance' && (
+        {showPerformanceTuning && activeTab === "performance" && (
           <div className="performance-tuning-section">
             <h4>Performance Metrics</h4>
 
             <div className="performance-stats">
               <div className="performance-stat">
                 <span className="stat-label">Queue Processing Time:</span>
-                <span className="stat-value">{performanceMetrics.queueProcessingTime}ms</span>
+                <span className="stat-value">
+                  {performanceMetrics.queueProcessingTime}ms
+                </span>
               </div>
               <div className="performance-stat">
                 <span className="stat-label">Sync Processing Time:</span>
-                <span className="stat-value">{performanceMetrics.syncProcessingTime}ms</span>
+                <span className="stat-value">
+                  {performanceMetrics.syncProcessingTime}ms
+                </span>
               </div>
               <div className="performance-stat">
                 <span className="stat-label">Memory Usage:</span>
-                <span className="stat-value">{performanceMetrics.memoryUsage}MB</span>
+                <span className="stat-value">
+                  {performanceMetrics.memoryUsage}MB
+                </span>
               </div>
             </div>
 
@@ -588,7 +614,9 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
                 <h5>Sync Performance</h5>
                 <div className="chart-container">
                   {/* Placeholder for performance chart */}
-                  <div className="chart-placeholder">Performance chart would be displayed here</div>
+                  <div className="chart-placeholder">
+                    Performance chart would be displayed here
+                  </div>
                 </div>
               </div>
             </div>
@@ -600,12 +628,16 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
         <h4>Current Status</h4>
         <div className="offline-settings-status-item">
           <span className="offline-settings-status-label">Network Status:</span>
-          <span className={`offline-settings-status-value ${isOffline ? 'offline' : 'online'}`}>
-            {isOffline ? 'Offline' : 'Online'}
+          <span
+            className={`offline-settings-status-value ${isOffline ? "offline" : "online"}`}
+          >
+            {isOffline ? "Offline" : "Online"}
           </span>
         </div>
         <div className="offline-settings-status-item">
-          <span className="offline-settings-status-label">Pending Changes:</span>
+          <span className="offline-settings-status-label">
+            Pending Changes:
+          </span>
           <span className="offline-settings-status-value">
             {pendingChanges}
           </span>
@@ -618,9 +650,7 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
         </div>
         <div className="offline-settings-status-item">
           <span className="offline-settings-status-label">Sync Status:</span>
-          <span className="offline-settings-status-value">
-            {sync.status}
-          </span>
+          <span className="offline-settings-status-value">{sync.status}</span>
         </div>
       </div>
 
@@ -660,10 +690,7 @@ export const OfflineSettingsEnhanced: React.FC<OfflineSettingsEnhancedProps> = (
         ) : (
           <div className="reset-confirmation">
             <span>Are you sure you want to reset all settings?</span>
-            <button
-              className="confirm-reset-button"
-              onClick={handleReset}
-            >
+            <button className="confirm-reset-button" onClick={handleReset}>
               Confirm Reset
             </button>
             <button
