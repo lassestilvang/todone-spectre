@@ -5,10 +5,10 @@
 
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { OfflineIndicator, OfflineQueue, OfflineSync, OfflineSettings } from '../index';
-import { useOfflineStore } from '../../../store/useOfflineStore';
-import { MockOfflineStore } from './utils/offlineServiceMocks';
-import { generateOfflineQueueItem, generateStorageStats } from './utils/offlineTestDataGenerators';
+import { OfflineIndicator, OfflineQueue, OfflineSync, OfflineSettings } from '../index.js';
+import { useOfflineStore } from '../../../store/useOfflineStore.js';
+import { MockOfflineStore } from './utils/offlineServiceMocks.js';
+import { generateOfflineQueueItem, generateStorageStats } from './utils/offlineTestDataGenerators.js';
 
 // Mock the offline store
 jest.mock('../../../store/useOfflineStore');

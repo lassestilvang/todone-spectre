@@ -5,9 +5,9 @@ import { AIIntegration } from "../AIIntegration";
 import {
   AIFeatureImplementation,
   useAIFeatureIntegration,
-} from "../AIFeatureImplementation";
-import { useAIStore } from "../../../store/useAIStore";
-import { useTaskStore } from "../../../store/useTaskStore";
+} from "../AIFeatureImplementation.jsx";
+import { useAIStore } from "../../../store/useAIStore.js";
+import { useTaskStore } from "../../../store/useTaskStore.js";
 
 // Mock the stores
 jest.mock("../../../store/useAIStore");

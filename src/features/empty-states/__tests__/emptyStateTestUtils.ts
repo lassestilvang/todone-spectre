@@ -1,5 +1,5 @@
-import { EmptyStateConfig } from '../../../types/emptyStateTypes';
-import { OnboardingStepConfig } from '../../../types/onboardingTypes';
+import { EmptyStateConfig } from "../../../types/emptyStateTypes.js";
+import { OnboardingStepConfig } from "../../../types/onboardingTypes.js";
 
 /**
  * Generate mock empty state configuration for testing
@@ -10,12 +10,12 @@ export const generateMockEmptyStateConfig = (
   overrides: Partial<EmptyStateConfig> = {}
 ): EmptyStateConfig => {
   return {
-    title: 'Test Empty State',
-    description: 'This is a test empty state description',
+    title: "Test Empty State",
+    description: "This is a test empty state description",
     icon: null,
     actions: null,
     show: true,
-    ...overrides
+    ...overrides,
   };
 };
 
@@ -28,12 +28,12 @@ export const generateMockOnboardingStep = (
   overrides: Partial<OnboardingStepConfig> = {}
 ): OnboardingStepConfig => {
   return {
-    id: 'test-step',
-    title: 'Test Step',
-    description: 'This is a test onboarding step',
-    content: <div>Test content</div>,
+    id: "test-step",
+    title: "Test Step",
+    description: "This is a test onboarding step",
+    content: "<div>Test content</div>",
     skipable: true,
-    ...overrides
+    ...overrides,
   };
 };
 
@@ -42,13 +42,15 @@ export const generateMockOnboardingStep = (
  * @param count Number of steps to generate
  * @returns Array of onboarding step configurations
  */
-export const generateMockOnboardingSteps = (count: number = 3): OnboardingStepConfig[] => {
+export const generateMockOnboardingSteps = (
+  count: number = 3
+): OnboardingStepConfig[] => {
   return Array.from({ length: count }, (_, index) => ({
     id: `test-step-${index + 1}`,
     title: `Test Step ${index + 1}`,
     description: `Description for step ${index + 1}`,
-    content: <div>Content for step {index + 1}</div>,
-    skipable: index !== count - 1 // Last step not skipable
+    content: `<div>Content for step ${index + 1}</div>`,
+    skipable: index !== count - 1, // Last step not skipable
   }));
 };
 
@@ -61,10 +63,10 @@ export const createEmptyStateTestDataGenerator = (templateType: string) => {
   return (overrides: Partial<EmptyStateConfig> = {}): EmptyStateConfig => ({
     title: `${templateType} Empty State`,
     description: `This is a ${templateType} empty state`,
-    icon: <span>📝</span>,
-    actions: <button>Create {templateType}</button>,
+    icon: "<span>📝</span>",
+    actions: `<button>Create ${templateType}</button>`,
     show: true,
-    ...overrides
+    ...overrides,
   });
 };
 
@@ -76,7 +78,7 @@ export const mockEmptyStateServiceMethods = {
   registerEmptyState: jest.fn(),
   updateEmptyStateConfig: jest.fn(),
   shouldShowEmptyState: jest.fn(),
-  setEmptyStateVisibility: jest.fn()
+  setEmptyStateVisibility: jest.fn(),
 };
 
 /**
@@ -88,7 +90,7 @@ export const mockOnboardingServiceMethods = {
   goToNextStep: jest.fn(),
   goToPreviousStep: jest.fn(),
   completeOnboarding: jest.fn(),
-  isOnboardingCompleted: jest.fn()
+  isOnboardingCompleted: jest.fn(),
 };
 
 /**
@@ -102,30 +104,30 @@ export const generateEmptyStateTestScenarios = (): Array<{
 }> => {
   return [
     {
-      name: 'Default empty state',
+      name: "Default empty state",
       config: generateMockEmptyStateConfig(),
-      expectedVisible: true
+      expectedVisible: true,
     },
     {
-      name: 'Hidden empty state',
+      name: "Hidden empty state",
       config: generateMockEmptyStateConfig({ show: false }),
-      expectedVisible: false
+      expectedVisible: false,
     },
     {
-      name: 'Empty state with custom icon',
+      name: "Empty state with custom icon",
       config: generateMockEmptyStateConfig({
-        icon: <span>✨</span>,
-        show: true
+        icon: "<span>✨</span>",
+        show: true,
       }),
-      expectedVisible: true
+      expectedVisible: true,
     },
     {
-      name: 'Empty state with actions',
+      name: "Empty state with actions",
       config: generateMockEmptyStateConfig({
-        actions: <button>Create Item</button>,
-        show: true
+        actions: "<button>Create Item</button>",
+        show: true,
       }),
-      expectedVisible: true
-    }
+      expectedVisible: true,
+    },
   ];
 };

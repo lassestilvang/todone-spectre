@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { useAccessibilityContext } from "./AccessibilityProvider";
-import { useAccessibilityConfig } from "../../hooks/useAccessibilityConfig";
+import { useAccessibilityContext } from "./AccessibilityProvider.jsx";
+import { useAccessibilityConfig } from "../../hooks/useAccessibilityConfig.js";
 import {
   CheckCircle,
   AlertCircle,
   Info,
   Accessibility as AccessibilityIcon,
   Settings,
-} from "../../components/icons";
-import { Button, Tooltip, Badge } from "../../components/ui";
+} from "../../components/icons.jsx";
+import { Button, Tooltip, Badge } from "../../components/ui.jsx";
 
 interface AccessibilityStatusProps {
   showDetailedStatus?: boolean;
