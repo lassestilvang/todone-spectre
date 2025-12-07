@@ -10,7 +10,7 @@ import {
   AuthenticationError,
   AuthorizationError,
   AuthError,
-} from "../../utils/auth";
+} from "../../utils/auth.client";
 
 // Mock the auth utilities
 jest.mock("../../utils/auth", () => ({
@@ -61,7 +61,7 @@ describe("Auth API", () => {
 
     it("should throw AuthenticationError for invalid user", async () => {
       await expect(
-        login("nonexistent@example.com", "password123"),
+        login("nonexistent@example.com", "password123")
       ).rejects.toThrow(AuthenticationError);
     });
 
@@ -70,7 +70,7 @@ describe("Auth API", () => {
       require("../../utils/auth").comparePasswords.mockResolvedValueOnce(false);
 
       await expect(login("test@example.com", "wrongpassword")).rejects.toThrow(
-        AuthenticationError,
+        AuthenticationError
       );
     });
   });
@@ -80,7 +80,7 @@ describe("Auth API", () => {
       const result = await register(
         "New User",
         "new@example.com",
-        "password123",
+        "password123"
       );
       expect(result).toBeDefined();
       expect(result.token).toBe("mock-token");
@@ -99,7 +99,7 @@ describe("Auth API", () => {
       });
 
       await expect(
-        register("New User", "existing@example.com", "password123"),
+        register("New User", "existing@example.com", "password123")
       ).rejects.toThrow(AuthError);
     });
   });
@@ -132,13 +132,13 @@ describe("Auth API", () => {
   describe("requestPasswordReset", () => {
     it("should request password reset successfully", async () => {
       await expect(
-        requestPasswordReset("test@example.com"),
+        requestPasswordReset("test@example.com")
       ).resolves.not.toThrow();
     });
 
     it("should throw AuthError for nonexistent user", async () => {
       await expect(
-        requestPasswordReset("nonexistent@example.com"),
+        requestPasswordReset("nonexistent@example.com")
       ).rejects.toThrow(AuthError);
     });
   });
@@ -146,7 +146,7 @@ describe("Auth API", () => {
   describe("resetPassword", () => {
     it("should reset password successfully", async () => {
       await expect(
-        resetPassword("valid-token", "newpassword123"),
+        resetPassword("valid-token", "newpassword123")
       ).resolves.not.toThrow();
     });
 
@@ -157,7 +157,7 @@ describe("Auth API", () => {
       });
 
       await expect(
-        resetPassword("invalid-token", "newpassword123"),
+        resetPassword("invalid-token", "newpassword123")
       ).rejects.toThrow(AuthError);
     });
   });

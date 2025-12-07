@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import RecurringTaskList from "../../features/recurring/RecurringTaskList";
 import { useRecurringTaskIntegration } from "../../hooks/useRecurringTaskIntegration";
-import { ArrowLeftIcon, PlusIcon } from "@heroicons/react/outline";
+import { ArrowLeftIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 const RecurringTasksPage: React.FC = () => {
   const navigate = useNavigate();

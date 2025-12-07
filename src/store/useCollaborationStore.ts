@@ -16,6 +16,23 @@ import {
   CollaborationSettings as CollaborationSettingsType,
 } from "../types/collaboration";
 
+// Helper function to create localStorage
+const createJSONStorage = (getStorage: () => Storage) => ({
+  getItem: (name: string) => {
+    const storage = getStorage();
+    const item = storage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name: string, value: any) => {
+    const storage = getStorage();
+    storage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name: string) => {
+    const storage = getStorage();
+    storage.removeItem(name);
+  },
+});
+
 export const useCollaborationStore = create<CollaborationState>()(
   devtools(
     persist(
@@ -51,7 +68,7 @@ export const useCollaborationStore = create<CollaborationState>()(
 
         updateTeam: (
           teamId: string,
-          updates: Partial<CollaborationTeamType>,
+          updates: Partial<CollaborationTeamType>
         ) => {
           set((state) => ({
             teams: state.teams.map((team) =>
@@ -61,7 +78,7 @@ export const useCollaborationStore = create<CollaborationState>()(
                     ...updates,
                     updatedAt: new Date(),
                   }
-                : team,
+                : team
             ),
           }));
           get().applyFilters();
@@ -94,7 +111,7 @@ export const useCollaborationStore = create<CollaborationState>()(
               teams: state.teams.map((t) =>
                 t.id === memberData.teamId
                   ? { ...t, memberCount: (t.memberCount || 0) + 1 }
-                  : t,
+                  : t
               ),
             }));
           }
@@ -102,7 +119,7 @@ export const useCollaborationStore = create<CollaborationState>()(
 
         updateMember: (
           memberId: string,
-          updates: Partial<CollaborationMemberType>,
+          updates: Partial<CollaborationMemberType>
         ) => {
           set((state) => ({
             members: state.members.map((member) =>
@@ -111,7 +128,7 @@ export const useCollaborationStore = create<CollaborationState>()(
                     ...member,
                     ...updates,
                   }
-                : member,
+                : member
             ),
           }));
         },
@@ -129,7 +146,7 @@ export const useCollaborationStore = create<CollaborationState>()(
                         ...t,
                         memberCount: Math.max((t.memberCount || 0) - 1, 0),
                       }
-                    : t,
+                    : t
                 ),
               }));
             }
@@ -158,7 +175,7 @@ export const useCollaborationStore = create<CollaborationState>()(
               teams: state.teams.map((t) =>
                 t.id === activityData.teamId
                   ? { ...t, activityCount: (t.activityCount || 0) + 1 }
-                  : t,
+                  : t
               ),
             }));
           }
@@ -166,7 +183,7 @@ export const useCollaborationStore = create<CollaborationState>()(
 
         updateActivity: (
           activityId: string,
-          updates: Partial<CollaborationActivityType>,
+          updates: Partial<CollaborationActivityType>
         ) => {
           set((state) => ({
             activities: state.activities.map((activity) =>
@@ -175,7 +192,7 @@ export const useCollaborationStore = create<CollaborationState>()(
                     ...activity,
                     ...updates,
                   }
-                : activity,
+                : activity
             ),
           }));
         },
@@ -183,7 +200,7 @@ export const useCollaborationStore = create<CollaborationState>()(
         deleteActivity: (activityId: string) => {
           set((state) => ({
             activities: state.activities.filter(
-              (activity) => activity.id !== activityId,
+              (activity) => activity.id !== activityId
             ),
           }));
         },
@@ -191,7 +208,7 @@ export const useCollaborationStore = create<CollaborationState>()(
         // Settings operations
         updateSettings: (
           teamId: string,
-          settings: Partial<CollaborationSettingsType>,
+          settings: Partial<CollaborationSettingsType>
         ) => {
           set((state) => ({
             settings: state.settings.map((s) =>
@@ -201,7 +218,7 @@ export const useCollaborationStore = create<CollaborationState>()(
                     ...settings,
                     updatedAt: new Date(),
                   }
-                : s,
+                : s
             ),
           }));
         },
@@ -214,7 +231,7 @@ export const useCollaborationStore = create<CollaborationState>()(
 
         setSort: (
           sortBy: CollaborationState["sortBy"],
-          sortDirection: CollaborationState["sortDirection"],
+          sortDirection: CollaborationState["sortDirection"]
         ) => {
           set({ sortBy, sortDirection });
           get().applyFilters();
@@ -227,7 +244,7 @@ export const useCollaborationStore = create<CollaborationState>()(
           // Apply team ID filter
           if (currentFilter.teamId) {
             filtered = filtered.filter(
-              (team) => team.id === currentFilter.teamId,
+              (team) => team.id === currentFilter.teamId
             );
           }
 
@@ -237,7 +254,7 @@ export const useCollaborationStore = create<CollaborationState>()(
             filtered = filtered.filter(
               (team) =>
                 team.name.toLowerCase().includes(query) ||
-                team.description?.toLowerCase().includes(query),
+                team.description?.toLowerCase().includes(query)
             );
           }
 
@@ -435,24 +452,7 @@ export const useCollaborationStore = create<CollaborationState>()(
       {
         name: "todone-collaboration-storage",
         storage: createJSONStorage(() => localStorage),
-      },
-    ),
-  ),
+      }
+    )
+  )
 );
-
-// Helper function to create localStorage
-const createJSONStorage = (getStorage: () => Storage) => ({
-  getItem: (name: string) => {
-    const storage = getStorage();
-    const item = storage.getItem(name);
-    return item ? JSON.parse(item) : null;
-  },
-  setItem: (name: string, value: any) => {
-    const storage = getStorage();
-    storage.setItem(name, JSON.stringify(value));
-  },
-  removeItem: (name: string) => {
-    const storage = getStorage();
-    storage.removeItem(name);
-  },
-});

@@ -13,6 +13,23 @@ import {
   CalendarIntegrationState,
 } from "../types/calendarTypes";
 
+// Helper function to create localStorage
+const createJSONStorage = (getStorage: () => Storage) => ({
+  getItem: (name: string) => {
+    const storage = getStorage();
+    const item = storage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name: string, value: any) => {
+    const storage = getStorage();
+    storage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name: string) => {
+    const storage = getStorage();
+    storage.removeItem(name);
+  },
+});
+
 export const useCalendarStore = create<CalendarState>()(
   devtools(
     persist(
@@ -73,12 +90,12 @@ export const useCalendarStore = create<CalendarState>()(
             set({ loading: true, error: null });
             const updatedEvent = await CalendarService.updateEvent(
               eventId,
-              updates,
+              updates
             );
             if (updatedEvent) {
               set((state) => ({
                 events: state.events.map((event) =>
-                  event.id === eventId ? updatedEvent : event,
+                  event.id === eventId ? updatedEvent : event
                 ),
                 loading: false,
               }));
@@ -255,7 +272,7 @@ export const useCalendarStore = create<CalendarState>()(
             set({ loading: true, error: null });
             const success = await CalendarService.linkTaskToEvent(
               taskId,
-              eventId,
+              eventId
             );
 
             if (success) {
@@ -308,24 +325,7 @@ export const useCalendarStore = create<CalendarState>()(
       {
         name: "todone-calendar-storage",
         storage: createJSONStorage(() => localStorage),
-      },
-    ),
-  ),
+      }
+    )
+  )
 );
-
-// Helper function to create localStorage
-const createJSONStorage = (getStorage: () => Storage) => ({
-  getItem: (name: string) => {
-    const storage = getStorage();
-    const item = storage.getItem(name);
-    return item ? JSON.parse(item) : null;
-  },
-  setItem: (name: string, value: any) => {
-    const storage = getStorage();
-    storage.setItem(name, JSON.stringify(value));
-  },
-  removeItem: (name: string) => {
-    const storage = getStorage();
-    storage.removeItem(name);
-  },
-});

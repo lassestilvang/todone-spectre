@@ -12,6 +12,23 @@ import {
 } from "../types/task";
 import { RecurringPattern, TaskStatus } from "../types/enums";
 
+// Helper function to create localStorage
+const createJSONStorage = (getStorage: () => Storage) => ({
+  getItem: (name: string) => {
+    const storage = getStorage();
+    const item = storage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name: string, value: any) => {
+    const storage = getStorage();
+    storage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name: string) => {
+    const storage = getStorage();
+    storage.removeItem(name);
+  },
+});
+
 /**
  * Recurring Task State Interface
  */
@@ -40,7 +57,7 @@ export interface RecurringTaskState {
   addRecurringInstance: (instance: RecurringTaskInstance) => void;
   updateRecurringInstance: (
     instanceId: string,
-    updates: Partial<RecurringTaskInstance>,
+    updates: Partial<RecurringTaskInstance>
   ) => void;
   deleteRecurringInstance: (instanceId: string) => void;
   deleteAllInstancesForTask: (taskId: string) => void;
@@ -57,7 +74,7 @@ export interface RecurringTaskState {
   setFilter: (filter: RecurringTaskState["currentFilter"]) => void;
   setSort: (
     sortBy: RecurringTaskState["sortBy"],
-    sortDirection: RecurringTaskState["sortDirection"],
+    sortDirection: RecurringTaskState["sortDirection"]
   ) => void;
   applyFilters: () => void;
 
@@ -84,7 +101,7 @@ export interface RecurringTaskState {
   bulkDeleteRecurringTasks: (taskIds: string[]) => void;
   bulkUpdateRecurringTaskStatus: (
     taskIds: string[],
-    status: TaskStatus,
+    status: TaskStatus
   ) => void;
 }
 
@@ -120,7 +137,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
         updateRecurringTask: (taskId, updates) => {
           set((state) => ({
             recurringTasks: state.recurringTasks.map((task) =>
-              task.id === taskId ? { ...task, ...updates } : task,
+              task.id === taskId ? { ...task, ...updates } : task
             ),
           }));
           get().applyFilters();
@@ -132,10 +149,10 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
         deleteRecurringTask: (taskId) => {
           set((state) => ({
             recurringTasks: state.recurringTasks.filter(
-              (task) => task.id !== taskId,
+              (task) => task.id !== taskId
             ),
             recurringTaskInstances: state.recurringTaskInstances.filter(
-              (instance) => instance.originalTaskId !== taskId,
+              (instance) => instance.originalTaskId !== taskId
             ),
           }));
           get().applyFilters();
@@ -159,7 +176,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
               (instance) =>
                 instance.id === instanceId
                   ? { ...instance, ...updates }
-                  : instance,
+                  : instance
             ),
           }));
         },
@@ -170,7 +187,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
         deleteRecurringInstance: (instanceId) => {
           set((state) => ({
             recurringTaskInstances: state.recurringTaskInstances.filter(
-              (instance) => instance.id !== instanceId,
+              (instance) => instance.id !== instanceId
             ),
           }));
         },
@@ -181,7 +198,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
         deleteAllInstancesForTask: (taskId) => {
           set((state) => ({
             recurringTaskInstances: state.recurringTaskInstances.filter(
-              (instance) => instance.originalTaskId !== taskId,
+              (instance) => instance.originalTaskId !== taskId
             ),
           }));
         },
@@ -204,7 +221,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
                       },
                     },
                   }
-                : task,
+                : task
             ),
           }));
         },
@@ -223,7 +240,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
                       recurringConfig: config,
                     },
                   }
-                : task,
+                : task
             ),
           }));
         },
@@ -243,7 +260,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
                       isPaused: true,
                     },
                   }
-                : task,
+                : task
             ),
           }));
         },
@@ -263,7 +280,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
                       isPaused: false,
                     },
                   }
-                : task,
+                : task
             ),
           }));
         },
@@ -295,14 +312,14 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
           // Apply pattern filter
           if (currentFilter.pattern) {
             filtered = filtered.filter(
-              (task) => task.recurringPattern === currentFilter.pattern,
+              (task) => task.recurringPattern === currentFilter.pattern
             );
           }
 
           // Apply status filter
           if (currentFilter.status) {
             filtered = filtered.filter(
-              (task) => task.status === currentFilter.status,
+              (task) => task.status === currentFilter.status
             );
           }
 
@@ -313,7 +330,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
               (task) =>
                 task.title.toLowerCase().includes(query) ||
                 (task.description &&
-                  task.description.toLowerCase().includes(query)),
+                  task.description.toLowerCase().includes(query))
             );
           }
 
@@ -393,7 +410,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
          */
         getRecurringInstancesForTask: (taskId) => {
           return get().recurringTaskInstances.filter(
-            (instance) => instance.originalTaskId === taskId,
+            (instance) => instance.originalTaskId === taskId
           );
         },
 
@@ -409,7 +426,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
          */
         getInstanceById: (instanceId) => {
           return get().recurringTaskInstances.find(
-            (instance) => instance.id === instanceId,
+            (instance) => instance.id === instanceId
           );
         },
 
@@ -420,15 +437,15 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
           const instances = get().getRecurringInstancesForTask(taskId);
           const completedInstances = instances.filter((i) => i.completed);
           const pendingInstances = instances.filter(
-            (i) => !i.completed && i.status !== "archived",
+            (i) => !i.completed && i.status !== "archived"
           );
 
           const futureInstances = instances
             .filter(
-              (i) => !i.completed && i.date && new Date(i.date) > new Date(),
+              (i) => !i.completed && i.date && new Date(i.date) > new Date()
             )
             .sort(
-              (a, b) => (a.date?.getTime() || 0) - (b.date?.getTime() || 0),
+              (a, b) => (a.date?.getTime() || 0) - (b.date?.getTime() || 0)
             );
 
           return {
@@ -446,10 +463,10 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
         bulkDeleteRecurringTasks: (taskIds) => {
           set((state) => ({
             recurringTasks: state.recurringTasks.filter(
-              (task) => !taskIds.includes(task.id),
+              (task) => !taskIds.includes(task.id)
             ),
             recurringTaskInstances: state.recurringTaskInstances.filter(
-              (instance) => !taskIds.includes(instance.originalTaskId),
+              (instance) => !taskIds.includes(instance.originalTaskId)
             ),
           }));
         },
@@ -460,7 +477,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
         bulkUpdateRecurringTaskStatus: (taskIds, status) => {
           set((state) => ({
             recurringTasks: state.recurringTasks.map((task) =>
-              taskIds.includes(task.id) ? { ...task, status } : task,
+              taskIds.includes(task.id) ? { ...task, status } : task
             ),
           }));
         },
@@ -468,26 +485,7 @@ export const useRecurringTaskStore = create<RecurringTaskState>()(
       {
         name: "todone-recurring-tasks-storage",
         storage: createJSONStorage(() => localStorage),
-      },
-    ),
-  ),
+      }
+    )
+  )
 );
-
-/**
- * Helper function to create localStorage
- */
-const createJSONStorage = (getStorage: () => Storage) => ({
-  getItem: (name: string) => {
-    const storage = getStorage();
-    const item = storage.getItem(name);
-    return item ? JSON.parse(item) : null;
-  },
-  setItem: (name: string, value: any) => {
-    const storage = getStorage();
-    storage.setItem(name, JSON.stringify(value));
-  },
-  removeItem: (name: string) => {
-    const storage = getStorage();
-    storage.removeItem(name);
-  },
-});

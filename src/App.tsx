@@ -1,4 +1,3 @@
-import { BrowserRouter as Router } from "react-router-dom";
 import "./styles/global.css";
 import { AuthProvider } from "./features/auth/AuthProvider";
 import { KeyboardProvider } from "./features/keyboard/KeyboardProvider";
@@ -8,7 +7,6 @@ import { default as AppRouter } from "./router";
 
 function App() {
   return (
-    <Router>
       <AuthProvider>
         <KeyboardProvider>
           <KeyboardShortcuts>
@@ -29,7 +27,6 @@ function App() {
           </KeyboardShortcuts>
         </KeyboardProvider>
       </AuthProvider>
-    </Router>
   );
 }
 

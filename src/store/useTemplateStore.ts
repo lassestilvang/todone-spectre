@@ -8,6 +8,23 @@ import {
   TemplateCategory as TemplateCategoryType,
 } from "../types/template";
 
+// Helper function to create localStorage
+const createJSONStorage = (getStorage: () => Storage) => ({
+  getItem: (name: string) => {
+    const storage = getStorage();
+    const item = storage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name: string, value: any) => {
+    const storage = getStorage();
+    storage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name: string) => {
+    const storage = getStorage();
+    storage.removeItem(name);
+  },
+});
+
 export const useTemplateStore = create<TemplateState>()(
   devtools(
     persist(
@@ -24,7 +41,7 @@ export const useTemplateStore = create<TemplateState>()(
 
         // CRUD Operations for Templates
         addTemplate: (
-          templateData: Omit<TemplateType, "id" | "createdAt" | "updatedAt">,
+          templateData: Omit<TemplateType, "id" | "createdAt" | "updatedAt">
         ) => {
           const newTemplate: TemplateType = {
             ...templateData,
@@ -44,7 +61,7 @@ export const useTemplateStore = create<TemplateState>()(
 
         updateTemplate: (
           id: string,
-          updates: Partial<Omit<TemplateType, "id" | "createdAt">>,
+          updates: Partial<Omit<TemplateType, "id" | "createdAt">>
         ) => {
           set((state) => ({
             templates: state.templates.map((template) =>
@@ -54,7 +71,7 @@ export const useTemplateStore = create<TemplateState>()(
                     ...updates,
                     updatedAt: new Date(),
                   }
-                : template,
+                : template
             ),
           }));
           get().applyTemplateFilters();
@@ -72,7 +89,7 @@ export const useTemplateStore = create<TemplateState>()(
           categoryData: Omit<
             TemplateCategoryType,
             "id" | "createdAt" | "updatedAt"
-          >,
+          >
         ) => {
           const newCategory: TemplateCategoryType = {
             ...categoryData,
@@ -88,7 +105,7 @@ export const useTemplateStore = create<TemplateState>()(
 
         updateCategory: (
           id: string,
-          updates: Partial<Omit<TemplateCategoryType, "id" | "createdAt">>,
+          updates: Partial<Omit<TemplateCategoryType, "id" | "createdAt">>
         ) => {
           set((state) => ({
             categories: state.categories.map((category) =>
@@ -98,7 +115,7 @@ export const useTemplateStore = create<TemplateState>()(
                     ...updates,
                     updatedAt: new Date(),
                   }
-                : category,
+                : category
             ),
           }));
         },
@@ -106,7 +123,7 @@ export const useTemplateStore = create<TemplateState>()(
         deleteCategory: (id: string) => {
           set((state) => ({
             categories: state.categories.filter(
-              (category) => category.id !== id,
+              (category) => category.id !== id
             ),
           }));
         },
@@ -119,7 +136,7 @@ export const useTemplateStore = create<TemplateState>()(
 
         setTemplateSort: (
           sortBy: TemplateState["sortBy"],
-          sortDirection: TemplateState["sortDirection"],
+          sortDirection: TemplateState["sortDirection"]
         ) => {
           set({ sortBy, sortDirection });
           get().applyTemplateFilters();
@@ -132,7 +149,7 @@ export const useTemplateStore = create<TemplateState>()(
           // Apply category filter
           if (currentFilter.categoryId) {
             filtered = filtered.filter(
-              (template) => template.categoryId === currentFilter.categoryId,
+              (template) => template.categoryId === currentFilter.categoryId
             );
           }
 
@@ -143,14 +160,14 @@ export const useTemplateStore = create<TemplateState>()(
               (template) =>
                 template.name.toLowerCase().includes(query) ||
                 template.description?.toLowerCase().includes(query) ||
-                template.tags?.some((tag) => tag.toLowerCase().includes(query)),
+                template.tags?.some((tag) => tag.toLowerCase().includes(query))
             );
           }
 
           // Apply public/private filter
           if (currentFilter.isPublic !== undefined) {
             filtered = filtered.filter(
-              (template) => template.isPublic === currentFilter.isPublic,
+              (template) => template.isPublic === currentFilter.isPublic
             );
           }
 
@@ -210,7 +227,7 @@ export const useTemplateStore = create<TemplateState>()(
         bulkDeleteTemplates: (templateIds: string[]) => {
           set((state) => ({
             templates: state.templates.filter(
-              (template) => !templateIds.includes(template.id),
+              (template) => !templateIds.includes(template.id)
             ),
           }));
           get().applyTemplateFilters();
@@ -220,7 +237,7 @@ export const useTemplateStore = create<TemplateState>()(
         setPreviewTemplate: (
           templateId: string,
           content: string,
-          variables: Record<string, string>,
+          variables: Record<string, string>
         ) => {
           set({
             previewTemplate: {
@@ -238,7 +255,7 @@ export const useTemplateStore = create<TemplateState>()(
         // Template application
         applyTemplate: (
           templateId: string,
-          variables?: Record<string, string>,
+          variables?: Record<string, string>
         ): string => {
           const template = get().templates.find((t) => t.id === templateId);
           if (!template) {
@@ -362,24 +379,7 @@ export const useTemplateStore = create<TemplateState>()(
       {
         name: "todone-templates-storage",
         storage: createJSONStorage(() => localStorage),
-      },
-    ),
-  ),
+      }
+    )
+  )
 );
-
-// Helper function to create localStorage
-const createJSONStorage = (getStorage: () => Storage) => ({
-  getItem: (name: string) => {
-    const storage = getStorage();
-    const item = storage.getItem(name);
-    return item ? JSON.parse(item) : null;
-  },
-  setItem: (name: string, value: any) => {
-    const storage = getStorage();
-    storage.setItem(name, JSON.stringify(value));
-  },
-  removeItem: (name: string) => {
-    const storage = getStorage();
-    storage.removeItem(name);
-  },
-});

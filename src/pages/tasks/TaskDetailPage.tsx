@@ -7,7 +7,7 @@ import RecurringTaskForm from "../../features/recurring/RecurringTaskForm";
 import RecurringTaskPreview from "../../features/recurring/RecurringTaskPreview";
 import { useTask } from "../../hooks/useTasks";
 import { useRecurringTaskIntegration } from "../../hooks/useRecurringTaskIntegration";
-import { ArrowLeftIcon, PencilIcon } from "@heroicons/react/outline";
+import { ArrowLeftIcon, PencilIcon } from "@heroicons/react/24/outline";
 
 const TaskDetailPage: React.FC = () => {
   const { taskId } = useParams<{ taskId: string }>();

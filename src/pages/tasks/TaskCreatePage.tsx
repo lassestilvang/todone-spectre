@@ -5,7 +5,7 @@ import TaskForm from "../../features/tasks/TaskForm";
 import RecurringTaskForm from "../../features/recurring/RecurringTaskForm";
 import { useTasks } from "../../hooks/useTasks";
 import { useRecurringTaskIntegration } from "../../hooks/useRecurringTaskIntegration";
-import { ArrowLeftIcon } from "@heroicons/react/outline";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 const TaskCreatePage: React.FC = () => {
   const navigate = useNavigate();

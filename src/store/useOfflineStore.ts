@@ -12,6 +12,23 @@ import {
   OfflineBatchResult,
 } from "../types/offlineTypes";
 
+// Helper function to create localStorage
+const createJSONStorage = (getStorage: () => Storage) => ({
+  getItem: (name: string) => {
+    const storage = getStorage();
+    const item = storage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name: string, value: any) => {
+    const storage = getStorage();
+    storage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name: string) => {
+    const storage = getStorage();
+    storage.removeItem(name);
+  },
+});
+
 // Default settings with enhanced configuration
 const DEFAULT_SETTINGS: OfflineSettings = {
   autoSyncEnabled: true,
@@ -164,7 +181,7 @@ export const useOfflineStore = create<OfflineState>()(
             | "priority"
             | "retryCount"
             | "lastAttempt"
-          >,
+          >
         ) => {
           set((state) => {
             const priority = item.priority || state.settings.syncPriority;
@@ -186,7 +203,7 @@ export const useOfflineStore = create<OfflineState>()(
             if (state.queue.items.length >= state.settings.maxQueueSize) {
               return {
                 error: new Error(
-                  `Queue full. Maximum size: ${state.settings.maxQueueSize}`,
+                  `Queue full. Maximum size: ${state.settings.maxQueueSize}`
                 ),
                 queue: {
                   ...state.queue,
@@ -198,19 +215,19 @@ export const useOfflineStore = create<OfflineState>()(
             // Update queue statistics
             const updatedItems = [...state.queue.items, newItem];
             const pendingCount = updatedItems.filter(
-              (i) => i.status === "pending",
+              (i) => i.status === "pending"
             ).length;
             const processingCount = updatedItems.filter(
-              (i) => i.status === "processing",
+              (i) => i.status === "processing"
             ).length;
             const completedCount = updatedItems.filter(
-              (i) => i.status === "completed",
+              (i) => i.status === "completed"
             ).length;
             const failedCount = updatedItems.filter(
-              (i) => i.status === "failed",
+              (i) => i.status === "failed"
             ).length;
             const retryingCount = updatedItems.filter(
-              (i) => i.status === "retrying",
+              (i) => i.status === "retrying"
             ).length;
 
             return {
@@ -257,7 +274,7 @@ export const useOfflineStore = create<OfflineState>()(
           try {
             const startTime = Date.now();
             const itemsToProcess = [...queue.items].filter(
-              (item) => item.status === "pending",
+              (item) => item.status === "pending"
             );
             const totalItems = itemsToProcess.length;
             let processedItems = 0;
@@ -272,7 +289,7 @@ export const useOfflineStore = create<OfflineState>()(
             ) {
               const batch = itemsToProcess.slice(
                 batchIndex,
-                batchIndex + effectiveBatchSize,
+                batchIndex + effectiveBatchSize
               );
               const batchId = `batch-${Date.now()}-${Math.random().toString(36).substr(2, 6)}`;
 
@@ -303,7 +320,7 @@ export const useOfflineStore = create<OfflineState>()(
                     errors.push(
                       error instanceof Error
                         ? error
-                        : new Error("Batch processing failed"),
+                        : new Error("Batch processing failed")
                     );
 
                     return {
@@ -317,14 +334,14 @@ export const useOfflineStore = create<OfflineState>()(
                       lastAttempt: new Date(),
                     };
                   }
-                }),
+                })
               );
 
               processedItems += batch.length - failedItems;
               set({
                 pendingChanges: Math.max(
                   0,
-                  get().pendingChanges - (batch.length - failedItems),
+                  get().pendingChanges - (batch.length - failedItems)
                 ),
               });
 
@@ -334,15 +351,13 @@ export const useOfflineStore = create<OfflineState>()(
                   ...state.sync,
                   progress: Math.min(
                     100,
-                    Math.round(
-                      ((batchIndex + batch.length) / totalItems) * 100,
-                    ),
+                    Math.round(((batchIndex + batch.length) / totalItems) * 100)
                   ),
                   processedItems:
                     state.sync.processedItems + (batch.length - failedItems),
                   failedItems: state.sync.failedItems + failedItems,
                   currentBatch: Math.floor(
-                    (batchIndex + batch.length) / effectiveBatchSize,
+                    (batchIndex + batch.length) / effectiveBatchSize
                   ),
                   syncStatistics: {
                     ...state.sync.syncStatistics,
@@ -357,7 +372,7 @@ export const useOfflineStore = create<OfflineState>()(
               set((state) => {
                 const updatedItems = state.queue.items.map((existingItem) => {
                   const updatedItem = batchResults.find(
-                    (item) => item.id === existingItem.id,
+                    (item) => item.id === existingItem.id
                   );
                   return updatedItem || existingItem;
                 });
@@ -367,10 +382,10 @@ export const useOfflineStore = create<OfflineState>()(
                     ...state.queue,
                     items: updatedItems,
                     completedCount: updatedItems.filter(
-                      (i) => i.status === "completed",
+                      (i) => i.status === "completed"
                     ).length,
                     failedCount: updatedItems.filter(
-                      (i) => i.status === "failed",
+                      (i) => i.status === "failed"
                     ).length,
                     lastUpdated: new Date(),
                   },
@@ -461,7 +476,7 @@ export const useOfflineStore = create<OfflineState>()(
                       retryCount: (item.retryCount || 0) + 1,
                       lastAttempt: new Date(),
                     }
-                  : item,
+                  : item
               ),
               retryingCount:
                 state.queue.items.filter((item) => item.id === itemId).length >
@@ -481,8 +496,8 @@ export const useOfflineStore = create<OfflineState>()(
                     Math.pow(
                       2,
                       get().queue.items.find((item) => item.id === itemId)
-                        ?.retryCount || 0,
-                    ),
+                        ?.retryCount || 0
+                    )
                 )
               : settings.retryDelay;
 
@@ -503,13 +518,13 @@ export const useOfflineStore = create<OfflineState>()(
             });
 
             const completedCount = updatedItems.filter(
-              (i) => i.status === "completed",
+              (i) => i.status === "completed"
             ).length;
             const failedCount = updatedItems.filter(
-              (i) => i.status === "failed",
+              (i) => i.status === "failed"
             ).length;
             const retryingCount = updatedItems.filter(
-              (i) => i.status === "retrying",
+              (i) => i.status === "retrying"
             ).length;
 
             return {
@@ -523,7 +538,7 @@ export const useOfflineStore = create<OfflineState>()(
               },
               pendingChanges: Math.max(
                 0,
-                state.pendingChanges - (success ? 1 : 0),
+                state.pendingChanges - (success ? 1 : 0)
               ),
             };
           });
@@ -562,42 +577,42 @@ export const useOfflineStore = create<OfflineState>()(
                 5000,
                 Math.min(
                   3600000,
-                  newSettings.syncInterval || state.settings.syncInterval,
-                ),
+                  newSettings.syncInterval || state.settings.syncInterval
+                )
               ),
               maxQueueSize: Math.max(
                 10,
                 Math.min(
                   1000,
-                  newSettings.maxQueueSize || state.settings.maxQueueSize,
-                ),
+                  newSettings.maxQueueSize || state.settings.maxQueueSize
+                )
               ),
               maxRetryAttempts: Math.max(
                 1,
                 Math.min(
                   10,
                   newSettings.maxRetryAttempts ||
-                    state.settings.maxRetryAttempts,
-                ),
+                    state.settings.maxRetryAttempts
+                )
               ),
               retryDelay: Math.max(
                 1000,
                 Math.min(
                   60000,
-                  newSettings.retryDelay || state.settings.retryDelay,
-                ),
+                  newSettings.retryDelay || state.settings.retryDelay
+                )
               ),
               batchSize: Math.max(
                 1,
-                Math.min(50, newSettings.batchSize || state.settings.batchSize),
+                Math.min(50, newSettings.batchSize || state.settings.batchSize)
               ),
               offlineDataRetention: Math.max(
                 1,
                 Math.min(
                   365,
                   newSettings.offlineDataRetention ||
-                    state.settings.offlineDataRetention,
-                ),
+                    state.settings.offlineDataRetention
+                )
               ),
             };
 
@@ -685,13 +700,13 @@ export const useOfflineStore = create<OfflineState>()(
         // Update queue item priority
         updateQueueItemPriority: (
           itemId: string,
-          newPriority: OfflineQueuePriority,
+          newPriority: OfflineQueuePriority
         ) => {
           set((state) => ({
             queue: {
               ...state.queue,
               items: state.queue.items.map((item) =>
-                item.id === itemId ? { ...item, priority: newPriority } : item,
+                item.id === itemId ? { ...item, priority: newPriority } : item
               ),
             },
           }));
@@ -701,7 +716,7 @@ export const useOfflineStore = create<OfflineState>()(
         removeQueueItem: (itemId: string) => {
           set((state) => {
             const updatedItems = state.queue.items.filter(
-              (item) => item.id !== itemId,
+              (item) => item.id !== itemId
             );
             return {
               queue: {
@@ -711,15 +726,15 @@ export const useOfflineStore = create<OfflineState>()(
                 pendingCount: updatedItems.filter((i) => i.status === "pending")
                   .length,
                 processingCount: updatedItems.filter(
-                  (i) => i.status === "processing",
+                  (i) => i.status === "processing"
                 ).length,
                 completedCount: updatedItems.filter(
-                  (i) => i.status === "completed",
+                  (i) => i.status === "completed"
                 ).length,
                 failedCount: updatedItems.filter((i) => i.status === "failed")
                   .length,
                 retryingCount: updatedItems.filter(
-                  (i) => i.status === "retrying",
+                  (i) => i.status === "retrying"
                 ).length,
                 queueSize: updatedItems.length,
                 lastUpdated: new Date(),
@@ -802,7 +817,7 @@ export const useOfflineStore = create<OfflineState>()(
             queueProcessingTime: number;
             syncProcessingTime: number;
             memoryUsage: number;
-          }>,
+          }>
         ) => {
           set((state) => ({
             performanceMetrics: {
@@ -887,24 +902,7 @@ export const useOfflineStore = create<OfflineState>()(
       {
         name: "todone-offline-storage",
         storage: createJSONStorage(() => localStorage),
-      },
-    ),
-  ),
+      }
+    )
+  )
 );
-
-// Helper function to create localStorage
-const createJSONStorage = (getStorage: () => Storage) => ({
-  getItem: (name: string) => {
-    const storage = getStorage();
-    const item = storage.getItem(name);
-    return item ? JSON.parse(item) : null;
-  },
-  setItem: (name: string, value: any) => {
-    const storage = getStorage();
-    storage.setItem(name, JSON.stringify(value));
-  },
-  removeItem: (name: string) => {
-    const storage = getStorage();
-    storage.removeItem(name);
-  },
-});

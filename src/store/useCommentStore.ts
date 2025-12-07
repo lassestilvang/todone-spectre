@@ -4,6 +4,23 @@ import { persist } from "zustand/middleware";
 import { devtools } from "zustand/middleware";
 import { CommentState, Comment, CommentNotification } from "../types/store";
 
+// Helper function to create localStorage
+const createJSONStorage = (getStorage: () => Storage) => ({
+  getItem: (name: string) => {
+    const storage = getStorage();
+    const item = storage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name: string, value: any) => {
+    const storage = getStorage();
+    storage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name: string) => {
+    const storage = getStorage();
+    storage.removeItem(name);
+  },
+});
+
 export const useCommentStore = create<CommentState>()(
   devtools(
     persist(
@@ -34,7 +51,7 @@ export const useCommentStore = create<CommentState>()(
 
         updateComment: (
           id: string,
-          updates: Partial<Omit<Comment, "id" | "timestamp">>,
+          updates: Partial<Omit<Comment, "id" | "timestamp">>
         ) => {
           set((state) => ({
             comments: state.comments.map((comment) =>
@@ -44,7 +61,7 @@ export const useCommentStore = create<CommentState>()(
                     ...updates,
                     timestamp: new Date(),
                   }
-                : comment,
+                : comment
             ),
           }));
           get().applyCommentFilters();
@@ -65,7 +82,7 @@ export const useCommentStore = create<CommentState>()(
                     ...comment,
                     likes: (comment.likes || 0) + 1,
                   }
-                : comment,
+                : comment
             ),
           }));
         },
@@ -78,7 +95,7 @@ export const useCommentStore = create<CommentState>()(
                     ...comment,
                     likes: Math.max((comment.likes || 0) - 1, 0),
                   }
-                : comment,
+                : comment
             ),
           }));
         },
@@ -91,7 +108,7 @@ export const useCommentStore = create<CommentState>()(
                     ...comment,
                     dislikes: (comment.dislikes || 0) + 1,
                   }
-                : comment,
+                : comment
             ),
           }));
         },
@@ -104,7 +121,7 @@ export const useCommentStore = create<CommentState>()(
                     ...comment,
                     dislikes: Math.max((comment.dislikes || 0) - 1, 0),
                   }
-                : comment,
+                : comment
             ),
           }));
         },
@@ -117,7 +134,7 @@ export const useCommentStore = create<CommentState>()(
 
         setCommentSort: (
           sortBy: CommentState["sortBy"],
-          sortDirection: CommentState["sortDirection"],
+          sortDirection: CommentState["sortDirection"]
         ) => {
           set({ sortBy, sortDirection });
           get().applyCommentFilters();
@@ -130,14 +147,14 @@ export const useCommentStore = create<CommentState>()(
           // Apply task filter
           if (currentFilter.taskId) {
             filtered = filtered.filter(
-              (comment) => comment.taskId === currentFilter.taskId,
+              (comment) => comment.taskId === currentFilter.taskId
             );
           }
 
           // Apply user filter
           if (currentFilter.userId) {
             filtered = filtered.filter(
-              (comment) => comment.user === currentFilter.userId,
+              (comment) => comment.user === currentFilter.userId
             );
           }
 
@@ -147,7 +164,7 @@ export const useCommentStore = create<CommentState>()(
             filtered = filtered.filter(
               (comment) =>
                 comment.content.toLowerCase().includes(query) ||
-                comment.user.toLowerCase().includes(query),
+                comment.user.toLowerCase().includes(query)
             );
           }
 
@@ -195,7 +212,7 @@ export const useCommentStore = create<CommentState>()(
 
         // Notification management
         addNotification: (
-          notification: Omit<CommentNotification, "id" | "createdAt">,
+          notification: Omit<CommentNotification, "id" | "createdAt">
         ) => {
           const newNotification: CommentNotification = {
             ...notification,
@@ -213,7 +230,7 @@ export const useCommentStore = create<CommentState>()(
             notifications: state.notifications.map((notification) =>
               notification.id === id
                 ? { ...notification, read: true }
-                : notification,
+                : notification
             ),
           }));
         },
@@ -221,9 +238,7 @@ export const useCommentStore = create<CommentState>()(
         markAllNotificationsAsRead: () => {
           set((state) => ({
             notifications: state.notifications.map((notification) =>
-              notification.read
-                ? notification
-                : { ...notification, read: true },
+              notification.read ? notification : { ...notification, read: true }
             ),
           }));
         },
@@ -231,7 +246,7 @@ export const useCommentStore = create<CommentState>()(
         dismissNotification: (id: string) => {
           set((state) => ({
             notifications: state.notifications.filter(
-              (notification) => notification.id !== id,
+              (notification) => notification.id !== id
             ),
           }));
         },
@@ -253,7 +268,7 @@ export const useCommentStore = create<CommentState>()(
             .sort(
               (a, b) =>
                 new Date(b.timestamp).getTime() -
-                new Date(a.timestamp).getTime(),
+                new Date(a.timestamp).getTime()
             )
             .slice(0, 5);
 
@@ -310,24 +325,7 @@ export const useCommentStore = create<CommentState>()(
       {
         name: "todone-comments-storage",
         storage: createJSONStorage(() => localStorage),
-      },
-    ),
-  ),
+      }
+    )
+  )
 );
-
-// Helper function to create localStorage
-const createJSONStorage = (getStorage: () => Storage) => ({
-  getItem: (name: string) => {
-    const storage = getStorage();
-    const item = storage.getItem(name);
-    return item ? JSON.parse(item) : null;
-  },
-  setItem: (name: string, value: any) => {
-    const storage = getStorage();
-    storage.setItem(name, JSON.stringify(value));
-  },
-  removeItem: (name: string) => {
-    const storage = getStorage();
-    storage.removeItem(name);
-  },
-});

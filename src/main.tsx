@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./styles/global.css";
-import App from "./App";
+import { Router } from "./router";
 import { TodoneDatabase } from "./database/db";
 import { SyncEngine } from "./database/sync";
 
@@ -17,16 +17,16 @@ async function initializeApp() {
 
     createRoot(document.getElementById("root")!).render(
       <StrictMode>
-        <App />
-      </StrictMode>,
+        <Router />,
+      </StrictMode>
     );
   } catch (error) {
     console.error("Failed to initialize database:", error);
     // Fallback: render app without database
     createRoot(document.getElementById("root")!).render(
       <StrictMode>
-        <App />
-      </StrictMode>,
+        <Router />,
+      </StrictMode>
     );
   }
 }

@@ -4,6 +4,23 @@ import { persist } from "zustand/middleware";
 import { devtools } from "zustand/middleware";
 import { UiState } from "../types/store";
 
+// Helper function to create localStorage
+const createJSONStorage = (getStorage: () => Storage) => ({
+  getItem: (name: string) => {
+    const storage = getStorage();
+    const item = storage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name: string, value: any) => {
+    const storage = getStorage();
+    storage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name: string) => {
+    const storage = getStorage();
+    storage.removeItem(name);
+  },
+});
+
 export const useUiStore = create<UiState>()(
   devtools(
     persist(
@@ -185,7 +202,7 @@ export const useUiStore = create<UiState>()(
         setViewFilter: (
           view: "inbox" | "today" | "upcoming",
           filterType: string,
-          value: any,
+          value: any
         ) => {
           set((state) => {
             const newFilters = { ...state.viewFilters };
@@ -205,7 +222,7 @@ export const useUiStore = create<UiState>()(
         setViewSorting: (
           view: "inbox" | "today" | "upcoming",
           field: string,
-          direction: "asc" | "desc",
+          direction: "asc" | "desc"
         ) => {
           set((state) => {
             const newSorting = { ...state.viewSorting };
@@ -216,7 +233,7 @@ export const useUiStore = create<UiState>()(
 
         setViewGrouping: (
           view: "inbox" | "today" | "upcoming",
-          grouping: string,
+          grouping: string
         ) => {
           set((state) => {
             const newGrouping = { ...state.viewGrouping };
@@ -228,7 +245,7 @@ export const useUiStore = create<UiState>()(
         setViewPagination: (
           view: "inbox" | "today" | "upcoming",
           page: number,
-          pageSize: number,
+          pageSize: number
         ) => {
           set((state) => {
             const newPagination = { ...state.viewPagination };
@@ -272,24 +289,7 @@ export const useUiStore = create<UiState>()(
       {
         name: "todone-ui-storage",
         storage: createJSONStorage(() => localStorage),
-      },
-    ),
-  ),
+      }
+    )
+  )
 );
-
-// Helper function to create localStorage
-const createJSONStorage = (getStorage: () => Storage) => ({
-  getItem: (name: string) => {
-    const storage = getStorage();
-    const item = storage.getItem(name);
-    return item ? JSON.parse(item) : null;
-  },
-  setItem: (name: string, value: any) => {
-    const storage = getStorage();
-    storage.setItem(name, JSON.stringify(value));
-  },
-  removeItem: (name: string) => {
-    const storage = getStorage();
-    storage.removeItem(name);
-  },
-});

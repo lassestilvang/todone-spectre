@@ -4,6 +4,23 @@ import { persist } from "zustand/middleware";
 import { devtools } from "zustand/middleware";
 import { LabelState, Label } from "../types/store";
 
+// Helper function to create localStorage
+const createJSONStorage = (getStorage: () => Storage) => ({
+  getItem: (name: string) => {
+    const storage = getStorage();
+    const item = storage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name: string, value: any) => {
+    const storage = getStorage();
+    storage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name: string) => {
+    const storage = getStorage();
+    storage.removeItem(name);
+  },
+});
+
 export const useLabelStore = create<LabelState>()(
   devtools(
     persist(
@@ -14,7 +31,7 @@ export const useLabelStore = create<LabelState>()(
 
         // CRUD Operations
         addLabel: (
-          labelData: Omit<Label, "id" | "createdAt" | "updatedAt">,
+          labelData: Omit<Label, "id" | "createdAt" | "updatedAt">
         ) => {
           const newLabel: Label = {
             ...labelData,
@@ -29,7 +46,7 @@ export const useLabelStore = create<LabelState>()(
 
         updateLabel: (
           id: string,
-          updates: Partial<Omit<Label, "id" | "createdAt">>,
+          updates: Partial<Omit<Label, "id" | "createdAt">>
         ) => {
           set((state) => ({
             labels: state.labels.map((label) =>
@@ -39,7 +56,7 @@ export const useLabelStore = create<LabelState>()(
                     ...updates,
                     updatedAt: new Date(),
                   }
-                : label,
+                : label
             ),
           }));
         },
@@ -105,7 +122,7 @@ export const useLabelStore = create<LabelState>()(
         // Label operations
         getLabelsByCategory: (isPersonal: boolean) => {
           return get().labels.filter(
-            (label) => label.isPersonal === isPersonal,
+            (label) => label.isPersonal === isPersonal
           );
         },
 
@@ -117,24 +134,7 @@ export const useLabelStore = create<LabelState>()(
       {
         name: "todone-labels-storage",
         storage: createJSONStorage(() => localStorage),
-      },
-    ),
-  ),
+      }
+    )
+  )
 );
-
-// Helper function to create localStorage
-const createJSONStorage = (getStorage: () => Storage) => ({
-  getItem: (name: string) => {
-    const storage = getStorage();
-    const item = storage.getItem(name);
-    return item ? JSON.parse(item) : null;
-  },
-  setItem: (name: string, value: any) => {
-    const storage = getStorage();
-    storage.setItem(name, JSON.stringify(value));
-  },
-  removeItem: (name: string) => {
-    const storage = getStorage();
-    storage.removeItem(name);
-  },
-});

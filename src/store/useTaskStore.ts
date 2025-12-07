@@ -4,6 +4,23 @@ import { persist } from "zustand/middleware";
 import { devtools } from "zustand/middleware";
 import { TaskState, Task } from "../types/store";
 
+// Helper function to create localStorage
+const createJSONStorage = (getStorage: () => Storage) => ({
+  getItem: (name: string) => {
+    const storage = getStorage();
+    const item = storage.getItem(name);
+    return item ? JSON.parse(item) : null;
+  },
+  setItem: (name: string, value: any) => {
+    const storage = getStorage();
+    storage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name: string) => {
+    const storage = getStorage();
+    storage.removeItem(name);
+  },
+});
+
 export const useTaskStore = create<TaskState>()(
   devtools(
     persist(
@@ -34,7 +51,7 @@ export const useTaskStore = create<TaskState>()(
 
         updateTask: (
           id: string,
-          updates: Partial<Omit<Task, "id" | "createdAt">>,
+          updates: Partial<Omit<Task, "id" | "createdAt">>
         ) => {
           set((state) => ({
             tasks: state.tasks.map((task) =>
@@ -44,7 +61,7 @@ export const useTaskStore = create<TaskState>()(
                     ...updates,
                     updatedAt: new Date(),
                   }
-                : task,
+                : task
             ),
           }));
           get().applyFilters();
@@ -66,7 +83,7 @@ export const useTaskStore = create<TaskState>()(
                     completed: !task.completed,
                     updatedAt: new Date(),
                   }
-                : task,
+                : task
             ),
           }));
           get().applyFilters();
@@ -80,7 +97,7 @@ export const useTaskStore = create<TaskState>()(
 
         setSort: (
           sortBy: TaskState["sortBy"],
-          sortDirection: TaskState["sortDirection"],
+          sortDirection: TaskState["sortDirection"]
         ) => {
           set({ sortBy, sortDirection });
           get().applyFilters();
@@ -93,14 +110,14 @@ export const useTaskStore = create<TaskState>()(
           // Apply status filter
           if (currentFilter.status) {
             filtered = filtered.filter(
-              (task) => task.status === currentFilter.status,
+              (task) => task.status === currentFilter.status
             );
           }
 
           // Apply priority filter
           if (currentFilter.priority) {
             filtered = filtered.filter(
-              (task) => task.priority === currentFilter.priority,
+              (task) => task.priority === currentFilter.priority
             );
           }
 
@@ -110,7 +127,7 @@ export const useTaskStore = create<TaskState>()(
             filtered = filtered.filter(
               (task) =>
                 task.title.toLowerCase().includes(query) ||
-                task.description?.toLowerCase().includes(query),
+                task.description?.toLowerCase().includes(query)
             );
           }
 
@@ -222,14 +239,14 @@ export const useTaskStore = create<TaskState>()(
         // Sub-task specific operations
         getSubTasks: (parentTaskId: string): Task[] => {
           return get().tasks.filter(
-            (task) => task.parentTaskId === parentTaskId,
+            (task) => task.parentTaskId === parentTaskId
           );
         },
 
         getTaskHierarchy: (parentTaskId: string): Task[] => {
           const buildHierarchy = (taskId: string): Task[] => {
             const children = get().tasks.filter(
-              (task) => task.parentTaskId === taskId,
+              (task) => task.parentTaskId === taskId
             );
             return children.map((child) => ({
               ...child,
@@ -245,7 +262,7 @@ export const useTaskStore = create<TaskState>()(
           if (subTasks.length === 0) return 0;
 
           const completedCount = subTasks.filter(
-            (task) => task.completed,
+            (task) => task.completed
           ).length;
           return Math.round((completedCount / subTasks.length) * 100);
         },
@@ -260,7 +277,7 @@ export const useTaskStore = create<TaskState>()(
                     status,
                     updatedAt: new Date(),
                   }
-                : task,
+                : task
             ),
           }));
           get().applyFilters();
@@ -276,7 +293,7 @@ export const useTaskStore = create<TaskState>()(
                     priority,
                     updatedAt: new Date(),
                   }
-                : task,
+                : task
             ),
           }));
           get().applyFilters();
@@ -286,14 +303,14 @@ export const useTaskStore = create<TaskState>()(
         reorderTask: (
           taskId: string,
           targetTaskId: string,
-          position: "before" | "after" = "after",
+          position: "before" | "after" = "after"
         ) => {
           set((state) => {
             const taskIndex = state.tasks.findIndex(
-              (task) => task.id === taskId,
+              (task) => task.id === taskId
             );
             const targetIndex = state.tasks.findIndex(
-              (task) => task.id === targetTaskId,
+              (task) => task.id === targetTaskId
             );
 
             if (taskIndex === -1 || targetIndex === -1)
@@ -324,7 +341,7 @@ export const useTaskStore = create<TaskState>()(
                       : targetId,
                     updatedAt: new Date(),
                   }
-                : task,
+                : task
             ),
           }));
           get().applyFilters();
@@ -339,7 +356,7 @@ export const useTaskStore = create<TaskState>()(
                     projectId,
                     updatedAt: new Date(),
                   }
-                : task,
+                : task
             ),
           }));
           get().applyFilters();
@@ -354,7 +371,7 @@ export const useTaskStore = create<TaskState>()(
                     columnId,
                     updatedAt: new Date(),
                   }
-                : task,
+                : task
             ),
           }));
           get().applyFilters();
@@ -363,24 +380,7 @@ export const useTaskStore = create<TaskState>()(
       {
         name: "todone-tasks-storage",
         storage: createJSONStorage(() => localStorage),
-      },
-    ),
-  ),
+      }
+    )
+  )
 );
-
-// Helper function to create localStorage
-const createJSONStorage = (getStorage: () => Storage) => ({
-  getItem: (name: string) => {
-    const storage = getStorage();
-    const item = storage.getItem(name);
-    return item ? JSON.parse(item) : null;
-  },
-  setItem: (name: string, value: any) => {
-    const storage = getStorage();
-    storage.setItem(name, JSON.stringify(value));
-  },
-  removeItem: (name: string) => {
-    const storage = getStorage();
-    storage.removeItem(name);
-  },
-});
