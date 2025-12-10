@@ -1,8 +1,18 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useTaskStore } from "../store/useTaskStore";
+import DashboardTaskList from "../features/tasks/DashboardTaskList";
 
 const DashboardPage: React.FC = () => {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { tasks } = useTaskStore();
+
+  // Calculate task statistics
+  const totalTasks = tasks.length;
+  const completedTasks = tasks.filter((task) => task.completed).length;
+  const pendingTasks = tasks.filter((task) => !task.completed).length;
 
   return (
     <div className="min-h-[calc(100vh-100px)] flex flex-col">
@@ -30,7 +40,7 @@ const DashboardPage: React.FC = () => {
               Tasks
             </h4>
             <p className="text-2xl font-bold text-blue-600 dark:text-blue-300">
-              0
+              {totalTasks}
             </p>
           </div>
 
@@ -39,7 +49,7 @@ const DashboardPage: React.FC = () => {
               Completed
             </h4>
             <p className="text-2xl font-bold text-green-600 dark:text-green-300">
-              0
+              {completedTasks}
             </p>
           </div>
 
@@ -48,9 +58,41 @@ const DashboardPage: React.FC = () => {
               Pending
             </h4>
             <p className="text-2xl font-bold text-yellow-600 dark:text-yellow-300">
-              0
+              {pendingTasks}
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* Quick Navigation */}
+      <div className="mt-6 flex flex-wrap gap-3">
+        <button
+          onClick={() => navigate("/tasks")}
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+        >
+          View All Tasks
+        </button>
+        <button
+          onClick={() => navigate("/tasks/create")}
+          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+        >
+          Create Task
+        </button>
+        <button
+          onClick={() => navigate("/projects")}
+          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+        >
+          Projects
+        </button>
+      </div>
+
+      {/* Task Management Section */}
+      <div className="mt-8">
+        <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
+          Your Tasks
+        </h3>
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
+          <DashboardTaskList showCreateButton={true} />
         </div>
       </div>
     </div>
